@@ -52,7 +52,7 @@ $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC")
 while($f = mysqli_fetch_array($resultado)){
        $id_simg=$f['id_simg'];
 ?>
-            <center><span class="fondo"><img src="../../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" height="800" width="310"></span></center>
+			<center><span class="fondo"><img src="../../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" height="800" width="310"></span></center>
           <?php
 }
 ?>

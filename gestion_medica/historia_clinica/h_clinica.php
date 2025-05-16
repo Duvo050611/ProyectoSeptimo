@@ -6,55 +6,70 @@ include("../header_medico.php");
 
 <!DOCTYPE html>
 <div>
-    <head>
-    <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-   <!-- menu derecho de perfil -->
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-            crossorigin="anonymous"></script>
-    <!--  Bootstrap  -->
-    
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
-   <!-- despliegue menu -->
-    <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-   
+    <head>
+        <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+        </script>
+        <!-- menu derecho de perfil -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+        </script>
+        <!--  Bootstrap  -->
+
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+            integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+        <!-- despliegue menu -->
+        <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
         <script>
-            // Write on keyup event of keyword input element
-            $(document).ready(function () {
-                $("#search").keyup(function () {
-                    _this = this;
-                    // Show only matching TR, hide rest of them
-                    $.each($("#mytable tbody tr"), function () {
-                        if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-                            $(this).hide();
-                        else
-                            $(this).show();
-                    });
+        // Write on keyup event of keyword input element
+        $(document).ready(function() {
+            $("#search").keyup(function() {
+                _this = this;
+                // Show only matching TR, hide rest of them
+                $.each($("#mytable tbody tr"), function() {
+                    if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -
+                        1)
+                        $(this).hide();
+                    else
+                        $(this).show();
                 });
             });
+        });
         </script>
         <title>Historia Clinica </title>
-        <style type="text/css">    
-    .modal-lg { max-width: 70% !important; }
-</style>
-</head>
-      
-<div class="container">
-<div class="row">
-<div class="col">
- 
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;"><strong><center>HISTORIA CLÍNICA  </center> </strong></div>
+        <style type="text/css">
+        .modal-lg {
+            max-width: 70% !important;
+        }
+        </style>
+    </head>
 
-<?php
+    <div class="container">
+        <div class="row">
+            <div class="col">
+
+                <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;"><strong>
+                        <center>HISTORIA CLÍNICA </center>
+                    </strong></div>
+
+                <?php
     include "../../conexionbd.php";
     if (isset($_SESSION['hospital'])) {
       $id_atencion = $_SESSION['hospital'];
@@ -109,29 +124,29 @@ include("../header_medico.php");
           }
       }
     ?>
- 
-         
-  <div class="row">
-    <div class="col-sm-2">
-      Expediente: <strong><?php echo $folio?> </strong>
-    </div>
-    <div class="col-sm-6">
-     Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
-    </div>
-    
-   <?php $date = date_create($pac_fecing);
-   ?>
-      <div class="col-sm-4">
-      Fecha de ingreso: <strong><?php echo date_format($date, "d/m/Y H:i:s") ?></strong>
-    </div>
-  </div>
 
-   <div class="row">
-    <div class="col-sm-4">
-       <?php $date1 = date_create($pac_fecnac);
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        Expediente: <strong><?php echo $folio?> </strong>
+                    </div>
+                    <div class="col-sm-6">
+                        Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
+                    </div>
+
+                    <?php $date = date_create($pac_fecing);
    ?>
-    <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
-<?php 
+                    <div class="col-sm-4">
+                        Fecha de ingreso: <strong><?php echo date_format($date, "d/m/Y H:i:s") ?></strong>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <?php $date1 = date_create($pac_fecnac);
+   ?>
+                        <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
+                        <?php 
 
 function bisiesto($anio_actual){
     $bisiesto=false;
@@ -192,11 +207,11 @@ if ($meses < 0)
 
 //echo "<br>Tu edad es: $anos años con $meses meses y $dias días";
  ?>
- <!-- TERMINO DE FUNCION DE CALCULAR EDAD -->
-      Fecha de nacimiento: <strong><?php echo date_format($date1, "d/m/Y") ?></strong>
-    </div>
-    <div class="col-sm-4">
-      Edad: <strong><?php if($anos > "0" ){
+                        <!-- TERMINO DE FUNCION DE CALCULAR EDAD -->
+                        Fecha de nacimiento: <strong><?php echo date_format($date1, "d/m/Y") ?></strong>
+                    </div>
+                    <div class="col-sm-4">
+                        Edad: <strong><?php if($anos > "0" ){
    echo $anos." años";
 }elseif($anos <="0" && $meses>"0"){
     echo $meses." meses";
@@ -204,17 +219,17 @@ if ($meses < 0)
     echo $dias." días";
 }
 ?></strong>
-    </div>
-    
-    <div class="col-sm-2">
-      Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
+                    </div>
+
+                    <div class="col-sm-2">
+                        Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
 $result_hab = $conexion->query($sql_hab);                                                                                    while ($row_hab = $result_hab->fetch_assoc()) {
   echo $row_hab['num_cama'];
 } ?></strong>
-    </div>
-</div>
-<div class="row">
-  <?php 
+                    </div>
+                </div>
+                <div class="row">
+                    <?php 
 $d="";
 $sql_motd = "SELECT diagprob_i from dat_not_ingreso where id_atencion=$id_atencion ORDER by id_not_ingreso DESC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
@@ -226,38 +241,38 @@ $result_motd = $conexion->query($sql_motd);
 while ($row_motd = $result_motd->fetch_assoc()) {
     $d=$row_motd['diagprob_i'];
 } ?>
-<?php $sql_mot = "SELECT motivo_atn from dat_ingreso where id_atencion=$id_atencion ORDER by motivo_atn ASC LIMIT 1";
+                    <?php $sql_mot = "SELECT motivo_atn from dat_ingreso where id_atencion=$id_atencion ORDER by motivo_atn ASC LIMIT 1";
 $result_mot = $conexion->query($sql_mot);
 while ($row_mot = $result_mot->fetch_assoc()) {
 $m=$row_mot['motivo_atn'];
 } ?>
 
-<?php if ($d!=null) {
+                    <?php if ($d!=null) {
    echo '<div class="col-sm-8"> Diagnóstico: <strong>' . $d .'</strong></div>';
 } else{
       echo '<div class="col-sm-8"> Motivo de atención: <strong>' . $m .'</strong></div>';
 }?>
-    <div class="col-sm">
-      Días estancia: <strong><?php echo $estancia ?> días</strong>
-    </div>
-  </div>
+                    <div class="col-sm">
+                        Días estancia: <strong><?php echo $estancia ?> días</strong>
+                    </div>
+                </div>
 
 
-  <div class="row">
-    <div class="col-sm-4">
-      Alergias: <strong><?php echo $alergias ?></strong>
-    </div>
-     <div class="col-sm-4">
-      Estado de salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
+                <div class="row">
+                    <div class="col-sm-4">
+                        Alergias: <strong><?php echo $alergias ?></strong>
+                    </div>
+                    <div class="col-sm-4">
+                        Estado de salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
       $result_edo = $conexion->query($sql_edo);while ($row_edo = $result_edo->fetch_assoc()) {
       echo $row_edo['edo_salud'];
 } ?></strong>
-    </div>
-    <div class="col-sm-3">
-      Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
-    </div>
-  </div>
-   <?php $sql_edo = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
+                    </div>
+                    <div class="col-sm-3">
+                        Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
+                    </div>
+                </div>
+                <?php $sql_edo = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
 $result_edo = $conexion->query($sql_edo);
 while ($row_edo = $result_edo->fetch_assoc()) {
   $peso=$row_edo['peso'];
@@ -267,287 +282,305 @@ if (!isset($peso)){
     $peso=0;
     $talla=0;
 }?>
- 
-  <div class="row">
-     <div class="col-sm-4">
-      Peso: <strong><?php echo $peso ?></strong>
-    </div>
-    <div class="col-sm-3">
-      Talla: <strong><?php echo $talla ?></strong>
-    </div>
-  </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        Peso: <strong><?php echo $peso ?></strong>
+                    </div>
+                    <div class="col-sm-3">
+                        Talla: <strong><?php echo $talla ?></strong>
+                    </div>
+                </div>
 
 
-</div>
-        <?php
+            </div>
+            <?php
       } else {
         echo '<script type="text/javascript"> window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
       }
-        ?> 
-</div>
-</div>
-<form action="insertar_hclinica.php" method="POST" onsubmit="return checkSubmit();">
-    
-<div class="container">
-    <hr> 
- <div class="row">       
-        <div class="col-sm-3">
-            <strong><label for="tip_hc"><button type="button" class="btn btn-success btn-sm" id="play"><i class="fas fa-play"></button></i> Tipo de interrogatorio:</label></strong>
-            <select class="form-control" id="tip_hc" name="tip_hc" required="">
-                <option value="">Seleccionar</option>
-                <option value="Directo">Directo</option>
-                <option value="Indirecto">Indirecto</option>
-            </select>
+        ?>
         </div>
-<script type="text/javascript">
-const tip_hc = document.getElementById('tip_hc');
-const btn1 = document.getElementById('play');
-
-btn1.addEventListener('click', () => {
-        leerTexto(tip_hc.value);
-});
-
-function leerTexto(tip_hc){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= tip_hc;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script> 
-
-<div class="col-sm-4">
-        <strong><label for="ocupa"><button type="button" class="btn btn-success btn-sm" id="play1"><i class="fas fa-play"></button></i> Ocupación:</label></strong>
-              <input type="text" name="ocupa" class="form-control" id="ocupa" required="">
-</div>
-<script type="text/javascript">
-const ocupa = document.getElementById('ocupa');
-const btn2 = document.getElementById('play1');
-
-btn2.addEventListener('click', () => {
-        leerTexto(ocupa.value);
-});
-
-function leerTexto(ocupa){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= ocupa;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-
-<div class="col-sm-4">
-        <div class="form-group">
-            <strong><label for="tip_sang"><button type="button" class="btn btn-success btn-sm" id="play111"><i class="fas fa-play"></button></i> Tipo de sangre:</label></strong>
-            <select class="form-control" id="tip_sang" name="tip_sang" required="">
-                <option value="">Seleccionar</option>
-                <option value="O Rh(-)">O Rh(-)</option>
-                <option value="O Rh(+)">O Rh(+)</option>
-                <option value="A Rh(-)">A Rh(-)</option>
-                <option value="A Rh(+)">A Rh(+)</option>
-                <option value="B Rh(-)">B Rh(-)</option>
-                <option value="B Rh(+)">B Rh(+)</option>
-                <option value="AB Rh(-)">AB Rh(-)</option>
-                <option value="AB Rh(+)">AB Rh(+)</option>
-                <option value="No especificado">No especificado</option>
-            </select>
-        </div>
-    
-    <script type="text/javascript">
-        const tip_sang = document.getElementById('tip_sang');
-        const btn111 = document.getElementById('play111');
-        btn111.addEventListener('click', () => {
-            leerTexto(tip_sang.value);
-        });
-        function leerTexto(tip_sang){
-            const speech = new SpeechSynthesisUtterance();
-            speech.text= tip_sang;
-            speech.volume=1;
-            speech.rate=1;
-            speech.pitch=0;
-            window.speechSynthesis.speak(speech);
-        }
-    </script> 
-</div>
-
     </div>
-</div>
+    <form action="insertar_hclinica.php" method="POST" onsubmit="return checkSubmit();">
 
- 
-<br>
+        <div class="container">
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <strong><label for="tip_hc"><button type="button" class="btn btn-success btn-sm" id="play"><i
+                                    class="fas fa-play"></button></i> Tipo de interrogatorio:</label></strong>
+                    <select class="form-control" id="tip_hc" name="tip_hc" required="">
+                        <option value="">Seleccionar</option>
+                        <option value="Directo">Directo</option>
+                        <option value="Indirecto">Indirecto</option>
+                    </select>
+                </div>
+                <script type="text/javascript">
+                const tip_hc = document.getElementById('tip_hc');
+                const btn1 = document.getElementById('play');
 
-<div class="container">
+                btn1.addEventListener('click', () => {
+                    leerTexto(tip_hc.value);
+                });
 
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-    <strong><center> ANTECEDENTES HEREDO FAMILIARES</center></strong>
-</div>
-                
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="btnStartRecord"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="btnStopRecord"><i class="fas fa-microphone-slash"></button></i>
-       <button type="button" class="btn btn-success btn-sm" id="play2"><i class="fas fa-play"></button></i>
-      </div>
-                              
-<div class="form-group"> 
-<textarea class="form-control" name="hc_her_o" rows="3" required id="texto"></textarea>
-<script type="text/javascript">
-const btnStartRecord = document.getElementById('btnStartRecord');
-const btnStopRecord = document.getElementById('btnStopRecord');
-const texto = document.getElementById('texto');
+                function leerTexto(tip_hc) {
+                    const speech = new SpeechSynthesisUtterance();
+                    speech.text = tip_hc;
+                    speech.volume = 1;
+                    speech.rate = 1;
+                    speech.pitch = 0;
+                    window.speechSynthesis.speak(speech);
+                }
+                </script>
 
-const btn3 = document.getElementById('play2');
+                <div class="col-sm-4">
+                    <strong><label for="ocupa"><button type="button" class="btn btn-success btn-sm" id="play1"><i
+                                    class="fas fa-play"></button></i> Ocupación:</label></strong>
+                    <input type="text" name="ocupa" class="form-control" id="ocupa" required="">
+                </div>
+                <script type="text/javascript">
+                const ocupa = document.getElementById('ocupa');
+                const btn2 = document.getElementById('play1');
 
-btn3.addEventListener('click', () => {
-        leerTexto(texto.value);
-});
+                btn2.addEventListener('click', () => {
+                    leerTexto(ocupa.value);
+                });
 
-function leerTexto(texto){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= texto;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
+                function leerTexto(ocupa) {
+                    const speech = new SpeechSynthesisUtterance();
+                    speech.text = ocupa;
+                    speech.volume = 1;
+                    speech.rate = 1;
+                    speech.pitch = 0;
+                    window.speechSynthesis.speak(speech);
+                }
+                </script>
 
-     let recognition = new webkitSpeechRecognition();
-      recognition.lang = "es-ES";
-      recognition.continuous = true;
-      recognition.interimResults = false;
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <strong><label for="tip_sang"><button type="button" class="btn btn-success btn-sm"
+                                    id="play111"><i class="fas fa-play"></button></i> Tipo de sangre:</label></strong>
+                        <select class="form-control" id="tip_sang" name="tip_sang" required="">
+                            <option value="">Seleccionar</option>
+                            <option value="O Rh(-)">O Rh(-)</option>
+                            <option value="O Rh(+)">O Rh(+)</option>
+                            <option value="A Rh(-)">A Rh(-)</option>
+                            <option value="A Rh(+)">A Rh(+)</option>
+                            <option value="B Rh(-)">B Rh(-)</option>
+                            <option value="B Rh(+)">B Rh(+)</option>
+                            <option value="AB Rh(-)">AB Rh(-)</option>
+                            <option value="AB Rh(+)">AB Rh(+)</option>
+                            <option value="No especificado">No especificado</option>
+                        </select>
+                    </div>
 
-      recognition.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        texto.value += frase;
-      }
+                    <script type="text/javascript">
+                    const tip_sang = document.getElementById('tip_sang');
+                    const btn111 = document.getElementById('play111');
+                    btn111.addEventListener('click', () => {
+                        leerTexto(tip_sang.value);
+                    });
 
-      btnStartRecord.addEventListener('click', () => {
-        recognition.start();
-      });
+                    function leerTexto(tip_sang) {
+                        const speech = new SpeechSynthesisUtterance();
+                        speech.text = tip_sang;
+                        speech.volume = 1;
+                        speech.rate = 1;
+                        speech.pitch = 0;
+                        window.speechSynthesis.speak(speech);
+                    }
+                    </script>
+                </div>
 
-      btnStopRecord.addEventListener('click', () => {
-        recognition.abort();
-      });
-</script>
-</div>
-                      
-                            </div>  
+            </div>
+        </div>
+
+
+        <br>
+
+        <div class="container">
+
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center> ANTECEDENTES HEREDO FAMILIARES</center>
+                </strong>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="botones">
+                        <button type="button" class="btn btn-danger btn-sm" id="btnStartRecord"><i
+                                class="fas fa-microphone">
+                        </button></i>
+                        <button type="button" class="btn btn-primary btn-sm" id="btnStopRecord"><i
+                                class="fas fa-microphone-slash"></button></i>
+                        <button type="button" class="btn btn-success btn-sm" id="play2"><i
+                                class="fas fa-play"></button></i>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" name="hc_her_o" rows="3" required id="texto"></textarea>
+                        <script type="text/javascript">
+                        const btnStartRecord = document.getElementById('btnStartRecord');
+                        const btnStopRecord = document.getElementById('btnStopRecord');
+                        const texto = document.getElementById('texto');
+
+                        const btn3 = document.getElementById('play2');
+
+                        btn3.addEventListener('click', () => {
+                            leerTexto(texto.value);
+                        });
+
+                        function leerTexto(texto) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = texto;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+
+                        let recognition = new webkitSpeechRecognition();
+                        recognition.lang = "es-ES";
+                        recognition.continuous = true;
+                        recognition.interimResults = false;
+
+                        recognition.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            texto.value += frase;
+                        }
+
+                        btnStartRecord.addEventListener('click', () => {
+                            recognition.start();
+                        });
+
+                        btnStopRecord.addEventListener('click', () => {
+                            recognition.abort();
+                        });
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center>ANTECEDENTES PERSONALES NO PATOLÓGICOS</center>
+                </strong>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="g"><i class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="d"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play3"><i
+                                    class="fas fa-play"></button></i>
                         </div>
-                        
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-    <strong><center>ANTECEDENTES PERSONALES NO PATOLÓGICOS</center></strong></div>
-                     
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                  <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="g"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="d"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play3"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" id="nop" name="hc_otro" rows="3" required></textarea>
-<script type="text/javascript">
-const g = document.getElementById('g');
-const d = document.getElementById('d');
-const nop = document.getElementById('nop');
+                        <textarea class="form-control" id="nop" name="hc_otro" rows="3" required></textarea>
+                        <script type="text/javascript">
+                        const g = document.getElementById('g');
+                        const d = document.getElementById('d');
+                        const nop = document.getElementById('nop');
 
-const btn4 = document.getElementById('play3');
+                        const btn4 = document.getElementById('play3');
 
-btn4.addEventListener('click', () => {
-        leerTexto(nop.value);
-});
+                        btn4.addEventListener('click', () => {
+                            leerTexto(nop.value);
+                        });
 
-function leerTexto(nop){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= nop;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
+                        function leerTexto(nop) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = nop;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
 
-     let r = new webkitSpeechRecognition();
-      r.lang = "es-ES";
-      r.continuous = true;
-      r.interimResults = false;
+                        let r = new webkitSpeechRecognition();
+                        r.lang = "es-ES";
+                        r.continuous = true;
+                        r.interimResults = false;
 
-      r.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        nop.value += frase;
-      }
+                        r.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            nop.value += frase;
+                        }
 
-      g.addEventListener('click', () => {
-        r.start();
-      });
+                        g.addEventListener('click', () => {
+                            r.start();
+                        });
 
-      d.addEventListener('click', () => {
-        r.abort();
-      });
-</script>
-                                </div>
-                            </div>
-                        </div>
-                        
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-    <strong><center>ANTECEDENTES PERSONALES PATOLÓGICOS</center></strong></div>
-  <div class="form-group">
+                        d.addEventListener('click', () => {
+                            r.abort();
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
 
-    <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
-    <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="gr"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="de"><i class="fas fa-microphone-slash"></button></i>
-       <button type="button" class="btn btn-success btn-sm" id="play4"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" id="qui" rows="3" name=" hc_pato" required></textarea>
-<script type="text/javascript">
-const gr = document.getElementById('gr');
-const de = document.getElementById('de');
-const qui = document.getElementById('qui');
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center>ANTECEDENTES PERSONALES PATOLÓGICOS</center>
+                </strong>
+            </div>
+            <div class="form-group">
 
-const btn5 = document.getElementById('play4');
+                <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
+                <div class="botones">
+                    <button type="button" class="btn btn-danger btn-sm" id="gr"><i class="fas fa-microphone">
+                    </button></i>
+                    <button type="button" class="btn btn-primary btn-sm" id="de"><i
+                            class="fas fa-microphone-slash"></button></i>
+                    <button type="button" class="btn btn-success btn-sm" id="play4"><i class="fas fa-play"></button></i>
+                </div>
+                <textarea class="form-control" id="qui" rows="3" name=" hc_pato" required></textarea>
+                <script type="text/javascript">
+                const gr = document.getElementById('gr');
+                const de = document.getElementById('de');
+                const qui = document.getElementById('qui');
 
-btn5.addEventListener('click', () => {
-        leerTexto(qui.value);
-});
+                const btn5 = document.getElementById('play4');
 
-function leerTexto(qui){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= qui;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let rq = new webkitSpeechRecognition();
-      rq.lang = "es-ES";
-      rq.continuous = true;
-      rq.interimResults = false;
+                btn5.addEventListener('click', () => {
+                    leerTexto(qui.value);
+                });
 
-      rq.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        qui.value += frase;
-      }
+                function leerTexto(qui) {
+                    const speech = new SpeechSynthesisUtterance();
+                    speech.text = qui;
+                    speech.volume = 1;
+                    speech.rate = 1;
+                    speech.pitch = 0;
+                    window.speechSynthesis.speak(speech);
+                }
+                let rq = new webkitSpeechRecognition();
+                rq.lang = "es-ES";
+                rq.continuous = true;
+                rq.interimResults = false;
 
-      gr.addEventListener('click', () => {
-        rq.start();
-      });
+                rq.onresult = (event) => {
+                    const results = event.results;
+                    const frase = results[results.length - 1][0].transcript;
+                    qui.value += frase;
+                }
 
-      de.addEventListener('click', () => {
-        rq.abort();
-      });
-</script>
-  </div>
- <!--   <div class="form-group">
+                gr.addEventListener('click', () => {
+                    rq.start();
+                });
+
+                de.addEventListener('click', () => {
+                    rq.abort();
+                });
+                </script>
+            </div>
+            <!--   <div class="form-group">
     <label for="exampleFormControlTextarea1"><strong>Traumáticos:</strong></label>
       <div class="botones">
         <button type="button" class="btn btn-danger btn-sm" id="grabar"><i class="fas fa-microphone">
@@ -596,8 +629,8 @@ function leerTexto(tra){
       });
 </script>
   </div>-->
-   
-<!-- <div class="form-group"> <label for="exampleFormControlTextarea1"><strong>Otros antecedentes personales patológicos:</strong></label>
+
+            <!-- <div class="form-group"> <label for="exampleFormControlTextarea1"><strong>Otros antecedentes personales patológicos:</strong></label>
     <div class="botones">
         <button type="button" class="btn btn-danger btn-sm" id="grabaro"><i class="fas fa-microphone">
 </button></i>
@@ -645,10 +678,10 @@ function leerTexto(os){
       });
 </script>
   </div>-->
-     
 
-                   
- <?php
+
+
+            <?php
   include "../../conexionbd.php";
 
 $resultado1 = $conexion->query("select paciente.*, dat_ingreso.especialidad, dat_ingreso.area, dat_ingreso.motivo_atn, dat_ingreso.fecha, dat_ingreso.id_atencion
@@ -660,284 +693,302 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
                     }
                            if($sexo=='M' || $sexo=='Mujer' || $sexo=='MUJER' ){
                         ?>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        
- <div class="thead" style="background-color: #2b2d7f ; color: white; font-size: 19px;">
-     <strong><center>ANTECEDENTES GINECO / OBSTÉTRICOS </center></strong>
- </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
 
- <div class="form-group">
-    <div class="row">
-        <div class="col-sm-2">
-            <strong><label for="hc_men"><button type="button" class="btn btn-success btn-sm" id="play7"><i class="fas fa-play"></button></i> Menarca:</label></strong><br>
-            <input type="text" name="hc_men" id="hc_men" 
-                   value="" onkeypress="return Curp(event);" maxlength="20" 
-                   class="form-control">
-<script type="text/javascript">
-const hc_men = document.getElementById('hc_men');
-const btn8 = document.getElementById('play7');
+                        <div class="thead" style="background-color: #2b2d7f ; color: white; font-size: 19px;">
+                            <strong>
+                                <center>ANTECEDENTES GINECO / OBSTÉTRICOS </center>
+                            </strong>
+                        </div>
 
-btn8.addEventListener('click', () => {
-        leerTexto(hc_men.value);
-});
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <strong><label for="hc_men"><button type="button" class="btn btn-success btn-sm"
+                                                id="play7"><i class="fas fa-play"></button></i>
+                                            Menarca:</label></strong><br>
+                                    <input type="text" name="hc_men" id="hc_men" value=""
+                                        onkeypress="return Curp(event);" maxlength="20" class="form-control">
+                                    <script type="text/javascript">
+                                    const hc_men = document.getElementById('hc_men');
+                                    const btn8 = document.getElementById('play7');
 
-function leerTexto(hc_men){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_men;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        </div>
-        <div class="col-sm">
-            <strong><label for="hc_ritmo"><button type="button" class="btn btn-success btn-sm" id="play8"><i class="fas fa-play"></button></i> Ritmo:</label></strong><br>
-            <input type="text" name="hc_ritmo" id="hc_ritmo" 
-                    value="" onkeypress="return Curp(event);" maxlength="20" 
-                    class="form-control">
-        </div>
-<script type="text/javascript">
-const hc_ritmo = document.getElementById('hc_ritmo');
-const btn9 = document.getElementById('play8');
+                                    btn8.addEventListener('click', () => {
+                                        leerTexto(hc_men.value);
+                                    });
 
-btn9.addEventListener('click', () => {
-        leerTexto(hc_ritmo.value);
-});
+                                    function leerTexto(hc_men) {
+                                        const speech = new SpeechSynthesisUtterance();
+                                        speech.text = hc_men;
+                                        speech.volume = 1;
+                                        speech.rate = 1;
+                                        speech.pitch = 0;
+                                        window.speechSynthesis.speak(speech);
+                                    }
+                                    </script>
+                                </div>
+                                <div class="col-sm">
+                                    <strong><label for="hc_ritmo"><button type="button" class="btn btn-success btn-sm"
+                                                id="play8"><i class="fas fa-play"></button></i>
+                                            Ritmo:</label></strong><br>
+                                    <input type="text" name="hc_ritmo" id="hc_ritmo" value=""
+                                        onkeypress="return Curp(event);" maxlength="20" class="form-control">
+                                </div>
+                                <script type="text/javascript">
+                                const hc_ritmo = document.getElementById('hc_ritmo');
+                                const btn9 = document.getElementById('play8');
 
-function leerTexto(hc_ritmo){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_ritmo;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm">
-            <strong><label for="hc_ges"><button type="button" class="btn btn-success btn-sm" id="play9"><i class="fas fa-play"></button></i> Gestas:</label></strong><br>
-            <input type="text" name="hc_ges" id="hc_ges" 
-                    value="" onkeypress="return SoloNumeros(event);" maxlength="2" 
-                    class="form-control">
-        </div>
-        <script type="text/javascript">
-const hc_ges = document.getElementById('hc_ges');
-const btn10 = document.getElementById('play9');
+                                btn9.addEventListener('click', () => {
+                                    leerTexto(hc_ritmo.value);
+                                });
 
-btn10.addEventListener('click', () => {
-        leerTexto(hc_ges.value);
-});
+                                function leerTexto(hc_ritmo) {
+                                    const speech = new SpeechSynthesisUtterance();
+                                    speech.text = hc_ritmo;
+                                    speech.volume = 1;
+                                    speech.rate = 1;
+                                    speech.pitch = 0;
+                                    window.speechSynthesis.speak(speech);
+                                }
+                                </script>
+                                <div class="col-sm">
+                                    <strong><label for="hc_ges"><button type="button" class="btn btn-success btn-sm"
+                                                id="play9"><i class="fas fa-play"></button></i>
+                                            Gestas:</label></strong><br>
+                                    <input type="text" name="hc_ges" id="hc_ges" value=""
+                                        onkeypress="return SoloNumeros(event);" maxlength="2" class="form-control">
+                                </div>
+                                <script type="text/javascript">
+                                const hc_ges = document.getElementById('hc_ges');
+                                const btn10 = document.getElementById('play9');
 
-function leerTexto(hc_ges){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_ges;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm">
-            <strong><label for="hc_par"><button type="button" class="btn btn-success btn-sm" id="play10"><i class="fas fa-play"></button></i> Partos:</label></strong><br>
-            <input type="text" name="hc_par" id="hc_par"  
-                    value="" onkeypress="return SoloNumeros(event);"nmaxlength="2" 
-                    class="form-control">
-        </div>
-<script type="text/javascript">
-const hc_par = document.getElementById('hc_par');
-const btn11 = document.getElementById('play10');
+                                btn10.addEventListener('click', () => {
+                                    leerTexto(hc_ges.value);
+                                });
 
-btn11.addEventListener('click', () => {
-        leerTexto(hc_par.value);
-});
+                                function leerTexto(hc_ges) {
+                                    const speech = new SpeechSynthesisUtterance();
+                                    speech.text = hc_ges;
+                                    speech.volume = 1;
+                                    speech.rate = 1;
+                                    speech.pitch = 0;
+                                    window.speechSynthesis.speak(speech);
+                                }
+                                </script>
+                                <div class="col-sm">
+                                    <strong><label for="hc_par"><button type="button" class="btn btn-success btn-sm"
+                                                id="play10"><i class="fas fa-play"></button></i>
+                                            Partos:</label></strong><br>
+                                    <input type="text" name="hc_par" id="hc_par" value=""
+                                        onkeypress="return SoloNumeros(event);" nmaxlength="2" class="form-control">
+                                </div>
+                                <script type="text/javascript">
+                                const hc_par = document.getElementById('hc_par');
+                                const btn11 = document.getElementById('play10');
 
-function leerTexto(hc_par){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_par;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm-2">
-            <strong><label for="hc_ces"><button type="button" class="btn btn-success btn-sm" id="play11"><i class="fas fa-play"></button></i> Cesáreas:</label></strong><br>
-            <input type="text" name="hc_ces" id="hc_ces" 
-                    value="" onkeypress="return SoloNumeros(event);" maxlength="2" 
-                    class="form-control"> 
-        </div>
-<script type="text/javascript">
-const hc_ces = document.getElementById('hc_ces');
-const btn12 = document.getElementById('play11');
+                                btn11.addEventListener('click', () => {
+                                    leerTexto(hc_par.value);
+                                });
 
-btn12.addEventListener('click', () => {
-        leerTexto(hc_ces.value);
-});
+                                function leerTexto(hc_par) {
+                                    const speech = new SpeechSynthesisUtterance();
+                                    speech.text = hc_par;
+                                    speech.volume = 1;
+                                    speech.rate = 1;
+                                    speech.pitch = 0;
+                                    window.speechSynthesis.speak(speech);
+                                }
+                                </script>
+                                <div class="col-sm-2">
+                                    <strong><label for="hc_ces"><button type="button" class="btn btn-success btn-sm"
+                                                id="play11"><i class="fas fa-play"></button></i>
+                                            Cesáreas:</label></strong><br>
+                                    <input type="text" name="hc_ces" id="hc_ces" value=""
+                                        onkeypress="return SoloNumeros(event);" maxlength="2" class="form-control">
+                                </div>
+                                <script type="text/javascript">
+                                const hc_ces = document.getElementById('hc_ces');
+                                const btn12 = document.getElementById('play11');
 
-function leerTexto(hc_ces){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_ces;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm-2">
-            <strong><label for="hc_abo"><button type="button" class="btn btn-success btn-sm" id="play12"><i class="fas fa-play"></button></i> Abortos:</label></strong><br>
-            <input type="text" name="hc_abo" id="hc_abo" 
-                    value="" onkeypress="return SoloNumeros(event);" maxlength="2" 
-                    class="form-control">
-        </div>
-<script type="text/javascript">
-const hc_abo = document.getElementById('hc_abo');
-const btn13 = document.getElementById('play12');
+                                btn12.addEventListener('click', () => {
+                                    leerTexto(hc_ces.value);
+                                });
 
-btn13.addEventListener('click', () => {
-        leerTexto(hc_abo.value);
-});
+                                function leerTexto(hc_ces) {
+                                    const speech = new SpeechSynthesisUtterance();
+                                    speech.text = hc_ces;
+                                    speech.volume = 1;
+                                    speech.rate = 1;
+                                    speech.pitch = 0;
+                                    window.speechSynthesis.speak(speech);
+                                }
+                                </script>
+                                <div class="col-sm-2">
+                                    <strong><label for="hc_abo"><button type="button" class="btn btn-success btn-sm"
+                                                id="play12"><i class="fas fa-play"></button></i>
+                                            Abortos:</label></strong><br>
+                                    <input type="text" name="hc_abo" id="hc_abo" value=""
+                                        onkeypress="return SoloNumeros(event);" maxlength="2" class="form-control">
+                                </div>
+                                <script type="text/javascript">
+                                const hc_abo = document.getElementById('hc_abo');
+                                const btn13 = document.getElementById('play12');
 
-function leerTexto(hc_abo){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_abo;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm-2">
-            <strong><label for="hc_fechafur">Fecha última regla:</label></strong><br>
-            <input type="date" name="hc_fechafur" value="" class="form-control"> 
-        </div>
-    </div>    
-  </div>
- </div>
- </div>
-</div>
-     <?php } ?>
+                                btn13.addEventListener('click', () => {
+                                    leerTexto(hc_abo.value);
+                                });
 
-</div>
-
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group">
-        
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-<strong><center>PADECIMIENTO ACTUAL</center></strong>
-</div>
-                                                          
-<div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="padeg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detp"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play13"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" name="hc_pade" id="actual" rows="3" required  onkeypress="return Curp(event);" ></textarea>
-<script type="text/javascript">
-const padeg = document.getElementById('padeg');
-const detp = document.getElementById('detp');
-const actual = document.getElementById('actual');
-
-const btn14 = document.getElementById('play13');
-
-btn14.addEventListener('click', () => {
-        leerTexto(actual.value);
-});
-
-function leerTexto(actual){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= actual;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-
-     let rac = new webkitSpeechRecognition();
-      rac.lang = "es-ES";
-      rac.continuous = true;
-      rac.interimResults = false;
-
-      rac.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        actual.value += frase;
-      }
-
-      padeg.addEventListener('click', () => {
-        rac.start();
-      });
-
-      detp.addEventListener('click', () => {
-        rac.abort();
-      });
-</script>
-
+                                function leerTexto(hc_abo) {
+                                    const speech = new SpeechSynthesisUtterance();
+                                    speech.text = hc_abo;
+                                    speech.volume = 1;
+                                    speech.rate = 1;
+                                    speech.pitch = 0;
+                                    window.speechSynthesis.speak(speech);
+                                }
+                                </script>
+                                <div class="col-sm-2">
+                                    <strong><label for="hc_fechafur">Fecha última regla:</label></strong><br>
+                                    <input type="date" name="hc_fechafur" value="" class="form-control">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
 
-<div class="col-12">
-  <div class="form-group">
-       <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-        <strong><center>INTERROGATORIO POR APARATOS Y SISTEMAS</center></strong>
-   </div>
-   
-   <div class="form-group">
-    <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
-    <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="carg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detc"><i class="fas fa-microphone-slash"></button></i>
-       <button type="button" class="btn btn-success btn-sm" id="play14"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" id="vas" rows="3" name="cardio" required></textarea>
-<script type="text/javascript">
-const carg = document.getElementById('carg');
-const detc = document.getElementById('detc');
-const vas = document.getElementById('vas');
+        </div>
 
-const btn15 = document.getElementById('play14');
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
 
-btn15.addEventListener('click', () => {
-        leerTexto(vas.value);
-});
+                        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                            <strong>
+                                <center>PADECIMIENTO ACTUAL</center>
+                            </strong>
+                        </div>
 
-function leerTexto(vas){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= vas;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="padeg"><i class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detp"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play13"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_pade" id="actual" rows="3" required
+                            onkeypress="return Curp(event);"></textarea>
+                        <script type="text/javascript">
+                        const padeg = document.getElementById('padeg');
+                        const detp = document.getElementById('detp');
+                        const actual = document.getElementById('actual');
 
-     let rvas = new webkitSpeechRecognition();
-      rvas.lang = "es-ES";
-      rvas.continuous = true;
-      rvas.interimResults = false;
+                        const btn14 = document.getElementById('play13');
 
-      rvas.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        vas.value += frase;
-      }
+                        btn14.addEventListener('click', () => {
+                            leerTexto(actual.value);
+                        });
 
-      carg.addEventListener('click', () => {
-        rvas.start();
-      });
+                        function leerTexto(actual) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = actual;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
 
-      detc.addEventListener('click', () => {
-        rvas.abort();
-      });
-</script>
-  </div>
-  
-  
-<!--  <div class="form-group">    <label for="exampleFormControlTextarea1"><strong>Respiratorio:</strong></label>
+                        let rac = new webkitSpeechRecognition();
+                        rac.lang = "es-ES";
+                        rac.continuous = true;
+                        rac.interimResults = false;
+
+                        rac.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            actual.value += frase;
+                        }
+
+                        padeg.addEventListener('click', () => {
+                            rac.start();
+                        });
+
+                        detp.addEventListener('click', () => {
+                            rac.abort();
+                        });
+                        </script>
+
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                            <strong>
+                                <center>INTERROGATORIO POR APARATOS Y SISTEMAS</center>
+                            </strong>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm" id="carg"><i
+                                        class="fas fa-microphone">
+                                </button></i>
+                                <button type="button" class="btn btn-primary btn-sm" id="detc"><i
+                                        class="fas fa-microphone-slash"></button></i>
+                                <button type="button" class="btn btn-success btn-sm" id="play14"><i
+                                        class="fas fa-play"></button></i>
+                            </div>
+                            <textarea class="form-control" id="vas" rows="3" name="cardio" required></textarea>
+                            <script type="text/javascript">
+                            const carg = document.getElementById('carg');
+                            const detc = document.getElementById('detc');
+                            const vas = document.getElementById('vas');
+
+                            const btn15 = document.getElementById('play14');
+
+                            btn15.addEventListener('click', () => {
+                                leerTexto(vas.value);
+                            });
+
+                            function leerTexto(vas) {
+                                const speech = new SpeechSynthesisUtterance();
+                                speech.text = vas;
+                                speech.volume = 1;
+                                speech.rate = 1;
+                                speech.pitch = 0;
+                                window.speechSynthesis.speak(speech);
+                            }
+
+                            let rvas = new webkitSpeechRecognition();
+                            rvas.lang = "es-ES";
+                            rvas.continuous = true;
+                            rvas.interimResults = false;
+
+                            rvas.onresult = (event) => {
+                                const results = event.results;
+                                const frase = results[results.length - 1][0].transcript;
+                                vas.value += frase;
+                            }
+
+                            carg.addEventListener('click', () => {
+                                rvas.start();
+                            });
+
+                            detc.addEventListener('click', () => {
+                                rvas.abort();
+                            });
+                            </script>
+                        </div>
+
+
+                        <!--  <div class="form-group">    <label for="exampleFormControlTextarea1"><strong>Respiratorio:</strong></label>
       <div class="botones">
         <button type="button" class="btn btn-danger btn-sm" id="resg"><i class="fas fa-microphone">
 </button></i>
@@ -1326,66 +1377,71 @@ function leerTexto(txtp){
         rpma.abort();
       });
 </script>
-  </div>   -->                        
+  </div>   -->
 
-  </div>
-</div>
-                          
-<div class="col-12">
-  <div class="form-group">    
-     <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-             <strong><center>EXPLORACIÓN FÍSICA</center></strong>
-     </div>
-    <div class="form-group">
-      <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
-       <div class="botones">
-<button type="button" class="btn btn-danger btn-sm" id="habitusg"><i class="fas fa-microphone">
-</button></i>
-<button type="button" class="btn btn-primary btn-sm" id="detenerext"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play23"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" id="txthe" rows="3" name="habitus" required ></textarea>
-<script type="text/javascript">
-const habitusg = document.getElementById('habitusg');
-const detenerext = document.getElementById('detenerext');
-const txthe = document.getElementById('txthe');
+                    </div>
+                </div>
 
-const btn24 = document.getElementById('play23');
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                            <strong>
+                                <center>EXPLORACIÓN FÍSICA</center>
+                            </strong>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1"><strong>Describir:</strong></label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm" id="habitusg"><i
+                                        class="fas fa-microphone">
+                                </button></i>
+                                <button type="button" class="btn btn-primary btn-sm" id="detenerext"><i
+                                        class="fas fa-microphone-slash"></button></i>
+                                <button type="button" class="btn btn-success btn-sm" id="play23"><i
+                                        class="fas fa-play"></button></i>
+                            </div>
+                            <textarea class="form-control" id="txthe" rows="3" name="habitus" required></textarea>
+                            <script type="text/javascript">
+                            const habitusg = document.getElementById('habitusg');
+                            const detenerext = document.getElementById('detenerext');
+                            const txthe = document.getElementById('txthe');
 
-btn24.addEventListener('click', () => {
-        leerTexto(txthe.value);
-});
+                            const btn24 = document.getElementById('play23');
 
-function leerTexto(txthe){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txthe;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let rhexte = new webkitSpeechRecognition();
-      rhexte.lang = "es-ES";
-      rhexte.continuous = true;
-      rhexte.interimResults = false;
+                            btn24.addEventListener('click', () => {
+                                leerTexto(txthe.value);
+                            });
 
-      rhexte.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txthe.value += frase;
-      }
+                            function leerTexto(txthe) {
+                                const speech = new SpeechSynthesisUtterance();
+                                speech.text = txthe;
+                                speech.volume = 1;
+                                speech.rate = 1;
+                                speech.pitch = 0;
+                                window.speechSynthesis.speak(speech);
+                            }
+                            let rhexte = new webkitSpeechRecognition();
+                            rhexte.lang = "es-ES";
+                            rhexte.continuous = true;
+                            rhexte.interimResults = false;
 
-      habitusg.addEventListener('click', () => {
-        rhexte.start();
-      });
+                            rhexte.onresult = (event) => {
+                                const results = event.results;
+                                const frase = results[results.length - 1][0].transcript;
+                                txthe.value += frase;
+                            }
 
-      detenerext.addEventListener('click', () => {
-        rhexte.abort();
-      });
-</script>
-    </div>  
+                            habitusg.addEventListener('click', () => {
+                                rhexte.start();
+                            });
 
-<!--<div class="form-group">      <label for="exampleFormControlTextarea1"><strong>Cabeza:</strong></label>
+                            detenerext.addEventListener('click', () => {
+                                rhexte.abort();
+                            });
+                            </script>
+                        </div>
+
+                        <!--<div class="form-group">      <label for="exampleFormControlTextarea1"><strong>Cabeza:</strong></label>
       <div class="botones">
         <button type="button" class="btn btn-danger btn-sm" id="cabezagg"><i class="fas fa-microphone">
 </button></i>
@@ -1772,11 +1828,11 @@ function leerTexto(txtpp){
       });
 </script>
     </div>  -->
-  </div>
-</div>
-</div>                     
+                    </div>
+                </div>
+            </div>
 
-<?php 
+            <?php 
 
 include "../../conexionbd.php";
 $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" . $_SESSION ['hospital'].".ORDER by id_sig DESC LIMIT 1") or die($conexion->error);
@@ -1785,10 +1841,10 @@ $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" .
       $atencion=$f5['id_sig'];
     }
     ?>
-    <?php
+            <?php
 if (isset($atencion)) {
                         ?>
-<?php 
+            <?php 
 
 include "../../conexionbd.php";
 $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" . $_SESSION ['hospital'].".ORDER by id_sig DESC LIMIT 1") or die($conexion->error);
@@ -1797,536 +1853,581 @@ $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" .
      
     
     ?>
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-  <center><strong>SIGNOS VITALES</strong></center><p>
-</div>
-                <div class="container"> 
-  <div class="row">
-        
-    <div class="col-sm-2"><center>Presión arterial:</center>
-     <div class="row">
-         <div class="col">
-            <input type="text" class="form-control" value="<?php echo $f5['p_sistol'];?>" disabled>
-         </div> /
-         <div class="col">
-            <input type="text" class="form-control" value="<?php echo $f5['p_diastol'];?>" disabled>
-         </div>
-        
-    </div> mmHG / mmHG
-    </div>
-    <div class="col-sm-2">
-      Frecuencia cardiaca:<input type="text" class="form-control" value="<?php echo $f5['fcard'];?>" disabled> Latidos por minuto
-    </div>
-    <div class="col-sm-3">
-      Frecuencia respiratoria:<input type="text" class="form-control" value="<?php echo $f5['fresp'];?>" disabled> Respiraciones por minuto
-    </div>
-    <div class="col-sm-2">
-     Temperatura:<input type="text" class="form-control" value="<?php echo $f5['temper'];?>" disabled>°C
-    </div>
-    <div class="col-sm-3">
-     Saturación de oxígeno:<input type="text"  class="form-control" value="<?php echo $f5['satoxi'];?>" disabled>%
-    </div>
-  </div>
-</div>
-<?php }
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <center><strong>SIGNOS VITALES</strong></center>
+                <p>
+            </div>
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-sm-2">
+                        <center>Presión arterial:</center>
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" value="<?php echo $f5['p_sistol'];?>" disabled>
+                            </div> /
+                            <div class="col">
+                                <input type="text" class="form-control" value="<?php echo $f5['p_diastol'];?>" disabled>
+                            </div>
+
+                        </div> mmHG / mmHG
+                    </div>
+                    <div class="col-sm-2">
+                        Frecuencia cardiaca:<input type="text" class="form-control" value="<?php echo $f5['fcard'];?>"
+                            disabled> Latidos por minuto
+                    </div>
+                    <div class="col-sm-3">
+                        Frecuencia respiratoria:<input type="text" class="form-control"
+                            value="<?php echo $f5['fresp'];?>" disabled> Respiraciones por minuto
+                    </div>
+                    <div class="col-sm-2">
+                        Temperatura:<input type="text" class="form-control" value="<?php echo $f5['temper'];?>"
+                            disabled>°C
+                    </div>
+                    <div class="col-sm-3">
+                        Saturación de oxígeno:<input type="text" class="form-control"
+                            value="<?php echo $f5['satoxi'];?>" disabled>%
+                    </div>
+                </div>
+            </div>
+            <?php }
 ?>
-<?php 
+            <?php 
 }else{
                         
   ?>
-  <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-  <center><strong>SIGNOS VITALES</strong></center><p>
-</div>
-<div class="container"> 
-  <div class="row">
-    <div class="col-sm-2"><br><center>Presión Arterial:</center>
-     <div class="row">
-       <div class="col"><input type="text" class="form-control" name="p_sistol" ></div> /
-      <div class="col"><input type="text" class="form-control" name="p_diastol"></div>
- 
-    </div>
-    </div>
-    <div class="col-sm-2">
-      Frecuencia Cardiaca:<input type="text" class="form-control" name="fcard">
-    </div>
-    <div class="col-sm-2">
-      Frecuencia Respiratoria:<input type="text" class="form-control" name="fresp">
-    </div>
-    <div class="col-sm-2">
-     <br>Temperatura:<input type="text" class="form-control"  name="temper">
-    </div>
-    <div class="col-sm-2">
-     Saturación de oxígeno:<input type="text"  class="form-control" name="satoxi">
-    </div>
-    
-  </div>
-</div>
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <center><strong>SIGNOS VITALES</strong></center>
+                <p>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-2"><br>
+                        <center>Presión Arterial:</center>
+                        <div class="row">
+                            <div class="col"><input type="text" class="form-control" name="p_sistol"></div> /
+                            <div class="col"><input type="text" class="form-control" name="p_diastol"></div>
 
-<?php } ?>
-<br>
-
-<div class="container"> 
-  <div class="row">
-        <div class="col-sm"><strong><button type="button" class="btn btn-success btn-sm" id="play36"><i class="fas fa-play"></button></i> Peso <br>(kilos):</strong>
-            <input type="cm-number" name="peso"  placeholder="" id="peso" class="form-control" required>
-        </div>
-<script type="text/javascript">
-const peso = document.getElementById('peso');
-const btn38 = document.getElementById('play36');
-
-btn38.addEventListener('click', () => {
-        leerTexto(peso.value);
-});
-
-function leerTexto(peso){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= peso;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-        <div class="col-sm"><strong><button type="button" class="btn btn-success btn-sm" id="play37"><i class="fas fa-play"></button></i> Talla <br> (metros): </strong>
-<input type="cm-number" name="talla"  placeholder="" id="talla" class="form-control"  required>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-const talla = document.getElementById('talla');
-const btn39 = document.getElementById('play37');
-
-btn39.addEventListener('click', () => {
-        leerTexto(talla.value);
-});
-
-function leerTexto(talla){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= talla;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-
-
-<br>
-
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-    <strong><center>RESULTADOS PREVIOS Y ACTUALES</center></strong>
-</div>
-                        
-<div class="row">
-    <div class="col">
-        <div class="form-group">
-            <label for="hc_lab"><strong>Laboratorio:</strong></label>
- <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="laborg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenerrio"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play38"><i class="fas fa-play"></button></i> 
-      </div>
-<textarea class="form-control" name="hc_lab" rows="4" required id="txtbo" onkeypress="return Curp(event);"></textarea>
-<script type="text/javascript">
-const laborg = document.getElementById('laborg');
-const detenerrio = document.getElementById('detenerrio');
-const txtbo = document.getElementById('txtbo');
-
-const btn40 = document.getElementById('play38');
-
-btn40.addEventListener('click', () => {
-        leerTexto(txtbo.value);
-});
-
-function leerTexto(txtbo){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtbo;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let rrato = new webkitSpeechRecognition();
-      rrato.lang = "es-ES";
-      rrato.continuous = true;
-      rrato.interimResults = false;
-
-      rrato.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtbo.value += frase;
-      }
-
-      laborg.addEventListener('click', () => {
-        rrato.start();
-      });
-
-      detenerrio.addEventListener('click', () => {
-        rrato.abort();
-      });
-</script>
-
-</div>
-</div>
-    <div class="col">
-        <div class="form-group">
-            <label for="hc_gabi"><strong> Gabinete:</strong></label>
-            <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="gabineteg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenernete"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play39"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" name="hc_gabi" rows="4" required id="txtine"  onkeypress="return Curp(event);"></textarea>
-<script type="text/javascript">
-const gabineteg = document.getElementById('gabineteg');
-const detenernete = document.getElementById('detenernete');
-const txtine = document.getElementById('txtine');
-
-const btn41 = document.getElementById('play39');
-
-btn41.addEventListener('click', () => {
-        leerTexto(txtine.value);
-});
-
-function leerTexto(txtine){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtine;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let rabi = new webkitSpeechRecognition();
-      rabi.lang = "es-ES";
-      rabi.continuous = true;
-      rabi.interimResults = false;
-
-      rabi.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtine.value += frase;
-      }
-
-      gabineteg.addEventListener('click', () => {
-        rabi.start();
-      });
-
-      detenernete.addEventListener('click', () => {
-        rabi.abort();
-      });
-</script>
-                                </div>
-                            </div>
-<div class="col">
-    <div class="form-group">
-        <label for="hc_res_o"><strong>Otros resultados:</strong></label>
-<div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="otrosrgr"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenerors"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play40"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" name="hc_res_o" rows="4"required id="txtore" onkeypress="return Curp(event);"></textarea>
-<script type="text/javascript">
-const otrosrgr = document.getElementById('otrosrgr');
-const detenerors = document.getElementById('detenerors');
-const txtore = document.getElementById('txtore');
-
-const btn42 = document.getElementById('play40');
-
-btn42.addEventListener('click', () => {
-        leerTexto(txtore.value);
-});
-
-function leerTexto(txtore){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtore;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-
-     let rotres = new webkitSpeechRecognition();
-      rotres.lang = "es-ES";
-      rotres.continuous = true;
-      rotres.interimResults = false;
-
-      rotres.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtore.value += frase;
-      }
-
-      otrosrgr.addEventListener('click', () => {
-        rotres.start();
-      });
-
-      detenerors.addEventListener('click', () => {
-        rotres.abort();
-      });
-</script>
-
-                                </div>
-                            </div>
                         </div>
-
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-     <strong><center>TRATAMIENTO FARMACOLÓGICO</center></strong>
-</div>
-<div class="row">
-    <div class="col">
-       <div class="form-group">
-           <label for="hc_te"><strong>Terapéutica empleada y resultados previos:</strong></label>
-           <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="previosg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenerterp"><i class="fas fa-microphone-slash"></button></i>
-       <button type="button" class="btn btn-success btn-sm" id="play41"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" name="hc_te" rows="7" required id="txtaer" onkeypress="return(event);"></textarea>
-<script type="text/javascript">
-const previosg = document.getElementById('previosg');
-const detenerterp = document.getElementById('detenerterp');
-const txtaer = document.getElementById('txtaer');
-
-const btn43 = document.getElementById('play41');
-
-btn43.addEventListener('click', () => {
-        leerTexto(txtaer.value);
-});
-
-function leerTexto(txtaer){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtaer;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let reraere = new webkitSpeechRecognition();
-      reraere.lang = "es-ES";
-      reraere.continuous = true;
-      reraere.interimResults = false;
-
-      reraere.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtaer.value += frase;
-      }
-
-      previosg.addEventListener('click', () => {
-        reraere.start();
-      });
-
-      detenerterp.addEventListener('click', () => {
-        reraere.abort();
-      });
-</script>
-        </div>
-    </div>
-    <div class="col">
-        <div class="form-group">
-            <label for="hc_ta"><strong>Terapéutica actual:</strong></label>
-<div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="teractualg"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenerual"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play42"><i class="fas fa-play"></button></i>
-      </div>
-<textarea class="form-control" name="hc_ta" rows="7" required id="txtpeual" onkeypress="return(event);"></textarea>
-<script type="text/javascript">
-const teractualg = document.getElementById('teractualg');
-const detenerual = document.getElementById('detenerual');
-const txtpeual = document.getElementById('txtpeual');
-
-const btn44 = document.getElementById('play42');
-
-btn44.addEventListener('click', () => {
-        leerTexto(txtpeual.value);
-});
-
-function leerTexto(txtpeual){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtpeual;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-
-     let reraac = new webkitSpeechRecognition();
-      reraac.lang = "es-ES";
-      reraac.continuous = true;
-      reraac.interimResults = false;
-
-      reraac.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtpeual.value += frase;
-      }
-
-      teractualg.addEventListener('click', () => {
-        reraac.start();
-      });
-
-      detenerual.addEventListener('click', () => {
-        reraac.abort();
-      });
-</script>
-        </div> 
-    </div>
+                    </div>
+                    <div class="col-sm-2">
+                        Frecuencia Cardiaca:<input type="text" class="form-control" name="fcard">
+                    </div>
+                    <div class="col-sm-2">
+                        Frecuencia Respiratoria:<input type="text" class="form-control" name="fresp">
+                    </div>
+                    <div class="col-sm-2">
+                        <br>Temperatura:<input type="text" class="form-control" name="temper">
+                    </div>
+                    <div class="col-sm-2">
+                        Saturación de oxígeno:<input type="text" class="form-control" name="satoxi">
                     </div>
 
-                    
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-<strong><center>DIAGNÓSTICOS</center></strong>
-</div>
-                  <p>      
-                        <div class="row">
-    <div class="col-6">
-        <div class="form-group">
-            <label for="id_cie_10"><strong><button type="button" class="btn btn-success btn-sm" id="play43"><i class="fas fa-play"></button></i> Seleccionar diagnóstico principal:</strong></label>
-            <select name="id_cie_10" class="mibuscador3" data-live-search="true" id="mibuscador3" style="width : 100%; heigth : 100%">
-              <option value="">Seleccionar</option>
-                <?php
+                </div>
+            </div>
+
+            <?php } ?>
+            <br>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm"><strong><button type="button" class="btn btn-success btn-sm" id="play36"><i
+                                    class="fas fa-play"></button></i> Peso <br>(kilos):</strong>
+                        <input type="cm-number" name="peso" placeholder="" id="peso" class="form-control" required>
+                    </div>
+                    <script type="text/javascript">
+                    const peso = document.getElementById('peso');
+                    const btn38 = document.getElementById('play36');
+
+                    btn38.addEventListener('click', () => {
+                        leerTexto(peso.value);
+                    });
+
+                    function leerTexto(peso) {
+                        const speech = new SpeechSynthesisUtterance();
+                        speech.text = peso;
+                        speech.volume = 1;
+                        speech.rate = 1;
+                        speech.pitch = 0;
+                        window.speechSynthesis.speak(speech);
+                    }
+                    </script>
+                    <div class="col-sm"><strong><button type="button" class="btn btn-success btn-sm" id="play37"><i
+                                    class="fas fa-play"></button></i> Talla <br> (metros): </strong>
+                        <input type="cm-number" name="talla" placeholder="" id="talla" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+            const talla = document.getElementById('talla');
+            const btn39 = document.getElementById('play37');
+
+            btn39.addEventListener('click', () => {
+                leerTexto(talla.value);
+            });
+
+            function leerTexto(talla) {
+                const speech = new SpeechSynthesisUtterance();
+                speech.text = talla;
+                speech.volume = 1;
+                speech.rate = 1;
+                speech.pitch = 0;
+                window.speechSynthesis.speak(speech);
+            }
+            </script>
+
+
+            <br>
+
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center>RESULTADOS PREVIOS Y ACTUALES</center>
+                </strong>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="hc_lab"><strong>Laboratorio:</strong></label>
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="laborg"><i
+                                    class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detenerrio"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play38"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_lab" rows="4" required id="txtbo"
+                            onkeypress="return Curp(event);"></textarea>
+                        <script type="text/javascript">
+                        const laborg = document.getElementById('laborg');
+                        const detenerrio = document.getElementById('detenerrio');
+                        const txtbo = document.getElementById('txtbo');
+
+                        const btn40 = document.getElementById('play38');
+
+                        btn40.addEventListener('click', () => {
+                            leerTexto(txtbo.value);
+                        });
+
+                        function leerTexto(txtbo) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = txtbo;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+                        let rrato = new webkitSpeechRecognition();
+                        rrato.lang = "es-ES";
+                        rrato.continuous = true;
+                        rrato.interimResults = false;
+
+                        rrato.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            txtbo.value += frase;
+                        }
+
+                        laborg.addEventListener('click', () => {
+                            rrato.start();
+                        });
+
+                        detenerrio.addEventListener('click', () => {
+                            rrato.abort();
+                        });
+                        </script>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="hc_gabi"><strong> Gabinete:</strong></label>
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="gabineteg"><i
+                                    class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detenernete"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play39"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_gabi" rows="4" required id="txtine"
+                            onkeypress="return Curp(event);"></textarea>
+                        <script type="text/javascript">
+                        const gabineteg = document.getElementById('gabineteg');
+                        const detenernete = document.getElementById('detenernete');
+                        const txtine = document.getElementById('txtine');
+
+                        const btn41 = document.getElementById('play39');
+
+                        btn41.addEventListener('click', () => {
+                            leerTexto(txtine.value);
+                        });
+
+                        function leerTexto(txtine) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = txtine;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+                        let rabi = new webkitSpeechRecognition();
+                        rabi.lang = "es-ES";
+                        rabi.continuous = true;
+                        rabi.interimResults = false;
+
+                        rabi.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            txtine.value += frase;
+                        }
+
+                        gabineteg.addEventListener('click', () => {
+                            rabi.start();
+                        });
+
+                        detenernete.addEventListener('click', () => {
+                            rabi.abort();
+                        });
+                        </script>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="hc_res_o"><strong>Otros resultados:</strong></label>
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="otrosrgr"><i
+                                    class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detenerors"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play40"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_res_o" rows="4" required id="txtore"
+                            onkeypress="return Curp(event);"></textarea>
+                        <script type="text/javascript">
+                        const otrosrgr = document.getElementById('otrosrgr');
+                        const detenerors = document.getElementById('detenerors');
+                        const txtore = document.getElementById('txtore');
+
+                        const btn42 = document.getElementById('play40');
+
+                        btn42.addEventListener('click', () => {
+                            leerTexto(txtore.value);
+                        });
+
+                        function leerTexto(txtore) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = txtore;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+
+                        let rotres = new webkitSpeechRecognition();
+                        rotres.lang = "es-ES";
+                        rotres.continuous = true;
+                        rotres.interimResults = false;
+
+                        rotres.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            txtore.value += frase;
+                        }
+
+                        otrosrgr.addEventListener('click', () => {
+                            rotres.start();
+                        });
+
+                        detenerors.addEventListener('click', () => {
+                            rotres.abort();
+                        });
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center>TRATAMIENTO FARMACOLÓGICO</center>
+                </strong>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="hc_te"><strong>Terapéutica empleada y resultados previos:</strong></label>
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="previosg"><i
+                                    class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detenerterp"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play41"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_te" rows="7" required id="txtaer"
+                            onkeypress="return(event);"></textarea>
+                        <script type="text/javascript">
+                        const previosg = document.getElementById('previosg');
+                        const detenerterp = document.getElementById('detenerterp');
+                        const txtaer = document.getElementById('txtaer');
+
+                        const btn43 = document.getElementById('play41');
+
+                        btn43.addEventListener('click', () => {
+                            leerTexto(txtaer.value);
+                        });
+
+                        function leerTexto(txtaer) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = txtaer;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+                        let reraere = new webkitSpeechRecognition();
+                        reraere.lang = "es-ES";
+                        reraere.continuous = true;
+                        reraere.interimResults = false;
+
+                        reraere.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            txtaer.value += frase;
+                        }
+
+                        previosg.addEventListener('click', () => {
+                            reraere.start();
+                        });
+
+                        detenerterp.addEventListener('click', () => {
+                            reraere.abort();
+                        });
+                        </script>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="hc_ta"><strong>Terapéutica actual:</strong></label>
+                        <div class="botones">
+                            <button type="button" class="btn btn-danger btn-sm" id="teractualg"><i
+                                    class="fas fa-microphone">
+                            </button></i>
+                            <button type="button" class="btn btn-primary btn-sm" id="detenerual"><i
+                                    class="fas fa-microphone-slash"></button></i>
+                            <button type="button" class="btn btn-success btn-sm" id="play42"><i
+                                    class="fas fa-play"></button></i>
+                        </div>
+                        <textarea class="form-control" name="hc_ta" rows="7" required id="txtpeual"
+                            onkeypress="return(event);"></textarea>
+                        <script type="text/javascript">
+                        const teractualg = document.getElementById('teractualg');
+                        const detenerual = document.getElementById('detenerual');
+                        const txtpeual = document.getElementById('txtpeual');
+
+                        const btn44 = document.getElementById('play42');
+
+                        btn44.addEventListener('click', () => {
+                            leerTexto(txtpeual.value);
+                        });
+
+                        function leerTexto(txtpeual) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = txtpeual;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+
+                        let reraac = new webkitSpeechRecognition();
+                        reraac.lang = "es-ES";
+                        reraac.continuous = true;
+                        reraac.interimResults = false;
+
+                        reraac.onresult = (event) => {
+                            const results = event.results;
+                            const frase = results[results.length - 1][0].transcript;
+                            txtpeual.value += frase;
+                        }
+
+                        teractualg.addEventListener('click', () => {
+                            reraac.start();
+                        });
+
+                        detenerual.addEventListener('click', () => {
+                            reraac.abort();
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                <strong>
+                    <center>DIAGNÓSTICOS</center>
+                </strong>
+            </div>
+            <p>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="id_cie_10"><strong><button type="button" class="btn btn-success btn-sm"
+                                    id="play43"><i class="fas fa-play"></button></i> Seleccionar diagnóstico
+                                principal:</strong></label>
+                        <select name="id_cie_10" class="mibuscador3" data-live-search="true" id="mibuscador3"
+                            style="width : 100%; heigth : 100%">
+                            <option value="">Seleccionar</option>
+                            <?php
                 include "../../conexionbd.php";
                 $sql_diag="SELECT * FROM cat_diag order by id_cie10 ";
                 $result_diag=$conexion->query($sql_diag);
                 while($row=$result_diag->fetch_assoc()){
                 echo "<option value='" . $row['diagnostico'] . "'>" . $row['id_cie10'] . "- " .$row['diagnostico']."</option>"; 
                 } ?>
-               
-               
-            </select>
-        </div>
-    </div>
-<script type="text/javascript">
-const mibuscador3 = document.getElementById('mibuscador3');
-const btn45 = document.getElementById('play43');
 
-btn45.addEventListener('click', () => {
-        leerTexto(mibuscador3.value);
-});
 
-function leerTexto(mibuscador3){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= mibuscador3;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
+                        </select>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                const mibuscador3 = document.getElementById('mibuscador3');
+                const btn45 = document.getElementById('play43');
 
-</script>
-    <div class="col-6">
-<strong>Describir: </strong><button type="button" class="btn btn-danger btn-sm" id="describirdg"><i class="fas fa-microphone"></button></i>
-<button type="button" class="btn btn-primary btn-sm" id="stopdescri"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play44"><i class="fas fa-play"></button></i>
-<textarea class="form-control" name="des_diag" id="desgiag"></textarea>
-<script type="text/javascript">
-const describirdg = document.getElementById('describirdg');
-const stopdescri = document.getElementById('stopdescri');
-const desgiag = document.getElementById('desgiag');
+                btn45.addEventListener('click', () => {
+                    leerTexto(mibuscador3.value);
+                });
 
-const btn46 = document.getElementById('play44');
+                function leerTexto(mibuscador3) {
+                    const speech = new SpeechSynthesisUtterance();
+                    speech.text = mibuscador3;
+                    speech.volume = 1;
+                    speech.rate = 1;
+                    speech.pitch = 0;
+                    window.speechSynthesis.speak(speech);
+                }
+                </script>
+                <div class="col-6">
+                    <strong>Describir: </strong><button type="button" class="btn btn-danger btn-sm" id="describirdg"><i
+                            class="fas fa-microphone"></button></i>
+                    <button type="button" class="btn btn-primary btn-sm" id="stopdescri"><i
+                            class="fas fa-microphone-slash"></button></i>
+                    <button type="button" class="btn btn-success btn-sm" id="play44"><i
+                            class="fas fa-play"></button></i>
+                    <textarea class="form-control" name="des_diag" id="desgiag"></textarea>
+                    <script type="text/javascript">
+                    const describirdg = document.getElementById('describirdg');
+                    const stopdescri = document.getElementById('stopdescri');
+                    const desgiag = document.getElementById('desgiag');
 
-btn46.addEventListener('click', () => {
-        leerTexto(desgiag.value);
-});
+                    const btn46 = document.getElementById('play44');
 
-function leerTexto(desgiag){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= desgiag;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-     let rdesdi = new webkitSpeechRecognition();
-      rdesdi.lang = "es-ES";
-      rdesdi.continuous = true;
-      rdesdi.interimResults = false;
+                    btn46.addEventListener('click', () => {
+                        leerTexto(desgiag.value);
+                    });
 
-      rdesdi.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        desgiag.value += frase;
-      }
+                    function leerTexto(desgiag) {
+                        const speech = new SpeechSynthesisUtterance();
+                        speech.text = desgiag;
+                        speech.volume = 1;
+                        speech.rate = 1;
+                        speech.pitch = 0;
+                        window.speechSynthesis.speak(speech);
+                    }
+                    let rdesdi = new webkitSpeechRecognition();
+                    rdesdi.lang = "es-ES";
+                    rdesdi.continuous = true;
+                    rdesdi.interimResults = false;
 
-      describirdg.addEventListener('click', () => {
-        rdesdi.start();
-      });
+                    rdesdi.onresult = (event) => {
+                        const results = event.results;
+                        const frase = results[results.length - 1][0].transcript;
+                        desgiag.value += frase;
+                    }
 
-      stopdescri.addEventListener('click', () => {
-        rdesdi.abort();
-      });
-</script>
-</div>
-</div>
+                    describirdg.addEventListener('click', () => {
+                        rdesdi.start();
+                    });
 
-<div class="form-group">
-    <label for="exampleFormControlTextarea1"><strong>Diagnósticos previos:</strong></label>
-    <div class="botones">
-        <button type="button" class="btn btn-danger btn-sm" id="diagpgra"><i class="fas fa-microphone">
-</button></i>
-       <button type="button" class="btn btn-primary btn-sm" id="detenervios"><i class="fas fa-microphone-slash"></button></i>
-<button type="button" class="btn btn-success btn-sm" id="play45"><i class="fas fa-play"></button></i>
-      </div>
-    <textarea class="form-control" id="txtostica" rows="3" name="diag_prev" required ></textarea>
-    <script type="text/javascript">
-const diagpgra = document.getElementById('diagpgra');
-const detenervios = document.getElementById('detenervios');
-const txtostica = document.getElementById('txtostica');
+                    stopdescri.addEventListener('click', () => {
+                        rdesdi.abort();
+                    });
+                    </script>
+                </div>
+            </div>
 
-const btn47 = document.getElementById('play45');
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1"><strong>Diagnósticos previos:</strong></label>
+                <div class="botones">
+                    <button type="button" class="btn btn-danger btn-sm" id="diagpgra"><i class="fas fa-microphone">
+                    </button></i>
+                    <button type="button" class="btn btn-primary btn-sm" id="detenervios"><i
+                            class="fas fa-microphone-slash"></button></i>
+                    <button type="button" class="btn btn-success btn-sm" id="play45"><i
+                            class="fas fa-play"></button></i>
+                </div>
+                <textarea class="form-control" id="txtostica" rows="3" name="diag_prev" required></textarea>
+                <script type="text/javascript">
+                const diagpgra = document.getElementById('diagpgra');
+                const detenervios = document.getElementById('detenervios');
+                const txtostica = document.getElementById('txtostica');
 
-btn47.addEventListener('click', () => {
-        leerTexto(txtostica.value);
-});
+                const btn47 = document.getElementById('play45');
 
-function leerTexto(txtostica){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= txtostica;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
+                btn47.addEventListener('click', () => {
+                    leerTexto(txtostica.value);
+                });
 
-     let fre = new webkitSpeechRecognition();
-      fre.lang = "es-ES";
-      fre.continuous = true;
-      fre.interimResults = false;
+                function leerTexto(txtostica) {
+                    const speech = new SpeechSynthesisUtterance();
+                    speech.text = txtostica;
+                    speech.volume = 1;
+                    speech.rate = 1;
+                    speech.pitch = 0;
+                    window.speechSynthesis.speak(speech);
+                }
 
-      fre.onresult = (event) => {
-        const results = event.results;
-        const frase = results[results.length -1][0].transcript;
-        txtostica.value += frase;
-      }
+                let fre = new webkitSpeechRecognition();
+                fre.lang = "es-ES";
+                fre.continuous = true;
+                fre.interimResults = false;
 
-      diagpgra.addEventListener('click', () => {
-        fre.start();
-      });
+                fre.onresult = (event) => {
+                    const results = event.results;
+                    const frase = results[results.length - 1][0].transcript;
+                    txtostica.value += frase;
+                }
 
-      detenervios.addEventListener('click', () => {
-        fre.abort();
-      });
-</script>
-</div> 
-     
-<div class="row">
-<div class=" col-sm-9">
-<strong><button type="button" class="btn btn-success btn-sm" id="play46"><i class="fas fa-play"></button></i> Guía de práctica clínica:</strong>
+                diagpgra.addEventListener('click', () => {
+                    fre.start();
+                });
 
-<div class="form-group">
+                detenervios.addEventListener('click', () => {
+                    fre.abort();
+                });
+                </script>
+            </div>
 
-     <div class="form-group">
-        <select name="guia" class="form-control" data-live-search="true" id="mibuscador11" onchange="ShowSelected();" style="width : 100%; heigth : 100%">
-            <option value="">Seleccionar guía clínica</option>
-<?php
+            <div class="row">
+                <div class=" col-sm-9">
+                    <strong><button type="button" class="btn btn-success btn-sm" id="play46"><i
+                                class="fas fa-play"></button></i> Guía de práctica clínica:</strong>
+
+                    <div class="form-group">
+
+                        <div class="form-group">
+                            <select name="guia" class="form-control" data-live-search="true" id="mibuscador11"
+                                onchange="ShowSelected();" style="width : 100%; heigth : 100%">
+                                <option value="">Seleccionar guía clínica</option>
+                                <?php
 include "../../conexionbd.php";
 $sql_diag="SELECT * FROM gpclinica ORDER by id_gpc";
 $result_diag=$conexion->query($sql_diag);
@@ -2334,159 +2435,179 @@ while($row=$result_diag->fetch_assoc()){
 
 echo "<option value='" . $row['gpc'] . "'>" . $row['cve_gpc'] . "- " .$row['gpc']."</option>"; 
 }
- ?></select>
-  </div>
-<script type="text/javascript">
-const mibuscador11 = document.getElementById('mibuscador11');
-const btn48 = document.getElementById('play46');
+ ?>
+                            </select>
+                        </div>
+                        <script type="text/javascript">
+                        const mibuscador11 = document.getElementById('mibuscador11');
+                        const btn48 = document.getElementById('play46');
 
-btn48.addEventListener('click', () => {
-        leerTexto(mibuscador11.value);
-});
+                        btn48.addEventListener('click', () => {
+                            leerTexto(mibuscador11.value);
+                        });
 
-function leerTexto(mibuscador11){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= mibuscador11;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-</div>
-</div>
-<div class="col-sm-3">
-<p></p>
-<button type="button" class="btn btn bg-navy" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>Links de guía de práctica clínica</strong></button>
+                        function leerTexto(mibuscador11) {
+                            const speech = new SpeechSynthesisUtterance();
+                            speech.text = mibuscador11;
+                            speech.volume = 1;
+                            speech.rate = 1;
+                            speech.pitch = 0;
+                            window.speechSynthesis.speak(speech);
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <p></p>
+                    <button type="button" class="btn btn bg-navy" data-toggle="modal"
+                        data-target=".bd-example-modal-lg"><strong>Links de guía de práctica clínica</strong></button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header content-center">
-        <h4><b>Guía de práctica clínica</b></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-       <div class="modal-body">
-         <div class="form-group">
-                <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="BUSCAR...">
-            </div>
-     <div class="table-responsive">
+                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+                        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header content-center">
+                                    <h4><b>Guía de práctica clínica</b></h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control pull-right" style="width:20%" id="search"
+                                            placeholder="BUSCAR...">
+                                    </div>
+                                    <div class="table-responsive">
 
-            <table class="table table-bordered table-striped" id="mytable">
-                <thead class="thead bg-navy">
-                    <th scope="col"><center>Clave</center></th>
-                    <th scope="col"><center>Guía & Link</center></th>
-                </tr>
-                </thead>
-                <tbody>
-<?php
+                                        <table class="table table-bordered table-striped" id="mytable">
+                                            <thead class="thead bg-navy">
+                                                <th scope="col">
+                                                    <center>Clave</center>
+                                                </th>
+                                                <th scope="col">
+                                                    <center>Guía & Link</center>
+                                                </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
 $sql_diag="SELECT * FROM gpclinica ORDER by id_gpc";
 $result_diag=$conexion->query($sql_diag);
 while($row=$result_diag->fetch_assoc()){            
     ?>
-                    <tr> 
-<td class="fondo"><strong><?php echo $row['cve_gpc'];?></strong></td>
-<td class="fondo"><a href="<?php echo $row['link']?>" target=”_blank”><strong><?php echo $row['gpc'];?></strong></td></a>   
-                    </tr>
-                <?php
+                                                <tr>
+                                                    <td class="fondo"><strong><?php echo $row['cve_gpc'];?></strong>
+                                                    </td>
+                                                    <td class="fondo"><a href="<?php echo $row['link']?>"
+                                                            target=”_blank”><strong><?php echo $row['gpc'];?></strong>
+                                                    </td></a>
+                                                </tr>
+                                                <?php
                 }
                 ?>
-                </tbody>
-              
-            </table>
-            </div>
-  </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Regresar</button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
-<strong><center>PRONÓSTICOS</center></strong>
-</div>
-                        
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="hc_vid"><strong><button type="button" class="btn btn-success btn-sm" id="play47"><i class="fas fa-play"></button></i> Pronóstico para la vida:</strong></label>
-                                    <select name="hc_vid" id="hc_vid3" class="form-control" style="width : 100%; heigth : 100%">
-                                       
-                        <option value="">Seleccionar</option>
-                        <option value="Bueno">Bueno</option>
-                        <option value="Malo">Malo</option>
-                        <option value="Reservado a evolución">Reservado a evolución</option>
+                                            </tbody>
 
-                    
-                                    </select>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Regresar</button>
                                 </div>
                             </div>
-<script type="text/javascript">
-const hc_vid3 = document.getElementById('hc_vid3');
-const btn49 = document.getElementById('play47');
-
-btn49.addEventListener('click', () => {
-        leerTexto(hc_vid3.value);
-});
-
-function leerTexto(hc_vid3){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_vid3;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="hc_def"><strong><button type="button" class="btn btn-success btn-sm" id="play48"><i class="fas fa-play"></button></i> Pronóstico para la función:</strong></label>
-                                    <select name="hc_def" id="hc_def5" class="form-control" style="width : 100%; heigth : 100%">
-                        <option value="">Seleccionar</option>
-                        <option value="Bueno">Bueno</option>
-                        <option value="Malo">Malo</option>
-                        <option value="Reservado a evolución">Reservado a evolución</option>
-
-                                    </select>
-                                </div>
-                            </div>
-                            
                         </div>
                     </div>
-<script type="text/javascript">
-const hc_def5 = document.getElementById('hc_def5');
-const btn50 = document.getElementById('play48');
+                </div>
+                <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 19px;">
+                    <strong>
+                        <center>PRONÓSTICOS</center>
+                    </strong>
+                </div>
 
-btn50.addEventListener('click', () => {
-        leerTexto(hc_def5.value);
-});
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="hc_vid"><strong><button type="button" class="btn btn-success btn-sm"
+                                        id="play47"><i class="fas fa-play"></button></i> Pronóstico para la
+                                    vida:</strong></label>
+                            <select name="hc_vid" id="hc_vid3" class="form-control" style="width : 100%; heigth : 100%">
 
-function leerTexto(hc_def5){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= hc_def5;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-                
-                 
+                                <option value="">Seleccionar</option>
+                                <option value="Bueno">Bueno</option>
+                                <option value="Malo">Malo</option>
+                                <option value="Reservado a evolución">Reservado a evolución</option>
 
-<div class="container">
-  
-                    
-                    <center><hr>
-                   <!-- <input type="submit" value="FIRMAR" class="btn btn-success"  id="btn_submit" onclick="javascript:document.getElementById('btn_submit').style.visibility = 'hidden';"> -->
-                     <button type="submit" class="btn btn-primary"><font size="3">Firmar</font></button>
+
+                            </select>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                    const hc_vid3 = document.getElementById('hc_vid3');
+                    const btn49 = document.getElementById('play47');
+
+                    btn49.addEventListener('click', () => {
+                        leerTexto(hc_vid3.value);
+                    });
+
+                    function leerTexto(hc_vid3) {
+                        const speech = new SpeechSynthesisUtterance();
+                        speech.text = hc_vid3;
+                        speech.volume = 1;
+                        speech.rate = 1;
+                        speech.pitch = 0;
+                        window.speechSynthesis.speak(speech);
+                    }
+                    </script>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="hc_def"><strong><button type="button" class="btn btn-success btn-sm"
+                                        id="play48"><i class="fas fa-play"></button></i> Pronóstico para la
+                                    función:</strong></label>
+                            <select name="hc_def" id="hc_def5" class="form-control" style="width : 100%; heigth : 100%">
+                                <option value="">Seleccionar</option>
+                                <option value="Bueno">Bueno</option>
+                                <option value="Malo">Malo</option>
+                                <option value="Reservado a evolución">Reservado a evolución</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <script type="text/javascript">
+            const hc_def5 = document.getElementById('hc_def5');
+            const btn50 = document.getElementById('play48');
+
+            btn50.addEventListener('click', () => {
+                leerTexto(hc_def5.value);
+            });
+
+            function leerTexto(hc_def5) {
+                const speech = new SpeechSynthesisUtterance();
+                speech.text = hc_def5;
+                speech.volume = 1;
+                speech.rate = 1;
+                speech.pitch = 0;
+                window.speechSynthesis.speak(speech);
+            }
+            </script>
+
+
+
+            <div class="container">
+
+
+                <center>
+                    <hr>
+                    <!-- <input type="submit" value="FIRMAR" class="btn btn-success"  id="btn_submit" onclick="javascript:document.getElementById('btn_submit').style.visibility = 'hidden';"> -->
+                    <button type="submit" class="btn btn-primary">
+                        <font size="3">Firmar</font>
+                    </button>
                     <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
-                    </center>
-                </div><br>
-           
-        </form>
+                </center>
+            </div><br>
+
+    </form>
 </div>
 </div>
 </div>
@@ -2500,43 +2621,43 @@ function leerTexto(hc_def5){
 <!-- AdminLTE App -->
 <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/main.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
-            $('#mibuscador').select2();
-    });
+$(document).ready(function() {
+    $('#mibuscador').select2();
+});
 </script>
 <script type="text/javascript">
-       enviando = false; //Obligaremos a entrar el if en el primer submit
-    
-    function checkSubmit() {
-        if (!enviando) {
-            enviando= true;
-            return true;
-        } else {
-            //Si llega hasta aca significa que pulsaron 2 veces el boton submit
-            alert("El formulario ya se esta enviando");
-            return false;
-        }
+enviando = false; //Obligaremos a entrar el if en el primer submit
+
+function checkSubmit() {
+    if (!enviando) {
+        enviando = true;
+        return true;
+    } else {
+        //Si llega hasta aca significa que pulsaron 2 veces el boton submit
+        alert("El formulario ya se esta enviando");
+        return false;
     }
+}
 </script>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#mibuscador').select2();
-    });
-      jQuery(document).ready(function($){
+$(document).ready(function() {
+    $('#mibuscador').select2();
+});
+jQuery(document).ready(function($) {
     $(document).ready(function() {
         $('.mibuscador3').select2();
     });
 });
-     $(document).ready(function () {
-        $('#mibuscador11').select2();
-    }); 
+$(document).ready(function() {
+    $('#mibuscador11').select2();
+});
 </script>
 
 </body>
