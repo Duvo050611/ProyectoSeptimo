@@ -595,8 +595,13 @@ while($f = mysqli_fetch_array($resultado)){
                  
                 <li><a href="select_pac_hosp.php">
                      <i class="fa fa-plus-square" aria-hidden="true"></i> NOTA DE DEFUNCIÓN</a></li>
-                <li><a href="select_pac_hosp.php">
-                     <i class="fa fa-files-o" aria-hidden="true"></i> RESUMEN CLÍNICO</a></li>
+<li>
+  <a href="gestion_medica/notas_medicas/tratamiento.php">
+    <i class="fa fa-files-o" aria-hidden="true"></i> RESUMEN CLÍNICO
+  </a>
+</li>
+
+
           <!-- NOTAS QUIRÚRGICAS-->
                 <li><center><strong>QUIRÚRGICAS</strong></center></li>   
                 <li><a href="select_pac_hosp.php">

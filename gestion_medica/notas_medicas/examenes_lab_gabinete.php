@@ -70,6 +70,15 @@ include ("../header_medico.php");
         padding: 10px;
         text-align: center;
     }
+
+    .accordion .card {
+        border: none;
+    }
+
+    .accordion .card-header {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
     </style>
 </head>
 

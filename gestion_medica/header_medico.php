@@ -4,8 +4,13 @@ include "../../conexionbd.php";
 // Solo modificar parámetros y iniciar sesión si no está activa
 if (session_status() === PHP_SESSION_NONE) {
     $lifetime = 100000;
+
+// Solo modificar parámetros y iniciar sesión si no está activa
+if (session_status() === PHP_SESSION_NONE) {
+    $lifetime = 100000;
     session_set_cookie_params($lifetime);
     session_start();
+}
 }
 
 // Verificar si está logueado
@@ -408,7 +413,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                     <?php
           if (isset($_SESSION['hospital'])) {
           ?>
-<<<<<<< HEAD
             <li class="treeview">
                 <a href="../historia_clinica/h_clinica.php">
                    <i class="fa fa-folder" aria-hidden="true"></i> <span><font size ="2">HISTORIA CLÍNICA</font></span>
@@ -481,22 +485,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                         <li><a href="../nota_anestesica/nota_unidad_cuidados.php"><i class="fa fa-bed"></i>
                         <font size ="2" color="black" >HOJA ANESTESICA <br> COMPLETA</font></a></li>
                         
-=======
-                    <li class="treeview">
-                        <a href="../historia_clinica/h_clinica.php">
-                            <i class="fa fa-folder" aria-hidden="true"></i> <span>
-                                <font size="2">HISTORIA CLÍNICA</font>
-                            </span>
-                        </a>
-                    </li>
-
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-stethoscope"></i> <span>NOTAS MÉDICAS</span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
->>>>>>> 7f4fcea14ba42ce334ab0602f262a7393b23c64c
 
                             <li>
                                 <a href="/gestion_medica/notas_medicas/estudios.php">
@@ -616,7 +604,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                 <i class="fa fa-angle-left pull-right"></i>
               </a>        
           </li>-->
-<<<<<<< HEAD
           
           <?php if($usuario['id_rol'] == 2 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 5){ ?>
           <li class="treeview">
@@ -625,16 +612,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
               </a>        
           </li>
         <?php } ?>
-=======
-                    <?php if($usuario['id_rol'] == 2 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 5){ ?>
-                    <li class="treeview">
-                        <a href="../selectpac_sincama/select_pac.php">
-                            <i class="fa fa-print" aria-hidden="true"></i>
-                            <font size="2"><span>SELECCIONAR <br>OTROS PACIENTES</span></font>
-                        </a>
-                    </li>
-                    <?php } ?>
->>>>>>> 7f4fcea14ba42ce334ab0602f262a7393b23c64c
 
 
                     <?php
