@@ -365,54 +365,54 @@ while($f = mysqli_fetch_array($resultado)){
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-               
-               
-                <li><a href="../gestion_medica/hospitalizacion/nota_ingreso.php">
-                   <i class="fa fa-bed" aria-hidden="true"></i> NOTA DE INGRESO</a></li>
-                <li><a href="../gestion_medica/hospitalizacion/vista_nota_evolucion.php">
-                   <i class="fa fa-stethoscope" aria-hidden="true"></i> NOTA DE EVOLUCIÓN</a></li>
+          
+                <li><a href="../gestion_medica/notas_medicas/diagnostico.php">
+                   <i class="fa fa-bed" aria-hidden="true"></i> DIAGNÓSTICO</a></li>
+
+                <li><a href="../gestion_medica/notas_medicas/tratamiento.php">
+                   <i class="fa fa-stethoscope" aria-hidden="true"></i> TRATAMIENTO</a></li>
                 
-                <li><a href="../gestion_medica/hospitalizacion/nota_interconsulta.php">
-                   <i class="fa fa-hospital-o" aria-hidden="true"></i> NOTA INTERCONSULTA</a></li>
-                <li><a href="../gestion_medica/hospitalizacion/nota_translado.php">
-                   <i class="fa fa-ambulance" aria-hidden="true"></i> NOTA REFERENCIA/TRASLADO</a></li>
-                <li><a href="../gestion_medica/hospitalizacion/nota_neonatologica.php">
-                   <i class="fa fa-child"></i> NOTA NEONATOLÓGICA</a></li>
-                <li><a href="../gestion_medica/hospitalizacion/partograma.php">
-                   <i class="fa fa-female"></i> NOTA PARTOGRAMA</a></li>
+                <li><a href="../gestion_medica/notas_medicas/tratamiento_laser.php">
+                   <i class="fa fa-hospital-o" aria-hidden="true"></i> TRATAMIENTO LASER</a></li>
+                <li><a href="../gestion_medica/notas_medicas/examenes_lab_gabinete.php">
+                   <i class="fa fa-ambulance" aria-hidden="true"></i> EXÁMENES DE LABORATORIO Y GABINETE</a></li>
+                <li><a href="../gestion_medica/notas_medicas/recomendaciones.php">
+                   <i class="fa fa-child"></i> RECOMENDACIONES</a></li>
+                <!-- <li><a href="../gestion_medica/hospitalizacion/partograma.php">
+                   <i class="fa fa-female"></i> NOTA PARTOGRAMA</a></li> -->
 
                <!-- <li><a href="../gestion_medica/hospitalizacion/nota_posparto.php"> 
                    <i class="fa fa-female"></i> NOTA POST-PARTO</a></li>-->
                
                 <!--<li><a href="../gestion_medica/hospitalizacion/vista_de_transfuciones.php">
                    <i class="fa fa-angle-double-right" aria-hidden="true"></i> NOTA DE TRANSFUSIÓN </a></li>-->
-                <li><a href="../gestion_medica/hospitalizacion/nota_egreso.php">
+                <!-- <li><a href="../gestion_medica/hospitalizacion/nota_egreso.php">
                    <i class="fa fa-street-view" aria-hidden="true"></i> NOTA DE EGRESO</a></li>
                 
                 <li><a href="../gestion_medica/hospitalizacion/nota_defuncion.php">
                    <i class="fa fa-plus-square" aria-hidden="true"></i> NOTA DE DEFUNCIÓN</a></li>
                 <li><a href="../gestion_medica/hospitalizacion/resumen_clinico.php">
-                   <i class="fa fa-files-o" aria-hidden="true"></i>RESUMEN CLÍNICO</a></li>
+                   <i class="fa fa-files-o" aria-hidden="true"></i>RESUMEN CLÍNICO</a></li> -->
         <!-- NOTAS QUIRÚRGICAS-->
-                <li><center><strong>QUIRÚRGICAS</strong></center></li>
+                <!-- <li><center><strong>QUIRÚRGICAS</strong></center></li>
                 
                        <li><a href="../gestion_medica/quirurgico/hoja_progquir.php">
                    <i class="fa fa-bed" aria-hidden="true"></i>HOJA DE PROGRAMACIÓN<br> QUIRÚRGICA </a></li>
                 
                 <li><a href="../gestion_medica/quirurgico/nota_preoperatoria.php">
-                   <i class="fa fa-bed" aria-hidden="true"></i> PROGRAMACIÓN QUIRÚRGICA </a></li>
+                   <i class="fa fa-bed" aria-hidden="true"></i> PROGRAMACIÓN QUIRÚRGICA </a></li> -->
                <!-- <li><a href="../gestion_medica/quirurgico/nota_cirugia_segura.php">
                    <i class="fa fa-medkit" aria-hidden="true"></i> CIRUGÍA SEGURA</a></li>-->
-                <li><a href="../gestion_medica/quirurgico/nota_intervencion_quirurgica.php">
+                <!-- <li><a href="../gestion_medica/quirurgico/nota_intervencion_quirurgica.php">
                    <i class="fa fa-user-md" aria-hidden="true"></i> DESCRIPCIÓN INTERVENCIÓN <br> QUIRÚRGICA</a></li>
-                
+                 -->
         <!-- NOTAS ANESTÉSICAS-->
                 
 
-                     
+                    <!--  
                        <li><a href="../gestion_medica/nota_anestesica/nota_unidad_cuidados.php"><i class="fa fa-bed"></i>HOJA ANESTESICA <br> COMPLETA</a></li>
 
-               </li>
+               </li> -->
               </ul>
             </li>
 
@@ -484,6 +484,13 @@ while($f = mysqli_fetch_array($resultado)){
             <li class="treeview">
                 <a href="select_pac_hosp.php">
                    <i class="fa fa-folder" aria-hidden="true"></i> <span>HISTORIA CLÍNICA</span>
+                </a>
+
+            </li>
+
+            <li class="treeview">
+                <a href="select_pac_hosp.php">
+                   <i class="fa fa-folder" aria-hidden="true"></i> <span>ESTUDIOS</span>
                 </a>
 
             </li>
