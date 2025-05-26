@@ -187,6 +187,28 @@ include("../header_medico.php");
                     }
                     $stmt->close();
 
+                    // Fetch the most recent doctor's ID from receta or related table
+                    $sql_doc = "SELECT id_usua FROM receta WHERE id_atencion = ? ORDER BY fecha_r_hosp DESC LIMIT 1";
+                    $stmt = $conexion->prepare($sql_doc);
+                    $stmt->bind_param("i", $id_atencion);
+                    $stmt->execute();
+                    $result_doc = $stmt->get_result();
+                    $id_usua = $result_doc->fetch_assoc()['id_usua'] ?? null;
+                    $stmt->close();
+
+                    if ($id_usua) {
+                        $sql_med = "SELECT pre, nombre, papell, sapell FROM reg_usuarios WHERE id_usua = ?";
+                        $stmt = $conexion->prepare($sql_med);
+                        $stmt->bind_param("i", $id_usua);
+                        $stmt->execute();
+                        $result_med = $stmt->get_result();
+                        $row_med = $result_med->fetch_assoc();
+                        $medico = $row_med['pre'] . ". " . $row_med['papell'] . " " . $row_med['sapell'] . " " . $row_med['nombre'];
+                        $stmt->close();
+                    } else {
+                        $medico = "Médico no asignado"; // Fallback if no doctor is found
+                    }
+
                     $conexion->close();
                 } else {
                     echo '<script type="text/javascript">window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
@@ -248,7 +270,7 @@ include("../header_medico.php");
         <div class="thead"><strong>
                 <center>EXÁMENES DE LABORATORIO</center>
             </strong></div>
-        <form action="generate_lab_recipe.php" method="POST">
+        <form action="insertar_examenes_lab.php" method="POST">
             <div class="accordion mt-3" id="examAccordion">
                 <div class="card">
                     <div class="card-header" id="headingLab">
