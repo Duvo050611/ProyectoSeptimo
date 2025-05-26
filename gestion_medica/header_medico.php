@@ -4,13 +4,8 @@ include "../../conexionbd.php";
 // Solo modificar parámetros y iniciar sesión si no está activa
 if (session_status() === PHP_SESSION_NONE) {
     $lifetime = 100000;
-
-// Solo modificar parámetros y iniciar sesión si no está activa
-if (session_status() === PHP_SESSION_NONE) {
-    $lifetime = 100000;
     session_set_cookie_params($lifetime);
     session_start();
-}
 }
 
 // Verificar si está logueado
@@ -301,88 +296,10 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                     </div>
                 </div>
 
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
 
-        <ul class="sidebar-menu">
-<li class="treeview">
-  <a href="#">
-    <i class="fa fa-stethoscope" aria-hidden="true"></i>
-    <span>Exploraciones</span>
-    <span class="pull-right-container">
-      <i class="fa fa-angle-left pull-right"></i>
-    </span>
-  </a>
-  <ul class="treeview-menu">
-    <li>
-      <a href="../exploraciones/listar_exploraciones.php">
-        <i class="fa fa-eye" aria-hidden="true"></i> Ver exploraciones
-      </a>
-    </li>
-    <li>
-      <a href="exploraciones/formulario_exploracion.php">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar exploración
-      </a>
-    </li>
-  </ul>
-</li>
 
-<li class="treeview">
-  <a href="#">
-    <i class="fa fa-eye" aria-hidden="true"></i>
-    <span>Segmento Anterior</span>
-    <span class="pull-right-container">
-      <i class="fa fa-angle-left pull-right"></i>
-    </span>
-  </a>
-  <ul class="treeview-menu">
-    <li>
-      <a href="./exploraciones/listar_exploraciones.php">
-        <i class="fa fa-list" aria-hidden="true"></i> Ver exploraciones
-      </a>
-    </li>
-    <li>
-      <a href="../exploraciones/formulario_segmento.php">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar exploración
-      </a>
-    </li>
-  </ul>
-</li>
-
-<li class="treeview">
-  <a href="#">
-    <i class="fa fa-eye" aria-hidden="true"></i> <span>Segmento Posterior</span>
-    <i class="fa fa-angle-left pull-right"></i>
-  </a>
-  <ul class="treeview-menu">
-    <li><a href="../exploraciones/formulario_segmento_posterior.php"><i class="fa fa-plus-circle"></i> Registrar Exploración</a></li>
-    <li><a href="../exploraciones/listar_segmento_posterior.php"><i class="fa fa-list"></i> Ver Exploraciones</a></li>
-  </ul>
-</li>
-
-<li class="treeview">
-  <a href="#">
-    <i class="fa fa-eye" aria-hidden="true"></i> <span>Niño/bebe</span>
-    <i class="fa fa-angle-left pull-right"></i>
-  </a>
-  <ul class="treeview-menu">
-    <li><a href="../exploraciones/formulario_nino_bebe.php"><i class="fa fa-plus-circle"></i> Registrar Exploración</a></li>
-    <li><a href="../exploraciones/listar_nino_bebe.php"><i class="fa fa-list"></i> Ver Exploraciones</a></li>
-  </ul>
-      <li><a href="../exploraciones/formulario_nino_bebe.php"><i class="fa fa-plus-circle"></i> Registrar Exploración</a></li>
-    <li><a href="../exploraciones/listar_nino_bebe.php"><i class="fa fa-list"></i> Ver Exploraciones</a></li>
-</li>
-
-<li class="treeview">
-  <a href="#">
-    <i class="fa fa-eye" aria-hidden="true"></i> <span>MEDICIONES DE <br> LA CORNEA </span>
-    <i class="fa fa-angle-left pull-right"></i>
-  </a>
-  <ul class="treeview-menu">
-    <li><a href="../exploraciones/formulario_mediciones_cornea.php"><i class="fa fa-plus-circle"></i> Registrar Exploración</a></li>
-    <li><a href="../exploraciones/listar_mediciones_cornea.php"><i class="fa fa-list"></i> Ver Exploraciones</a></li>
-  </ul>
-      <li><a href="../exploraciones/formulario_mediciones_cornea.php"><i class="fa fa-plus-circle"></i> Registrar Exploración</a></li>
-    <li><a href="../exploraciones/listar_mediciones_cornea.php"><i class="fa fa-list"></i> Ver Exploraciones</a></li>
-</li>
                     <li class="treeview">
                         <?php
               if (isset($_SESSION['hospital'])) {
@@ -413,80 +330,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                     <?php
           if (isset($_SESSION['hospital'])) {
           ?>
-<<<<<<< HEAD
-            <li class="treeview">
-                <a href="../historia_clinica/h_clinica.php">
-                   <i class="fa fa-folder" aria-hidden="true"></i> <span><font size ="2">HISTORIA CLÍNICA</font></span>
-                </a>
-            </li>
-            
-            
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-stethoscope"></i> <font size ="2"><span>NOTAS MÉDICAS</span></font>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">               
-                
-                <li><a href="../hospitalizacion/nota_ingreso.php"> <i class="fa fa-bed" aria-hidden="true"></i>
-                    <font size ="2" color="black" > NOTA DE INGRESO </font></a></li>
-                
-                <li><a href="../hospitalizacion/nota_de_evolucion.php"><i class="fa fa-stethoscope" aria-hidden="true"></i>
-                    <font size ="2" color="black" > NOTA DE EVOLUCIÓN </font></a></li>
-                
-                <li><a href="../hospitalizacion/nota_interconsulta.php"><i class="fa fa-hospital-o" aria-hidden="true"></i>
-                    <font size ="2" color="black" > NOTA DE INTERCONSULTA</font></a>
-                
-                <li><a href="../hospitalizacion/nota_translado.php"><i class="fa fa-ambulance" aria-hidden="true"></i>
-                    <font size ="2" color="black" > NOTA REFERENCIA/TRASLADO </font></a></li>
-                
-                <li><a href="../hospitalizacion/nota_neonatologica.php"><i class="fa fa-child"></i>
-                    <font size ="2" color="black" > NOTA NEONATOLÓGICA </font></a></li>
-                
-                <li><a href="../hospitalizacion/partograma.php"><i class="fa fa-female"></i>
-                    <font size ="2" color="black" > PARTOGRAMA</font></a></li>
-                
-              <!-- <li><a href="../hospitalizacion/nota_posparto.php"><i class="fa fa-female"></i> 
-                    <font size ="2" color="black" > NOTA POST-PARTO </font></a></li>-->
-                
-                <!--<li><a href="../hospitalizacion/vista_de_transfuciones.php"><i class="fa fa-circle"></i>
-                    <font size ="2" color="black" > NOTA DE TRANSFUSIÓN</font></a></li>-->
-                <li><a href="../hospitalizacion/nota_egreso.php">
-                    <i class="fa fa-street-view" aria-hidden="true"></i>
-                    <font size ="2" color="black" > NOTA DE EGRESO </font></a></li>
-                     
-                <li><a href="../hospitalizacion/nota_defuncion.php"><i class="fa fa-plus-square"></i>
-                    <font size ="2" color="black" > NOTA DE DEFUNCIÓN </font></a></li>
-                <li><a href="../hospitalizacion/resumen_clinico.php"><i class="fa fa-files-o"></i>
-                    <font size ="2" color="black" > RESUMEN CLÍNICO </font></a></li>
-                
-                <!-- NOTAS QUIRÚRGICAS-->
-                <li><center><strong><font size ="2"> QUIRÚRGICAS</font></strong></center></li> 
-                 <!--<li><a href="../quirurgico/hoja_progquir.php">
-                   
-                   <i class="fa fa-bed" aria-hidden="true"></i> 
-                   <font size ="2" color="black" >  HOJA DE PROGRAMACIÓN<br> QUIRÚRGICA  </font></a></li>-->
-                
-               
-                
-                <li><a href="../quirurgico/nota_preoperatoria.php">
-                   <i class="fa fa-bed" aria-hidden="true"></i> 
-                   <font size ="2" color="black" > PROGRAMACIÓN QUIRÚRGICA </font></a></li>
-                   
-                <!--<li><a href="../quirurgico/nota_cirugia_segura.php">
-                   <i class="fa fa-medkit" aria-hidden="true"></i> 
-                  <font size ="2" color="black" > CIRUGÍA SEGURA </font></a></li>-->
-                <li><a href="../quirurgico/nota_intervencion_quirurgica.php">
-                   <i class="fa fa-user-md" aria-hidden="true"></i> 
-                   <font size ="2" color="black" > DESCRIPCIÓN INTERVENCIÓN <br> QUIRÚRGICA </font></a></li>
-              
-               <!-- NOTAS ANESTÉSICAS-->
-              
-                        
-                        <li><a href="../nota_anestesica/nota_unidad_cuidados.php"><i class="fa fa-bed"></i>
-                        <font size ="2" color="black" >HOJA ANESTESICA <br> COMPLETA</font></a></li>
-                        
-=======
                     <li class="treeview">
                         <a href="../historia_clinica/h_clinica.php">
                             <i class="fa fa-folder" aria-hidden="true"></i> <span>
@@ -502,45 +345,44 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="/gestion_medica/notas_medicas/exploracion_fisica.php">
-                                    <i class="fa fa-magnifying-glass-arrow-right" aria-hidden="true"></i> EXPLORACION FISICA
+                                    <i class="fa fa-magnifying-glass-arrow-right"></i> EXPLORACION FISICA
                                 </a></li>
                             <li><a href="/gestion_medica/notas_medicas/refraccion_antiguas.php">
-                                    <i class="fa fa-arrows-to-eye" aria-hidden="true"></i> REFRACCIONES ANTIGUAS
+                                    <i class="fa fa-arrows-to-eye"></i> REFRACCIONES ANTIGUAS
                                 </a></li>
                             <li><a href="/gestion_medica/notas_medicas/refraccion_actual.php">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> AUTOREFRACTOR /<br> QUERATOCONO
+                                    <i class="fa fa-eye"></i> AUTOREFRACTOR /<br> QUERATOCONO
                                 </a></li>
                     </li>
                     <li><a href="/gestion_medica/notas_medicas/refraccion_actual.php">
-                            <i class="fa fa-glasses" aria-hidden="true"></i> REFRACCION ACTUAL
+                            <i class="fa fa-glasses"></i> REFRACCION ACTUAL
                         </a></li>
->>>>>>> 422e259 (correcciones formularios y menu terminado actualizacion 23-05-2025)
 
                     <li><a href="/gestion_medica/notas_medicas/receta_lentes.php">
-                            <i class="fa fa-file-waveform" aria-hidden="true"></i></i> RECETA ANTEOJOS
+                            <i class="fa fa-file-waveform"></i></i> RECETA ANTEOJOS
                         </a></li>
                     </li>
                     <li><a href="/gestion_medica/notas_medicas/receta_lentes_c.php">
-                            <i class="fa fa-file-waveform" aria-hidden="true"></i>RECETA LENTES DE CONTACTO
+                            <i class="fa fa-file-waveform"></i>RECETA LENTES DE CONTACTO
                         </a></li>
                     </li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-hourglass-end" aria-hidden="true"></i> PRUEBAS
+                            <i class="fa fa-hourglass-end"></i> PRUEBAS
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-baby" aria-hidden="true"></i> NIÑO/BEBE
+                            <i class="fa fa-baby"></i> NIÑO/BEBE
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-arrows-to-eye" aria-hidden="true"></i> MEDICIONES DE LA CORNEA
+                            <i class="fa fa-arrows-to-eye"></i> MEDICIONES DE LA CORNEA
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-file-prescription" aria-hidden="true"></i> PRESION, PARPADOS Y VIAS
+                            <i class="fa fa-file-prescription"></i> PRESION, PARPADOS Y VIAS
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-backward" aria-hidden="true"></i> SEGMENTO ANTERIOR
+                            <i class="fa fa-backward"></i> SEGMENTO ANTERIOR
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/pruebas.php">
-                            <i class="fa fa-forward" aria-hidden="true"></i> SEGMENTO POSTERIOR
+                            <i class="fa fa-forward"></i> SEGMENTO POSTERIOR
 
                     <li>
                         <a href="/gestion_medica/notas_medicas/estudios.php">
@@ -560,30 +402,24 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                         </a>
                     </li>
 
-                    <!-- <li>
-                        <a href="/gestion_medica/notas_medicas/tratamiento.php">
-                            <i class="fa fa-notes-medical" aria-hidden="true"></i> TRATAMIENTO
-                        </a>
-                    </li>
- -->
-                    <!-- <li>
-                        <a href="/gestion_medica/notas_medicas/tratamiento_laser.php">
-                            <i class="fa fa-hospital-o" aria-hidden="true"></i> TRATAMIENTO LASER
-                        </a>
-                    </li> -->
-
                     <li>
                         <a href="/gestion_medica/notas_medicas/examenes_lab.php">
-                            <i class="fa fa-vials" aria-hidden="true"></i> EXÁMENES DE LABORATORIO
+                            <i class="fa fa-notes-medical" aria-hidden="true"></i> EXÁMENES DE LABORATORIO
                         </a>
                     </li>
 
                     <li>
                         <a href="/gestion_medica/notas_medicas/examenes_gab.php">
-                            <i class="fa fa-vials" aria-hidden="true"></i> EXÁMENES DE
-                            GABINETE
+                            <i class="fa fa-hospital-o" aria-hidden="true"></i> EXÁMENES DE GABINETE
                         </a>
                     </li>
+
+                    <!-- <li>
+                        <a href="/gestion_medica/notas_medicas/examenes_lab_gabinete.php">
+                            <i class="fa fa-vials" aria-hidden="true"></i> EXÁMENES DE LABORATORIO Y
+                            GABINETE
+                        </a>
+                    </li> -->
 
                     <li>
                         <a href="/gestion_medica/notas_medicas/recomendaciones.php">
@@ -666,16 +502,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                 <i class="fa fa-angle-left pull-right"></i>
               </a>        
           </li>-->
-<<<<<<< HEAD
-          
-          <?php if($usuario['id_rol'] == 2 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 5){ ?>
-          <li class="treeview">
-              <a href="../selectpac_sincama/select_pac.php">
-                <i class="fa fa-print" aria-hidden="true"></i><font size ="2"><span>SELECCIONAR <br>OTROS PACIENTES</span></font>
-              </a>        
-          </li>
-        <?php } ?>
-=======
                 <?php if($usuario['id_rol'] == 2 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 5){ ?>
                 <li class="treeview">
                     <a href="../selectpac_sincama/select_pac.php">
@@ -684,7 +510,6 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                     </a>
                 </li>
                 <?php } ?>
->>>>>>> 422e259 (correcciones formularios y menu terminado actualizacion 23-05-2025)
 
 
                 <?php

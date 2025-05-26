@@ -459,7 +459,7 @@ include("../header_medico.php");
                 </div>
             </div>
             <center class="mt-3">
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="submit" class="btn btn-primary">Firmar</button>
                 <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
             </center>
         </form>
