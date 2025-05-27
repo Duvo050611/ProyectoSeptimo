@@ -36,10 +36,24 @@ if (isset($usuario['id_usua'])) {
     if ($row_doc) {
         $medico = ($row_doc['pre'] ? $row_doc['pre'] . ". " : "") . 
                   $row_doc['papell'] . " " . 
-                  ($row_doc['sapell'] ? $row_doc['sapell'] . " " : "") . 
-                  $row_doc['nombre'];
+                  ($row_doc['sapell'] ? $row_doc['sapell'] . " " : "");
     }
     $stmt_doc->close();
+}
+
+// Fetch only papell for the doctor
+$doctor = "Médico no asignado";
+if (isset($usuario['id_usua'])) {
+    $sql_papell = "SELECT papell FROM reg_usuarios WHERE id_usua = ?";
+    $stmt_papell = $conexion->prepare($sql_papell);
+    $stmt_papell->bind_param("i", $usuario['id_usua']);
+    $stmt_papell->execute();
+    $result_papell = $stmt_papell->get_result();
+    $row_papell = $result_papell->fetch_assoc();
+    if ($row_papell) {
+        $doctor = $row_papell['papell'];
+    }
+    $stmt_papell->close();
 }
 
 // Prepare data from the form
@@ -156,30 +170,54 @@ if ($stmt->execute()) {
     if ($acs_anticardiolipina) $studies[] = "ACS Anticardiolipina";
     if ($acs_p_ancasy_c_ancas) $studies[] = "ACS P-ANCAs y C-ANCAs";
     if ($otros_laboratorio) $studies[] = $otros_laboratorio;
-    $studies_list = implode("\n", $studies);
+
+    // Create numbered studies list
+    $numbered_studies = [];
+    foreach ($studies as $index => $study) {
+        $numbered_studies[] = ($index + 1) . ". " . $study;
+    }
+    $studies_list = implode("\n", $numbered_studies);
 
     // Current date and time
     $fecha_actual = date("d/m/Y H:i:s"); // 12:35 PM CST, May 26, 2025
 
     // Create PDF class
-    class PDF extends FPDF {
-        function Header() {
-            global $folio;
-            // Add logo in the top left
-            if (!file_exists('../../imagenes/Izquierda-receta.JPG')) {
-                die('File not found: ../../imagenes/Izquierda-receta.JPG');
-            }
-            $this->Image('../../imagenes/Izquierda-receta.JPG', 10, 10, 40, 0, 'JPG');
+    class PDF extends FPDF
+    {
+        function Header()
+        {
+            // Load images with error checking
+            $left_image = "../../imagenes/INEOizquierda.png";
+            $center_image = "../../imagenes/INEOcentral.png";
+            $right_image = "../../imagenes/INEOderecha.png";
 
-            $center_x = (float)($this->GetPageWidth() / 2 - 30); 
-            $this->Image('../../imagenes/Imagen-c.jpg', $center_x, 10, 60, 0, 'JPG');
-            $this->Ln(40);
+            if (file_exists($left_image)) {
+                $this->Image($left_image, 7, 9, 40, 25);
+            } else {
+                error_log("Image not found: $left_image");
+            }
+
+            if (file_exists($center_image)) {
+                $this->Image($center_image, 58, 15, 109, 24);
+            } else {
+                error_log("Image not found: $center_image");
+            }
+
+            if (file_exists($right_image)) {
+                $this->Image($right_image, 168, 16, 38, 14);
+            } else {
+                error_log("Image not found: $right_image");
+            }
+
+            $this->Ln(25);
         }
 
-        function Footer() {
+        function Footer()
+        {
             $this->SetY(-15);
             $this->SetFont('Arial', '', 8);
             $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
+            $this->Cell(0, 10, utf8_decode('MAC-010'), 0, 1, 'R');
         }
     }
 
@@ -188,6 +226,12 @@ if ($stmt->execute()) {
     $pdf->AliasNbPages();
     $pdf->AddPage();
 
+    // Set border color
+    $pdf->SetDrawColor(43, 45, 127);
+
+    // Draw top border
+    $pdf->Line(1, 8, 209, 8);
+
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(0, 10, utf8_decode('SOLICITUD DE ESTUDIOS DE LABORATORIO'), 0, 1, 'C');
     $pdf->Ln(2);
@@ -195,21 +239,30 @@ if ($stmt->execute()) {
     $pdf->SetFont('Arial', '', 9);
     $pdf->Cell(0, 5, utf8_decode("Paciente: $folio - $pac_papell $pac_sapell $pac_nom_pac"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Signos vitales:"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Presión arterial: $p_sistolica/$p_diastolica mmHG   Frecuencia respiratoria: $f_resp Resp/min   Temperatura: $temp °C   Saturación oxígeno: $sat_oxigeno %"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Edad: $edad   Sexo: $pac_sexo   Fecha de ingreso: $pac_fecing"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Fecha de solicitud: $fecha_actual   Fecha y hora de solicitud: $fecha_actual"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Médico tratante: Cédula Prof."), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Solicitante: $medico"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Presión arterial:     $p_sistolica/$p_diastolica      mmHG      Frecuencia respiratoria: $f_resp      Resp/min       Temperatura: $temp      °C       Saturación oxígeno: $sat_oxigeno        %"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Edad: $edad                              Sexo: $pac_sexo                   Fecha de ingreso: $pac_fecing"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Fecha de solicitud: $fecha_actual                                  Fecha y hora de solicitud: $fecha_actual"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Médico tratante: $doctor"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Estudio(s) solicitado(s):"), 0, 1, 'L');
     $pdf->MultiCell(0, 5, utf8_decode($studies_list), 0, 'L');
     $pdf->Cell(0, 5, utf8_decode("Detalle de estudio:"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Diagnóstico probable: Consulta"), 0, 1, 'L');
-    $pdf->Cell(0, 10, utf8_decode("Solicita: Dr. $medico"), 0, 1, 'C');
-    $pdf->Ln(20);
-    
+    $pdf->Cell(0, 10, utf8_decode("Solicita: $medico"), 0, 1, 'C');
+    $pdf->Ln(15);
+
     $pdf->SetFont('Arial', '', 8);
     $pdf->Cell(0, 5, utf8_decode("_____________________"), 0, 1, 'C');
-    $pdf->Cell(0, 5, utf8_decode("Página 1/1"), 0, 1, 'C');
+    $pdf->Cell(0, 5, utf8_decode("Firma"), 0, 1, 'C');
+
+    // Get final Y position and add some padding
+    $bottom_y = $pdf->GetY() + 10;
+
+    // Draw bottom border
+    $pdf->Line(1, $bottom_y, 209, $bottom_y);
+
+    // Draw left and right borders to match the final height
+    $pdf->Line(1, 8, 1, $bottom_y);
+    $pdf->Line(209, 8, 209, $bottom_y);
 
     // Clean output buffer and send PDF
     ob_end_clean();

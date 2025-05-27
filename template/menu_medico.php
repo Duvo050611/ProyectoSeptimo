@@ -483,14 +483,14 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     <?php
             if (isset($_SESSION['hospital'])) {
           ?>
-                <!-- <li><a href="../gestion_medica/hospitalizacion/recetario_medico.php"><i class="fa fa-files-o"
+                    <!-- <li><a href="../gestion_medica/hospitalizacion/recetario_medico.php"><i class="fa fa-files-o"
                             aria-hidden="true"></i> RECETA HOSPITALIZACIÓN</a></li> -->
-                <?php
+                    <?php
             } else {
       ?>
-                <!-- <li><a href="select_pac_hosp.php"><i class="fa fa-files-o" aria-hidden="true"></i> RECETA
+                    <!-- <li><a href="select_pac_hosp.php"><i class="fa fa-files-o" aria-hidden="true"></i> RECETA
                         HOSPITALIZACIÓN</a></li> -->
-                <?php
+                    <?php
             }
       ?>
 
@@ -551,94 +551,94 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     </a>
 
                 </li>
-
-                <li class="treeview">
-                    <a href="select_pac_hosp.php">
-                        <i class="fa fa-folder" aria-hidden="true"></i> <span>ESTUDIOS</span>
-                    </a>
-
-                </li>
-
-
+                
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-stethoscope"></i> <span>NOTAS MÉDICAS</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <!-- <li><a href="select_pac_hosp.php">
-              <i class="fa fa-bed" aria-hidden="true"></i> NOTA DE INGRESO</a></li>
-          <li><a href="select_pac_hosp.php">
-              <i class="fa fa-stethoscope" aria-hidden="true"></i> NOTA DE EVOLUCIÓN</a></li>
-          <li><a href="select_pac_hosp.php">
-                    <i class="fa fa-female"></i> NOTA POST-PARTO</a></li>
-          <li><a href="select_pac_hosp.php">
-              <i class="fa fa-hospital-o" aria-hidden="true"></i> NOTA INTERCONSULTA</a></li>
-          <li><a href="select_pac_hosp.php">
-              <i class="fa fa-ambulance" aria-hidden="true"></i> NOTA REFERENCIA/TRASLADO</a></li>
-          <li><a href="select_pac_hosp.php">
-              <i class="fa fa-child"></i> NOTA NEONATOLÓGICA</a></li> -->
-                        <li><a href="../gestion_medica/notas_medicas/exploracion_fisica.php">
-                                <i class="fa-solid fa-magnifying-glass-arrow-right"></i> EXPLORACION FISICA
-                            </a></li>
-                        <li><a href="../gestion_medica/notas_medicas/refraccion_antiguas.php">
-                                <i class="fa-solid fa-arrows-to-eye"></i> REFRACCIONES ANTIGUAS
-                            </a></li>
-                        <li><a href="../gestion_medica/notas_medicas/refraccion_actual.php">
-                                <i class="fa-solid fa-eye"></i> AUTOREFRACTOR /<br> QUERATOCONO
-                            </a></li>
-                </li>
-                <li><a href="../gestion_medica/notas_medicas/refraccion_actual.php">
-                        <i class="fa-solid fa-glasses"></i> REFRACCION ACTUAL
-                    </a></li>
+                        <li><a href="select_pac_hosp.php">
+                                <i class="fa fa-magnifying-glass-arrow-right" aria-hidden="true"></i> EXPLORACION
+                                FISICA </a></li>
 
-                <li><a href="../gestion_medica/notas_medicas/receta_lentes.php">
-                        <i class="fa-solid fa-file-waveform"></i></i> RECETA ANTEOJOS
-                    </a></li>
+                        <li><a href="select_pac_hosp.php">
+                               <i class="fa fa-arrows-to-eye" aria-hidden="true"></i> REFRACCIONES ANTIGUAS</a></li>
+                        <li><a href="select_pac_hosp.php">
+                                    <i class="fa fa-eye" aria-hidden="true"></i> AUTOREFRACTOR /<br> QUERATOCONO
+                                </a></li>
+                    </li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-glasses" aria-hidden="true"></i> REFRACCION ACTUAL
+                        </a></li>
+
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-file-waveform" aria-hidden="true"></i></i> RECETA ANTEOJOS
+                        </a></li>
+                    </li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-file-waveform" aria-hidden="true"></i>RECETA LENTES DE CONTACTO
+                        </a></li>
+                    </li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-hourglass-end" aria-hidden="true"></i> PRUEBAS
+                        </a></li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-baby" aria-hidden="true"></i> NIÑO/BEBE
+                        </a></li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-arrows-to-eye" aria-hidden="true"></i> MEDICIONES DE LA CORNEA
+                        </a></li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-file-prescription" aria-hidden="true"></i> PRESION, PARPADOS Y VIAS
+                        </a></li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-backward" aria-hidden="true"></i> SEGMENTO ANTERIOR
+                        </a></li>
+                    <li><a href="select_pac_hosp.php">
+                            <i class="fa fa-forward" aria-hidden="true"></i> SEGMENTO POSTERIOR
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-folder" aria-hidden="true"></i> ESTUDIOS
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-eye" aria-hidden="true"></i> LENTE INTRAOCULAR
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-clipboard" aria-hidden="true"></i> DIAGNÓSTICO
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-vials" aria-hidden="true"></i> EXÁMENES DE LABORATORIO
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-vials" aria-hidden="true"></i> EXÁMENES DE
+                            GABINETE
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-child"></i> RECOMENDACIONES
+                        </a>
+                    </li>
                 </li>
-                <li><a href="../gestion_medica/notas_medicas/receta_lentes_c.php">
-                        <i class="fa-solid fa-file-waveform"></i>RECETA LENTES DE CONTACTO
-                    </a></li>
-                </li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-hourglass-end"></i> PRUEBAS
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-baby"></i> NIÑO/BEBE
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-arrows-to-eye"></i> MEDICIONES DE LA CORNEA
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-file-prescription"></i> PRESION, PARPADOS Y VIAS
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-backward"></i> SEGMENTO ANTERIOR
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-forward"></i> SEGMENTO POSTERIOR
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-file-import"></i>> ESTUDIOS
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-glasses"></i>> LENTE INTRAOCULAR
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-stethoscope"></i> DIAGNOSTICO
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-hand-holding-medical"></i> TRATAMIENTOS
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-paste"></i>EXAMENES DE LABORATORIO <br> Y GABINETE
-                    </a></li>
-                <li><a href="../gestion_medica/notas_medicas/pruebas.php">
-                        <i class="fa-solid fa-star"></i> RECOMENDACIONES
-                    </a></li>
+                
                 <!--<li><a href="select_pac_hosp.php">
                   <i class="fa fa-angle-double-right" aria-hidden="true"></i> NOTA DE TRANSFUSIÓN </a></li>-->
-                <li><a href="select_pac_hosp.php">
+                <!-- <li><a href="select_pac_hosp.php">
                         <i class="fa fa-street-view" aria-hidden="true"></i> NOTA DE EGRESO</a></li>
 
 
@@ -648,28 +648,29 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     <a href="gestion_medica/notas_medicas/tratamiento.php">
                         <i class="fa fa-files-o" aria-hidden="true"></i> RESUMEN CLÍNICO
                     </a>
-                </li>
+                </li> -->
 
 
                 <!-- NOTAS QUIRÚRGICAS-->
-                <li>
+                <!-- <li>
                     <center><strong>QUIRÚRGICAS</strong></center>
                 </li>
                 <li><a href="select_pac_hosp.php">
-                        <i class="fa fa-bed" aria-hidden="true"></i> PRE-OPERATORIA </a></li>
+                        <i class="fa fa-bed" aria-hidden="true"></i> PRE-OPERATORIA </a></li> -->
                 <!-- <li><a href="select_pac_hosp.php">
                   <i class="fa fa-medkit" aria-hidden="true"></i> CIRUGÍA SEGURA</a></li>-->
-                <li><a href="select_pac_hosp.php">
+                <!-- <li><a href="select_pac_hosp.php">
                         <i class="fa fa-user-md" aria-hidden="true"></i> DESCRIPCIÓN INTERVENCIÓN <br> QUIRÚRGICA</a>
-                </li>
+                </li> -->
 
                 <!-- NOTAS ANESTÉSICAS-->
 
-                <li><a href="select_pac_hosp.php"><i class="fa fa-bed"></i>HOJA ANESTÉSICA <br> COMPLETA</a></li>
+                <!-- <li><a href="select_pac_hosp.php"><i class="fa fa-bed"></i>HOJA ANESTÉSICA <br> COMPLETA</a></li>
 
 
                 </li>
                 </ul>
+                
                 </li>
 
                 <li class="treeview">
@@ -686,7 +687,8 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     <a href="select_pac_hosp.php">
                         <i class="fa fa-files-o" aria-hidden="true"></i> <span>INDICACIONES MÉDICAS</span>
                     </a>
-                </li>
+                </li> -->
+          </ul>
 
                 <li class="treeview">
                     <a href="select_pac_hosp.php">

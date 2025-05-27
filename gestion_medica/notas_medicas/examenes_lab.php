@@ -375,9 +375,9 @@ include("../header_medico.php");
                                         TSH</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="acs_antiperoxidasa"
-                                        id="acs_antiperoxidasa" value="1">
-                                    <label class="form-check-label" for="acs_antiperoxidasa">ACS Antiperoxidasa</label>
+                                    <input class="form-check-input" type="checkbox" name="acs_antiperoxadasa"
+                                        id="acs_antiperoxadasa" value="1">
+                                    <label class="form-check-label" for="acs_antiperoxadasa">ACS Antiperoxidasa</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
