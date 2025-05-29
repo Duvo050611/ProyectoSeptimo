@@ -14,7 +14,7 @@ $upload_success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
     $files = $_FILES['resultado'];
-    $carpeta = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
+    $carpeta = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados_gabinete/';
     if (!file_exists($carpeta)) {
         mkdir($carpeta, 0777, true);
     }
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
     // Handle multiple files
     for ($i = 0; $i < count($files['name']); $i++) {
         if ($files['error'][$i] === UPLOAD_ERR_OK) {
-            $nombre_archivo = "resultado_" . $not_id . "_" . date('Ymd_His') . "_$i.pdf";
+            $nombre_archivo = "resultado_gabinete_" . $not_id . "_" . date('Ymd_His') . "_$i.pdf";
             $ruta_archivo = $carpeta . $nombre_archivo;
 
             if (move_uploaded_file($files['tmp_name'][$i], $ruta_archivo)) {
@@ -43,10 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
     }
 
     if ($all_uploaded && !empty($file_names)) {
-        // Encode filenames as JSON
+        // Encode filenames as JSON (for multiple files support)
         $file_names_json = json_encode($file_names);
 
-        $sql = "UPDATE notificaciones_labo SET realizado = 'SI', resultado = ?, fecha_resultado = NOW(), id_usua_resul = ? WHERE not_id = ?";
+        $sql = "UPDATE notificaciones_gabinete SET realizado = 'SI', resultado = ?, fecha_resultado = NOW(), id_usua_resul = ? WHERE id_not_gabinete = ?";
         $stmt = $conexion->prepare($sql);
         if (!$stmt) {
             $upload_error = "Error al preparar la consulta: " . $conexion->error;
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
             $stmt->bind_param("sii", $file_names_json, $usuario['id_usua'], $not_id);
             if ($stmt->execute()) {
                 $upload_success = "Archivos subidos correctamente.";
-                header("Location: sol_laboratorio.php?success=" . urlencode($upload_success));
+                header("Location: sol_gabinete.php?success=" . urlencode($upload_success));
                 exit();
             } else {
                 $upload_error = "Error al actualizar la base de datos: " . $conexion->error;
@@ -65,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
 }
 
 // Fetch notification details
-$sql = "SELECT n.sol_estudios, n.det_labo, n.habitacion, p.papell, p.sapell, p.nom_pac 
-        FROM notificaciones_labo n 
+$sql = "SELECT n.sol_estudios, n.habitacion, p.papell, p.sapell, p.nom_pac 
+        FROM notificaciones_gabinete n 
         JOIN dat_ingreso d ON n.id_atencion = d.id_atencion 
         JOIN paciente p ON d.Id_exp = p.Id_exp 
-        WHERE n.not_id = ?";
+        WHERE n.id_not_gabinete = ?";
 $stmt = $conexion->prepare($sql);
 if ($stmt) {
     $stmt->bind_param("i", $not_id);
@@ -92,12 +92,12 @@ include "../header_labo.php";
 </head>
 <body>
 <div class="container-fluid">
-    <a href="sol_laboratorio.php" class="btn btn-danger">Regresar</a>
-    <h2>Subir Resultado de Estudio</h2>
+    <a href="sol_gabinete.php" class="btn btn-danger">Regresar</a>
+    <h2>Subir Resultado de Estudio de Gabinete</h2>
     <?php if ($notificacion): ?>
         <p><strong>Paciente:</strong> <?php echo htmlspecialchars($notificacion['papell'] . ' ' . $notificacion['sapell'] . ' ' . $notificacion['nom_pac']); ?></p>
         <p><strong>Habitación:</strong> <?php echo htmlspecialchars($notificacion['habitacion']); ?></p>
-        <p><strong>Estudio(s):</strong> <?php echo htmlspecialchars($notificacion['sol_estudios'] . ' ' . $notificacion['det_labo']); ?></p>
+        <p><strong>Estudio(s):</strong> <?php echo htmlspecialchars($notificacion['sol_estudios']); ?></p>
         <?php if ($upload_error): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($upload_error); ?></div>
         <?php endif; ?>

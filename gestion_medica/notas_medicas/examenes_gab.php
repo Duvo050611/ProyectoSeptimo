@@ -6,6 +6,14 @@ if (!isset($_SESSION['hospital'])) {
     exit();
 }
 include("../header_medico.php");
+
+// Fetch exams from the catalog
+$sql_exams = "SELECT id_examen, nombre_examen FROM cat_examenes_gabinete WHERE activo = 'SI' ORDER BY nombre_examen";
+$result_exams = $conexion->query($sql_exams);
+$exams = [];
+while ($row = $result_exams->fetch_assoc()) {
+    $exams[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,20 +22,22 @@ include("../header_medico.php");
     <meta charset="UTF-8">
     <title>EXÁMENES DE GABINETE</title>
     <link rel="stylesheet" type="text/css" href="../../css/select2.css">
-    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../../js/select2.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="../../js/jquery-ui.js"></script>
-    <script src="../../js/jquery.magnific-popup.min.js"></script>
-    <script src="../../js/aos.js"></script>
-    <script src="../../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
     <style>
-    .modal-lg { max-width: 70% !important; }
-    .botones { margin-bottom: 5px; }
-    .thead { background-color: #2b2d7f; color: white; font-size: 22px; padding: 10px; text-align: center; }
+        .modal-lg { max-width: 70% !important; }
+        .botones { margin-bottom: 5px; }
+        .thead { background-color: #2b2d7f; color: white; font-size: 22px; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -141,7 +151,7 @@ include("../header_medico.php");
 
                     $sql_hclinica = "SELECT peso, talla FROM dat_hclinica WHERE Id_exp = ? ORDER BY id_hc DESC LIMIT 1";
                     $stmt = $conexion->prepare($sql_hclinica);
-                    $stmt->bind_param("s", $id_exp);
+                    $stmt->bind_param("i", $id_exp);
                     $stmt->execute();
                     $result_hclinica = $stmt->get_result();
                     $peso = 0;
@@ -152,16 +162,35 @@ include("../header_medico.php");
                     }
                     $stmt->close();
 
-                    $conexion->close();
+                    $sql_doc = "SELECT id_usua FROM receta WHERE id_atencion = ? ORDER BY fecha_r_hosp DESC LIMIT 1";
+                    $stmt = $conexion->prepare($sql_doc);
+                    $stmt->bind_param("i", $id_atencion);
+                    $stmt->execute();
+                    $result_doc = $stmt->get_result();
+                    $id_usua = $result_doc->fetch_assoc()['id_usua'] ?? null;
+                    $stmt->close();
+
+                    if ($id_usua) {
+                        $sql_med = "SELECT pre, nombre, papell, sapell FROM reg_usuarios WHERE id_usua = ?";
+                        $stmt = $conexion->prepare($sql_med);
+                        $stmt->bind_param("i", $id_usua);
+                        $stmt->execute();
+                        $result_med = $stmt->get_result();
+                        $row_med = $result_med->fetch_assoc();
+                        $medico = $row_med['pre'] . ". " . $row_med['papell'] . " " . $row_med['sapell'];
+                        $stmt->close();
+                    } else {
+                        $medico = "Médico no asignado";
+                    }
                 } else {
                     echo '<script type="text/javascript">window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
                 }
                 ?>
                 <?php if (isset($_GET['success']) && $_GET['success'] == 1) { ?>
-                    <div class="alert alert-success">Exámenes guardados exitosamente.</div>
+                <div class="alert alert-success">Exámenes guardados exitosamente.</div>
                 <?php } ?>
                 <?php if (isset($_GET['error'])) { ?>
-                    <div class="alert alert-danger">Error al guardar los exámenes: <?php echo htmlspecialchars($_GET['error']); ?></div>
+                <div class="alert alert-danger">Error al guardar los exámenes: <?php echo htmlspecialchars($_GET['error']); ?></div>
                 <?php } ?>
                 <div class="row">
                     <div class="col-sm-2">Expediente: <strong><?php echo $folio; ?></strong></div>
@@ -205,117 +234,25 @@ include("../header_medico.php");
         <form action="insertar_examenes_gab.php" method="POST">
             <div class="accordion mt-3" id="examAccordion">
                 <div class="card">
-                    <div class="card-header" id="headingGabinete">
+                    <div class="card-header" id="headingGab">
                         <h2 class="mb-0">
-                            <button class="btn btn-link text-dark" type="button" data-toggle="collapse" data-target="#collapseGabinete" aria-expanded="true" aria-controls="collapseGabinete">
+                            <button class="btn btn-link text-dark" type="button" data-toggle="collapse"
+                                    data-target="#collapseGab" aria-expanded="true" aria-controls="collapseGab">
                                 Exámenes de Gabinete
                             </button>
                         </h2>
                     </div>
-                    <div id="collapseGabinete" class="collapse show" aria-labelledby="headingGabinete" data-parent="#examAccordion">
+                    <div id="collapseGab" class="collapse show" aria-labelledby="headingGab" data-parent="#examAccordion">
                         <div class="card-body">
                             <div class="form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="calculo_lio_iol_master" id="calculo_lio_iol_master" value="1">
-                                    <label class="form-check-label" for="calculo_lio_iol_master">Cálculo de LIO IOL Master</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="calculo_lio_inmersion" id="calculo_lio_inmersion" value="1">
-                                    <label class="form-check-label" for="calculo_lio_inmersion">Cálculo de LIO Inmersión</label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="topografia_corneal_opcion">Topografía Corneal</label>
-                                    <select class="form-control" name="topografia_corneal_opcion" id="topografia_corneal_opcion">
-                                        <option value="">Seleccione</option>
-                                        <option value="Tomografía">Tomografía</option>
-                                        <option value="Mapas de Elevación">Mapas de Elevación</option>
-                                        <option value="Curvas de Potencia">Curvas de Potencia</option>
-                                    </select>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="microscopia_especular" id="microscopia_especular" value="1">
-                                    <label class="form-check-label" for="microscopia_especular">Microscopia Especular</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="paquimetria" id="paquimetria" value="1">
-                                    <label class="form-check-label" for="paquimetria">Paquimetría</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="ultrabiomicroscopia" id="ultrabiomicroscopia" style="margin-bottom: 15px;">
-                                    <label class="form-check-label" for="ultrabiomicroscopia">Ultrabiomicroscopia</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="fotografia_segmento_anterior" id="fotografia_segmento_anterior" style="margin-bottom: 15px;">
-                                    <label class="form-check-label" for="fotografia_segmento_anterior">Fotografía de Segmento Anterior</label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="angiografia_opcion">Angiografía</label>
-                                    <select class="form-control" name="angiografia_opcion" id="angiografia_opcion">
-                                        <option value="">Seleccione</option>
-                                        <option value="Fluoresceína">Fluoresceína</option>
-                                        <option value="ICG">ICG</option>
-                                    </select>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="oct_macular" id="oct_macular" value="1">
-                                    <label class="form-check-label" for="oct_macular">OCT Macular</label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="campos_visuales_opcion">Campos Visuales</label>
-                                    <select class="form-control" name="campos_visuales_opcion" id="campos_visuales_opcion">
-                                        <option value="">Seleccione</option>
-                                        <option value="Perimetría Automática">Perimetría Automática</option>
-                                        <option value="Campimetría Manual">Campimetría Manual</option>
-                                    </select>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="oct_nervio_optico" id="oct_nervio_optico" value="1">
-                                    <label class="form-check-label" for="oct_nervio_optico">OCT Nervio Óptico</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="hrt_nervio_optico" id="hrt_nervio_optico" value="1">
-                                    <label class="form-check-label" for="hrt_nervio_optico">HRT Nervio Óptico</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="gdx_analisis_fibras_nerviosas" id="gdx_analisis_fibras_nerviosas" value="1">
-                                    <label class="form-check-label" for="gdx_analisis_fibras_nerviosas">GDX Análisis de Fibras Nerviosas</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="curva_horaria_pio" id="curva_horaria_pio" value="1">
-                                    <label class="form-check-label" for="curva_horaria_pio">Curva Horaria PIO</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="resonancia_magnetica_orbita" id="resonancia_magnetica_orbita" value="1">
-                                    <label class="form-check-label" for="resonancia_magnetica_orbita">Resonancia Magnética Órbita</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="tomografia_orbita" id="tomografia_orbita" value="1">
-                                    <label class="form-check-label" for="tomografia_orbita">Tomografía Órbita</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="autofluorescencia_infrarrojo" id="autofluorescencia_infrarrojo" value="1">
-                                    <label class="form-check-label" for="autofluorescencia_infrarrojo">Autofluorescencia e Infrarrojo</label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="ecografia_opcion">Ecografía</label>
-                                    <select class="form-control" name="ecografia_opcion" id="ecografia_opcion">
-                                        <option value="">Seleccione</option>
-                                        <option value="A-Scan">A-Scan</option>
-                                        <option value="B-Scan">B-Scan</option>
-                                    </select>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="fotografia_9_campos" id="fotografia_9_campos" value="1">
-                                    <label class="form-check-label" for="fotografia_9_campos">Fotografía de 9 Campos</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="fotografia_fondo_ojo" id="fotografia_fondo_ojo" value="1">
-                                    <label class="form-check-label" for="fotografia_fondo_ojo">Fotografía de Fondo de Ojo</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="fotografia_nervio_optico" id="fotografia_nervio_optico" value="1">
-                                    <label class="form-check-label" for="fotografia_nervio_optico">Fotografía de Nervio Óptico</label>
-                                </div>
+                                <?php foreach ($exams as $exam) { ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="examenes[<?php echo $exam['id_examen']; ?>]" id="examen_<?php echo $exam['id_examen']; ?>" value="1">
+                                        <label class="form-check-label" for="examen_<?php echo $exam['id_examen']; ?>">
+                                            <?php echo htmlspecialchars($exam['nombre_examen']); ?>
+                                        </label>
+                                    </div>
+                                <?php } ?>
                                 <div class="form-group">
                                     <label for="otros_gabinete">Otros:</label>
                                     <textarea class="form-control" name="otros_gabinete" id="otros_gabinete" rows="2"></textarea>
@@ -326,7 +263,7 @@ include("../header_medico.php");
                 </div>
             </div>
             <center class="mt-3">
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="submit" class="btn btn-primary">Firmar</button>
                 <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
             </center>
         </form>
@@ -334,27 +271,6 @@ include("../header_medico.php");
     <footer class="main-footer">
         <?php include("../../template/footer.php"); ?>
     </footer>
-    <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
-    <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
-    <script>
-    let enviando = false;
-    $(document).ready(function() {
-        $('#topografia_corneal_opcion, #angiografia_opcion, #campos_visuales_opcion, #ecografia_opcion').select2();
-
-        $('form').submit(function(event) {
-            if (enviando) {
-                alert('El formulario ya se está enviando');
-                event.preventDefault();
-                return false;
-            }
-            enviando = true;
-            return true;
-        });
-    });
-
-    window.onbeforeunload = function() {
-        enviando = false;
-    };
-    </script>
 </body>
 </html>
+<?php $conexion->close(); ?>

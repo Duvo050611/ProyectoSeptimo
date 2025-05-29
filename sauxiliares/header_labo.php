@@ -331,8 +331,8 @@ while($f = mysqli_fetch_array($resultado)){
 
                 </li>
                 <li class="treeview">
-                    <a href="../Laboratorio/trans_sangre.php">
-                        <i class="fa fa-folder"></i> <font size="2">SOLICITUD DE BANCO <br>DE SANGRE</font>
+                    <a href="../Laboratorio/sol_gabinete.php">
+                        <i class="fa fa-folder"></i> <font size="2">SOLICITUD DE ESTUDIOS <br>DE GABINETE</font>
 
                     </a>
 

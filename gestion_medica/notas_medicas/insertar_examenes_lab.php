@@ -1,5 +1,5 @@
 <?php
-ob_start(); // Start output buffering to prevent any output before PDF
+ob_start();
 session_start();
 include "../../conexionbd.php";
 require '../../fpdf/fpdf.php';
@@ -24,29 +24,30 @@ $stmt_exp->close();
 // Get the doctor's name from the session
 $usuario = $_SESSION['login'];
 $medico = isset($usuario['papell']) ? $usuario['papell'] : "Médico no asignado";
+$id_usua = $usuario['id_usua'] ?? null;
 
-// If you need additional fields like first name or second last name, fetch them from the database
-if (isset($usuario['id_usua'])) {
+// Fetch additional doctor details
+if ($id_usua) {
     $sql_doc = "SELECT pre, nombre, papell, sapell FROM reg_usuarios WHERE id_usua = ?";
     $stmt_doc = $conexion->prepare($sql_doc);
-    $stmt_doc->bind_param("i", $usuario['id_usua']);
+    $stmt_doc->bind_param("i", $id_usua);
     $stmt_doc->execute();
     $result_doc = $stmt_doc->get_result();
     $row_doc = $result_doc->fetch_assoc();
     if ($row_doc) {
         $medico = ($row_doc['pre'] ? $row_doc['pre'] . ". " : "") . 
                   $row_doc['papell'] . " " . 
-                  ($row_doc['sapell'] ? $row_doc['sapell'] . " " : "");
+                  ($row_doc['sapell'] ? $row_doc['sapell'] : "");
     }
     $stmt_doc->close();
 }
 
 // Fetch only papell for the doctor
 $doctor = "Médico no asignado";
-if (isset($usuario['id_usua'])) {
+if ($id_usua) {
     $sql_papell = "SELECT papell FROM reg_usuarios WHERE id_usua = ?";
     $stmt_papell = $conexion->prepare($sql_papell);
-    $stmt_papell->bind_param("i", $usuario['id_usua']);
+    $stmt_papell->bind_param("i", $id_usua);
     $stmt_papell->execute();
     $result_papell = $stmt_papell->get_result();
     $row_papell = $result_papell->fetch_assoc();
@@ -55,6 +56,15 @@ if (isset($usuario['id_usua'])) {
     }
     $stmt_papell->close();
 }
+
+// Fetch room number
+$sql_hab = "SELECT num_cama FROM cat_camas WHERE id_atencion = ?";
+$stmt_hab = $conexion->prepare($sql_hab);
+$stmt_hab->bind_param("i", $id_atencion);
+$stmt_hab->execute();
+$result_hab = $stmt_hab->get_result();
+$habitacion = $result_hab->fetch_assoc()['num_cama'] ?? 'N/A';
+$stmt_hab->close();
 
 // Prepare data from the form
 $biometria_hematica = isset($_POST['biometria_hematica']) ? 1 : 0;
@@ -87,7 +97,42 @@ $acs_anticardiolipina = isset($_POST['acs_anticardiolipina']) ? 1 : 0;
 $acs_p_ancasy_c_ancas = isset($_POST['acs_p_ancasy_c_ancas']) ? 1 : 0;
 $otros_laboratorio = isset($_POST['otros_laboratorio']) ? trim($_POST['otros_laboratorio']) : null;
 
-// Insert into database
+// Compile studies list for sol_estudios
+$studies = [];
+if ($biometria_hematica) $studies[] = "Biometría Hemática";
+if ($quimica_sanguinea) $studies[] = "Química Sanguínea ($quimica_sanguinea_valores elementos)";
+if ($tiempos_coagulacion) $studies[] = "Tiempos de Coagulación (TP/TT)";
+if ($hemoglobina_glucosilada) $studies[] = "Hemoglobina Glucosilada";
+if ($examen_general_orina) $studies[] = "Examen General de Orina";
+if ($electrocardiograma) $studies[] = "Electrocardiograma";
+if ($pruebas_funcion_hepatica) $studies[] = "Pruebas de Función Hepática";
+if ($antigeno_sars_cov_2) $studies[] = "Antígeno SARS-CoV-2";
+if ($pcr_sars_cov_2) $studies[] = "PCR SARS-CoV-2";
+if ($electroitos_sericos) $studies[] = "Electrolitos Séricos";
+if ($pruebas_funcion_tiroidea) $studies[] = "Pruebas de Función Tiroidea";
+if ($acs_anti_tiroglubolina) $studies[] = "AC'S Anti-Tiroglubolina";
+if ($acs_antireceptores_tsh) $studies[] = "ACS Anti-Receptores TSH";
+if ($acs_antiperoxadasa) $studies[] = "ACS Antiperoxadasa";
+if ($velocidad_sedimentacion_globular) $studies[] = "Velocidad de Sedimentación Globular";
+if ($proteina_c_reactiva) $studies[] = "Proteína C Reactiva";
+if ($vdrl) $studies[] = "VDRL";
+if ($fta_abs) $studies[] = "FTA-ABS";
+if ($ppd) $studies[] = "PPD";
+if ($elisa_vih_1_y_2) $studies[] = "ELISA VIH 1 y 2";
+if ($acs_toxoplasmosis_igg_igm) $studies[] = "ACS Toxoplasmosis IgG/IgM";
+if ($factor_reumatoide) $studies[] = "Factor Reumatoide";
+if ($acs_anti_ccp) $studies[] = "ACS Anti-CCP";
+if ($antigeno_hla_b27) $studies[] = "Antígeno HLA-B27";
+if ($acs_antinucleares) $studies[] = "ACS Antinucleares";
+if ($acs_anticardiolipina) $studies[] = "ACS Anticardiolipina";
+if ($acs_p_ancasy_c_ancas) $studies[] = "ACS P-ANCAs y C-ANCAs";
+if ($otros_laboratorio) $studies[] = $otros_laboratorio;
+
+$sol_estudios = implode(", ", $studies);
+$fecha_ord = date("Y-m-d H:i:s");
+$det_labo = $otros_laboratorio ?? "Consulta médica";
+
+// Insert into ocular_examenes_laboratorio
 $sql = "INSERT INTO ocular_examenes_laboratorio (id_atencion, Id_exp, biometria_hematica, quimica_sanguinea, quimica_sanguinea_valores, tiempos_coagulacion, hemoglobina_glucosilada, examen_general_orina, electrocardiograma, pruebas_funcion_hepatica, antigeno_sars_cov_2, pcr_sars_cov_2, electroitos_sericos, pruebas_funcion_tiroidea, acs_anti_tiroglubolina, acs_antireceptores_tsh, acs_antiperoxadasa, velocidad_sedimentacion_globular, proteina_c_reactiva, vdrl, fta_abs, ppd, elisa_vih_1_y_2, acs_toxoplasmosis_igg_igm, factor_reumatoide, acs_anti_ccp, antigeno_hla_b27, acs_antinucleares, acs_anticardiolipina, acs_p_ancasy_c_ancas, otros_laboratorio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis", $id_atencion, $Id_exp, $biometria_hematica, $quimica_sanguinea, $quimica_sanguinea_valores, $tiempos_coagulacion, $hemoglobina_glucosilada, $examen_general_orina, $electrocardiograma, $pruebas_funcion_hepatica, $antigeno_sars_cov_2, $pcr_sars_cov_2, $electroitos_sericos, $pruebas_funcion_tiroidea, $acs_anti_tiroglubolina, $acs_antireceptores_tsh, $acs_antiperoxadasa, $velocidad_sedimentacion_globular, $proteina_c_reactiva, $vdrl, $fta_abs, $ppd, $elisa_vih_1_y_2, $acs_toxoplasmosis_igg_igm, $factor_reumatoide, $acs_anti_ccp, $antigeno_hla_b27, $acs_antinucleares, $acs_anticardiolipina, $acs_p_ancasy_c_ancas, $otros_laboratorio);
@@ -141,37 +186,6 @@ if ($stmt->execute()) {
     $edad = calculaedad($pac_fecnac);
 
     // Compile studies list for PDF
-    $studies = [];
-    if ($biometria_hematica) $studies[] = "Biometría Hemática";
-    if ($quimica_sanguinea) $studies[] = "Química Sanguínea ($quimica_sanguinea_valores elementos)";
-    if ($tiempos_coagulacion) $studies[] = "Tiempos de Coagulación (TP/TT)";
-    if ($hemoglobina_glucosilada) $studies[] = "Hemoglobina Glucosilada";
-    if ($examen_general_orina) $studies[] = "Examen General de Orina";
-    if ($electrocardiograma) $studies[] = "Electrocardiograma";
-    if ($pruebas_funcion_hepatica) $studies[] = "Pruebas de Función Hepática";
-    if ($antigeno_sars_cov_2) $studies[] = "Antígeno SARS-CoV-2";
-    if ($pcr_sars_cov_2) $studies[] = "PCR SARS-CoV-2";
-    if ($electroitos_sericos) $studies[] = "Electrolitos Séricos";
-    if ($pruebas_funcion_tiroidea) $studies[] = "Pruebas de Función Tiroidea";
-    if ($acs_anti_tiroglubolina) $studies[] = "AC'S Anti-Tiroglubolina";
-    if ($acs_antireceptores_tsh) $studies[] = "ACS Anti-Receptores TSH";
-    if ($acs_antiperoxadasa) $studies[] = "ACS Antiperoxadasa";
-    if ($velocidad_sedimentacion_globular) $studies[] = "Velocidad de Sedimentación Globular";
-    if ($proteina_c_reactiva) $studies[] = "Proteína C Reactiva";
-    if ($vdrl) $studies[] = "VDRL";
-    if ($fta_abs) $studies[] = "FTA-ABS";
-    if ($ppd) $studies[] = "PPD";
-    if ($elisa_vih_1_y_2) $studies[] = "ELISA VIH 1 y 2";
-    if ($acs_toxoplasmosis_igg_igm) $studies[] = "ACS Toxoplasmosis IgG/IgM";
-    if ($factor_reumatoide) $studies[] = "Factor Reumatoide";
-    if ($acs_anti_ccp) $studies[] = "ACS Anti-CCP";
-    if ($antigeno_hla_b27) $studies[] = "Antígeno HLA-B27";
-    if ($acs_antinucleares) $studies[] = "ACS Antinucleares";
-    if ($acs_anticardiolipina) $studies[] = "ACS Anticardiolipina";
-    if ($acs_p_ancasy_c_ancas) $studies[] = "ACS P-ANCAs y C-ANCAs";
-    if ($otros_laboratorio) $studies[] = $otros_laboratorio;
-
-    // Create numbered studies list
     $numbered_studies = [];
     foreach ($studies as $index => $study) {
         $numbered_studies[] = ($index + 1) . ". " . $study;
@@ -179,17 +193,17 @@ if ($stmt->execute()) {
     $studies_list = implode("\n", $numbered_studies);
 
     // Current date and time
-    $fecha_actual = date("d/m/Y H:i:s"); // 12:35 PM CST, May 26, 2025
+    $fecha_actual = date("d/m/Y H:i:s");
 
     // Create PDF class
     class PDF extends FPDF
     {
         function Header()
         {
-            // Load images with error checking
-            $left_image = "../../imagenes/INEOizquierda.png";
-            $center_image = "../../imagenes/INEOcentral.png";
-            $right_image = "../../imagenes/INEOderecha.png";
+            $base_path = $_SERVER['DOCUMENT_ROOT'] . '/INEO/imagenes/';
+            $left_image = $base_path . 'INEOizquierda.png';
+            $center_image = $base_path . 'INEOcentral.png';
+            $right_image = $base_path . 'INEOderecha.png';
 
             if (file_exists($left_image)) {
                 $this->Image($left_image, 7, 9, 40, 25);
@@ -226,10 +240,7 @@ if ($stmt->execute()) {
     $pdf->AliasNbPages();
     $pdf->AddPage();
 
-    // Set border color
     $pdf->SetDrawColor(43, 45, 127);
-
-    // Draw top border
     $pdf->Line(1, 8, 209, 8);
 
     $pdf->SetFont('Arial', 'B', 10);
@@ -239,9 +250,9 @@ if ($stmt->execute()) {
     $pdf->SetFont('Arial', '', 9);
     $pdf->Cell(0, 5, utf8_decode("Paciente: $folio - $pac_papell $pac_sapell $pac_nom_pac"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Signos vitales:"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Presión arterial:     $p_sistolica/$p_diastolica      mmHG      Frecuencia respiratoria: $f_resp      Resp/min       Temperatura: $temp      °C       Saturación oxígeno: $sat_oxigeno        %"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Edad: $edad                              Sexo: $pac_sexo                   Fecha de ingreso: $pac_fecing"), 0, 1, 'L');
-    $pdf->Cell(0, 5, utf8_decode("Fecha de solicitud: $fecha_actual                                  Fecha y hora de solicitud: $fecha_actual"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Presión arterial:        $p_sistolica/$p_diastolica       mmHG      Frecuencia respiratoria:       $f_resp Resp/min       Temperatura:       $temp °C      Saturación oxígeno:     $sat_oxigeno %"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Edad: $edad                                 Sexo: $pac_sexo                           Fecha de ingreso: $pac_fecing"), 0, 1, 'L');
+    $pdf->Cell(0, 5, utf8_decode("Fecha de solicitud: $fecha_actual                              Fecha y hora de solicitud: $fecha_actual"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Médico tratante: $doctor"), 0, 1, 'L');
     $pdf->Cell(0, 5, utf8_decode("Estudio(s) solicitado(s):"), 0, 1, 'L');
     $pdf->MultiCell(0, 5, utf8_decode($studies_list), 0, 'L');
@@ -254,25 +265,58 @@ if ($stmt->execute()) {
     $pdf->Cell(0, 5, utf8_decode("_____________________"), 0, 1, 'C');
     $pdf->Cell(0, 5, utf8_decode("Firma"), 0, 1, 'C');
 
-    // Get final Y position and add some padding
     $bottom_y = $pdf->GetY() + 10;
-
-    // Draw bottom border
     $pdf->Line(1, $bottom_y, 209, $bottom_y);
-
-    // Draw left and right borders to match the final height
     $pdf->Line(1, 8, 1, $bottom_y);
     $pdf->Line(209, 8, 209, $bottom_y);
 
-    // Clean output buffer and send PDF
-    ob_end_clean();
-    $pdf->Output('D', "solicitud_estudios_$folio" . date('Ymd_His') . ".pdf");
+    // Save PDF to file
+    $carpeta = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/solicitudes/';
+    if (!file_exists($carpeta)) {
+        if (!mkdir($carpeta, 0777, true)) {
+            error_log("Failed to create directory: $carpeta");
+        }
+    }
+    $nombre_pdf = "solicitud_estudios_{$folio}_" . date('Ymd_His') . ".pdf";
+    $nombreFinal = $carpeta . $nombre_pdf;
+    if (!is_writable($carpeta)) {
+        error_log("Directory not writable: $carpeta");
+    }
+
+    // Insert into notificaciones_labo with PDF filename
+    $sql_labo = "INSERT INTO notificaciones_labo (id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_labo, activo, realizado, pdf_solicitud) 
+                 VALUES (?, ?, ?, ?, ?, ?, 'SI', 'NO', ?)";
+    $stmt_labo = $conexion->prepare($sql_labo);
+    if (!$stmt_labo) {
+        error_log("Prepare failed for notificaciones_labo: " . $conexion->error);
+        ob_end_clean();
+        header("Location: examenes_lab.php?error=" . urlencode("Error en la consulta."));
+        exit();
+    }
+    $stmt_labo->bind_param("ississs", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_labo, $nombre_pdf);
+
+    if ($stmt_labo->execute()) {
+        if ($pdf->Output('F', $nombreFinal) === false) {
+            error_log("Failed to save PDF: $nombreFinal");
+        }
+        ob_end_clean();
+        $pdf->Output('D', $nombre_pdf); // Send to browser for download
+        exit();
+    } else {
+        error_log("Insert failed for notificaciones_labo: " . $stmt_labo->error);
+        ob_end_clean();
+        header("Location: examenes_lab.php?error=" . urlencode("Error al registrar notificación."));
+        exit();
+    }
 
     $stmt->close();
+    $stmt_labo->close();
     $conexion->close();
-    exit();
 } else {
+    error_log("Insert failed for ocular_examenes_laboratorio: " . $stmt->error);
+    $stmt->close();
     header("Location: examenes_lab.php?error=" . urlencode($conexion->error));
+    $conexion->close();
     exit();
 }
 ?>

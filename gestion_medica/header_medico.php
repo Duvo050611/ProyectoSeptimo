@@ -456,10 +456,10 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                             <font size="2"><span>VISUALIZAR SIGNOS VITALES</font></span>
                         </a>
 
-                    </li>
+                    </li> -->
 
-                    <li class="treeview">
-                        <a href="../hospitalizacion/ordenes_vista.php">
+                    <!-- <li class="treeview">
+                        <a href="/sauxiliares/Laboratorio/sol_laboratorio.php">
                             <i class="fa fa-files-o" aria-hidden="true"></i>
                             <font size="2"><span>INDICACIONES MÉDICAS</span></font>
                         </a>

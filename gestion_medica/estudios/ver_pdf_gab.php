@@ -16,23 +16,23 @@ $success_message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
     $anotacion = trim($_POST['anotacion']);
     if (!empty($anotacion)) {
-        // Fetch current det_labo
-        $sql = "SELECT det_labo FROM notificaciones_labo WHERE not_id = ?";
+        // Fetch current det_gab
+        $sql = "SELECT det_gab FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("i", $not_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        $current_det_labo = $row['det_labo'] ?? '';
+        $current_det_gab = $row['det_gab'] ?? '';
         $stmt->close();
 
         // Append new annotation with timestamp and user
-        $new_anotacion = $current_det_labo 
-            ? $current_det_labo . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
+        $new_anotacion = $current_det_gab 
+            ? $current_det_gab . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
             : "[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion;
 
-        // Update det_labo
-        $sql = "UPDATE notificaciones_labo SET det_labo = ? WHERE not_id = ?";
+        // Update det_gab
+        $sql = "UPDATE notificaciones_gabinete SET det_gab = ? WHERE id_not_gabinete = ?";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("si", $new_anotacion, $not_id);
         if ($stmt->execute()) {
@@ -49,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
 if ($not_id === 0) {
     $error_message = "ID de notificación inválido.";
 } else {
-    // Fetch lab result and det_labo
-    $file_doc = "SELECT not_id, resultado, det_labo FROM notificaciones_labo WHERE not_id = ?";
+    // Fetch Gabinete result and det_gab
+    $file_doc = "SELECT id_not_gabinete, resultado, det_gab FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
     $stmt = $conexion->prepare($file_doc);
     $stmt->bind_param("i", $not_id);
     $stmt->execute();
@@ -97,7 +97,7 @@ if ($not_id === 0) {
             border-radius: 5px;
             background-color: #f8f9fa;
         }
-        #det_labo_display {
+        #det_gab_display {
             white-space: pre-wrap;
             margin-bottom: 15px;
         }
@@ -108,7 +108,7 @@ if ($not_id === 0) {
     <div class="row">
         <div class="col-12">
             <h2>
-                <center><i class="fa fa-plus-square"></i> Resultados de Laboratorio</center>
+                <center><i class="fa fa-plus-square"></i> Resultados de Gabinete</center>
             </h2>
             <hr>
         </div>
@@ -130,13 +130,13 @@ if ($not_id === 0) {
                         $file_names = json_decode($row['resultado'], true);
                         if ($file_names && is_array($file_names)) {
                             $first_file = $file_names[0];
-                            $first_file_path = '/gestion_medica/notas_medicas/resultados/' . $first_file;
+                            $first_file_path = '/gestion_medica/notas_medicas/resultados_gabinete/' . $first_file;
                         ?>
                             <h3>Resultados Disponibles:</h3>
                             <ul>
                                 <?php
                                 foreach ($file_names as $index => $file_name) {
-                                    $file_path = '/gestion_medica/notas_medicas/resultados/' . $file_name;
+                                    $file_path = '/gestion_medica/notas_medicas/resultados_gabinete/' . $file_name;
                                     echo '<li><a href="' . htmlspecialchars($file_path) . '" class="result-file">Resultado ' . ($index + 1) . '</a></li>';
                                 }
                                 ?>
@@ -155,8 +155,8 @@ if ($not_id === 0) {
                 <div class="col-md-4">
                     <div class="annotation-area">
                         <h3>Anotaciones del Médico</h3>
-                        <?php if ($row && !empty($row['det_labo'])): ?>
-                            <div id="det_labo_display"><?php echo htmlspecialchars($row['det_labo']); ?></div>
+                        <?php if ($row && !empty($row['det_gab'])): ?>
+                            <div id="det_gab_display"><?php echo htmlspecialchars($row['det_gab']); ?></div>
                         <?php endif; ?>
                         <form method="post">
                             <div class="form-group">
