@@ -1,8 +1,13 @@
 <?php
+
+use PDF as GlobalPDF;
+
 ob_start();
 session_start();
 include "../../conexionbd.php";
 require '../../fpdf/fpdf.php';
+
+
 
 if (!isset($_SESSION['hospital'])) {
     header("Location: ../login.php");
@@ -200,38 +205,23 @@ if ($stmt->execute()) {
     {
         function Header()
         {
-            $base_path = $_SERVER['DOCUMENT_ROOT'] . '/INEO/imagenes/';
-            $left_image = $base_path . 'INEOizquierda.png';
-            $center_image = $base_path . 'INEOcentral.png';
-            $right_image = $base_path . 'INEOderecha.png';
+        include '../../conexionbd.php';
+            $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
+            while($f = mysqli_fetch_array($resultado)){
+            $bas=$f['img_ipdf'];
 
-            if (file_exists($left_image)) {
-                $this->Image($left_image, 7, 9, 40, 25);
-            } else {
-                error_log("Image not found: $left_image");
-            }
-
-            if (file_exists($center_image)) {
-                $this->Image($center_image, 58, 15, 109, 24);
-            } else {
-                error_log("Image not found: $center_image");
-            }
-
-            if (file_exists($right_image)) {
-                $this->Image($right_image, 168, 16, 38, 14);
-            } else {
-                error_log("Image not found: $right_image");
-            }
-
-            $this->Ln(25);
+            $this->Image("../../configuracion/admin/img2/".$bas, 7, 9, 40, 25);
+            $this->Image("../../configuracion/admin/img3/".$f['img_cpdf'],58,15, 109, 24);
+            $this->Image("../../configuracion/admin/img4/".$f['img_dpdf'], 168, 16, 38, 14);
         }
-
+        $this->Ln(32);
+        }
         function Footer()
         {
+            $this->Ln(8);
             $this->SetY(-15);
-            $this->SetFont('Arial', '', 8);
             $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
-            $this->Cell(0, 10, utf8_decode('MAC-010'), 0, 1, 'R');
+            $this->Cell(0, 10, utf8_decode('INEO-000'), 0, 1, 'R');
         }
     }
 
@@ -298,26 +288,19 @@ if ($stmt->execute()) {
     if ($stmt_labo->execute()) {
         if ($pdf->Output('F', $nombreFinal) === false) {
             error_log("Failed to save PDF: $nombreFinal");
-            ob_end_clean();
-            header("Location: examenes_lab.php?error=" . urlencode("Error al guardar el PDF."));
-            exit();
+            header("Location: examenes_lab.php?error=" . urlencode("Error al generar PDF."));
         }
-        
+
         // Store success message in session
         $_SESSION['message'] = "Solicitud registrada y PDF generado exitosamente.";
         $_SESSION['message_type'] = "success";
-        
-        // Clean output buffer
+
         ob_end_clean();
-        
-        // Construct the URL for the PDF
-        $pdf_url = "/gestion_medica/notas_medicas/solicitudes/" . $nombre_pdf;
-        
-        // Redirect to the front-end page with a JavaScript command to open the PDF in a new tab
+        $pdf_url = "/gestion_medica/notas_medicas/solicitudes/".$nombre_pdf;
         echo "<script>
-                window.open('$pdf_url', '_blank');
-                window.location.href = 'examenes_lab.php';
-            </script>";
+        window.open('$pdf_url', '_blank');
+        window.location.href = 'examenes_lab.php';
+        </script>";
         exit();
     } else {
         error_log("Insert failed for notificaciones_labo: " . $stmt_labo->error);

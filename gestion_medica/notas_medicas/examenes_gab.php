@@ -7,12 +7,12 @@ if (!isset($_SESSION['hospital'])) {
 }
 include("../header_medico.php");
 
-// Fetch exams from the catalog
-$sql_exams = "SELECT id_examen, nombre_examen FROM cat_examenes_gabinete WHERE activo = 'SI' ORDER BY nombre_examen";
-$result_exams = $conexion->query($sql_exams);
-$exams = [];
-while ($row = $result_exams->fetch_assoc()) {
-    $exams[] = $row;
+// Fetch services from the catalog
+$sql_services = "SELECT id_serv, serv_desc FROM cat_servicios WHERE serv_activo = 'SI' ORDER BY serv_desc";
+$result_services = $conexion->query($sql_services);
+$services = [];
+while ($row = $result_services->fetch_assoc()) {
+    $services[] = $row;
 }
 ?>
 
@@ -21,7 +21,6 @@ while ($row = $result_exams->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <title>EXÁMENES DE GABINETE</title>
-    <!-- <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /> -->
     <link rel="stylesheet" type="text/css" href="css/select2.css">
     <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -44,7 +43,25 @@ while ($row = $result_exams->fetch_assoc()) {
         .modal-lg { max-width: 70% !important; }
         .botones { margin-bottom: 5px; }
         .thead { background-color: #2b2d7f; color: white; font-size: 22px; padding: 10px; text-align: center; }
+        .search-container { margin-bottom: 15px; }
+        .search-container input { width: 100%; padding: 8px; font-size: 16px; }
     </style>
+    <script>
+        $(document).ready(function() {
+            // Search filter for services
+            $('#serviceSearch').on('keyup', function() {
+                var searchText = $(this).val().toLowerCase();
+                $('.service-item').each(function() {
+                    var serviceText = $(this).find('label').text().toLowerCase();
+                    if (serviceText.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -54,14 +71,13 @@ while ($row = $result_exams->fetch_assoc()) {
                 role="alert">
                 <?php echo htmlspecialchars($_SESSION['message']); ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">×</span>
                 </button>
             </div>
             <?php
-        // Limpiar el mensaje
-        unset($_SESSION['message']);
-        unset($_SESSION['message_type']);
-        ?>
+            unset($_SESSION['message']);
+            unset($_SESSION['message_type']);
+            ?>
             <?php endif; ?>
         </div>
         <div class="row">
@@ -241,7 +257,6 @@ while ($row = $result_exams->fetch_assoc()) {
                         ?>
                     </div>
                     <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
-                    
                 </div>
                 <div class="row">
                     <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
@@ -251,7 +266,7 @@ while ($row = $result_exams->fetch_assoc()) {
                 <div class="row">
                     <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
                     <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area;?> </strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $area; ?> </strong></div>
                 </div>
             </div>
         </div>
@@ -260,7 +275,7 @@ while ($row = $result_exams->fetch_assoc()) {
     <div class="container">
         <div class="thead"><strong><center>EXÁMENES DE GABINETE</center></strong></div>
         <form action="insertar_examenes_gab.php" method="POST">
-            <div class="accordion mt-3" id="examAccordion">
+            <div class="accordion mt-3" id="serviceAccordion">
                 <div class="card">
                     <div class="card-header" id="headingGab">
                         <h2 class="mb-0">
@@ -270,18 +285,21 @@ while ($row = $result_exams->fetch_assoc()) {
                             </button>
                         </h2>
                     </div>
-                    <div id="collapseGab" class="collapse show" aria-labelledby="headingGab" data-parent="#examAccordion">
+                    <div id="collapseGab" class="collapse show" aria-labelledby="headingGab" data-parent="#serviceAccordion">
                         <div class="card-body">
                             <div class="form-group">
-                                <?php foreach ($exams as $exam) { ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="examenes[<?php echo $exam['id_examen']; ?>]" id="examen_<?php echo $exam['id_examen']; ?>" value="1">
-                                        <label class="form-check-label" for="examen_<?php echo $exam['id_examen']; ?>">
-                                            <?php echo htmlspecialchars($exam['nombre_examen']); ?>
+                                <div class="search-container">
+                                    <input type="text" id="serviceSearch" class="form-control" placeholder="Buscar exámenes...">
+                                </div>
+                                <?php foreach ($services as $service) { ?>
+                                    <div class="form-check service-item">
+                                        <input class="form-check-input" type="checkbox" name="services[<?php echo $service['id_serv']; ?>]" id="service_<?php echo $service['id_serv']; ?>" value="1">
+                                        <label class="form-check-label" for="service_<?php echo $service['id_serv']; ?>">
+                                            <?php echo htmlspecialchars($service['serv_desc']); ?>
                                         </label>
                                     </div>
                                 <?php } ?>
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="otros_gabinete">Otros:</label>
                                     <textarea class="form-control" name="otros_gabinete" id="otros_gabinete" rows="2"></textarea>
                                 </div>
