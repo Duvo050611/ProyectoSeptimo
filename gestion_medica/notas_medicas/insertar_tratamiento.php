@@ -2,14 +2,22 @@
 session_start();
 include "../../conexionbd.php";
 
-if (!isset($_SESSION['hospital'])) {
+if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
     header("Location: ../login.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_atencion = $_SESSION['hospital'];
-    $usuario = $_SESSION['login'];
+    $id_usua = isset($_POST['id_usua']) ? (int)$_POST['id_usua'] : 0;
+
+    // Validate id_usua
+    if ($id_usua === 0) {
+        $_SESSION['message'] = "Error: ID de usuario no válido.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: diagnostico.php");
+        exit();
+    }
 
     // Get Id_exp from dat_ingreso
     $stmt = $conexion->prepare("SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?");
@@ -49,15 +57,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert into ocular_tratamiento
     $stmt = $conexion->prepare("
         INSERT INTO ocular_tratamiento (
-            Id_exp, id_atencion, medicamento_derecho, tipo_tratamiento_derecho, procedimientos_derecho, quirurgico_derecho,
-            medicamento_izquierdo, tipo_tratamiento_izquierdo, procedimientos_izquierdo, quirurgico_izquierdo,
-            usuario_registro
+            Id_exp, id_atencion, id_usua, medicamento_derecho, tipo_tratamiento_derecho, procedimientos_derecho, quirurgico_derecho,
+            medicamento_izquierdo, tipo_tratamiento_izquierdo, procedimientos_izquierdo, quirurgico_izquierdo
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
+    if (!$stmt) {
+        $_SESSION['message'] = "Error preparando la consulta: " . $conexion->error;
+        $_SESSION['message_type'] = "danger";
+        header("Location: diagnostico.php");
+        exit();
+    }
+
     $stmt->bind_param(
-        "sisssssssss",
+        "iiissssssss",
         $id_exp,
         $id_atencion,
+        $id_usua,
         $medicamento_derecho,
         $tipo_tratamiento_derecho,
         $procedimientos_derecho,
@@ -65,15 +80,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $medicamento_izquierdo,
         $tipo_tratamiento_izquierdo,
         $procedimientos_izquierdo,
-        $quirurgico_izquierdo,
-        $usuario
+        $quirurgico_izquierdo
     );
 
     if ($stmt->execute()) {
         $_SESSION['message'] = "Tratamiento registrado exitosamente.";
         $_SESSION['message_type'] = "success";
     } else {
-        $_SESSION['message'] = "Error al registrar el tratamiento: " . $stmt->error;
+        $_SESSION['message'] = "Error al registrar: " . $stmt->error;
         $_SESSION['message_type'] = "danger";
     }
 

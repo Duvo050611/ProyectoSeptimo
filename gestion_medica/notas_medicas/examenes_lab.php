@@ -279,6 +279,7 @@ include("../header_medico.php");
                 <center>EXÁMENES DE LABORATORIO</center>
             </strong></div>
         <form action="insertar_examenes_lab.php" method="POST">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="accordion mt-3" id="examAccordion">
                 <div class="card">
                     <div class="card-header" id="headingLab">

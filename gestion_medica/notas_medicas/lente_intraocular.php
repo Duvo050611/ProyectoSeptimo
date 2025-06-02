@@ -294,6 +294,7 @@ $usuario = $_SESSION['login'];
             </strong>
         </div>
         <form action="insertar_lente_intraocular.php" method="POST" onsubmit="return checkSubmit();">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <!-- Eye-Specific Sections -->
             <div class="accordion mt-3" id="eyeAccordion">
                 <!-- Right Eye -->

@@ -405,6 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proxima_cita']) && is
 
         </div>
         <form action="insertar_recomendaciones.php" method="POST" class="mt-4" onsubmit="return checkSubmit();">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="form-group">
                 <label for="notas_internas">Notas Internas <span class="no-print">(No se imprime)</span></label>
                 <div class="botones">

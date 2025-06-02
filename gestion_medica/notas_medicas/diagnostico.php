@@ -467,6 +467,7 @@ if ($error_message) {
         <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
         <?php endif; ?>
         <form action="insertar_diagnostico.php" method="POST" onsubmit="return checkSubmit();">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="form-group mt-3">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="checkbox" name="oftalmologicamente_sano"
@@ -995,6 +996,7 @@ if ($error_message) {
         <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
         <?php endif; ?>
         <form action="insertar_tratamiento.php" method="POST" onsubmit="return checkSubmitTratamiento();">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="form-group" id="usar_tratamientos_previos_section"> <br>
                 <label for="tratamiento_previo"><strong>Usar Tratamientos Previos:</strong></label> <br>
                 <select class="form-control" name="tratamiento_previo" id="tratamiento_previo">
@@ -1324,6 +1326,7 @@ if ($error_message) {
                 <center>TRATAMIENTO LÁSER</center>
             </strong></div>
         <form action="insertar_tratamiento_laser.php" method="POST">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="accordion mt-3" id="eyeAccordion">
                 <div class="card">
                     <div class="card-header" id="headingRight">

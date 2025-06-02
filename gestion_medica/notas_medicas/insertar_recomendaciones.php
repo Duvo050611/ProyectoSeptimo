@@ -2,14 +2,22 @@
 session_start();
 include "../../conexionbd.php";
 
-if (!isset($_SESSION['hospital'])) {
+if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
     header("Location: ../login.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_atencion = $_SESSION['hospital'];
-    $usuario = $_SESSION['login'];
+    $id_usua = isset($_POST['id_usua']) ? (int)$_POST['id_usua'] : 0;
+
+    // Validate id_usua
+    if ($id_usua === 0) {
+        $_SESSION['message'] = "Error: ID de usuario no válido.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: recomendaciones.php");
+        exit();
+    }
 
     // Get Id_exp from dat_ingreso
     $stmt = $conexion->prepare("SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?");
@@ -35,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recomendaciones_oi = trim($_POST['recomendaciones_oi'] ?? '');
     $recomendaciones_general = trim($_POST['recomendaciones_general'] ?? '');
     $educacion_paciente = trim($_POST['educacion_paciente'] ?? '');
-    $pronostico = !empty($_POST['pronostico']) ? implode(', ', $_POST['pronostico']) : '';
+    $pronostico = !empty($_POST['pronostico']) ? implode(', ', (array)$_POST['pronostico']) : '';
     $pronostico_text = trim($_POST['pronostico_text'] ?? '');
     $proxima_cita_date = trim($_POST['proxima_cita'] ?? '');
     $proxima_cita_time = trim($_POST['intervalo'] ?? '');
@@ -46,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $doctor = !empty($_POST['doctor']) ? (int)$_POST['doctor'] : null;
     $interconsultas_text = trim($_POST['interconsultas_text'] ?? '');
     $observaciones_justificante = trim($_POST['observaciones_justificante'] ?? '');
+    $usuario_registro = $_SESSION['login']['papell'] ?? 'Desconocido';
 
     // Check if at least one field is filled
     $text_fields = [
@@ -63,16 +72,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert into ocular_recomendaciones
     $stmt = $conexion->prepare("
         INSERT INTO ocular_recomendaciones (
-            Id_exp, id_atencion, notas_internas, observaciones_od, observaciones_oi, recomendaciones_od,
+            Id_exp, id_atencion, id_usua, notas_internas, observaciones_od, observaciones_oi, recomendaciones_od,
             recomendaciones_oi, recomendaciones_general, educacion_paciente, pronostico, pronostico_text,
             proxima_cita, con_resultados, cirugia, especialista, doctor, interconsultas_text,
             observaciones_justificante, usuario_registro
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
+    if (!$stmt) {
+        error_log("Prepare failed for ocular_recomendaciones: " . $conexion->error);
+        $_SESSION['message'] = "Error preparando la consulta.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: recomendaciones.php");
+        exit();
+    }
     $stmt->bind_param(
-        "iisssssssssssiiisss",
+        "iiissssssssssiiissss",
         $id_exp,
         $id_atencion,
+        $id_usua,
         $notas_internas,
         $observaciones_od,
         $observaciones_oi,
@@ -89,13 +106,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $doctor,
         $interconsultas_text,
         $observaciones_justificante,
-        $usuario
+        $usuario_registro
     );
 
     if ($stmt->execute()) {
         $_SESSION['message'] = "Recomendaciones registradas exitosamente.";
         $_SESSION['message_type'] = "success";
     } else {
+        error_log("Insert failed for ocular_recomendaciones: " . $stmt->error);
         $_SESSION['message'] = "Error al registrar las recomendaciones: " . $stmt->error;
         $_SESSION['message_type'] = "danger";
     }

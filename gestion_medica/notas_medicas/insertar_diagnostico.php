@@ -2,7 +2,7 @@
 session_start();
 include "../../conexionbd.php";
 
-if (!isset($_SESSION['hospital'])) {
+if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
     header("Location: ../login.php");
     exit();
 }
@@ -10,6 +10,15 @@ if (!isset($_SESSION['hospital'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Prepare data
     $id_atencion = $_SESSION['hospital'];
+    $id_usua = isset($_POST['id_usua']) ? (int)$_POST['id_usua'] : 0;
+    
+    // Validate id_usua
+    if ($id_usua === 0) {
+        $_SESSION['message'] = "Error: ID de usuario no válido.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: diagnostico.php");
+        exit();
+    }
     
     // Fetch Id_exp
     $stmt = $conexion->prepare("SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?");
@@ -48,15 +57,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare and execute SQL query
     $sql = "INSERT INTO ocular_diagnostico (
-        id_atencion, Id_exp, oftalmologicamente_sano, sin_diagnostico_cie10, diagnostico_previo,
+        id_atencion, id_usua, Id_exp, oftalmologicamente_sano, sin_diagnostico_cie10, diagnostico_previo,
         diagnostico_principal_derecho, codigo_cie_derecho, desc_cie_derecho, tipo_diagnostico_derecho, otros_diagnosticos_derecho,
         diagnostico_principal_izquierdo, codigo_cie_izquierdo, desc_cie_izquierdo, tipo_diagnostico_izquierdo, otros_diagnosticos_izquierdo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conexion->prepare($sql);
+    if (!$stmt) {
+        $_SESSION['message'] = "Error preparando la consulta: " . $conexion->error;
+        $_SESSION['message_type'] = "danger";
+        header("Location: diagnostico.php");
+        exit();
+    }
+    
     $stmt->bind_param(
-        "iiissssssssssss",
+        "iiiiisssssssssss",
         $id_atencion,
+        $id_usua,
         $id_exp,
         $oftalmologicamente_sano,
         $sin_diagnostico_cie10,
@@ -77,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['message'] = "Diagnóstico guardado exitosamente.";
         $_SESSION['message_type'] = "success";
     } else {
-        $_SESSION['message'] = "Error al guardar el diagnóstico: " . $stmt->error;
+        $_SESSION['message'] = "Error al guardar: " . $stmt->error;
         $_SESSION['message_type'] = "danger";
     }
 
@@ -86,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: diagnostico.php");
     exit();
 } else {
-    $_SESSION['message'] = "Método no permitido.";
+    $_SESSION['mensaje'] = "Método no permitido.";
     $_SESSION['message_type'] = "danger";
     header("Location: diagnostico.php");
     exit();
