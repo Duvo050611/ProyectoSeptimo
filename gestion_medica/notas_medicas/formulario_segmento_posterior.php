@@ -8,13 +8,12 @@ if (!isset($_SESSION['hospital'])) {
     exit();
 }
 
-$usuario = $_SESSION['login'] ?? '';
-
 if ($conexion) {
     $id_atencion = $_SESSION['hospital'];
-    $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup
-                FROM paciente p, dat_ingreso di
-                WHERE p.Id_exp=di.Id_exp AND di.id_atencion = ?";
+    $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup, di.id_usua
+                FROM paciente p
+                INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp
+                WHERE di.id_atencion = ?";
     $stmt = $conexion->prepare($sql_pac);
     $stmt->bind_param("i", $id_atencion);
     $stmt->execute();
@@ -36,6 +35,7 @@ if ($conexion) {
         $pac_area = $row_pac['area'];
         $pac_alta_med = $row_pac['alta_med'];
         $pac_alergias = $row_pac['alergias'];
+        $pac_id_usua = $row_pac['id_usua'];
     }
 
     $stmt->close();
@@ -147,6 +147,12 @@ if ($conexion) {
 <body class="container mt-4">
   <h2 class="mb-4 text-primary">Segmento Posterior</h2>
   <form action="guardar_segmento_posterior.php" method="POST">
+
+<input type="hidden" name="id_exp" value="<?= htmlspecialchars($pac_id_exp) ?>">
+    <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
+    <input type="hidden" name="id_atencion" value="<?= htmlspecialchars($id_atencion) ?>">
+    <input type="hidden" name="bajo_dilatacion" value="si">
+
   <div class="contenedor">
     
     <!-- Columna Ojo Derecho -->
@@ -194,7 +200,8 @@ if ($conexion) {
   </div>
 
   <div class="form-footer">
-    <button type="submit">Guardar</button>
+    <button type="submit" class="btn btn-primary">FIRMAR</button>
+<a href="../hospitalizacion/vista_pac_hosp.php" class="btn btn-secondary">Cancelar</a>
   </div>
 </form>
 

@@ -341,10 +341,10 @@ $usuario = $_SESSION['login'];
 
                     ?>
                     <tr>
-                        <td><a href="../pdf/pdf_vias.php?id=<?php echo $id; ?>&id_exp=<?php echo $id_exp?>&id_atencion=<?php echo $id_atencion?>" 
+                        <td><a href="../pdf/pdf_seg_post.php?id=<?php echo $id; ?>&id_exp=<?php echo $id_exp?>&id_atencion=<?php echo $id_atencion?>" 
                         target="_blank" ><button type="button" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button></td>
-                        <td><strong><?php $date=date_create($f['fecha_registro']); echo date_format($date,"d/m/Y");?></strong></td>
-                        <td><strong><?php $date=date_create($f['fecha_registro']); echo date_format($date,"H:i").' horas';?></strong></td>
+                        <td><strong><?php $date=date_create($f['creado_en']); echo date_format($date,"d/m/Y");?></strong></td>
+                        <td><strong><?php $date=date_create($f['creado_en']); echo date_format($date,"H:i").' horas';?></strong></td>
                     </tr>
                     <?php
                 }
