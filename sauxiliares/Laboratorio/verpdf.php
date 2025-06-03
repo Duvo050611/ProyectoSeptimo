@@ -1,57 +1,78 @@
 <?php
+// Start session and ensure no output before this
+ob_start();
 session_start();
 include "../../conexionbd.php";
 include "../header_labo.php";
 
 if (!isset($_SESSION['login']) || !in_array($_SESSION['login']['id_rol'], [4, 5, 10])) {
+    ob_end_clean();
     header("Location: ../../index.php");
     exit();
 }
 
-$not_id = isset($_GET['not_id']) ? (int)$_GET['not_id'] : 0;
+$not_id = isset($_GET['not_id']) && is_numeric($_GET['not_id']) ? (int)$_GET['not_id'] : 0;
 $usuario = $_SESSION['login'];
 $error_message = '';
 $success_message = '';
 
+// Generate CSRF token
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Define upload directory for file validation
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
+$base_url = '/gestion_medica/notas_medicas/resultados/';
+$allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
+
+// Handle annotation submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
-    $anotacion = trim($_POST['anotacion']);
-    if (!empty($anotacion)) {
-        // Fetch current det_labo
-        $sql = "SELECT det_labo FROM notificaciones_labo WHERE not_id = ?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("i", $not_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $current_det_labo = $row['det_labo'] ?? '';
-        $stmt->close();
-
-        // Append new annotation with timestamp and user
-        $new_anotacion = $current_det_labo 
-            ? $current_det_labo . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
-            : "[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion;
-
-        // Update det_labo
-        $sql = "UPDATE notificaciones_labo SET det_labo = ? WHERE not_id = ?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("si", $new_anotacion, $not_id);
-        if ($stmt->execute()) {
-            $success_message = "Anotación guardada correctamente.";
-        } else {
-            $error_message = "Error al guardar la anotación: " . $conexion->error;
-        }
-        $stmt->close();
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error_message = "Error de seguridad: token CSRF inválido.";
     } else {
-        $error_message = "La anotación no puede estar vacía.";
+        $anotacion = trim($_POST['anotacion']);
+        if (!empty($anotacion)) {
+            // Fetch current det_labo
+            $sql = "SELECT det_labo FROM notificaciones_labo WHERE not_id = ?";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("i", $not_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $current_det_labo = $row['det_labo'] ?? '';
+            $stmt->close();
+
+            // Append new annotation with timestamp and user
+            $new_anotacion = $current_det_labo
+                ? $current_det_labo . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
+                : "[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion;
+
+            // Update det_labo
+            $sql = "UPDATE notificaciones_labo SET det_labo = ? WHERE not_id = ?";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("si", $new_anotacion, $not_id);
+            if ($stmt->execute()) {
+                $success_message = "Anotación guardada correctamente.";
+                // Regenerate CSRF token after successful submission
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            } else {
+                $error_message = "Error al guardar la anotación: " . $conexion->error;
+            }
+            $stmt->close();
+        } else {
+            $error_message = "La anotación no puede estar vacía.";
+        }
     }
 }
 
+// Validate not_id and fetch data
 if ($not_id === 0) {
     $error_message = "ID de notificación inválido.";
 } else {
     // Fetch lab result and det_labo
-    $file_doc = "SELECT not_id, resultado, det_labo FROM notificaciones_labo WHERE not_id = ?";
-    $stmt = $conexion->prepare($file_doc);
+    $sql = "SELECT not_id, resultado, det_labo FROM notificaciones_labo WHERE not_id = ?";
+    $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $not_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -64,51 +85,51 @@ if ($not_id === 0) {
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-            crossorigin="anonymous"></script>
-    <!-- Popper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+    <!-- Bootstrap 4.5.2 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Font Awesome 5.15.4 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- jQuery 3.5.1 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- Popper.js 1.16.0 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <!-- Bootstrap 4.5.2 JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <title>Detalles de Resultados de Laboratorio</title>
+    <style>
+        .preview-container { max-width: 100%; height: 600px; overflow: auto; margin-bottom: 20px; }
+        .preview-container img { max-width: 100%; height: auto; }
+        .preview-container iframe { width: 100%; height: 600px; border: none; }
+        .annotation-area { border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
+        #det_labo_display { white-space: pre-wrap; margin-bottom: 15px; }
+        .missing-file { color: red; font-style: italic; }
+    </style>
     <script>
         $(document).ready(function() {
             $('.result-file').click(function(e) {
                 e.preventDefault();
-                var newSrc = $(this).attr('href');
-                $('#pdfViewer').attr('src', newSrc);
+                var fileUrl = $(this).attr('href');
+                var fileExt = fileUrl.split('.').pop().toLowerCase();
+                var $previewArea = $('#previewArea');
+                
+                $previewArea.empty();
+                if (fileExt === 'pdf') {
+                    $previewArea.html('<iframe src="' + fileUrl + '" class="preview-container"></iframe>');
+                } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
+                    $previewArea.html('<img src="' + fileUrl + '" alt="Resultado" class="preview-container">');
+                } else {
+                    $previewArea.html('<p>Formato de archivo no compatible para vista previa. <a href="' + fileUrl + '" download>Descargar archivo</a></p>');
+                }
             });
         });
     </script>
-    <style>
-        .annotation-area {
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-        }
-        #det_labo_display {
-            white-space: pre-wrap;
-            margin-bottom: 15px;
-        }
-    </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h2>
-                <center><i class="fa fa-plus-square"></i> Resultados de Laboratorio</center>
+            <h2 class="text-center">
+                <i class="fas fa-flask"></i> Resultados de Laboratorio
             </h2>
             <hr>
         </div>
@@ -125,32 +146,57 @@ if ($not_id === 0) {
                         <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
                     <?php elseif ($success_message): ?>
                         <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
-                    <?php elseif ($row && !empty($row['resultado'])): ?>
+                    <?php elseif ($row): ?>
                         <?php
-                        $file_names = json_decode($row['resultado'], true);
-                        if ($file_names && is_array($file_names)) {
+                        // Parse resultado as comma-separated string
+                        $file_names = $row['resultado'] ? array_map('trim', explode(',', $row['resultado'])) : [];
+                        $first_file_path = '';
+                        if (!empty($file_names)) {
                             $first_file = $file_names[0];
-                            $first_file_path = '/gestion_medica/notas_medicas/resultados/' . $first_file;
+                            $first_file_path = $base_url . $first_file;
+                        }
                         ?>
-                            <h3>Resultados Disponibles:</h3>
-                            <ul>
-                                <?php
-                                foreach ($file_names as $index => $file_name) {
-                                    $file_path = '/gestion_medica/notas_medicas/resultados/' . $file_name;
-                                    echo '<li><a href="' . htmlspecialchars($file_path) . '" class="result-file">Resultado ' . ($index + 1) . '</a></li>';
-                                }
-                                ?>
+                        <h3>Resultados Disponibles:</h3>
+                        <?php if (!empty($file_names)): ?>
+                            <ul class="list-group mb-3">
+                                <?php foreach ($file_names as $index => $file_name): ?>
+                                    <?php
+                                    // Sanitize filename to prevent directory traversal
+                                    $file_name = basename($file_name);
+                                    $file_path = $base_url . $file_name;
+                                    $file_exists = file_exists($upload_dir . $file_name);
+                                    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                                    ?>
+                                    <li class="list-group-item">
+                                        <a href="<?php echo htmlspecialchars($file_path); ?>" class="result-file">
+                                            Resultado <?php echo ($index + 1); ?>
+                                            <?php if (!$file_exists): ?>
+                                                <span class="missing-file">(No encontrado)</span>
+                                            <?php endif; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
                             </ul>
-                            <center>
-                                <h3>Vista Previa</h3>
-                                <iframe id="pdfViewer" src="<?php echo htmlspecialchars($first_file_path); ?>" width="100%" height="600px"></iframe>
-                            </center>
-                        <?php } else { ?>
-                            <div class="alert alert-warning">No se encontraron archivos válidos.</div>
-                        <?php } ?>
+                            <h3>Vista Previa</h3>
+                            <div id="previewArea" class="preview-container">
+                                <?php if ($first_file_path && file_exists($upload_dir . $first_file)): ?>
+                                    <?php if (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['pdf'])): ?>
+                                        <iframe src="<?php echo htmlspecialchars($first_file_path); ?>" class="preview-container"></iframe>
+                                    <?php elseif (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg'])): ?>
+                                        <img src="<?php echo htmlspecialchars($first_file_path); ?>" alt="Resultado" class="preview-container">
+                                    <?php else: ?>
+                                        <p>Formato de archivo no compatible para vista previa. <a href="<?php echo htmlspecialchars($first_file_path); ?>" download>Descargar archivo</a></p>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <p>No hay archivos disponibles para vista previa.</p>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-warning">No se encontraron archivos de resultados.</div>
+                        <?php endif; ?>
                     <?php else: ?>
                         <div class="alert alert-danger">No se encontraron resultados para la notificación ID <?php echo $not_id; ?>.</div>
-                    <?php endif ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -161,9 +207,13 @@ if ($not_id === 0) {
     <?php include "../../template/footer.php"; ?>
 </footer>
 
-<script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-<script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+<!-- Temporarily disable duplicate jQuery and fastclick to avoid conflicts -->
+<!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
+<!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
 <script src="../../template/dist/js/app.min.js"></script>
 </body>
 </html>
-<?php $conexion->close(); ?>
+<?php
+$conexion->close();
+ob_end_flush();
+?>
