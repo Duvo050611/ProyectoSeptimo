@@ -1,57 +1,62 @@
 <?php
+// Start session and ensure no output before this
+ob_start();
 session_start();
 include "../../conexionbd.php";
 
 // Ensure session variable exists
 if (!isset($_SESSION['login'])) {
+    ob_end_clean();
     header("Location: ../../index.php");
-    exit;
+    exit();
 }
 
 $usuario = $_SESSION['login'];
 
-// Role-based header inclusion
+// Role-based header inclusion and access control
 if (in_array($usuario['id_rol'], [4, 5, 10, 12])) {
     include "../header_labo.php";
 } else {
+    ob_end_clean();
     echo "<script>window.location='../../index.php';</script>";
-    exit;
+    exit();
 }
 
-// Initial query (not used in table, but kept for compatibility)
-$resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triage.id_triage
-    FROM paciente 
-    INNER JOIN dat_ingreso ON paciente.Id_exp=dat_ingreso.Id_exp
-    INNER JOIN triage ON dat_ingreso.id_atencion=triage.id_atencion WHERE id_triage=id_triage
-") or die($conexion->error);
-
+// Define file paths
+$solicitudes_dir = '/gestion_medica/notas_medicas/solicitudes_gabinete/';
+$resultados_dir = '/gestion_medica/notas_medicas/resultados_gabinete/';
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-    <!-- Bootstrap CSS -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- Bootstrap 4.0.0 CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Bootstrap Select CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- jQuery 3.2.1 Slim -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!-- Popper.js 1.12.9 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <!-- Bootstrap 4.0.0 JS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- Bootstrap Select JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-    <!-- jQuery for search -->
+    <!-- jQuery 3.1.0 for search -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
             $("#search").keyup(function() {
                 _this = this;
                 $.each($("#mytable tbody tr"), function() {
-                    if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+                    if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
                         $(this).hide();
-                    else
+                    } else {
                         $(this).show();
+                    }
                 });
             });
         });
@@ -71,7 +76,7 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
     <?php endif; ?>
     <br><br>
     <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 25px;">
-        <center><strong>RESULTADOS DE ESTUDIOS DE LABORATORIO</strong></center>
+        <center><strong>RESULTADOS DE ESTUDIOS DE GABINETE</strong></center>
     </div><br>
 
     <section class="content container-fluid">
@@ -103,11 +108,11 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
                         <?php
                         // Main query using prepared statements
                         $query = "SELECT n.*, u.papell AS solicitante_papell, u.sapell AS solicitante_sapell, u2.papell AS resp_papell, u2.sapell AS resp_sapell
-                                  FROM notificaciones_labo n
+                                  FROM notificaciones_gabinete n
                                   JOIN reg_usuarios u ON n.id_usua = u.id_usua
                                   LEFT JOIN reg_usuarios u2 ON n.id_usua_resul = u2.id_usua
                                   WHERE n.realizado = 'SI'
-                                  ORDER BY n.fecha_resul DESC";
+                                  ORDER BY n.fecha_resultado DESC";
                         $stmt = $conexion->prepare($query);
                         $stmt->execute();
                         $result = $stmt->get_result();
@@ -116,11 +121,11 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
                         while ($row = $result->fetch_assoc()) {
                             $habi = $row['habitacion'];
                             $id_atencion = $row['id_atencion'];
-                            $not_id = $row['not_id'];
+                            $not_id = $row['id_not_gabinete'];
 
                             // Skip invalid rows
                             if (empty($id_atencion) || empty($not_id)) {
-                                error_log("Invalid data: id_atencion=$id_atencion, not_id=$not_id");
+                                error_log("Invalid data: id_atencion=$id_atencion, id_not_gabinete=$not_id");
                                 continue;
                             }
 
@@ -178,23 +183,23 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
                             }
                             echo '</td>'
                                 . '<td><center>'
-                                . '<a href="../Laboratorio/pdf_solicitud_estu.php?not_id=' . (int)$not_id . '&id_atencion=' . (int)$id_atencion . '" target="_blank">'
+                                . '<a href="../Laboratorio/pdf_solicitud_gabinete.php?not_id=' . (int)$not_id . '&id_atencion=' . (int)$id_atencion . '" target="_blank">'
                                 . '<button type="button" class="btn btn-success"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>'
                                 . '</a></center></td>'
                                 . '<td><center>'
-                                . '<a href="../Laboratorio/editar_labo.php?not_id=' . (int)$not_id . '" title="Editar resultados" class="btn btn-danger"><i class="fa fa-edit" aria-hidden="true"></i></a>'
+                                . '<a href="../Laboratorio/editar_gab.php?id_not_gabinete=' . (int)$not_id . '" title="Editar resultados" class="btn btn-danger"><i class="fa fa-edit" aria-hidden="true"></i></a>'
                                 . '</center></td>'
                                 . '<td><center>'
-                                . '<a href="../Laboratorio/verpdf.php?not_id=' . (int)$not_id . '" title="Ver resultados" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>'
+                                . '<a href="../Laboratorio/verpdf_gabinete.php?not_id=' . (int)$not_id . '" title="Ver resultados" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>'
                                 . '</center></td>';
 
                             if ($usuario1['id_rol'] == 5) {
                                 echo '<td><center>'
-                                    . '<a href="el_est.php?not_id=' . (int)$not_id . '" title="Eliminar estudio" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></a>'
+                                    . '<a href="el_gab.php?id_not_gabinete=' . (int)$not_id . '" title="Eliminar estudio" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></a>'
                                     . '</center></td>';
                             }
 
-                            echo '<td>' . date_format(date_create($row['fecha_resul']), 'd/m/Y H:i a') . '</td>'
+                            echo '<td>' . date_format(date_create($row['fecha_resultado']), 'd/m/Y H:i a') . '</td>'
                                 . '<td>' . htmlspecialchars($row['resp_papell'] . ' ' . $row['resp_sapell']) . '</td>'
                                 . '</tr>';
                             $no++;
@@ -213,8 +218,13 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
     <?php include "../../template/footer.php"; ?>
 </footer>
 
-<script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+<!-- Avoid duplicate jQuery -->
+<!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
 <script src="../../template/plugins/fastclick/fastclick.min.js"></script>
 <script src="../../template/dist/js/app.min.js"></script>
 </body>
 </html>
+<?php
+$conexion->close();
+ob_end_flush();
+?>

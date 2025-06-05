@@ -12,22 +12,22 @@ if (!isset($_SESSION['login']) || !in_array($_SESSION['login']['id_rol'], [5])) 
 }
 
 $usuario = $_SESSION['login'];
-$not_id = isset($_GET['not_id']) && is_numeric($_GET['not_id']) ? (int)$_GET['not_id'] : 0;
+$id_not_gabinete = isset($_GET['id_not_gabinete']) && is_numeric($_GET['id_not_gabinete']) ? (int)$_GET['id_not_gabinete'] : 0;
 
-// Validate not_id
-if ($not_id <= 0) {
+// Validate id_not_gabinete
+if ($id_not_gabinete <= 0) {
     $_SESSION['message'] = "ID de notificación inválido.";
     $_SESSION['message_type'] = "danger";
     ob_end_clean();
-    header("Location: resultados_labo.php");
+    header("Location: resultados_gab.php");
     exit();
 }
 
 // Fetch existing files to delete them
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
-$query = "SELECT resultado FROM notificaciones_labo WHERE not_id = ?";
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados_gabinete/';
+$query = "SELECT resultado FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
 $stmt = $conexion->prepare($query);
-$stmt->bind_param("i", $not_id);
+$stmt->bind_param("i", $id_not_gabinete);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
@@ -39,27 +39,27 @@ if ($row && !empty($row['resultado'])) {
         $file_path = $upload_dir . basename($file_name);
         if (file_exists($file_path)) {
             if (!unlink($file_path)) {
-                error_log("Failed to delete file: $file_path");
+               error_log("Failed to delete file: $file_path");
             }
         }
     }
 }
 
 // Delete record
-$query = "DELETE FROM notificaciones_labo WHERE not_id = ?";
+$query = "DELETE FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
 $stmt = $conexion->prepare($query);
 if (!$stmt) {
     $_SESSION['message'] = "Error al preparar la consulta: " . $conexion->error;
     $_SESSION['message_type'] = "danger";
     error_log("SQL Prepare Error: " . $conexion->error);
     ob_end_clean();
-    header("Location: resultados_labo.php");
+    header("Location: resultados_gab.php");
     exit();
 }
 
-$stmt->bind_param("i", $not_id);
+$stmt->bind_param("i", $id_not_gabinete);
 if ($stmt->execute()) {
-    $_SESSION['message'] = "Estudio eliminado correctamente.";
+    $_SESSION['message'] = "Estudio de gabinete eliminado correctamente.";
     $_SESSION['message_type'] = "success";
 } else {
     $_SESSION['message'] = "Error al eliminar el estudio: " . $stmt->error;
@@ -69,6 +69,6 @@ if ($stmt->execute()) {
 $stmt->close();
 
 ob_end_clean();
-header("Location: resultados_labo.php");
+header("Location: resultados_gab.php");
 exit();
 ?>

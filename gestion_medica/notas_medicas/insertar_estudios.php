@@ -10,6 +10,15 @@ if (!isset($_SESSION['login']) || !isset($_SESSION['hospital'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_atencion = $_SESSION['hospital'];
+    $id_usua = isset($_SESSION['login']['id_usua']) ? (int)$_SESSION['login']['id_usua'] : 0; // Adjust based on your session structure
+    
+    // Validate id_usua
+    if ($id_usua === 0) {
+        $_SESSION['message'] = "Error: No se encontró el ID del usuario en la sesión.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: /gestion_medica/notas_medicas/estudios.php");
+        exit();
+    }
     
     // Retrieve Id_exp from dat_ingreso
     $sql = "SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?";
@@ -45,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ecografia_general = isset($_POST['ecografia_general']) ? mysqli_real_escape_string($conexion, $_POST['ecografia_general']) : '';
     $oct_hrt_od = isset($_POST['oct_hrt_od']) ? mysqli_real_escape_string($conexion, $_POST['oct_hrt_od']) : '';
     $oct_hrt_oi = isset($_POST['oct_hrt_oi']) ? mysqli_real_escape_string($conexion, $_POST['oct_hrt_oi']) : '';
-    $oct_hrt_general = isset($_POST['oct_hrt_general']) ? mysqli_real_escape_string($conexion, $_POST['ecografia_general']) : '';
+    $oct_hrt_general = isset($_POST['oct_hrt_general']) ? mysqli_real_escape_string($conexion, $_POST['oct_hrt_general']) : ''; // Fixed typo
     $fag_od = isset($_POST['fag_od']) ? mysqli_real_escape_string($conexion, $_POST['fag_od']) : '';
     $fag_oi = isset($_POST['fag_oi']) ? mysqli_real_escape_string($conexion, $_POST['fag_oi']) : '';
     $fag_general = isset($_POST['fag_general']) ? mysqli_real_escape_string($conexion, $_POST['fag_general']) : '';
@@ -56,14 +65,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare the SQL statement
     $sql = "INSERT INTO ocular_estudios (
-        id_atencion, Id_exp, riesgo_quirurgico, info_riesgo, analisis_sangre, 
+        id_atencion, id_usua, Id_exp, riesgo_quirurgico, info_riesgo, analisis_sangre, 
         cv_od, cv_oi, cv_general, 
         ecografia_od, ecografia_oi, ecografia_general, 
         oct_hrt_od, oct_hrt_oi, oct_hrt_general, 
         fag_od, fag_oi, fag_general, 
         ubm_od, ubm_oi, 
         constante_derecho, constante_izquierdo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conexion->prepare($sql);
     if ($stmt === false) {
@@ -75,8 +84,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Bind parameters
     $stmt->bind_param(
-        "iisssssssssssssssssss",
+        "iiisssssssssssssssssss",
         $id_atencion,
+        $id_usua,
         $Id_exp,
         $riesgo_quirurgico,
         $info_riesgo,

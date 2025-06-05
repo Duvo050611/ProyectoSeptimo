@@ -272,6 +272,7 @@ $usuario = $_SESSION['login'];
                 <center>ESTUDIOS OCULARES</center>
             </strong></div>
         <form action="insertar_estudios.php" method="POST" onsubmit="return checkSubmit();">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <!-- General Fields -->
             <div class="form-group mt-3">
                 <label><strong>Valoración de Riesgo Quirúrgico (ASA):</strong></label><br>

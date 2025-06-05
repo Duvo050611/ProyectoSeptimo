@@ -1,180 +1,219 @@
 <?php
+// Start session and ensure no output before this
+ob_start();
 session_start();
 include "../../conexionbd.php";
+include "../header_labo.php";
 
-
-$resultado = $conexion->query("select paciente.*, dat_ingreso.id_atencion, triage.id_triage
-from paciente 
-inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp
-inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=id_triage
-") or die($conexion->error);
-
-$usuario = $_SESSION['login'];
-
-
-if ($usuario['id_rol'] == 10) {
-    include "../header_labo.php";
-
-} else if ($usuario['id_rol'] == 4 or 5) {
-    include "../header_labo.php";
-
-} else if ($usuario['id_rol'] == 12) {
-    include "../header_labo.php";
-
-} else {
-    //session_unset();
-    // session_destroy();
-    echo "<script>window.Location='../../index.php';</script>";
-
+if (!isset($_SESSION['login']) || !in_array($_SESSION['login']['id_rol'], [4, 5, 10])) {
+    ob_end_clean();
+    header("Location: ../../index.php");
+    exit();
 }
 
+$not_id = isset($_GET['not_id']) && is_numeric($_GET['not_id']) ? (int)$_GET['not_id'] : 0;
+$usuario = $_SESSION['login'];
+$error_message = '';
+$success_message = '';
 
+// Generate CSRF token
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Define upload directory for file validation
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
+$base_url = '/gestion_medica/notas_medicas/resultados/';
+$allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
+
+// Handle annotation submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error_message = "Error de seguridad: token CSRF inválido.";
+    } else {
+        $anotacion = trim($_POST['anotacion']);
+        if (!empty($anotacion)) {
+            // Fetch current det_labo
+            $sql = "SELECT det_labo FROM notificaciones_labo WHERE not_id = ?";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("i", $not_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $current_det_labo = $row['det_labo'] ?? '';
+            $stmt->close();
+
+            // Append new annotation with timestamp and user
+            $new_anotacion = $current_det_labo
+                ? $current_det_labo . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
+                : "[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion;
+
+            // Update det_labo
+            $sql = "UPDATE notificaciones_labo SET det_labo = ? WHERE not_id = ?";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("si", $new_anotacion, $not_id);
+            if ($stmt->execute()) {
+                $success_message = "Anotación guardada correctamente.";
+                // Regenerate CSRF token after successful submission
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            } else {
+                $error_message = "Error al guardar la anotación: " . $conexion->error;
+            }
+            $stmt->close();
+        } else {
+            $error_message = "La anotación no puede estar vacía.";
+        }
+    }
+}
+
+// Validate not_id and fetch data
+if ($not_id === 0) {
+    $error_message = "ID de notificación inválido.";
+} else {
+    // Fetch lab result and det_labo
+    $sql = "SELECT not_id, resultado, det_labo FROM notificaciones_labo WHERE not_id = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("i", $not_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
-
-    <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″/>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- Bootstrap 4.5.2 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Font Awesome 5.15.4 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- jQuery 3.5.1 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- Popper.js 1.16.0 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <!-- Bootstrap 4.5.2 JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <title>Detalles de Resultados de Laboratorio</title>
+    <style>
+        .preview-container { max-width: 100%; height: 600px; overflow: auto; margin-bottom: 20px; }
+        .preview-container img { max-width: 100%; height: auto; }
+        .preview-container iframe { width: 100%; height: 600px; border: none; }
+        .annotation-area { border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
+        #det_labo_display { white-space: pre-wrap; margin-bottom: 15px; }
+        .missing-file { color: red; font-style: italic; }
+    </style>
     <script>
-        // Write on keyup event of keyword input element
-        $(document).ready(function () {
-            $("#search").keyup(function () {
-                _this = this;
-                // Show only matching TR, hide rest of them
-                $.each($("#mytable tbody tr"), function () {
-                    if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-                        $(this).hide();
-                    else
-                        $(this).show();
-                });
+        $(document).ready(function() {
+            $('.result-file').click(function(e) {
+                e.preventDefault();
+                var fileUrl = $(this).attr('href');
+                var fileExt = fileUrl.split('.').pop().toLowerCase();
+                var $previewArea = $('#previewArea');
+                
+                $previewArea.empty();
+                if (fileExt === 'pdf') {
+                    $previewArea.html('<iframe src="' + fileUrl + '" class="preview-container"></iframe>');
+                } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
+                    $previewArea.html('<img src="' + fileUrl + '" alt="Resultado" class="preview-container">');
+                } else {
+                    $previewArea.html('<p>Formato de archivo no compatible para vista previa. <a href="' + fileUrl + '" download>Descargar archivo</a></p>');
+                }
             });
         });
     </script>
-
-
 </head>
-
 <body>
-
 <div class="container-fluid">
-
-    <?php
-    if ($usuario1['id_rol'] == 4) {
-        ?>
-
-        <a type="submit" class="btn btn-primary" href="../../template/menu_sauxiliares.php">Regresar</a>
-
-        <?php
-    } else if ($usuario1['id_rol'] == 10) {
-
-        ?>
-        <a type="submit" class="btn btn-primary" href="../../template/menu_laboratorio.php">Regresar</a>
-
-        <?php
-    } else if ($usuario1['id_rol'] == 5) {
- 
-        ?>
-        <a type="submit" class="btn btn-primary" href="../../template/menu_gerencia.php">Regresar</a>
-
-        <?php
-    } else if ($usuario1['id_rol'] == 12) {
-
-        ?>
-        <a type="submit" class="btn btn-primary" href="../../template/menu_residente.php">Regresar</a>
-
-        <?php
-    } else
-    ?>
     <div class="row">
-
-        <div class="col  col-12">
-            <h2>
-                <a href="" data-target="#sidebar" data-toggle="collapse" class="d-md-none"><i class="fa fa-bars"
-                                                                                              id="side"></i></a>
-                <center><font id="letra"><i class="fa fa-plus-square"></i> Resultados de Laboratorio</font>
+        <div class="col-12">
+            <h2 class="text-center">
+                <i class="fas fa-flask"></i> Resultados de Laboratorio
             </h2>
-            </center>
             <hr>
-
-
         </div>
     </div>
 </div>
 
 <section class="content container-fluid">
-
-    <!--------------------------
-    | Your Page Content Here |
-    -------------------------->
-
-
-    <div class="container box">
+    <div class="container">
         <div class="content">
-            <div class="col-md-10">
-
-                <?php
-                include "../../conexionbd.php";
-
-                $id = $_GET['not_id'];
-                //  echo $id;
-                $file_doc = "SELECT not_id, resultado FROM `notificaciones_labo` WHERE not_id = $id";
-              // echo $file_doc;
-                $result = $conexion->query($file_doc);
-              $row = $result->fetch_assoc();
-              //  $id_file = $row['resultado'];
-                ?>
-                <center>
-                    <iframe src="resultados/<?php echo $row['resultado'] ?>" width="1000px" height="600px"></iframe>
-                </center>
-
-
+            <div class="row">
+                <div class="col-md-8">
+                    <a href="resultados_labo.php" class="btn btn-danger mb-3">Regresar</a>
+                    <?php if ($error_message): ?>
+                        <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
+                    <?php elseif ($success_message): ?>
+                        <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
+                    <?php elseif ($row): ?>
+                        <?php
+                        // Parse resultado as comma-separated string
+                        $file_names = $row['resultado'] ? array_map('trim', explode(',', $row['resultado'])) : [];
+                        $first_file_path = '';
+                        if (!empty($file_names)) {
+                            $first_file = $file_names[0];
+                            $first_file_path = $base_url . $first_file;
+                        }
+                        ?>
+                        <h3>Resultados Disponibles:</h3>
+                        <?php if (!empty($file_names)): ?>
+                            <ul class="list-group mb-3">
+                                <?php foreach ($file_names as $index => $file_name): ?>
+                                    <?php
+                                    // Sanitize filename to prevent directory traversal
+                                    $file_name = basename($file_name);
+                                    $file_path = $base_url . $file_name;
+                                    $file_exists = file_exists($upload_dir . $file_name);
+                                    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                                    ?>
+                                    <li class="list-group-item">
+                                        <a href="<?php echo htmlspecialchars($file_path); ?>" class="result-file">
+                                            Resultado <?php echo ($index + 1); ?>
+                                            <?php if (!$file_exists): ?>
+                                                <span class="missing-file">(No encontrado)</span>
+                                            <?php endif; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <h3>Vista Previa</h3>
+                            <div id="previewArea" class="preview-container">
+                                <?php if ($first_file_path && file_exists($upload_dir . $first_file)): ?>
+                                    <?php if (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['pdf'])): ?>
+                                        <iframe src="<?php echo htmlspecialchars($first_file_path); ?>" class="preview-container"></iframe>
+                                    <?php elseif (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg'])): ?>
+                                        <img src="<?php echo htmlspecialchars($first_file_path); ?>" alt="Resultado" class="preview-container">
+                                    <?php else: ?>
+                                        <p>Formato de archivo no compatible para vista previa. <a href="<?php echo htmlspecialchars($first_file_path); ?>" download>Descargar archivo</a></p>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <p>No hay archivos disponibles para vista previa.</p>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-warning">No se encontraron archivos de resultados.</div>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <div class="alert alert-danger">No se encontraron resultados para la notificación ID <?php echo $not_id; ?>.</div>
+                    <?php endif; ?>
+                </div>
             </div>
-
-
         </div>
     </div>
-
 </section>
-</div>
 
 <footer class="main-footer">
-    <?php
-    include("../../template/footer.php");
-    ?>
+    <?php include "../../template/footer.php"; ?>
 </footer>
 
-
-<script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-<!-- FastClick -->
-<script src='../../template/plugins/fastclick/fastclick.min.js'></script>
-<!-- AdminLTE App -->
-<script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
-
+<!-- Temporarily disable duplicate jQuery and fastclick to avoid conflicts -->
+<!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
+<!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
+<script src="../../template/dist/js/app.min.js"></script>
 </body>
 </html>
+<?php
+$conexion->close();
+ob_end_flush();
+?>

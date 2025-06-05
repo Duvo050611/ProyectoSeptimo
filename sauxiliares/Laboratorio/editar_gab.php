@@ -22,17 +22,17 @@ if (!in_array($id_rol, [4, 5, 10, 12])) {
     exit();
 }
 
-// Validate not_id
-$not_id = isset($_GET['not_id']) && is_numeric($_GET['not_id']) ? (int)$_GET['not_id'] : 0;
-if ($not_id <= 0) {
+// Validate id_not_gabinete
+$id_not_gabinete = isset($_GET['id_not_gabinete']) && is_numeric($_GET['id_not_gabinete']) ? (int)$_GET['id_not_gabinete'] : 0;
+if ($id_not_gabinete <= 0) {
     ob_end_clean();
-    header("Location: resultados_labo.php");
+    header("Location: resultados_gab.php");
     exit();
 }
 
 // Define upload directory and base URL
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
-$base_url = '/gestion_medica/notas_medicas/resultados/';
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados_gabinete/';
+$base_url = '/gestion_medica/notas_medicas/resultados_gabinete/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 $allowed_mime_types = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
 $max_file_size = 5242880; // 5MB
@@ -43,7 +43,7 @@ if (!file_exists($upload_dir) && !mkdir($upload_dir, 0775, true)) {
     ob_end_clean();
     $_SESSION['message'] = 'Error al crear directorio de resultados.';
     $_SESSION['message_type'] = 'danger';
-    header("Location: editar_labo.php?not_id=$not_id");
+    header("Location: editar_gab.php?id_not_gabinete=$id_not_gabinete");
     exit();
 }
 if (!is_writable($upload_dir)) {
@@ -52,15 +52,15 @@ if (!is_writable($upload_dir)) {
         ob_end_clean();
         $_SESSION['message'] = 'Error al establecer permisos de directorio.';
         $_SESSION['message_type'] = 'danger';
-        header("Location: editar_labo.php?not_id=$not_id");
+        header("Location: editar_gab.php?not_id=$id_not_gabinete");
         exit();
     }
 }
 
 // Fetch current file(s)
-$query = "SELECT not_id, resultado FROM notificaciones_labo WHERE not_id = ?";
+$query = "SELECT id_not_gabinete, resultado FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
 $stmt = $conexion->prepare($query);
-$stmt->bind_param("i", $not_id);
+$stmt->bind_param("i", $id_not_gabinete);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
@@ -68,7 +68,7 @@ $stmt->close();
 
 if (!$row) {
     ob_end_clean();
-    header("Location: resultados_labo.php");
+    header("Location: resultados_gab.php");
     exit();
 }
 
@@ -85,7 +85,7 @@ foreach ($current_files as $file) {
 
 // Debugging output
 $debug_info = [
-    'not_id' => $not_id,
+    'id_not_gabinete' => $id_not_gabinete,
     'filenames_in_db' => $row['resultado'] ?: 'None',
     'upload_dir' => $upload_dir,
     'directory_exists' => file_exists($upload_dir) ? 'Yes' : 'No',
@@ -101,16 +101,16 @@ if (isset($_POST['delete']) && isset($_POST['filename']) && in_array($_POST['fil
             $current_files = array_diff($current_files, [$file_to_delete]);
             $new_resultado = implode(',', array_filter($current_files));
 
-            $update_query = "UPDATE notificaciones_labo SET resultado = ? WHERE not_id = ?";
+            $update_query = "UPDATE notificaciones_gabinete SET resultado = ? WHERE id_not_gabinete = ?";
             $update_stmt = $conexion->prepare($update_query);
-            $update_stmt->bind_param("si", $new_resultado, $not_id);
+            $update_stmt->bind_param("si", $new_resultado, $id_not_gabinete);
             if ($update_stmt->execute()) {
                 $_SESSION['message'] = 'Archivo eliminado correctamente.';
                 $_SESSION['message_type'] = 'success';
             } else {
                 $_SESSION['message'] = 'Error al actualizar la base de datos.';
                 $_SESSION['message_type'] = 'danger';
-                error_log("Failed to update database for not_id $not_id: " . $conexion->error);
+                error_log("Failed to update database for id_not_gabinete $id_not_gabinete: " . $conexion->error);
             }
             $update_stmt->close();
         } else {
@@ -121,9 +121,9 @@ if (isset($_POST['delete']) && isset($_POST['filename']) && in_array($_POST['fil
     } else {
         $current_files = array_diff($current_files, [$file_to_delete]);
         $new_resultado = implode(',', array_filter($current_files));
-        $update_query = "UPDATE notificaciones_labo SET resultado = ? WHERE not_id = ?";
+        $update_query = "UPDATE notificaciones_gabinete SET resultado = ? WHERE id_not_gabinete = ?";
         $update_stmt = $conexion->prepare($update_query);
-        $update_stmt->bind_param("si", $new_resultado, $not_id);
+        $update_stmt->bind_param("si", $new_resultado, $id_not_gabinete);
         if ($update_stmt->execute()) {
             $_SESSION['message'] = 'Referencia de archivo eliminada (archivo no encontrado en servidor).';
             $_SESSION['message_type'] = 'warning';
@@ -134,7 +134,7 @@ if (isset($_POST['delete']) && isset($_POST['filename']) && in_array($_POST['fil
         $update_stmt->close();
     }
     ob_end_clean();
-    header("Location: editar_labo.php?not_id=$not_id");
+    header("Location: editar_gab.php?id_not_gabinete=$id_not_gabinete");
     exit();
 }
 
@@ -171,7 +171,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                 break;
             } else {
                 // Generate unique filename
-                $new_filename = "resultado_{$not_id}_" . date('Ymd_His') . "_$i_" . uniqid() . '.' . $file_ext;
+                $new_filename = "resultado_gabinete_{$id_not_gabinete}_" . date('Ymd_His') . "_$i_" . uniqid() . '.' . $file_ext;
                 $destination = $upload_dir . $new_filename;
 
                 // Move new file
@@ -199,16 +199,16 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
             $new_resultado = implode(',', array_filter($current_files));
 
             // Update database
-            $update_query = "UPDATE notificaciones_labo SET resultado = ? WHERE not_id = ?";
+            $update_query = "UPDATE notificaciones_gabinete SET resultado = ?, fecha_resultado = NOW(), id_usua_resul = ? WHERE id_not_gabinete = ?";
             $update_stmt = $conexion->prepare($update_query);
-            $update_stmt->bind_param("si", $new_resultado, $not_id);
+            $update_stmt->bind_param("sii", $new_resultado, $usuario['id_usua'], $id_not_gabinete);
             if ($update_stmt->execute()) {
                 $message = count($new_files) . ' archivo(s) subido(s) correctamente.';
                 $_SESSION['message_type'] = 'success';
             } else {
                 $error = true;
                 $message = 'Error al actualizar la base de datos.';
-                error_log("Failed to update database for not_id $not_id: " . $conexion->error);
+                error_log("Failed to update database for id_not_gabinete $id_not_gabinete: " . $conexion->error);
             }
             $update_stmt->close();
         }
@@ -221,7 +221,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $error ? 'danger' : 'success';
     ob_end_clean();
-    header("Location: editar_labo.php?not_id=$not_id");
+    header("Location: editar_gab.php?id_not_gabinete=$id_not_gabinete");
     exit();
 }
 ?>
@@ -237,7 +237,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
-    <title>Editar Resultados de Laboratorio</title>
+    <title>Editar Resultados de Gabinete</title>
     <style>
         .preview-container { max-width: 100%; height: 400px; overflow: auto; margin-bottom: 20px; }
         .preview-container img { max-width: 100%; height: auto; }
@@ -267,16 +267,16 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
 <div class="container-fluid">
     <?php
     if ($id_rol == 4) {
-        echo '<a class="btn btn-danger" href="resultados_labo.php">Regresar</a>';
+        echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
     } elseif ($id_rol == 10 || $id_rol == 12) {
-        echo '<a class="btn btn-danger" href="resultados_labo.php">Regresar</a>';
+        echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
     } elseif ($id_rol == 5) {
-        echo '<a class="btn btn-danger" href="resultados_labo.php">Regresar</a>';
+        echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
     }
     ?>
     <br><br>
     <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 25px;">
-        <center><strong>EDITAR RESULTADOS DE LABORATORIO</strong></center>
+        <center><strong>EDITAR RESULTADOS DE GABINETE</strong></center>
     </div><br>
 </div>
 
@@ -338,7 +338,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                     </div>
                     <div class="form-group d-flex justify-content-center">
                         <div class="col-sm-12">
-                            <a href="resultados_labo.php" class="btn btn-danger">Cancelar</a>
+                            <a href="resultados_gab.php" class="btn btn-danger">Cancelar</a>
                             <input type="submit" id="submit-btn" name="edit" class="btn btn-success" value="Subir Archivo(s)">
                         </div>
                     </div>

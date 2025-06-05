@@ -3,8 +3,9 @@
 ob_start();
 session_start();
 include "../../conexionbd.php";
-include "../header_medico.php";
+include "../header_labo.php";
 
+// Validate session and role
 if (!isset($_SESSION['login']) || !in_array($_SESSION['login']['id_rol'], [4, 5, 10])) {
     ob_end_clean();
     header("Location: ../../index.php");
@@ -22,8 +23,8 @@ if (!isset($_SESSION['csrf_token'])) {
 }
 
 // Define upload directory for file validation
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
-$base_url = '/gestion_medica/notas_medicas/resultados/';
+$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados_gabinete/';
+$base_url = '/gestion_medica/notas_medicas/resultados_gabinete/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 
 // Handle annotation submission
@@ -33,23 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
     } else {
         $anotacion = trim($_POST['anotacion']);
         if (!empty($anotacion)) {
-            // Fetch current det_labo
-            $sql = "SELECT det_labo FROM notificaciones_labo WHERE not_id = ?";
+            // Fetch current det_gab
+            $sql = "SELECT det_gab FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
             $stmt = $conexion->prepare($sql);
             $stmt->bind_param("i", $not_id);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            $current_det_labo = $row['det_labo'] ?? '';
+            $current_det_gab = $row['det_gab'] ?? '';
             $stmt->close();
 
             // Append new annotation with timestamp and user
-            $new_anotacion = $current_det_labo
-                ? $current_det_labo . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
+            $new_anotacion = $current_det_gab
+                ? $current_det_gab . "\n[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion
                 : "[" . date('Y-m-d H:i') . " - {$usuario['papell']} {$usuario['sapell']}]: " . $anotacion;
 
-            // Update det_labo
-            $sql = "UPDATE notificaciones_labo SET det_labo = ? WHERE not_id = ?";
+            // Update det_gab
+            $sql = "UPDATE notificaciones_gabinete SET det_gab = ? WHERE id_not_gabinete = ?";
             $stmt = $conexion->prepare($sql);
             $stmt->bind_param("si", $new_anotacion, $not_id);
             if ($stmt->execute()) {
@@ -70,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anotacion'])) {
 if ($not_id === 0) {
     $error_message = "ID de notificación inválido.";
 } else {
-    // Fetch lab result and det_labo
-    $sql = "SELECT not_id, resultado, det_labo FROM notificaciones_labo WHERE not_id = ?";
+    // Fetch Gabinete result and det_gab
+    $sql = "SELECT id_not_gabinete, resultado, det_gab FROM notificaciones_gabinete WHERE id_not_gabinete = ?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $not_id);
     $stmt->execute();
@@ -95,13 +96,13 @@ if ($not_id === 0) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <!-- Bootstrap 4.5.2 JS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <title>Detalles de Resultados de Laboratorio</title>
+    <title>Detalles de Resultados de Gabinete</title>
     <style>
         .preview-container { max-width: 100%; height: 600px; overflow: auto; margin-bottom: 20px; }
         .preview-container img { max-width: 100%; height: auto; }
         .preview-container iframe { width: 100%; height: 600px; border: none; }
         .annotation-area { border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
-        #det_labo_display { white-space: pre-wrap; margin-bottom: 15px; }
+        #det_gab_display { white-space: pre-wrap; margin-bottom: 15px; }
         .missing-file { color: red; font-style: italic; }
     </style>
     <script>
@@ -129,7 +130,7 @@ if ($not_id === 0) {
     <div class="row">
         <div class="col-12">
             <h2 class="text-center">
-                <i class="fas fa-flask"></i> Resultados de Laboratorio
+                <i class="fas fa-plus-square"></i> Resultados de Gabinete
             </h2>
             <hr>
         </div>
@@ -141,14 +142,14 @@ if ($not_id === 0) {
         <div class="content">
             <div class="row">
                 <div class="col-md-8">
-                    <a href="estudios.php" class="btn btn-danger mb-3">Regresar</a>
+                    <a href="resultados_gab.php" class="btn btn-danger mb-3">Regresar</a>
                     <?php if ($error_message): ?>
                         <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
                     <?php elseif ($success_message): ?>
                         <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
                     <?php elseif ($row): ?>
                         <?php
-                        // Parse resultado as comma-separated string
+                        // Parse resultado as comma-separated string (previously JSON)
                         $file_names = $row['resultado'] ? array_map('trim', explode(',', $row['resultado'])) : [];
                         $first_file_path = '';
                         if (!empty($file_names)) {
@@ -198,24 +199,6 @@ if ($not_id === 0) {
                         <div class="alert alert-danger">No se encontraron resultados para la notificación ID <?php echo $not_id; ?>.</div>
                     <?php endif; ?>
                 </div>
-                <div class="col-md-4">
-                    <div class="annotation-area">
-                        <h4>Anotaciones</h4>
-                        <?php if ($row && !empty($row['det_labo'])): ?>
-                            <div id="det_labo_display"><?php echo htmlspecialchars($row['det_labo']); ?></div>
-                        <?php else: ?>
-                            <p>No hay anotaciones disponibles.</p>
-                        <?php endif; ?>
-                        <form method="POST" action="">
-                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <div class="form-group">
-                                <label for="anotacion">Nueva Anotación:</label>
-                                <textarea class="form-control" id="anotacion" name="anotacion" rows="4" placeholder="Escribe tu anotación aquí..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Guardar Anotación</button>
-                        </form>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -225,7 +208,7 @@ if ($not_id === 0) {
     <?php include "../../template/footer.php"; ?>
 </footer>
 
-<!-- Temporarily disable duplicate jQuery and fastclick to avoid conflicts -->
+<!-- Avoid duplicate jQuery and potential conflicts -->
 <!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
 <!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
 <script src="../../template/dist/js/app.min.js"></script>

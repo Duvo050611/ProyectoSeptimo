@@ -275,6 +275,7 @@ while ($row = $result_services->fetch_assoc()) {
     <div class="container">
         <div class="thead"><strong><center>EXÁMENES DE GABINETE</center></strong></div>
         <form action="insertar_examenes_gab.php" method="POST">
+            <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <div class="accordion mt-3" id="serviceAccordion">
                 <div class="card">
                     <div class="card-header" id="headingGab">

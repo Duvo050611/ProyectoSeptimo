@@ -2,13 +2,22 @@
 session_start();
 include "../../conexionbd.php";
 
-if (!isset($_SESSION['hospital'])) {
+if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
     header("Location: ../login.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_atencion = $_SESSION['hospital'];
+    $id_usua = isset($_POST['id_usua']) ? (int)$_POST['id_usua'] : 0;
+    
+    // Validate id_usua
+    if ($id_usua === 0) {
+        $_SESSION['message'] = "Error: ID de usuario no válido.";
+        $_SESSION['message_type'] = "danger";
+        header("Location: lente_intraocular.php");
+        exit();
+    }
     
     // Retrieve Id_exp from dat_ingreso
     $sql = "SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?";
@@ -47,10 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare the SQL statement
     $sql = "INSERT INTO ocular_lente_intraocular (
-        id_atencion, Id_exp,
+        id_atencion, id_usua, Id_exp,
         lente_derecho, marca_derecho, modelo_derecho, otros_derecho, dioptrias_derecho,
         lente_izquierdo, marca_izquierdo, modelo_izquierdo, otros_izquierdo, dioptrias_izquierdo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conexion->prepare($sql);
     if ($stmt === false) {
@@ -62,8 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Bind parameters
     $stmt->bind_param(
-        "isissississs",
+        "iiiissssissss",
         $id_atencion,
+        $id_usua,
         $id_exp,
         $lente_derecho,
         $marca_derecho,
