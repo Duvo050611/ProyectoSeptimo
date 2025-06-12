@@ -9,76 +9,88 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 <html>
 
 <head>
-  <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <!--  Bootstrap  -->
-  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+    <!--  Bootstrap  -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
-  <!---
+    <!---
   <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.min.css'>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-  <script>
+    <script>
     // Write on keyup event of keyword input element
     $(document).ready(function() {
-      $("#search").keyup(function() {
-        _this = this;
-        // Show only matching TR, hide rest of them
-        $.each($("#mytable tbody tr"), function() {
-          if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-            $(this).hide();
-          else
-            $(this).show();
+        $("#search").keyup(function() {
+            _this = this;
+            // Show only matching TR, hide rest of them
+            $.each($("#mytable tbody tr"), function() {
+                if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
         });
-      });
     });
-  </script>
-  <script>
+    </script>
+    <script>
     // Write on keyup event of keyword input element
     $(document).ready(function() {
-      $("#search_dep").keyup(function() {
-        _this = this;
-        // Show only matching TR, hide rest of them
-        $.each($("#mytable tbody tr"), function() {
-          if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-            $(this).hide();
-          else
-            $(this).show();
+        $("#search_dep").keyup(function() {
+            _this = this;
+            // Show only matching TR, hide rest of them
+            $.each($("#mytable tbody tr"), function() {
+                if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
         });
-      });
     });
-  </script>
-  <title>Vista NOTA DE EVOLUCIÓN</title>
-  <style type="text/css">
-    #contenido{
+    </script>
+    <title>Vista NOTA DE EVOLUCIÓN</title>
+    <style type="text/css">
+    #contenido {
         display: none;
     }
-     #contenido3{
+
+    #contenido3 {
         display: none;
     }
-     #contenido4{
+
+    #contenido4 {
         display: none;
     }
-</style>
-  
+    </style>
+
 </head>
 
 <body>
-  <div class="container">
-     <button type="button" class="btn btn-danger btn-sm" onclick="history.back()">Regresar...</button>
-              <hr>
-               <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;"><strong><center>IMPRESIÓN DE RESUMEN CLÍNICO </center> </strong></div>         
-  <section class="content container-fluid">
-    <?php
+    <div class="container">
+        <button type="button" class="btn btn-danger btn-sm" onclick="history.back()">Regresar...</button>
+        <hr>
+        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;"><strong>
+                <center>IMPRESIÓN DE RESUMEN CLÍNICO </center>
+            </strong></div>
+        <section class="content container-fluid">
+            <?php
 
         include "../../conexionbd.php";
 
@@ -126,29 +138,29 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 
         ?>
-             
-      <div class="row">
-        <div class="col-sm-2">
-          Expediente: <strong><?php echo $folio?> </strong>
-        </div>
-        <div class="col-sm-6">
-         Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
-        </div>
-        
-       <?php $date = date_create($pac_fecing);
-       ?>
-          <div class="col-sm-4">
-          Fecha de ingreso: <strong><?php echo date_format($date, "d/m/Y H:i:s") ?></strong>
-        </div>
-      </div>
 
-         
-      <div class="row">
-        <div class="col-sm-4">
-           <?php $date1 = date_create($pac_fecnac);
+            <div class="row">
+                <div class="col-sm-2">
+                    Expediente: <strong><?php echo $folio?> </strong>
+                </div>
+                <div class="col-sm-6">
+                    Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
+                </div>
+
+                <?php $date = date_create($pac_fecing);
        ?>
-        <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
-    <?php 
+                <div class="col-sm-4">
+                    Fecha de ingreso: <strong><?php echo date_format($date, "d/m/Y H:i:s") ?></strong>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <?php $date1 = date_create($pac_fecnac);
+       ?>
+                    <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
+                    <?php 
 
     function bisiesto($anio_actual){
         $bisiesto=false;
@@ -215,11 +227,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 
      ?>
-     <!-- TERMINO DE FUNCION DE CALCULAR EDAD -->
-          Fecha de nacimiento: <strong><?php echo date_format($date1, "d/m/Y") ?></strong>
-        </div>
-        <div class="col-sm-4">
-          Edad: <strong><?php if($anos > "0" ){
+                    <!-- TERMINO DE FUNCION DE CALCULAR EDAD -->
+                    Fecha de nacimiento: <strong><?php echo date_format($date1, "d/m/Y") ?></strong>
+                </div>
+                <div class="col-sm-4">
+                    Edad: <strong><?php if($anos > "0" ){
        echo $anos." años";
     }elseif($anos <="0" && $meses>"0"){
         echo $meses." meses";
@@ -227,59 +239,59 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
         echo $dias." días";
     }
     ?></strong>
-        </div>
-        
-       
-          <div class="col-sm-2">
-          Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
+                </div>
+
+
+                <div class="col-sm-2">
+                    Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
     $result_hab = $conexion->query($sql_hab);                                                                                    while ($row_hab = $result_hab->fetch_assoc()) {
       echo $row_hab['num_cama'];
     } ?></strong>
-        </div>
-        
-      </div>
+                </div>
 
-      <div class="row">
-     <?php
+            </div>
+
+            <div class="row">
+                <?php
 $d="";
       $sql_motd = "SELECT diagprob_i from dat_nevol where id_atencion=$id_atencion ORDER by diagprob_i ASC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
     while ($row_motd = $result_motd->fetch_assoc()) {
         $d=$row_motd['diagprob_i'];
     } ?>
-    <?php $sql_mot = "SELECT motivo_atn from dat_ingreso where id_atencion=$id_atencion ORDER by motivo_atn ASC LIMIT 1";
+                <?php $sql_mot = "SELECT motivo_atn from dat_ingreso where id_atencion=$id_atencion ORDER by motivo_atn ASC LIMIT 1";
     $result_mot = $conexion->query($sql_mot);
     while ($row_mot = $result_mot->fetch_assoc()) {
     $m=$row_mot['motivo_atn'];
     } ?>
 
-    <?php if ($d!=null) {
+                <?php if ($d!=null) {
        echo '<div class="col-sm-8"> Diagnóstico: <strong>' . $d .'</strong></div>';
     } else{
           echo '<div class="col-sm-8"> Motivo de atención: <strong>' . $m .'</strong></div>';
     }?>
-        <div class="col-sm">
-          Días estancia: <strong><?php echo $estancia ?> Dias</strong>
-        </div>
-      </div>
+                <div class="col-sm">
+                    Días estancia: <strong><?php echo $estancia ?> Dias</strong>
+                </div>
+            </div>
 
 
-      <div class="row">
-        <div class="col-sm-4">
-          Alergias: <strong><?php echo $alergias ?></strong>
-        </div>
-         <div class="col-sm-4">
-          Estado de salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
+            <div class="row">
+                <div class="col-sm-4">
+                    Alergias: <strong><?php echo $alergias ?></strong>
+                </div>
+                <div class="col-sm-4">
+                    Estado de salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
     $result_edo = $conexion->query($sql_edo);while ($row_edo = $result_edo->fetch_assoc()) {
       echo $row_edo['edo_salud'];
     } ?></strong>
-        </div>
-        <div class="col-sm-3">
-          Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
-        </div>
-      </div>
+                </div>
+                <div class="col-sm-3">
+                    Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
+                </div>
+            </div>
 
-    <?php $sql_edo = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
+            <?php $sql_edo = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
     $result_edo = $conexion->query($sql_edo);
     while ($row_edo = $result_edo->fetch_assoc()) {
       $peso=$row_edo['peso'];
@@ -289,38 +301,40 @@ $d="";
         $peso=0;
         $talla=0;
     }?>
-     
-      <div class="row">
-         <div class="col-sm-4">
-          Peso: <strong><?php echo $peso ?></strong>
-        </div>
-        <div class="col-sm-3">
-          Talla: <strong><?php echo $talla ?></strong>
-        </div>
-      </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    Peso: <strong><?php echo $peso ?></strong>
+                </div>
+                <div class="col-sm-3">
+                    Talla: <strong><?php echo $talla ?></strong>
+                </div>
+            </div>
 
 
- 
+
             <?php
           } else {
             echo '<script type="text/javascript"> window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
           }
             ?>
-<hr>
+            <hr>
 
-<body>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col col-12">
-            <h2>
-                <a href="" data-target="#sidebar" data-toggle="collapse" class="d-md-none"><i class="fa fa-bars" id="side"></i></a>            
-          
-            </h2>
+            <body>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col col-12">
+                            <h2>
+                                <a href="" data-target="#sidebar" data-toggle="collapse" class="d-md-none"><i
+                                        class="fa fa-bars" id="side"></i></a>
 
-            <div class="form-group">
-                <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Buscar...">
-            </div>
-               <?php
+                            </h2>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control pull-right" style="width:20%" id="search"
+                                    placeholder="Buscar...">
+                            </div>
+                            <?php
 
 include "../../conexionbd.php";
 $id_atencion=$_SESSION['hospital'];
@@ -328,53 +342,59 @@ $resultado = $conexion->query("SELECT * from resumen_clinico WHERE id_atencion=$
 $usuario = $_SESSION['login'];
               
 ?>
-            <div class="table-containt">
+                            <div class="table-containt">
 
-            <table class="table table-bordered table-striped" id="mytable">
-                <thead class="thead bg-navy">
-                <tr>
-                    <th scope="col">PDF</th>
-                    
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Hora</th>
-                </tr>
-                </thead>
-                <tbody>
+                                <table class="table table-bordered table-striped" id="mytable">
+                                    <thead class="thead bg-navy">
+                                        <tr>
+                                            <th scope="col">PDF</th>
 
-                <?php
+                                            <th scope="col">Fecha</th>
+                                            <th scope="col">Hora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <?php
                 while($f = mysqli_fetch_array($resultado)){
                   $id_resum=$f['id_resum'];
 
                     ?>
-                    <tr>
-                        <td><a href="../pdf/pdf_resum_clin.php?id_in=<?php echo $id_resum; ?>&id_exp=<?php echo $id_exp?>&id_atencion=<?php echo $id_atencion ?>" target="_blank" ><button type="button" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button></td>
-                        <td><strong><?php $date=date_create($f['fecha']); echo date_format($date,"d/m/Y");?></strong></td>
-                        <td><strong><?php $date=date_create($f['fecha']); echo date_format($date,"H:i").' horas';?></strong></td>
-                    </tr>
-                    <?php
+                                        <tr>
+                                            <td><a href="../pdf/pdf_resum_clin.php?id_in=<?php echo $id_resum; ?>&id_exp=<?php echo $id_exp?>&id_atencion=<?php echo $id_atencion ?>"
+                                                    target="_blank"><button type="button" class="btn btn-danger"><i
+                                                            class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+                                            </td>
+                                            <td><strong><?php $date=date_create($f['fecha']); echo date_format($date,"d/m/Y");?></strong>
+                                            </td>
+                                            <td><strong><?php $date=date_create($f['fecha']); echo date_format($date,"H:i").' horas';?></strong>
+                                            </td>
+                                        </tr>
+                                        <?php
                 }
                 ?>
-                </tbody>
-              
-            </table>
-            </div>
+                                    </tbody>
 
-        </div>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
     </div>
-  </div>
-</div>
-</div>
-<footer class="main-footer">
-    <?php
+    </div>
+    <footer class="main-footer">
+        <?php
     include("../../template/footer.php");
     ?>
-</footer>
+    </footer>
 
-<script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-<!-- FastClick -->
-<script src='../../template/plugins/fastclick/fastclick.min.js'></script>
-<!-- AdminLTE App -->
-<script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
+    <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <!-- FastClick -->
+    <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+    <!-- AdminLTE App -->
+    <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 
 </body>
+
 </html>

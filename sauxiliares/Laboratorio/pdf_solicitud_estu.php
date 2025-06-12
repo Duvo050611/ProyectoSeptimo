@@ -71,23 +71,22 @@ $pac_fecing = $row_pac['fecha'] ?? '';
 $pac_sexo = $row_pac['sexo'] ?? '';
 $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
 
-// Fetch vital signs
-$sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi 
-              FROM signos_vitales 
+// Fetch vital signs from exploracion_fisica
+$sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
+              FROM exploracion_fisica 
               WHERE id_atencion = ? 
-              ORDER BY id_sig DESC LIMIT 1";
+              ORDER BY fecha DESC LIMIT 1";
 $stmt_signs = $conexion->prepare($sql_signs);
 $stmt_signs->bind_param("i", $id_atencion);
 $stmt_signs->execute();
 $result_signs = $stmt_signs->get_result();
 $row_signs = $result_signs->fetch_assoc();
+$p_sistolica = $row_signs['presion_sistolica'] ?? '';
+$p_diastolica = $row_signs['presion_diastolica'] ?? '';
+$f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
+$temp = $row_signs['temperatura'] ?? '';
+$sat_oxigeno = $row_signs['spo2'] ?? '';
 $stmt_signs->close();
-
-$p_sistolica = $row_signs['p_sistol'] ?? '';
-$p_diastolica = $row_signs['p_diastol'] ?? '';
-$f_resp = $row_signs['fresp'] ?? '';
-$temp = $row_signs['temper'] ?? '';
-$sat_oxigeno = $row_signs['satoxi'] ?? '';
 
 // Calculate age
 function calculaedad($fechanacimiento) {

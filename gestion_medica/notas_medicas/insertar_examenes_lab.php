@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $acs_p_ancasy_c_ancas = isset($_POST['acs_p_ancasy_c_ancas']) ? 1 : 0;
     $otros_laboratorio = isset($_POST['otros_laboratorio']) ? $conexion->real_escape_string(trim($_POST['otros_laboratorio'])) : null;
 
-    // Compile studies list Facs
+    // Compile studies list
     $studies = [];
     if ($biometria_hematica) $studies[] = "Biometría Hemática";
     if ($quimica_sanguinea) $studies[] = "Química Sanguínea ($quimica_sanguinea_valores elementos)";
@@ -194,6 +194,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     );
 
     if ($stmt->execute()) {
+        // Get the ID of the newly inserted lab exam
+        $id_examen_labo = $stmt->insert_id;
+        $stmt->close();
+
         // Fetch patient data for PDF
         $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.fecnac, p.Id_exp, p.folio, di.fecha, p.sexo, di.alergias 
                     FROM paciente p, dat_ingreso di 
@@ -213,21 +217,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
         $stmt_pac->close();
 
-        // Fetch vital signs
-        $sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi 
-                      FROM signos_vitales 
-                      WHERE id_atencion = ? 
-                      ORDER BY id_sig DESC LIMIT 1";
+        // Fetch vital signs from exploracion_fisica
+        $sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
+                    FROM exploracion_fisica 
+                    WHERE id_atencion = ? 
+                    ORDER BY fecha DESC LIMIT 1";
         $stmt_signs = $conexion->prepare($sql_signs);
         $stmt_signs->bind_param("i", $id_atencion);
         $stmt_signs->execute();
         $result_signs = $stmt_signs->get_result();
         $row_signs = $result_signs->fetch_assoc();
-        $p_sistolica = $row_signs['p_sistol'] ?? '';
-        $p_diastolica = $row_signs['p_diastol'] ?? '';
-        $f_resp = $row_signs['fresp'] ?? '';
-        $temp = $row_signs['temper'] ?? '';
-        $sat_oxigeno = $row_signs['satoxi'] ?? '';
+        $p_sistolica = $row_signs['presion_sistolica'] ?? '';
+        $p_diastolica = $row_signs['presion_diastolica'] ?? '';
+        $f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
+        $temp = $row_signs['temperatura'] ?? '';
+        $sat_oxigeno = $row_signs['spo2'] ?? '';
         $stmt_signs->close();
 
         // Calculate age
@@ -326,10 +330,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->Line(1, 8, 1, $bottom_y);
         $pdf->Line(209, 8, 209, $bottom_y);
 
-        // Insert into notificaciones_labo without PDF file reference
+        // Insert into notificaciones_labo with id_examen_labo
         $sql_labo = "INSERT INTO notificaciones_labo (
-            id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_labo, activo, realizado, pdf_solicitud
-        ) VALUES (?, ?, ?, ?, ?, ?, 'SI', 'NO', NULL)";
+            id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_labo, activo, realizado, pdf_solicitud, id_examen_labo
+        ) VALUES (?, ?, ?, ?, ?, ?, 'SI', 'NO', NULL, ?)";
         $stmt_labo = $conexion->prepare($sql_labo);
         if (!$stmt_labo) {
             error_log("Prepare failed for notificaciones_labo: " . $conexion->error);
@@ -340,8 +344,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
 
-        // Bind parameters: i (id_atencion), s (habitacion), s (fecha_ord), i (id_usua), s (sol_estudios), s (det_labo)
-        $stmt_labo->bind_param("ississ", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_labo);
+        // Bind parameters: i (id_atencion), s (habitacion), s (fecha_ord), i (id_usua), s (sol_estudios), s (det_labo), i (id_examen_labo)
+        $stmt_labo->bind_param("ississi", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_labo, $id_examen_labo);
 
         if ($stmt_labo->execute()) {
             // Get PDF content as string and encode in base64

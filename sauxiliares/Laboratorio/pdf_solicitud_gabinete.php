@@ -59,34 +59,68 @@ $pac_sexo = $row_pac['sexo'];
 $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
 $stmt_pac->close();
 
-// Fetch vital signs
-$sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi 
-              FROM signos_vitales 
+// Fetch vital signs from exploracion_fisica
+$sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
+              FROM exploracion_fisica 
               WHERE id_atencion = ? 
-              ORDER BY id_sig DESC LIMIT 1";
+              ORDER BY fecha DESC LIMIT 1";
 $stmt_signs = $conexion->prepare($sql_signs);
 $stmt_signs->bind_param("i", $id_atencion);
 $stmt_signs->execute();
 $result_signs = $stmt_signs->get_result();
 $row_signs = $result_signs->fetch_assoc();
-$p_sistolica = $row_signs['p_sistol'] ?? '';
-$p_diastolica = $row_signs['p_diastol'] ?? '';
-$f_resp = $row_signs['fresp'] ?? '';
-$temp = $row_signs['temper'] ?? '';
-$sat_oxigeno = $row_signs['satoxi'] ?? '';
+$p_sistolica = $row_signs['presion_sistolica'] ?? '';
+$p_diastolica = $row_signs['presion_diastolica'] ?? '';
+$f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
+$temp = $row_signs['temperatura'] ?? '';
+$sat_oxigeno = $row_signs['spo2'] ?? '';
 $stmt_signs->close();
 
-// Calculate total price
-$total_price = 0.0;
-$sql_price = "SELECT precio_total FROM ocular_examenes_gabinete WHERE id_atencion = ? AND (id_serv IS NOT NULL OR otros_gabinete IS NOT NULL)";
-$stmt_price = $conexion->prepare($sql_price);
-$stmt_price->bind_param("i", $id_atencion);
-$stmt_price->execute();
-$result_price = $stmt_price->get_result();
-while ($row_price = $result_price->fetch_assoc()) {
-    $total_price += $row_price['precio_total'];
+// Fetch all services with their prices from cat_servicios
+$sql_prices = "SELECT id_serv, serv_desc, serv_costo FROM cat_servicios WHERE serv_activo = 'SI'";
+$result_prices = $conexion->query($sql_prices);
+if (!$result_prices) {
+    error_log("Failed to fetch services: " . $conexion->error);
+    die("Error al cargar servicios.");
 }
-$stmt_price->close();
+$prices = [];
+$service_names = [];
+while ($row = $result_prices->fetch_assoc()) {
+    $prices[trim($row['serv_desc'])] = $row['serv_costo'];
+    $service_names[$row['id_serv']] = $row['serv_desc'];
+}
+
+// Calculate total price based on sol_estudios
+$total_price = 0.0;
+$studies = preg_split('/[,;]/', $sol_estudios, -1, PREG_SPLIT_NO_EMPTY);
+$valid_studies = [];
+foreach ($studies as $study) {
+    $study = trim($study);
+    if (isset($prices[$study])) {
+        $total_price += $prices[$study];
+        $valid_studies[] = $study;
+    } else {
+        // Check if it's a custom study in ocular_examenes_gabinete
+        $sql_custom = "SELECT precio_total, otros_gabinete FROM ocular_examenes_gabinete 
+                       WHERE id_atencion = ? AND otros_gabinete = ?";
+        $stmt_custom = $conexion->prepare($sql_custom);
+        $stmt_custom->bind_param("is", $id_atencion, $study);
+        $stmt_custom->execute();
+        $result_custom = $stmt_custom->get_result();
+        if ($row_custom = $result_custom->fetch_assoc()) {
+            $total_price += $row_custom['precio_total'];
+            $valid_studies[] = $study;
+        }
+        $stmt_custom->close();
+    }
+}
+
+// Compile studies list for PDF
+$numbered_studies = [];
+foreach ($valid_studies as $index => $study) {
+    $numbered_studies[] = ($index + 1) . ". " . $study;
+}
+$studies_list = implode("\n", $numbered_studies);
 
 // Calculate age
 function calculaedad($fechanacimiento) {
@@ -114,14 +148,6 @@ function calculaedad($fechanacimiento) {
     }
 }
 $edad = calculaedad($pac_fecnac);
-
-// Compile studies list for PDF
-$studies = preg_split('/[,;]/', $sol_estudios, -1, PREG_SPLIT_NO_EMPTY);
-$numbered_studies = [];
-foreach ($studies as $index => $study) {
-    $numbered_studies[] = ($index + 1) . ". " . trim($study);
-}
-$studies_list = implode("\n", $numbered_studies);
 
 // Current date and time for PDF
 $fecha_actual = date("d/m/Y H:i:s");

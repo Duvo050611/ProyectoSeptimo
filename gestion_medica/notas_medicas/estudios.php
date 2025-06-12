@@ -79,7 +79,7 @@ $usuario = $_SESSION['login'];
                 <div class="thead"><strong>
                         <center>DATOS DEL PACIENTE</center>
                     </strong></div>
-                    <?php
+                <?php
                     include "../../conexionbd.php";
                     if (isset($_SESSION['hospital'])) {
                         $id_atencion = $_SESSION['hospital'];
@@ -251,7 +251,7 @@ $usuario = $_SESSION['login'];
                         ?>
                     </div>
                     <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
-                    
+
                 </div>
                 <div class="row">
                     <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
@@ -1410,6 +1410,7 @@ $usuario = $_SESSION['login'];
                 <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
             </center>
         </form>
+    </div>
     </div>
     <script>
     let enviando = false;

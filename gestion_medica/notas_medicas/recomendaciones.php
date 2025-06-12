@@ -866,7 +866,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proxima_cita']) && is
         }
         </script>
     </div>
-
+    </div>
 
 
     <script>

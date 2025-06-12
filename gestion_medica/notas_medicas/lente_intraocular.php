@@ -465,6 +465,7 @@ $usuario = $_SESSION['login'];
             </center>
         </form>
     </div>
+    </div>
     <script>
     let enviando = false;
 
