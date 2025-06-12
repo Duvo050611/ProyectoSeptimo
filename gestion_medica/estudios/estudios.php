@@ -519,7 +519,9 @@ if (mysqli_num_rows($resultado) > 0) {
                     </tbody>
                 </table>
             </div>
-        </div><br><br><br><br>
+            </div>
+            </div>
+        </div>
 
         <footer class="main-footer">
             <?php include "../../template/footer.php"; ?>

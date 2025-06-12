@@ -59,105 +59,16 @@ $pac_sexo = $row_pac['sexo'];
 $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
 $stmt_pac->close();
 
-<<<<<<< HEAD
-// Fetch vital signs
-$sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi 
-              FROM signos_vitales 
-              WHERE id_atencion = ? 
-              ORDER BY id_sig DESC LIMIT 1";
-=======
 // Fetch vital signs from exploracion_fisica
 $sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
               FROM exploracion_fisica 
               WHERE id_atencion = ? 
               ORDER BY fecha DESC LIMIT 1";
->>>>>>> 984cba820b36f13e9c30ee7913b8e5011f1d9d07
 $stmt_signs = $conexion->prepare($sql_signs);
 $stmt_signs->bind_param("i", $id_atencion);
 $stmt_signs->execute();
 $result_signs = $stmt_signs->get_result();
 $row_signs = $result_signs->fetch_assoc();
-<<<<<<< HEAD
-$p_sistolica = $row_signs['p_sistol'] ?? '';
-$p_diastolica = $row_signs['p_diastol'] ?? '';
-$f_resp = $row_signs['fresp'] ?? '';
-$temp = $row_signs['temper'] ?? '';
-$sat_oxigeno = $row_signs['satoxi'] ?? '';
-$stmt_signs->close();
-
-// Calculate total price
-$total_price = 0.0;
-$sql_price = "SELECT precio_total FROM ocular_examenes_gabinete WHERE id_atencion = ? AND (id_serv IS NOT NULL OR otros_gabinete IS NOT NULL)";
-$stmt_price = $conexion->prepare($sql_price);
-$stmt_price->bind_param("i", $id_atencion);
-$stmt_price->execute();
-$result_price = $stmt_price->get_result();
-while ($row_price = $result_price->fetch_assoc()) {
-    $total_price += $row_price['precio_total'];
-}
-$stmt_price->close();
-
-// Calculate age
-function calculaedad($fechanacimiento) {
-    if (!$fechanacimiento || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechanacimiento)) {
-        return 'Edad no disponible';
-    }
-    list($ano, $mes, $dia) = explode("-", $fechanacimiento);
-    $ano_diferencia = date("Y") - $ano;
-    $mes_diferencia = date("m") - $mes;
-    $dia_diferencia = date("d") - $dia;
-    if ($dia_diferencia < 0) {
-        $mes_diferencia--;
-        $dia_diferencia += date("t", strtotime("$ano-$mes-01"));
-    }
-    if ($mes_diferencia < 0) {
-        $ano_diferencia--;
-        $mes_diferencia += 12;
-    }
-    if ($ano_diferencia > 0) {
-        return $ano_diferencia . ' AÑOS';
-    } elseif ($mes_diferencia > 0) {
-        return $mes_diferencia . ' MESES';
-    } else {
-        return $dia_diferencia . ' DÍAS';
-    }
-}
-$edad = calculaedad($pac_fecnac);
-
-// Compile studies list for PDF
-$studies = preg_split('/[,;]/', $sol_estudios, -1, PREG_SPLIT_NO_EMPTY);
-$numbered_studies = [];
-foreach ($studies as $index => $study) {
-    $numbered_studies[] = ($index + 1) . ". " . trim($study);
-}
-$studies_list = implode("\n", $numbered_studies);
-
-// Current date and time for PDF
-$fecha_actual = date("d/m/Y H:i:s");
-
-// Create PDF class
-class PDF extends FPDF {
-    function Header() {
-        include '../../conexionbd.php';
-        $resultado = $conexion->query("SELECT * FROM img_sistema ORDER BY id_simg DESC LIMIT 1") or die($conexion->error);
-        while ($f = mysqli_fetch_array($resultado)) {
-            $bas = $f['img_ipdf'];
-            $this->Image("../../configuracion/admin/img2/{$bas}", 7, 9, 40, 25);
-            $this->Image("../../configuracion/admin/img3/{$f['img_cpdf']}", 58, 15, 109, 24);
-            $this->Image("../../configuracion/admin/img4/{$f['img_dpdf']}", 168, 16, 38, 14);
-        }
-        $this->Ln(32);
-    }
-
-    function Footer() {
-        $this->SetY(-15);
-        $this->SetFont('Arial', '', 8);
-        $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
-        $this->Cell(0, 10, utf8_decode('INEO-000'), 0, 1, 'R');
-    }
-}
-
-=======
 $p_sistolica = $row_signs['presion_sistolica'] ?? '';
 $p_diastolica = $row_signs['presion_diastolica'] ?? '';
 $f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
@@ -263,7 +174,6 @@ class PDF extends FPDF {
     }
 }
 
->>>>>>> 984cba820b36f13e9c30ee7913b8e5011f1d9d07
 // Generate PDF
 $pdf = new PDF('P');
 $pdf->AliasNbPages();
@@ -305,31 +215,4 @@ header('Content-Type: application/pdf');
 header('Content-Disposition: inline; filename="solicitud_gab.pdf"');
 $pdf->Output('I', 'solicitud_gab.pdf');
 exit();
-<<<<<<< HEAD
-?>                             Fecha y hora de solicitud: {$fecha_actual}"), 0, 1, 'L');
-$pdf->Cell(0, 5, utf8_decode("Médico tratante: {$doctor}"), 0, 1, 'L');
-$pdf->Cell(0, 5, utf8_decode("Estudio(s) solicitado(s):"), 0, 1, 'L');
-$pdf->MultiCell(0, 5, utf8_decode($studies_list), 0, 'L');
-$pdf->Cell(0, 5, utf8_decode("Costo total: \${$total_price} MXN"), 0, 1, 'L');
-$pdf->Cell(0, 5, utf8_decode("Detalle de estudio:"), 0, 1, 'L');
-$pdf->Cell(0, 5, utf8_decode("Diagnóstico probable: Consulta médica"), 0, 1, 'L');
-$pdf->Cell(0, 10, utf8_decode("Solicita: {$medico}"), 0, 1, 'C');
-$pdf->Ln(15);
-
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(0, 5, utf8_decode("_____________________"), 0, 1, 'C');
-$pdf->Cell(0, 5, utf8_decode("Firma"), 0, 1, 'C');
-
-$bottom_y = $pdf->GetY() + 10;
-$pdf->Line(1, $bottom_y, 209, $bottom_y);
-$pdf->Line(1, 8, 1, $bottom_y);
-$pdf->Line(209, 8, 209, $bottom_y);
-
-// Output PDF to browser
-header('Content-Type: application/pdf');
-header('Content-Disposition: inline; filename="solicitud_gab.pdf"');
-$pdf->Output('I', 'solicitud_gab.pdf');
-exit();
-=======
->>>>>>> 984cba820b36f13e9c30ee7913b8e5011f1d9d07
 ?>

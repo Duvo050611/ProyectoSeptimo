@@ -227,6 +227,7 @@ if ($not_id === 0) {
         </div>
     </div>
 </section>
+</div>
 
 <footer class="main-footer">
     <?php include "../../template/footer.php"; ?>

@@ -361,7 +361,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_lent_cont.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_len_cont.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
@@ -387,7 +387,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_pruebas.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_prueba.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
@@ -448,28 +448,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
                         5.09 Mediciones de la cornea
                         <p></p>
-                        <?php
-              // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
-              $id_atencion = $_SESSION['hospital'];
-              // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
-              //  $result = $conn->query($sql);
-              $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
-
-              $no = 1;
-              while ($row = $resultado2->fetch_assoc()) {
-                 echo '<tr>'
-
-               
-               . '<td> <strong>
-                  <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_presion_intraocular.php"><span class="fa fa-file-pdf-o"
-                                           style="font-size:20px"></span></a>
-                  </strong></td>';
-                $no++;
-              }
-              ?>
-                        5.10 Presion intraocular
-                        <p></p>
+                        
                         <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
@@ -491,7 +470,30 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-                        5.11 Orbita, Parpados y Vias Lagrimales
+                        5.10 Orbita, Parpados y Vias Lagrimales
+                        <p></p>
+
+                        <?php
+              // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
+              $id_atencion = $_SESSION['hospital'];
+              // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
+              //  $result = $conn->query($sql);
+              $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
+
+              $no = 1;
+              while ($row = $resultado2->fetch_assoc()) {
+                 echo '<tr>'
+
+               
+               . '<td> <strong>
+                  <a type="submit" class="btn btn-danger btn-sm"
+                    href="../vistas_pdf/vista_presion_intraocular.php"><span class="fa fa-file-pdf-o"
+                                           style="font-size:20px"></span></a>
+                  </strong></td>';
+                $no++;
+              }
+              ?>
+                        5.11 Presion intraocular
                         <p></p>
                         <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
@@ -713,28 +715,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               ?>
                         5.22 Recomendaciones
                         <p></p>
-                        <?php
-              // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
-              $id_atencion = $_SESSION['hospital'];
-              // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
-              //  $result = $conn->query($sql);
-              $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
-
-              $no = 1;
-              while ($row = $resultado2->fetch_assoc()) {
-                 echo '<tr>'
-
-               
-               . '<td> <strong>
-                  <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
-                                           style="font-size:20px"></span></a>
-                  </strong></td>';
-                $no++;
-              }
-              ?>
-
-                        5.21
+                        
                         <hr>
 
                     </div>

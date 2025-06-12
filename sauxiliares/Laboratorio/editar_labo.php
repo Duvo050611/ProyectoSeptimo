@@ -15,11 +15,11 @@ include "../../conexionbd.php";
 $usuario = $_SESSION['login'];
 $id_rol = $usuario['id_rol'];
 
-// Restrict access to roles 4, 5, 10, 12
-if (!in_array($id_rol, [4, 5, 10, 12])) {
-    ob_end_clean();
-    header("Location: ../../index.php");
-    exit();
+if (in_array($usuario['id_rol'], [4, 5, 10, 12])) {
+    include "../header_labo.php";
+} else {
+    echo "<script>window.location='../../index.php';</script>";
+    exit;
 }
 
 // Validate not_id
@@ -35,7 +35,7 @@ $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resulta
 $base_url = '/gestion_medica/notas_medicas/resultados/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 $allowed_mime_types = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-$max_file_size = 5242880; // 5MB
+$max_file_size = 25000000; // 25MB
 
 // Ensure upload directory exists and is writable
 if (!file_exists($upload_dir) && !mkdir($upload_dir, 0775, true)) {
@@ -163,7 +163,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                 break;
             } elseif ($file_size > $max_file_size) {
                 $error = true;
-                $message = 'El archivo es demasiado grande (máximo 5MB).';
+                $message = 'El archivo es demasiado grande (máximo 25MB).';
                 break;
             } elseif ($file_error !== UPLOAD_ERR_OK) {
                 $error = true;

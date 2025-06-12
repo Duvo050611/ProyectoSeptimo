@@ -15,11 +15,12 @@ include "../../conexionbd.php";
 $usuario = $_SESSION['login'];
 $id_rol = $usuario['id_rol'];
 
-// Restrict access to roles 4, 5, 10, 12
-if (!in_array($id_rol, [4, 5, 10, 12])) {
+if (in_array($id_rol, [4, 5, 10, 12])) {
+    include "../header_labo.php";
+} else {
     ob_end_clean();
-    header("Location: ../../index.php");
-    exit();
+    echo "<script>window.location='../../index.php';</script>";
+    exit;
 }
 
 // Validate id_not_gabinete
@@ -35,7 +36,7 @@ $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resulta
 $base_url = '/gestion_medica/notas_medicas/resultados_gabinete/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 $allowed_mime_types = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-$max_file_size = 5242880; // 5MB
+$max_file_size = 25000000; // 25MB
 
 // Ensure upload directory exists and is writable
 if (!file_exists($upload_dir) && !mkdir($upload_dir, 0775, true)) {
@@ -52,7 +53,7 @@ if (!is_writable($upload_dir)) {
         ob_end_clean();
         $_SESSION['message'] = 'Error al establecer permisos de directorio.';
         $_SESSION['message_type'] = 'danger';
-        header("Location: editar_gab.php?not_id=$id_not_gabinete");
+        header("Location: editar_gab.php?id_not_gabinete=$id_not_gabinete");
         exit();
     }
 }
@@ -83,7 +84,7 @@ foreach ($current_files as $file) {
     }
 }
 
-// Debugging output
+// Debugging output for file status
 $debug_info = [
     'id_not_gabinete' => $id_not_gabinete,
     'filenames_in_db' => $row['resultado'] ?: 'None',
@@ -144,77 +145,113 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
     $message = '';
     $new_files = [];
 
-    if (!empty($_FILES['resultado']['name'][0])) {
-        $files = $_FILES['resultado'];
-        $all_uploaded = true;
+    // Debug $_FILES and $_POST
+    error_log("POST: " . print_r($_POST, true));
+    error_log("FILES: " . print_r($_FILES, true));
 
-        for ($i = 0; $i < count($files['name']); $i++) {
-            $file_name = $files['name'][$i];
-            $file_tmp = $files['tmp_name'][$i];
-            $file_size = $files['size'][$i];
-            $file_error = $files['error'][$i];
-            $file_mime = mime_content_type($file_tmp);
-            $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-
-            // Validate file
-            if (!in_array($file_ext, $allowed_extensions) || !in_array($file_mime, $allowed_mime_types)) {
-                $error = true;
-                $message = 'Solo se permiten archivos PDF, PNG o JPEG.';
-                break;
-            } elseif ($file_size > $max_file_size) {
-                $error = true;
-                $message = 'El archivo es demasiado grande (máximo 5MB).';
-                break;
-            } elseif ($file_error !== UPLOAD_ERR_OK) {
-                $error = true;
-                $message = 'Error al subir el archivo: ' . $file_error;
-                break;
-            } else {
-                // Generate unique filename
-                $new_filename = "resultado_gabinete_{$id_not_gabinete}_" . date('Ymd_His') . "_$i_" . uniqid() . '.' . $file_ext;
-                $destination = $upload_dir . $new_filename;
-
-                // Move new file
-                if (move_uploaded_file($file_tmp, $destination)) {
-                    if (file_exists($destination)) {
-                        $new_files[] = $new_filename;
-                    } else {
-                        $error = true;
-                        $message = 'Archivo no encontrado después de subir: ' . $file_name;
-                        error_log("File not found after upload: $destination");
-                        break;
-                    }
-                } else {
-                    $error = true;
-                    $message = 'Error al mover el archivo a: ' . $destination;
-                    error_log("Failed to move uploaded file to: $destination");
-                    break;
-                }
-            }
-        }
-
-        if (!$error && !empty($new_files)) {
-            // Append new files to existing files
-            $current_files = array_merge($current_files, $new_files);
-            $new_resultado = implode(',', array_filter($current_files));
-
-            // Update database
-            $update_query = "UPDATE notificaciones_gabinete SET resultado = ?, fecha_resultado = NOW(), id_usua_resul = ? WHERE id_not_gabinete = ?";
-            $update_stmt = $conexion->prepare($update_query);
-            $update_stmt->bind_param("sii", $new_resultado, $usuario['id_usua'], $id_not_gabinete);
-            if ($update_stmt->execute()) {
-                $message = count($new_files) . ' archivo(s) subido(s) correctamente.';
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $error = true;
-                $message = 'Error al actualizar la base de datos.';
-                error_log("Failed to update database for id_not_gabinete $id_not_gabinete: " . $conexion->error);
-            }
-            $update_stmt->close();
-        }
-    } else {
+    // Validate $_FILES['resultado'] is an array
+    if (!is_array($_FILES['resultado'])) {
+        $error = true;
+        $message = 'Error en la estructura de los archivos subidos.';
+        error_log("Resultado: " . var_export($_FILES['resultado'], true));
+    } elseif (!isset($_FILES['resultado']['name']) || empty($_FILES['resultado']['name'])) {
         $error = true;
         $message = 'Por favor, seleccione al menos un archivo.';
+    } else {
+        // Ensure name is an array, even for single file
+        $files = $_FILES['resultado'];
+        $file_names = is_array($files['name']) ? $files['name'] : [$files['name']];
+        $file_tmp_names = is_array($files['tmp_name']) ? $files['tmp_name'] : [$files['tmp_name']];
+        $file_sizes = is_array($files['size']) ? $files['size'] : [$files['size']];
+        $file_errors = is_array($files['error']) ? $files['error'] : [$files['error']];
+
+        // Check if any valid files were uploaded
+        $has_valid_files = false;
+        for ($i = 0; $i < count($file_names); $i++) {
+            if ($file_errors[$i] === UPLOAD_ERR_OK && !empty($file_names[$i])) {
+                $has_valid_files = true;
+                break;
+            }
+        }
+
+        if (!$has_valid_files) {
+            $error = true;
+            $message = 'No se seleccionaron archivos válidos.';
+        } else {
+            for ($i = 0; $i < count($file_names); $i++) {
+                $file_name = $file_names[$i];
+                $file_tmp = $file_tmp_names[$i];
+                $file_size = $file_sizes[$i];
+                $file_error = $file_errors[$i];
+
+                // Skip empty or failed uploads
+                if ($file_error === UPLOAD_ERR_NO_FILE || empty($file_name)) {
+                    continue;
+                }
+
+                // Validate file
+                $file_mime = $file_tmp && file_exists($file_tmp) ? mime_content_type($file_tmp) : '';
+                $file_ext = $file_name ? strtolower(pathinfo($file_name, PATHINFO_EXTENSION)) : '';
+
+                if (!$file_ext || !in_array($file_ext, $allowed_extensions) || !$file_mime || !in_array($file_mime, $allowed_mime_types)) {
+                    $error = true;
+                    $message = 'Solo se permiten archivos PDF, PNG o JPEG.';
+                    break;
+                } elseif ($file_size > $max_file_size) {
+                    $error = true;
+                    $message = 'El archivo es demasiado grande (máximo 25MB).';
+                    break;
+                } elseif ($file_error !== UPLOAD_ERR_OK) {
+                    $error = true;
+                    $message = 'Error al subir el archivo: ' . $file_error;
+                    break;
+                } else {
+                    // Generate unique filename
+                    $new_filename = "resultado_gabinete_{$id_not_gabinete}_" . date('Ymd_His') . "_$i" . uniqid() . '.' . $file_ext;
+                    $destination = $upload_dir . $new_filename;
+
+                    // Move new file
+                    if (move_uploaded_file($file_tmp, $destination)) {
+                        if (file_exists($destination)) {
+                            $new_files[] = $new_filename;
+                        } else {
+                            $error = true;
+                            $message = 'Archivo no encontrado después de subir: ' . $file_name;
+                            error_log("File not found after upload: $destination");
+                            break;
+                        }
+                    } else {
+                        $error = true;
+                        $message = 'Error al mover el archivo a: ' . $destination;
+                        error_log("Failed to move uploaded file to: $destination");
+                        break;
+                    }
+                }
+            }
+
+            if (!$error && !empty($new_files)) {
+                // Append new files to existing files
+                $current_files = array_merge($current_files, $new_files);
+                $new_resultado = implode(',', array_filter($current_files));
+
+                // Update database
+                $update_query = "UPDATE notificaciones_gabinete SET resultado = ?, fecha_resultado = NOW(), id_usua_resul = ? WHERE id_not_gabinete = ?";
+                $update_stmt = $conexion->prepare($update_query);
+                $update_stmt->bind_param("sii", $new_resultado, $usuario['id_usua'], $id_not_gabinete);
+                if ($update_stmt->execute()) {
+                    $message = count($new_files) . ' archivo(s) subido(s) correctamente.';
+                    $_SESSION['message_type'] = 'success';
+                } else {
+                    $error = true;
+                    $message = 'Error al actualizar la base de datos.';
+                    error_log("Failed to update database for id_not_gabinete $id_not_gabinete: " . $conexion->error);
+                }
+                $update_stmt->close();
+            } elseif (!$error && empty($new_files)) {
+                $error = true;
+                $message = 'No se seleccionaron archivos válidos.';
+            }
+        }
     }
 
     // Set message and redirect
@@ -253,7 +290,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                 }, 100);
             });
 
-            // Ensure button is clickable
+            // Validate file input before submission
             $('#submit-btn').on('click', function(e) {
                 if (!$('#resultado').val()) {
                     alert('Por favor, seleccione al menos un archivo.');
@@ -266,11 +303,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
 <body>
 <div class="container-fluid">
     <?php
-    if ($id_rol == 4) {
-        echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
-    } elseif ($id_rol == 10 || $id_rol == 12) {
-        echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
-    } elseif ($id_rol == 5) {
+    if (in_array($id_rol, [4, 5, 10, 12])) {
         echo '<a class="btn btn-danger" href="resultados_gab.php">Regresar</a>';
     }
     ?>
@@ -288,7 +321,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                 if (isset($_SESSION['message'])) {
                     echo '<div class="alert alert-' . htmlspecialchars($_SESSION['message_type']) . ' alert-dismissible fade show" role="alert">'
                         . htmlspecialchars($_SESSION['message'])
-                        . '<button type="button" class="close" data-dismiss="alert">×</button>'
+                        . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'
                     . '</div>';
                     unset($_SESSION['message'], $_SESSION['message_type']);
                 }
@@ -352,8 +385,6 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
     <?php include "../../template/footer.php"; ?>
 </footer>
 
-<!-- Temporarily disable fastclick to rule out interference -->
-<!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
 <script src="../../template/dist/js/app.min.js"></script>
 </body>
 </html>

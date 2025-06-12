@@ -299,7 +299,7 @@ if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
                                         while ($f = $result_gab->fetch_assoc()) {
                                             $realizado = $f['realizado'] ?? 'NO';
                                             $result_file = $f['resultado'] ?? null;
-                                            $result_url = ($realizado === 'SI' && $result_file) ? "/gestion_medica/notas_medicas/resultados/$result_file" : '';
+                                            $result_url = ($realizado === 'SI' && $result_file) ? "/gestion_medica/notas_medicas/resultados_gabinete/$result_file" : '';
                                             ?>
                                             <tr>
                                                 <td>
