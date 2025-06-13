@@ -1,308 +1,150 @@
 <?php
-use PDF as GlobalPDF;
-
+session_start();
+include "../../conexionbd.php";
 require '../../fpdf/fpdf.php';
-include '../../conexionbd.php';
-$id_in=@$_GET['id'];
-$id_exp = @$_GET['id_exp'];
-$id_atencion = @$_GET['id_atencion'];
 
-$sql_tras = "SELECT * from mediciones_cornea where id_exp=$id_exp";
-$result_tras = $conexion->query($sql_tras);
-
-while ($row_tras = $result_tras->fetch_assoc()) {
-  $id = $row_tras['id'];
+if (!isset($_SESSION['login']) || !isset($_SESSION['hospital'])) {
+    header("Location: ../login.php");
+    exit();
 }
 
-if(isset($id)){
-    $id = $id;
-  }else{
-    $id ='sin doc';
-  }
-
-if($id=="sin doc"){
-  echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
-    echo '<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>';
-    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>';
-    echo '<script>
-                    $(document).ready(function() {
-                        swal({
-                            title: "NO EXISTE NOTA PARA ESTE PACIENTE", 
-                            type: "error",
-                            confirmButtonText: "ACEPTAR"
-                        }, function(isConfirm) { 
-                            if (isConfirm) {
-                                window.close();
-                            }
-                        });
-                    });
-                </script>';
-}else{
-
-mysqli_set_charset($conexion, "utf8");
-
-class PDF extends FPDF
-{
-  function Header()
-  {
-  include '../../conexionbd.php';
-    $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-    while($f = mysqli_fetch_array($resultado)){
-       $bas=$f['img_ipdf'];
-
-    $this->Image("../../configuracion/admin/img2/".$bas, 7, 9, 40, 25);
-    $this->Image("../../configuracion/admin/img3/".$f['img_cpdf'],58,15, 109, 24);
-    $this->Image("../../configuracion/admin/img4/".$f['img_dpdf'], 168, 16, 38, 14);
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+if ($id <= 0) {
+    die("ID no válido.");
 }
 
-   $this->Ln(32);
-  }
-  function Footer()
-  {
-    $this->Ln(8);
-    $this->SetY(-15);
-    $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
-     $this->Cell(0, 10, utf8_decode('INEO-000'), 0, 1, 'R');
-  }
+// Datos de medición
+$sql = "SELECT * FROM mediciones_cornea WHERE id = ?";
+$stmt = $conexion->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$res = $stmt->get_result();
+if (!$data = $res->fetch_assoc()) {
+    die("Medición no encontrada.");
 }
-$sql_pac = "SELECT p.papell, p.nom_pac,p.sapell,p.edad,p.sexo,p.Id_exp,p.folio,p.dir,p.id_edo,p.id_mun,p.tel,p.ocup,p.resp,p.paren,p.tel_resp, p.fecnac FROM paciente p where p.Id_exp = $id_exp";
-$result_pac = $conexion->query($sql_pac);
+$stmt->close();
 
-while ($row_pac = $result_pac->fetch_assoc()) {
-  $papell = $row_pac['papell'];
-  $nom_pac = $row_pac['nom_pac'];
-  $sapell = $row_pac['sapell'];
-  $edad = $row_pac['edad'];
-  $sexo = $row_pac['sexo'];
-  $Id_exp = $row_pac['Id_exp'];
-  $folio = $row_pac['folio'];
-  $dir = $row_pac['dir'];
-  $id_edo = $row_pac['id_edo'];
-  $id_mun = $row_pac['id_mun'];
-  $tel = $row_pac['tel'];
-  $ocup = $row_pac['ocup'];
-  $resp = $row_pac['resp'];
-  $paren = $row_pac['paren'];
-  $tel_resp = $row_pac['tel_resp'];
-  $fecnac = $row_pac['fecnac'];
+// Datos del paciente
+$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.fecnac, p.folio, p.sexo, p.tel, p.ocup, p.dir, di.fecha, di.tipo_a 
+            FROM paciente p 
+            JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
+            WHERE di.id_atencion = ?";
+$stmt = $conexion->prepare($sql_pac);
+$stmt->bind_param("i", $data['id_atencion']);
+$stmt->execute();
+$res_pac = $stmt->get_result();
+if (!$pac = $res_pac->fetch_assoc()) {
+    die("Paciente no encontrado.");
+}
+$stmt->close();
+
+// Datos del médico
+$sql_doc = "SELECT pre, papell, sapell, nombre, firma, cedp, cargp FROM reg_usuarios WHERE id_usua = ?";
+$stmt = $conexion->prepare($sql_doc);
+$stmt->bind_param("i", $data['id_usua']);
+$stmt->execute();
+$res_doc = $stmt->get_result();
+$med = $res_doc->fetch_assoc();
+$stmt->close();
+
+// Edad
+function calculaedad($fecha) {
+    if (!$fecha) return "No disponible";
+    $nac = new DateTime($fecha);
+    $hoy = new DateTime();
+    $edad = $hoy->diff($nac);
+    return $edad->y . " años";
+}
+$edad = calculaedad($pac['fecnac']);
+
+// PDF
+class PDF extends FPDF {
+    function Header() {
+        include "../../conexionbd.php";
+        $res = $conexion->query("SELECT * FROM img_sistema ORDER BY id_simg DESC LIMIT 1");
+        while ($f = $res->fetch_assoc()) {
+            $this->Image("../../configuracion/admin/img2/{$f['img_ipdf']}", 7, 11, 40, 25);
+            $this->Image("../../configuracion/admin/img3/{$f['img_cpdf']}", 58, 15, 109, 24);
+            $this->Image("../../configuracion/admin/img4/{$f['img_dpdf']}", 168, 16, 38, 14);
+        }
+        $this->SetY(40);
+        $this->SetFont('Arial', 'B', 14);
+        $this->Cell(0, 10, utf8_decode('Mediciones de Córnea'), 0, 1, 'C');
+    }
+
+    function Footer() {
+        $this->SetY(-20);
+        $this->SetFont('Arial', 'I', 8);
+        $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
+    }
 }
 
-
-
-$sql_preop = "SELECT * FROM dat_ingreso where id_atencion = $id_atencion";
-$result_preop = $conexion->query($sql_preop);
-
-while ($row_preop = $result_preop->fetch_assoc()) {
- 
-    $tipo_a = $row_preop['tipo_a'];
-    $fecha_ing = $row_preop['fecha'];
-    $id_usua = $row_preop['id_usua'];
-}
-
-$pdf = new PDF('P');
+$pdf = new PDF('P', 'mm', 'Letter');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetMargins(8, 10, 10);
-#Establecemos el margen inferior:
-$pdf->SetAutoPageBreak(true,32);
-$pdf->SetFont('Arial', 'B', 9);
-$pdf->SetX(55);
-$pdf->SetTextColor(43, 45, 127);
-$pdf->Cell(110, 9, utf8_decode('NOTA MEDICIONES DE LA CORNEA'), 1, 0, 'C');
-$pdf->SetX(160);
-$pdf->SetFont('Arial', '', 6);
-date_default_timezone_set('America/Mexico_City');
-$date1 = date_create(date("Y-m-d H:i:s"));
-$pdf->Cell(35, 9, 'FECHA: ' . date_format($date1,"d/m/Y H:i"), 0, 1, 'R');
+$pdf->SetMargins(15, 15, 15);
+$pdf->SetAutoPageBreak(true, 30);
+
+// Datos del Paciente
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFillColor(230, 240, 255);
+$pdf->Cell(0, 8, 'Datos del Paciente', 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(45, 7, 'Nombre:', 0, 0);
+$pdf->Cell(0, 7, utf8_decode($pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac']), 0, 1);
+$pdf->Cell(45, 7, 'Edad:', 0, 0);
+$pdf->Cell(50, 7, utf8_decode($edad), 0, 0);
+$pdf->Cell(30, 7, 'Género:', 0, 0);
+$pdf->Cell(0, 7, utf8_decode($pac['sexo']), 0, 1);
+$pdf->Cell(45, 7, 'Ocupación:', 0, 0);
+$pdf->Cell(50, 7, utf8_decode($pac['ocup']), 0, 0);
+$pdf->Cell(30, 7, 'Teléfono:', 0, 0);
+$pdf->Cell(0, 7, utf8_decode($pac['tel']), 0, 1);
+$pdf->Cell(45, 7, 'Domicilio:', 0, 0);
+$pdf->MultiCell(0, 7, utf8_decode($pac['dir']));
+
+// Tabla de mediciones
 $pdf->Ln(5);
-
-$pdf->SetDrawColor(43, 45, 127);
-$pdf->Line(8, 53, 207, 53);
-$pdf->Line(8, 53, 8, 80);
-$pdf->Line(207, 53, 207, 80);
-$pdf->Line(8, 80, 207, 80);
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(15, 5, 'Servicio: ',0 , 0, 'L');  
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(120, 5, utf8_decode($tipo_a) , 'B',0, 'L');
-$pdf->SetFont('Arial', 'B', 8);
-$date=date_create($fecha_ing);
-$pdf->Cell(28, 5, utf8_decode('Fecha de Ingreso:'),0 , 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(32, 5, date_format($date,'d/m/Y H:i:s'), 'B', 0, 'C');
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFillColor(220, 230, 250);
+$pdf->Cell(0, 8, 'Resultados de Cornea', 0, 1, 'C', true);
 $pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(15, 5, utf8_decode('Paciente: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(180, 5, utf8_decode($folio. ' - '. $papell . ' ' . $sapell . ' ' . $nom_pac),'B' , 0, 'L');
-$pdf->SetFont('Arial', 'B', 8);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(55, 8, '', 1, 0, 'C', true);
+$pdf->Cell(70, 8, 'Ojo Derecho', 1, 0, 'C', true);
+$pdf->Cell(70, 8, 'Ojo Izquierdo', 1, 1, 'C', true);
 
-$pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 8);
-$date1=date_create($fecnac);
-$pdf->Cell(31, 5, 'Fecha de nacimiento: ', 0 , 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(21, 5, date_format($date1,"d/m/Y"),'B' , 0, 'L');
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(11, 5, ' Edad: ', 0 , 0, 'L');
-
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(13, 5, utf8_decode($edad), 'B' , 0, 'L');
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(19, 5, utf8_decode(' Ocupación: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(36, 5,  utf8_decode($ocup), 'B', 0,'L');
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(16, 5, utf8_decode(' Teléfono: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(21, 5,  utf8_decode($tel), 'B',0, 'L');
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(13, 5, utf8_decode('Género: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(14, 5,  $sexo, 'B', 0,'L');
-$pdf->Ln(5);
-$pesoh="";
-$tallah="";
-$sql_sig ="select * from dat_hclinica WHERE Id_exp=$id_atencion ORDER by id_hc DESC LIMIT 1";
-$result_sig = $conexion->query($sql_sig);
-while ($row_hc = $result_sig->fetch_assoc()) {
-$pesoh=$row_hc['peso'];
-$tallah=$row_hc['talla'];
+function rowData($pdf, $label, $od, $oi) {
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(55, 7, utf8_decode($label), 1, 0);
+    $pdf->Cell(70, 7, utf8_decode($od), 1, 0);
+    $pdf->Cell(70, 7, utf8_decode($oi), 1, 1);
 }
 
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(10, 5, utf8_decode('Peso: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(14, 5,  utf8_decode($pesoh.' Kilos'), 'B', 0,'L');
+rowData($pdf, 'Diámetro Córnea Vertical', $data['od_dcv'], $data['oi_dcv']);
+rowData($pdf, 'Diámetro Córnea Horizontal', $data['od_dch'], $data['oi_dch']);
+rowData($pdf, 'Distancia Pupilar fotópico', $data['od_dpf'], $data['oi_dpf']);
+rowData($pdf, 'Pupilar Mesópico', $data['od_dpm'], $data['oi_dpm']);
+rowData($pdf, 'Microscopía', $data['od_micro'], $data['oi_micro']);
+rowData($pdf, 'Paquimetría', $data['od_paq'], $data['oi_paq']);
 
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(11, 5, utf8_decode(' Talla: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(18, 5,  utf8_decode($tallah.' Metros'), 'B', 0,'L');
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(17, 5, utf8_decode(' Domicilio: '), 0, 0,'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(125, 5, utf8_decode($dir), 'B', 0,'L');
-
-$pdf->Ln(11);
-
-$sql_cornea = "SELECT * FROM mediciones_cornea WHERE id=$id_in AND id_exp=$id_exp";
-$result_cornea = $conexion->query($sql_cornea);
-
-if ($row_cornea = $result_cornea->fetch_assoc()) {
-  $od_dcv = $row_cornea['od_dcv'];
-  $od_dch = $row_cornea['od_dch'];
-  $od_dpf = $row_cornea['od_dpf'];
-  $od_dpm = $row_cornea['od_dpm'];
-  $od_micro = $row_cornea['od_micro'];
-  $od_paq = $row_cornea['od_paq'];
-
-  $oi_dcv = $row_cornea['oi_dcv'];
-  $oi_dch = $row_cornea['oi_dch'];
-  $oi_dpf = $row_cornea['oi_dpf'];
-  $oi_dpm = $row_cornea['oi_dpm'];
-  $oi_micro = $row_cornea['oi_micro'];
-  $oi_paq = $row_cornea['oi_paq'];
-}
-
-// Título OD
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(190, 6, utf8_decode('Mediciones Corneales - Ojo Derecho (OD)'), 1, 1, 'C');
-
-// Contenido OD
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(38, 6, utf8_decode('DCV'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($od_dcv), 1, 0, 'L');
-$pdf->Cell(38, 6, utf8_decode('DCH'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($od_dch), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('DPF'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($od_dpf), 1, 0, 'L');
-$pdf->Cell(38, 6, utf8_decode('DPM'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($od_dpm), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('Microscopía Especular'), 1, 0, 'L');
-$pdf->Cell(152, 6, utf8_decode($od_micro), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('Paquimetría'), 1, 0, 'L');
-$pdf->Cell(152, 6, utf8_decode($od_paq), 1, 1, 'L');
-
-// Título OI
-$pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(190, 6, utf8_decode('Mediciones Corneales - Ojo Izquierdo (OI)'), 1, 1, 'C');
-
-// Contenido OI
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(38, 6, utf8_decode('DCV'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($oi_dcv), 1, 0, 'L');
-$pdf->Cell(38, 6, utf8_decode('DCH'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($oi_dch), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('DPF'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($oi_dpf), 1, 0, 'L');
-$pdf->Cell(38, 6, utf8_decode('DPM'), 1, 0, 'L');
-$pdf->Cell(57, 6, utf8_decode($oi_dpm), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('Microscopía Especular'), 1, 0, 'L');
-$pdf->Cell(152, 6, utf8_decode($oi_micro), 1, 1, 'L');
-
-$pdf->Cell(38, 6, utf8_decode('Paquimetría'), 1, 0, 'L');
-$pdf->Cell(152, 6, utf8_decode($oi_paq), 1, 1, 'L');
-
-$pdf->Ln(5);
-$pdf->SetFont('Arial', 'I', 7);
-$fecha_registro = $row_cornea['fecha_registro'];
-$pdf->Cell(60, 5, utf8_decode('Fecha de Registro: ' . date('d/m/Y H:i', strtotime($fecha_registro))), 0, 1);
-
-
-/*$sql_med_id = "SELECT id_usua FROM ninobebe WHERE id_atencion = $id_atencion ORDER by id DESC LIMIT 1";
-    $result_med_id = $conexion->query($sql_med_id);
-
-    while ($row_med_id = $result_med_id->fetch_assoc()) {
-      $id_med = $row_med_id['id_usua'];
-    }
-    
-    */
-    $sql_med = "SELECT * FROM reg_usuarios WHERE id_usua = $id_usua";
-    $result_med = $conexion->query($sql_med);
-
-    while ($row_med = $result_med->fetch_assoc()) {
-      $nom = $row_med['nombre'];
-      $app = $row_med['papell'];
-      $apm = $row_med['sapell'];
-      $pre = $row_med['pre'];
-      $firma = $row_med['firma'];
-      $ced_p = $row_med['cedp'];
- $cargp = $row_med['cargp'];
-}
-     
-// --- Firma del médico (centrada y válida)
+// Firma
 $pdf->Ln(20);
-$pdf->SetFont('Arial', 'B', 7);
-
-// Verifica si hay firma cargada
-$firma_path = (!empty($firma) && file_exists('../../imgfirma/' . $firma))
-    ? '../../imgfirma/' . $firma
-    : '../../imgfirma/FIRMA.jpg';
-
-$pdf->Image($firma_path, 90, 240, 30);
-
-// Texto debajo de la firma
-$pdf->SetY(253);
-$pdf->SetFont('Arial', 'B', 7);
-
-// Usamos ancho 210 para que esté centrado horizontalmente en la hoja
-$pdf->Cell(194, 4, utf8_decode($pre . '. ' . $app . ' ' . $apm), 0, 1, 'C');
-$pdf->Cell(194, 4, utf8_decode($cargp . ' - Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(194, 4, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
-
-
-$pdf->Output();
+if (!empty($med['firma']) && file_exists('../../imgfirma/' . $med['firma'])) {
+    $imgWidth = 40;
+    $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
+    $pdf->Image('../../imgfirma/' . $med['firma'], $imgX, $pdf->GetY(), $imgWidth);
+    $pdf->Ln(22);
 }
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(0, 6, utf8_decode(trim($med['pre'] . ' ' . $med['papell'] . ' ' . $med['sapell'] . ' ' . $med['nombre'])), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(0, 6, utf8_decode($med['cargp']), 0, 1, 'C');
+$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $med['cedp']), 0, 1, 'C');
+
+// Salida
+header('Content-Type: application/pdf');
+header('Content-Disposition: inline; filename="mediciones_cornea.pdf"');
+$pdf->Output('I', 'mediciones_cornea.pdf');
+exit();

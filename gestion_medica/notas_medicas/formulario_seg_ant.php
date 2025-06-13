@@ -289,8 +289,14 @@ if ($conexion) {
     </div>
     <br><br>
         <div class="container">
+            <h4 class="thead">Exploración Segmento Anterior</h4>
+    <form action="guardar_seg_ant.php" method="POST" enctype="multipart/form-data" class="p-4 border rounded bg-light">
+        <!-- Hidden Inputs -->
+    <input type="hidden" name="id_exp" value="<?= htmlspecialchars($pac_id_exp) ?>">
+    <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
+    <input type="hidden" name="id_atencion" value="<?= htmlspecialchars($id_atencion) ?>">
 
-  <h4 class="thead">Exploración Clínica - Segmento Anterior (OD / OI)</h4>
+  <h4 class="mb-4">Exploración Clínica - Segmento Anterior (OD / OI)</h4>
 
   <?php
     $campos = [
@@ -409,7 +415,7 @@ foreach ($campos as $campo => $label) {
 </div>
 
   <div class="d-flex justify-content-between">
-    <a href="../hospitalizacion/vista_pac_hosp.php" class="btn btn-danger">Cancelar</a>
+        <a href="../hospitalizacion/vista_pac_hosp.php" class="btn btn-secondary">Cancelar</a>
     <button type="submit" class="btn btn-primary">Firmar</button>
   </div>
 </form>
