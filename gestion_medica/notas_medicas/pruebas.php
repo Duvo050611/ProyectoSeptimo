@@ -342,15 +342,49 @@ if ($conexion) {
             </div>
             <div class="form-group col-md-6">
                 <label><strong>Fecha de la Prueba</strong></label>
-                <input type="date" class="form-control" name="fecha" required>
+                <input type="date" class="form-control" name="fecha_consulta" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label><strong>Observaciones</strong></label>
-            <textarea class="form-control" name="observaciones" rows="3" placeholder="Observaciones clínicas relevantes..."></textarea>
-            
-        </div>
+    <label><strong>Observaciones</strong></label>
+    <div class="mb-2 d-flex gap-2">
+        <button type="button" class="btn btn-danger btn-sm" id="grabar_observaciones"><i class="fas fa-microphone"></i></button>
+        <button type="button" class="btn btn-primary btn-sm" id="detener_observaciones"><i class="fas fa-microphone-slash"></i></button>
+        <button type="button" class="btn btn-success btn-sm" id="reproducir_observaciones"><i class="fas fa-play"></i></button>
+    </div>
+    <textarea class="form-control" name="observaciones" id="observaciones_texto" rows="3" placeholder="Observaciones clínicas relevantes..."></textarea>
+</div>
+
+<script>
+    const grabarObservaciones = document.getElementById('grabar_observaciones');
+    const detenerObservaciones = document.getElementById('detener_observaciones');
+    const reproducirObservaciones = document.getElementById('reproducir_observaciones');
+    const textareaObservaciones = document.getElementById('observaciones_texto');
+
+    const reconocimientoObservaciones = new webkitSpeechRecognition();
+    reconocimientoObservaciones.lang = "es-ES";
+    reconocimientoObservaciones.continuous = true;
+    reconocimientoObservaciones.interimResults = false;
+
+    reconocimientoObservaciones.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        textareaObservaciones.value += frase + ' ';
+    };
+
+    grabarObservaciones.addEventListener('click', () => reconocimientoObservaciones.start());
+    detenerObservaciones.addEventListener('click', () => reconocimientoObservaciones.abort());
+
+    reproducirObservaciones.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(textareaObservaciones.value);
+        speech.volume = 1;
+        speech.rate = 1;
+        speech.pitch = 1;
+        window.speechSynthesis.speak(speech);
+    });
+</script>
+
                     
         <!-- MENÚ TABS -->
         <ul class="nav nav-tabs" id="ojoTabs" role="tablist">

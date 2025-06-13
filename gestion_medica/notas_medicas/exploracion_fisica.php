@@ -401,25 +401,78 @@ $usuario = $_SESSION['login'];
                 </select>
             </div>
 
-            <div class="form-group">
-                <label><strong>Hábito Exterior</strong></label>
-                <textarea class="form-control" name="habito_exterior" rows="3"></textarea>
-            </div>
+           <div class="form-group">
+    <label><strong>Hábito Exterior</strong></label>
+    <div class="botones mb-2">
+        <button type="button" class="btn btn-danger btn-sm" id="grabar_habito"><i class="fas fa-microphone"></i></button>
+        <button type="button" class="btn btn-primary btn-sm" id="detener_habito"><i class="fas fa-microphone-slash"></i></button>
+        <button type="button" class="btn btn-success btn-sm" id="reproducir_habito"><i class="fas fa-play"></i></button>
+    </div>
+    <textarea class="form-control" name="habito_exterior" id="habito_exterior_texto" rows="4" placeholder="Describe los hábitos exteriores del paciente, por ejemplo: exposición prolongada al sol, actividades al aire libre, uso de dispositivos electrónicos, etc."></textarea>
+</div>
+
+<script>
+    const grabarHabito = document.getElementById('grabar_habito');
+    const detenerHabito = document.getElementById('detener_habito');
+    const reproducirHabito = document.getElementById('reproducir_habito');
+    const campoHabito = document.getElementById('habito_exterior_texto');
+
+    reproducirHabito.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoHabito.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimientoHabito = new webkitSpeechRecognition();
+    reconocimientoHabito.lang = "es-ES";
+    reconocimientoHabito.continuous = true;
+    reconocimientoHabito.interimResults = false;
+
+    reconocimientoHabito.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoHabito.value += frase + ' ';
+    };
+
+    grabarHabito.addEventListener('click', () => reconocimientoHabito.start());
+    detenerHabito.addEventListener('click', () => reconocimientoHabito.abort());
+</script>
+
 
             <div class="form-group">
-                <label><strong>Exploración</strong></label>
-                <textarea class="form-control" name="exploracion" rows="3"></textarea>
-            </div>
+    <label><strong>Exploración</strong></label>
+    <div class="botones mb-2">
+        <button type="button" class="btn btn-danger btn-sm" id="grabar_exploracion"><i class="fas fa-microphone"></i></button>
+        <button type="button" class="btn btn-primary btn-sm" id="detener_exploracion"><i class="fas fa-microphone-slash"></i></button>
+        <button type="button" class="btn btn-success btn-sm" id="reproducir_exploracion"><i class="fas fa-play"></i></button>
+    </div>
+    <textarea class="form-control" name="exploracion" id="exploracion_texto" rows="4" placeholder="Describe detalladamente la exploración física, hallazgos o síntomas observados."></textarea>
+</div>
 
-            <div class="form-group mt-3">
-                <label><strong>Dificultad Específica:</strong></label>
-                <div class="botones mb-2">
-                    <button type="button" class="btn btn-danger btn-sm" id="grabar_dificultad"><i class="fas fa-microphone"></i></button>
-                    <button type="button" class="btn btn-primary btn-sm" id="detener_dificultad"><i class="fas fa-microphone-slash"></i></button>
-                    <button type="button" class="btn btn-success btn-sm" id="reproducir_dificultad"><i class="fas fa-play"></i></button>
-                </div>
-                <textarea class="form-control" name="dificultad_especifica" id="dificultad_especifica" rows="4" placeholder="Describe detalladamente la dificultad específica del paciente, por ejemplo: visión borrosa al leer, dificultad para enfocar objetos cercanos o molestias visuales."></textarea>
-            </div>
+<script>
+    const grabarExploracion = document.getElementById('grabar_exploracion');
+    const detenerExploracion = document.getElementById('detener_exploracion');
+    const reproducirExploracion = document.getElementById('reproducir_exploracion');
+    const campoExploracion = document.getElementById('exploracion_texto');
+
+    reproducirExploracion.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoExploracion.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimientoExploracion = new webkitSpeechRecognition();
+    reconocimientoExploracion.lang = "es-ES";
+    reconocimientoExploracion.continuous = true;
+    reconocimientoExploracion.interimResults = false;
+
+    reconocimientoExploracion.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoExploracion.value += frase + ' ';
+    };
+
+    grabarExploracion.addEventListener('click', () => reconocimientoExploracion.start());
+    detenerExploracion.addEventListener('click', () => reconocimientoExploracion.abort());
+</script>
 
             <center class="mt-3">
                 <button type="submit" class="btn btn-primary">Firmar</button>

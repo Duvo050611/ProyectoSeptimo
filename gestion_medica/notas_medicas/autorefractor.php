@@ -284,7 +284,7 @@ $usuario = $_SESSION['login'];
     </div>
     <br><br>
 
-<div class="container mt-4 mb-5">
+<div class="container mt-4 mb-5" style="margin-bottom:60px;">
 
     <div class="thead mb-4">
         <strong>
@@ -322,48 +322,66 @@ $usuario = $_SESSION['login'];
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <select name="previa_tipo1" class="form-control form-control-sm">
-                                <option value="KR">KR</option>
-                                <option value="AR">AR</option>
-                                <option value="MR">MR</option>
-                                <option value="SR">SR</option>
-                            </select>
-                        </td>
-                        <td><input name="previa1_od_esf" class="form-control"></td>
-                        <td><input name="previa1_od_cil" class="form-control"></td>
-                        <td><input name="previa1_od_eje" class="form-control"></td>
-                        <td><input name="previa1_od_dip" class="form-control"></td>
-                        <td><input name="previa1_oi_esf" class="form-control"></td>
-                        <td><input name="previa1_oi_cil" class="form-control"></td>
-                        <td><input name="previa1_oi_eje" class="form-control"></td>
-                        <td><input name="previa1_oi_dip" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <select name="previa_tipo2" class="form-control form-control-sm">
-                                <option value="">Seleccionar</option>
-                                <option value="KR">KR</option>
-                                <option value="AR">AR</option>
-                                <option value="MR">MR</option>
-                                <option value="SR">SR</option>
-                            </select>
-                        </td>
-                        <td><input name="previa2_od_esf" class="form-control"></td>
-                        <td><input name="previa2_od_cil" class="form-control"></td>
-                        <td><input name="previa2_od_eje" class="form-control"></td>
-                        <td><input name="previa2_od_dip" class="form-control"></td>
-                        <td><input name="previa2_oi_esf" class="form-control"></td>
-                        <td><input name="previa2_oi_cil" class="form-control"></td>
-                        <td><input name="previa2_oi_eje" class="form-control"></td>
-                        <td><input name="previa2_oi_dip" class="form-control"></td>
-                    </tr>
+    <td>
+        <select name="previa_tipo1" id="previa_tipo1" class="form-control form-control-sm" onchange="mostrarOtro('previa_tipo1', 'previa_tipo1_otro')">
+            <option value="">Seleccionar</option>
+            <option value="KR">KR</option>
+            <option value="AR">AR</option>
+            <option value="MR">MR</option>
+            <option value="SR">SR</option>
+            <option value="otro">Otro</option>
+        </select>
+        <input type="text" name="previa_tipo1_otro" id="previa_tipo1_otro" class="form-control mt-2" style="display:none;" placeholder="Especifique otro tipo">
+    </td>
+    <td><input name="previa1_od_esf" class="form-control"></td>
+    <td><input name="previa1_od_cil" class="form-control"></td>
+    <td><input name="previa1_od_eje" class="form-control"></td>
+    <td><input name="previa1_od_dip" class="form-control"></td>
+    <td><input name="previa1_oi_esf" class="form-control"></td>
+    <td><input name="previa1_oi_cil" class="form-control"></td>
+    <td><input name="previa1_oi_eje" class="form-control"></td>
+    <td><input name="previa1_oi_dip" class="form-control"></td>
+</tr>
+<tr>
+    <td>
+        <select name="previa_tipo2" id="previa_tipo2" class="form-control form-control-sm" onchange="mostrarOtro('previa_tipo2', 'previa_tipo2_otro')">
+            <option value="">Seleccionar</option>
+            <option value="KR">KR</option>
+            <option value="AR">AR</option>
+            <option value="MR">MR</option>
+            <option value="SR">SR</option>
+            <option value="otro">Otro</option>
+        </select>
+        <input type="text" name="previa_tipo2_otro" id="previa_tipo2_otro" class="form-control mt-2" style="display:none;" placeholder="Especifique otro tipo">
+    </td>
+    <td><input name="previa2_od_esf" class="form-control"></td>
+    <td><input name="previa2_od_cil" class="form-control"></td>
+    <td><input name="previa2_od_eje" class="form-control"></td>
+    <td><input name="previa2_od_dip" class="form-control"></td>
+    <td><input name="previa2_oi_esf" class="form-control"></td>
+    <td><input name="previa2_oi_cil" class="form-control"></td>
+    <td><input name="previa2_oi_eje" class="form-control"></td>
+    <td><input name="previa2_oi_dip" class="form-control"></td>
+</tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
+<script>
+function mostrarOtro(selectId, inputId) {
+    var select = document.getElementById(selectId);
+    var input = document.getElementById(inputId);
+    if (select.value === "otro") {
+        input.style.display = "block";
+        input.required = true;
+    } else {
+        input.style.display = "none";
+        input.required = false;
+        input.value = "";
+    }
+}
+</script>
 <!-- Refacción Nueva -->
 <div class="card mb-4">
     <div class="card-header bg-azul">
@@ -552,52 +570,15 @@ $usuario = $_SESSION['login'];
         </div>
     </div>
 </div>
+            <center class="mt-3">
+                <button type="submit" class="btn btn-primary">Firmar</button>
+                <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
+            </center>
 
-        <div class="text-center mb-4">
-            <button type="submit" class="btn btn-primary">Firmar</button>
-            <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
-        </div>
-    </form>
-</div>
-
-    <script>
-        function toggleCampoDificultad() {
-            const valorSeleccionado = document.querySelector('input[name="dificultad"]:checked').value;
-            const campo = document.getElementById('campo_dificultad_especifica');
-            campo.style.display = valorSeleccionado === "1" ? 'block' : 'none';
-        }
-
-        document.querySelectorAll('input[name="dificultad"]').forEach((radio) => {
-            radio.addEventListener('change', toggleCampoDificultad);
-        });
-
-        window.addEventListener('DOMContentLoaded', toggleCampoDificultad);
-
-        const grabar = document.getElementById('grabar_dificultad');
-        const detener = document.getElementById('detener_dificultad');
-        const campoTexto = document.getElementById('dificultad_especifica');
-        const reproducir = document.getElementById('reproducir_dificultad');
-
-        reproducir.addEventListener('click', () => {
-            const speech = new SpeechSynthesisUtterance(campoTexto.value);
-            window.speechSynthesis.speak(speech);
-        });
-
-        const reconocimiento = new webkitSpeechRecognition();
-        reconocimiento.lang = "es-ES";
-        reconocimiento.continuous = true;
-        reconocimiento.interimResults = false;
-        reconocimiento.onresult = (event) => {
-            const results = event.results;
-            const frase = results[results.length - 1][0].transcript;
-            campoTexto.value += frase;
-        };
-
-        grabar.addEventListener('click', () => reconocimiento.start());
-        detener.addEventListener('click', () => reconocimiento.abort());
-    </script>
-
-
+        </form>
+    </div>
+</div><br>
+    </div>
     <script>
         let enviando = false;
 

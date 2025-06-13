@@ -558,9 +558,9 @@ $usuario = $_SESSION['login'];
                     </div>
 
                     <div class="col-md-2 form-group">
-                        <label for="dip_sin_ciclo_oi">DIP</label>
-                        <input type="text" class="form-control" name="dip_sin_ciclo_oi" id="dip_sin_ciclo_oi" placeholder="DIP">
-                    </div>
+    <label for="dip_sin_ciclo_od">DIP</label>
+    <input type="text" class="form-control" name="dip_sin_ciclo_od" id="dip_sin_ciclo_od" placeholder="DIP">
+</div>
 
                     <div class="col-md-2 form-group d-flex align-items-center">
                         <input type="checkbox" name="prisma_sin_ciclo_od" id="prisma_sin_ciclo_od" value="1">
@@ -610,14 +610,10 @@ $usuario = $_SESSION['login'];
 <script>
     const grabarDetalleSubjetiv = document.getElementById('detalle_ref_subjetiv_sin_grabar');
     const detenerDetalleSubjetiv = document.getElementById('detalle_ref_subjetiv_sin_detener');
-    const textareaDetalleSubjetiv = document.getElementById('detalle_ref_subjetiv_sin');
     const reproducirDetalleSubjetiv = document.getElementById('play_detalle_ref_subjetiv_sin');
+    const textareaDetalleSubjetiv = document.getElementById('detalle_ref_subjetiv_sin');
 
-    reproducirDetalleSubjetiv.addEventListener('click', () => {
-        leerTextoDetalleSubjetiv(textareaDetalleSubjetiv.value);
-    });
-
-    let reconocimientoDetalleSubjetiv = new webkitSpeechRecognition();
+    const reconocimientoDetalleSubjetiv = new webkitSpeechRecognition();
     reconocimientoDetalleSubjetiv.lang = "es-ES";
     reconocimientoDetalleSubjetiv.continuous = true;
     reconocimientoDetalleSubjetiv.interimResults = false;
@@ -625,26 +621,21 @@ $usuario = $_SESSION['login'];
     reconocimientoDetalleSubjetiv.onresult = (event) => {
         const results = event.results;
         const frase = results[results.length - 1][0].transcript;
-        textareaDetalleSubjetiv.value += frase;
+        textareaDetalleSubjetiv.value += frase + ' ';
     };
 
-    grabarDetalleSubjetiv.addEventListener('click', () => {
-        reconocimientoDetalleSubjetiv.start();
-    });
+    grabarDetalleSubjetiv.addEventListener('click', () => reconocimientoDetalleSubjetiv.start());
+    detenerDetalleSubjetiv.addEventListener('click', () => reconocimientoDetalleSubjetiv.abort());
 
-    detenerDetalleSubjetiv.addEventListener('click', () => {
-        reconocimientoDetalleSubjetiv.abort();
-    });
-
-    function leerTextoDetalleSubjetiv(texto) {
-        const speech = new SpeechSynthesisUtterance();
-        speech.text = texto;
+    reproducirDetalleSubjetiv.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(textareaDetalleSubjetiv.value);
         speech.volume = 1;
         speech.rate = 1;
-        speech.pitch = 0;
+        speech.pitch = 1;
         window.speechSynthesis.speak(speech);
-    }
+    });
 </script>
+
             </div>
         </div>
     </div>
@@ -834,6 +825,35 @@ $usuario = $_SESSION['login'];
     <textarea class="form-control" name="detalle_ref_subjetiv" id="detalle_ref_subjetiv" rows="4" placeholder="Ej. Observación de agudeza visual, recomendación de lentes, seguimiento de tratamiento"></textarea>
 </div>
 
+<script>
+    const grabarRefSubjetiv = document.getElementById('re_sin_ciclo_grabar');
+    const detenerRefSubjetiv = document.getElementById('re_sin_ciclo_detener');
+    const reproducirRefSubjetiv = document.getElementById('play_re_sin_ciclo');
+    const textareaRefSubjetiv = document.getElementById('detalle_ref_subjetiv');
+
+    const reconocimientoRefSubjetiv = new webkitSpeechRecognition();
+    reconocimientoRefSubjetiv.lang = "es-ES";
+    reconocimientoRefSubjetiv.continuous = true;
+    reconocimientoRefSubjetiv.interimResults = false;
+
+    reconocimientoRefSubjetiv.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        textareaRefSubjetiv.value += frase + ' ';
+    };
+
+    grabarRefSubjetiv.addEventListener('click', () => reconocimientoRefSubjetiv.start());
+    detenerRefSubjetiv.addEventListener('click', () => reconocimientoRefSubjetiv.abort());
+
+    reproducirRefSubjetiv.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(textareaRefSubjetiv.value);
+        speech.volume = 1;
+        speech.rate = 1;
+        speech.pitch = 1;
+        window.speechSynthesis.speak(speech);
+    });
+</script>
+
 
                     </div>
                 </div>
@@ -856,24 +876,27 @@ $usuario = $_SESSION['login'];
                     <h5>Ref. Subjetiva Cercana</h5>
                     <div class="row">
                         <!-- Ojo Derecho (OD) -->
-                        <div class="col-md-6">
-                            <label class="d-block font-weight-bold mb-2">OD:</label>
-                            <div class="form-row">
-                                <div class="col-4 mb-2">
-                                    <input type="text" class="form-control" name="esf_cerca_od" placeholder="Esf" />
-                                </div>
-                                <div class="col-4 mb-2">
-                                    <input type="text" class="form-control" name="cil_cerca_od" placeholder="Cil" />
-                                </div>
-                                <div class="col-4 mb-2">
-                                    <input type="text" class="form-control" name="eje_cerca_od" placeholder="Eje" />
-                                </div>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="prisma_cerca_od" name="prisma_cerca_od" value="1" />
-                                <label class="form-check-label" for="prisma_cerca_od">Prisma</label>
-                            </div>
-                        </div>
+<div class="col-md-6">
+    <label class="d-block font-weight-bold mb-2">OD:</label>
+    <div class="form-row">
+        <div class="col-3 mb-2">
+            <input type="text" class="form-control" name="esf_cerca_od" placeholder="Esf" />
+        </div>
+        <div class="col-3 mb-2">
+            <input type="text" class="form-control" name="cil_cerca_od" placeholder="Cil" />
+        </div>
+        <div class="col-3 mb-2">
+            <input type="text" class="form-control" name="eje_cerca_od" placeholder="Eje" />
+        </div>
+        <div class="col-3 mb-2">
+            <input type="text" class="form-control" name="dip_cerca_od" placeholder="DIP" />
+        </div>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="prisma_cerca_od" name="prisma_cerca_od" value="1" />
+        <label class="form-check-label" for="prisma_cerca_od">Prisma</label>
+    </div>
+</div>
 
                         <!-- Ojo Izquierdo (OI) -->
                         <div class="col-md-6">
