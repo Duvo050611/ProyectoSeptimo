@@ -213,6 +213,7 @@ $resultados_dir = '/gestion_medica/notas_medicas/resultados_gabinete/';
         </div>
     </section>
 </div>
+</div>
 
 <footer class="main-footer">
     <?php include "../../template/footer.php"; ?>

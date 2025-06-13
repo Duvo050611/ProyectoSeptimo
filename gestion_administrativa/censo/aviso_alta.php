@@ -31,7 +31,10 @@ $usuario = $_SESSION['login'];
     <title>AVISO DE ALTA </title>
 </head>
 <body>
-
+<div class="col-sm-2">
+            <a type="submit" class="btn btn-danger btn-sm" onclick="history.back()"><font color="white">Regresar</font></a>
+        </div>
+        <br>
 <div class="col-sm-12">
     <div class="container">
         <div class="row">
@@ -212,6 +215,8 @@ $resultado3 = $conexion->query("select id_atencion,area from dat_ingreso
     </div><br>
 </form>
 </div> <!--TERMINO DE div container-->             
+</div>
+</div>
 </div>
 </div>
 <footer class="main-footer">

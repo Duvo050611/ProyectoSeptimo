@@ -1,5 +1,4 @@
 <?php
-use PDF as GlobalPDF;
 ob_start();
 session_start();
 include "../../conexionbd.php";
@@ -195,6 +194,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     );
 
     if ($stmt->execute()) {
+        // Get the ID of the newly inserted lab exam
+        $id_examen_labo = $stmt->insert_id;
+        $stmt->close();
+
         // Fetch patient data for PDF
         $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.fecnac, p.Id_exp, p.folio, di.fecha, p.sexo, di.alergias 
                     FROM paciente p, dat_ingreso di 
@@ -214,21 +217,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
         $stmt_pac->close();
 
-        // Fetch vital signs
-        $sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi 
-                      FROM signos_vitales 
-                      WHERE id_atencion = ? 
-                      ORDER BY id_sig DESC LIMIT 1";
+        // Fetch vital signs from exploracion_fisica
+        $sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
+                    FROM exploracion_fisica 
+                    WHERE id_atencion = ? 
+                    ORDER BY fecha DESC LIMIT 1";
         $stmt_signs = $conexion->prepare($sql_signs);
         $stmt_signs->bind_param("i", $id_atencion);
         $stmt_signs->execute();
         $result_signs = $stmt_signs->get_result();
         $row_signs = $result_signs->fetch_assoc();
-        $p_sistolica = $row_signs['p_sistol'] ?? '';
-        $p_diastolica = $row_signs['p_diastol'] ?? '';
-        $f_resp = $row_signs['fresp'] ?? '';
-        $temp = $row_signs['temper'] ?? '';
-        $sat_oxigeno = $row_signs['satoxi'] ?? '';
+        $p_sistolica = $row_signs['presion_sistolica'] ?? '';
+        $p_diastolica = $row_signs['presion_diastolica'] ?? '';
+        $f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
+        $temp = $row_signs['temperatura'] ?? '';
+        $sat_oxigeno = $row_signs['spo2'] ?? '';
         $stmt_signs->close();
 
         // Calculate age
@@ -289,6 +292,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
+        // Ensure sol_estudios does not exceed 500 characters to match table schema
+        $sol_estudios = substr($sol_estudios, 0, 500);
+
         // Generate PDF
         $pdf = new PDF('P');
         $pdf->AliasNbPages();
@@ -324,23 +330,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->Line(1, 8, 1, $bottom_y);
         $pdf->Line(209, 8, 209, $bottom_y);
 
-        // Save PDF
-        $carpeta = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/solicitudes/';
-        if (!file_exists($carpeta) && !mkdir($carpeta, 0777, true)) {
-            error_log("Failed to create directory: {$carpeta}");
-            ob_end_clean();
-            $_SESSION['message'] = "Error al crear directorio.";
-            $_SESSION['message_type'] = "danger";
-            header("Location: examenes_lab.php");
-            exit();
-        }
-        $nombre_pdf = "solicitud_lab_{$folio}_" . date('Ymd_His') . ".pdf";
-        $nombre_final = $carpeta . $nombre_pdf;
-
-        // Insert into notificaciones_labo
+        // Insert into notificaciones_labo with id_examen_labo
         $sql_labo = "INSERT INTO notificaciones_labo (
-            id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_labo, activo, realizado, pdf_solicitud
-        ) VALUES (?, ?, ?, ?, ?, ?, 'SI', 'NO', ?)";
+            id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_labo, activo, realizado, pdf_solicitud, id_examen_labo
+        ) VALUES (?, ?, ?, ?, ?, ?, 'SI', 'NO', NULL, ?)";
         $stmt_labo = $conexion->prepare($sql_labo);
         if (!$stmt_labo) {
             error_log("Prepare failed for notificaciones_labo: " . $conexion->error);
@@ -350,31 +343,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: examenes_lab.php");
             exit();
         }
-        $stmt_labo->bind_param("ississs", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_labo, $nombre_pdf);
+
+        // Bind parameters: i (id_atencion), s (habitacion), s (fecha_ord), i (id_usua), s (sol_estudios), s (det_labo), i (id_examen_labo)
+        $stmt_labo->bind_param("ississi", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_labo, $id_examen_labo);
 
         if ($stmt_labo->execute()) {
-            if ($pdf->Output('F', $nombre_final) !== false) {
-                $_SESSION['message'] = "Solicitud registrada y PDF generado.";
-                $_SESSION['message_type'] = "success";
-                $pdf_url = "/gestion_medica/notas_medicas/solicitudes/{$nombre_pdf}";
-                ob_end_clean();
-                echo "<script>
-                    window.open('$pdf_url', '_blank');
-                    window.location = 'examenes_lab.php';
-                </script>";
-                exit();
-            }
-            error_log("Failed to save PDF: {$nombre_final}");
+            // Get PDF content as string and encode in base64
+            $pdf_content = $pdf->Output('solicitud_lab.pdf', 'S');
+            $pdf_base64 = base64_encode($pdf_content);
+
+            // Output JavaScript to open PDF in new tab and redirect with success message
             ob_end_clean();
-            $_SESSION['message'] = "Error al generar PDF.";
-            $_SESSION['message_type'] = "danger";
-            header("Location: examenes_lab.php");
+            echo "<script>
+                // Open PDF in new tab
+                var pdfData = 'data:application/pdf;base64,{$pdf_base64}';
+                var newTab = window.open();
+                newTab.document.write('<html><body><embed src=\"' + pdfData + '\" width=\"100%\" height=\"100%\" type=\"application/pdf\"></body></html>');
+                // Redirect original page with success message
+                window.location.href = 'examenes_lab.php?success=1';
+            </script>";
             exit();
         }
 
         error_log("Insert failed for notificaciones_labo: " . $stmt_labo->error);
         ob_end_clean();
-        $_SESSION['message'] = "Error al registrar notificación.";
+        $_SESSION['message'] = "Error al registrar notificación: " . $stmt_labo->error;
         $_SESSION['message_type'] = "danger";
         header("Location: examenes_lab.php");
         exit();

@@ -207,7 +207,9 @@ $resultado = $conexion->query("SELECT paciente.*, dat_ingreso.id_atencion, triag
             </div>
         </div>
     </section>
-</div>
+</div> 
+</div> 
+
 
 <footer class="main-footer">
     <?php include "../../template/footer.php"; ?>

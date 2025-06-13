@@ -436,7 +436,7 @@ while($f = mysqli_fetch_array($resultado)){
                                         <a title="Servicios Aux" data-toggle="modal" data-target="#exampleModal"><img
                                                     class="img-fluid"
                                                     src="../img/serv_aux.jpg"
-                                                    alt="admision" height="150"
+                                                    alt="Servicios Auxiliares" height="150"
                                                     width="200"/></a>
                                     </center>
                                     <center><h4><strong>SERVICIOS AUXILIARES</strong></h4></center>
@@ -454,7 +454,7 @@ while($f = mysqli_fetch_array($resultado)){
                                     <a title="Configuracion" href="../template/menu_configuracion.php"><img
                                         class="img-fluid"
                                         src="../img/config.jpg"
-                                        alt="admision" height="150"
+                                        alt="configuracion" height="150"
                                         width="200"/></a>
                                         </center>
                                         <center><h4><strong>CONFIGURACIÓN</strong></h4></center>
@@ -508,24 +508,7 @@ while($f = mysqli_fetch_array($resultado)){
                                 <div class="col-lg-1"></div>
                             </div>
                         </div>
-                       
-                       
-                       
                         <div class="row">
-                            <div class="col-lg-6 col-xs-6">
-                                <div class="row">
-                                    <div class="col-lg-1"></div>
-                                    <div class="col-lg-8">
-                                        <center>
-                                            <a title="Imagen" href="../template/menu_imagenologia.php" ><img class="card-img-top" src="../img/torax.jpg" alt="admision" height="150" width="200" /></a>
-                                        </center>
-                                        <center>
-                                             <h4><strong>IMAGENOLOGÍA</strong></h4>
-                                        </center>
-                                    </div>
-                                    <div class="col-lg-1"></div>
-                                </div>
-                            </div>
                             <div class="col-lg-6 col-xs-6">
                                 <div class="row">
                                     <div class="col-lg-1"></div>

@@ -1,0 +1,120 @@
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"5|right","tratamiento_previo_derecho":"Gotas de timolol 0.5%","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 9
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 10
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 11
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"5|right","tratamiento_previo_derecho":"Gotas de timolol 0.5%","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 12
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"nioefociwem","medicamento_derecho":"","medicamento_izquierdo":"nioefociwem"}
+Insert successful, id_tratamiento: 13
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 14
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 15
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 16
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 17
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"13|left","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"nioefociwem","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 18
+2025-05-20 14:53:30
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"holaaa","tratamiento_previo_izquierdo":"","medicamento_derecho":"holaaa","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 19
+
+2025-05-20 14:53:57
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"scsdvfdb","medicamento_derecho":"","medicamento_izquierdo":"scsdvfdb"}
+Insert successful, id_tratamiento: 20
+
+2025-05-20 15:01:47
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"sdcsvdf","tratamiento_previo_izquierdo":"","medicamento_derecho":"sdcsvdf","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 21
+
+2025-05-20 15:04:14
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"eshoy","tratamiento_previo_izquierdo":"","medicamento_derecho":"eshoy","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 22
+
+2025-05-20 16:50:54
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-20 16:51:14
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-20 17:07:28
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":1,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-20 17:07:53
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-21 00:34:48
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"21|right","tratamiento_previo_text":"","tratamiento_previo_derecho":"prueba trat","tratamiento_previo_izquierdo":"","medicamento_derecho":"prueba trat","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 23
+
+2025-05-21 01:22:44
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 24
+
+2025-05-21 01:26:28
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 25
+
+2025-05-21 01:28:42
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"PRUEBA","medicamento_derecho":"","medicamento_izquierdo":"PRUEBA"}
+Insert successful, id_tratamiento: 26
+
+2025-05-21 01:32:39
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_text":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":""}
+Insert successful, id_tratamiento: 27
+
+2025-05-21 02:08:32
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":"","procedimientos_derecho":"","procedimientos_izquierdo":"","codigo_tratamiento_derecho":"73A2","codigo_tratamiento_izquierdo":"","desc_tratamiento_derecho":"ACOMPAÑAMIENTO PSICOEMOCIONAL CONTINUO DURANTE TODO EL TRABAJO DE PARTO","desc_tratamiento_izquierdo":"","tipo_tratamiento_derecho":"Primera Vez","tipo_tratamiento_izquierdo":"Primera Vez","quirurgico_derecho":"ninguno","quirurgico_izquierdo":""}
+Insert successful, id_tratamiento: 28
+
+2025-05-21 02:09:35
+id_atencion: 1
+Form data: {"oftalmologicamente_sano":0,"sin_tratamiento":0,"tratamiento_previo":"28|right","tratamiento_previo_derecho":"","tratamiento_previo_izquierdo":"","medicamento_derecho":"","medicamento_izquierdo":"","procedimientos_derecho":"","procedimientos_izquierdo":"","codigo_tratamiento_derecho":"","codigo_tratamiento_izquierdo":"8371","desc_tratamiento_derecho":"","desc_tratamiento_izquierdo":"ADELANTAMIENTO DE TENDÓN","tipo_tratamiento_derecho":"Primera Vez","tipo_tratamiento_izquierdo":"Primera Vez","quirurgico_derecho":"","quirurgico_izquierdo":"dcer"}
+Insert successful, id_tratamiento: 29
+
+2025-05-21 02:15:07
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-21 02:17:32
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+
+2025-05-21 02:22:38
+id_atencion: 1
+Form data: {"id_atencion":1,"Id_exp":1,"biometria_hematica":0,"quimica_sanguinea":0,"quimica_sanguinea_valores":null,"otros_laboratorio":"","calculo_lio_iol_master":0,"topografia_corneal_opcion":"","oct_macular":0,"otros_gabinete":""}
+Error: Column count doesn't match value count at row 1
+

@@ -213,6 +213,14 @@ while ($row_tras = $result_tras->fetch_assoc()) {
     $maniobra_vatsaha = $row_tras['maniobra_vatsaha'];
     $observaciones = $row_tras['observaciones'];
     $fecha_registro = $row_tras['fecha_registro'];
+    $distancia_ceja_pestana = $row_tras['distancia_ceja_pestana'];
+$altura_surco = $row_tras['altura_surco'];
+$exposicion_escleral_superior = $row_tras['exposicion_escleral_superior'];
+$exposicion_escleral_inferior = $row_tras['exposicion_escleral_inferior'];
+$exoftalmometria = $row_tras['exoftalmometria'];
+$exoftalmometria_base = $row_tras['exoftalmometria_base'];
+$distancia_margen_reflejo_1 = $row_tras['distancia_margen_reflejo_1'];
+$distancia_margen_reflejo_2 = $row_tras['distancia_margen_reflejo_2'];
 
     $apertura_palpebral_oi = $row_tras['apertura_palpebral_oi'];
     $hendidura_palpebral_oi = $row_tras['hendidura_palpebral_oi'];
@@ -277,6 +285,27 @@ $pdf->Cell(60, 6, utf8_decode('Maniobra Vatsaha (OD)'), 1);
 $pdf->Cell(40, 6, $maniobra_vatsaha, 1);
 $pdf->Cell(60, 6, utf8_decode('Maniobra Vatsaha (OI)'), 1);
 $pdf->Cell(30, 6, $maniobra_vatsaha_oi, 1);
+$pdf->Ln();
+$pdf->Cell(60, 6, utf8_decode('Distancia Ceja-Pestaña (OD)'), 1);
+$pdf->Cell(40, 6, $distancia_ceja_pestana, 1);
+$pdf->Cell(60, 6, utf8_decode('Altura del Surco (OD)'), 1);
+$pdf->Cell(30, 6, $altura_surco, 1);
+$pdf->Ln();
+
+$pdf->Cell(60, 6, utf8_decode('Exposición Escleral Superior (OD)'), 1);
+$pdf->Cell(40, 6, $exposicion_escleral_superior, 1);
+$pdf->Cell(60, 6, utf8_decode('Exposición Escleral Inferior (OD)'), 1);
+$pdf->Cell(30, 6, $exposicion_escleral_inferior, 1);
+$pdf->Ln();
+
+$pdf->Cell(60, 6, utf8_decode('Dist. Margen-Reflejo 1 (OD)'), 1);
+$pdf->Cell(40, 6, $distancia_margen_reflejo_1, 1);
+$pdf->Cell(60, 6, utf8_decode('Dist. Margen-Reflejo 2 (OD)'), 1);
+$pdf->Cell(30, 6, $distancia_margen_reflejo_2, 1);
+$pdf->Ln();
+
+$pdf->Cell(160, 6, utf8_decode('Exoftalmometría (OD)'), 1);
+$pdf->MultiCell(30, 6, $exoftalmometria, 1);
 $pdf->Ln();
 
 $pdf->Cell(190, 6, utf8_decode('Observaciones'), 1, 1);

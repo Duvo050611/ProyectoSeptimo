@@ -24,7 +24,7 @@ if (!isset($_SESSION['csrf_token'])) {
 $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resultados/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 $allowed_mime_types = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-$max_file_size = 5242880; // 5MB
+$max_file_size = 25000000; // 25MB
 
 // Ensure upload directory exists and is writable
 if (!file_exists($upload_dir) && !mkdir($upload_dir, 0775, true)) {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['resultado'])) {
                 }
                 if ($file_size > $max_file_size) {
                     $all_uploaded = false;
-                    $upload_error = "Archivo demasiado grande: " . htmlspecialchars($file_name) . ". Máximo 5MB.";
+                    $upload_error = "Archivo demasiado grande: " . htmlspecialchars($file_name) . ". Máximo 25MB.";
                     break;
                 }
 
@@ -178,7 +178,7 @@ include "../header_labo.php";
             <div class="form-group">
                 <label for="resultado">Seleccionar archivo(s) (PDF, PNG, JPG, JPEG):</label>
                 <input type="file" class="form-control-file" id="resultado" name="resultado[]" accept=".pdf,.png,.jpg,.jpeg" multiple required>
-                <small class="form-text text-muted">Máximo 5MB por archivo. Puede seleccionar múltiples archivos.</small>
+                <small class="form-text text-muted">Máximo 25MB por archivo. Puede seleccionar múltiples archivos.</small>
             </div>
             <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Subir Resultados</button>
         </form>

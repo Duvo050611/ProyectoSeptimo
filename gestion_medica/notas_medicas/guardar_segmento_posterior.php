@@ -77,7 +77,7 @@ $stmt->bind_param(
 
 
     if ($stmt->execute()) {
-        echo "<script>alert('✅ Segmento posterior guardado correctamente.'); window.location.href='formulario_segmento_posterior.php';</script>";
+    header("Location: formulario_segmento_posterior.php");
     } else {
         echo "❌ Error al guardar: " . $stmt->error;
     }

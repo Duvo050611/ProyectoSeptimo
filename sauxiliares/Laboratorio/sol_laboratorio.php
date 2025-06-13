@@ -267,7 +267,7 @@ if ($usuario['id_rol'] == 10) {
 
                         echo '</td>'
                             . '<td class="fondosan" style="color:white;"><center>'
-                            . '<a href="pdf_solicitud_estu.php?not_id=' . (int)$not_id . '&id_atencion=' . (int)$id_atencion . '" target="_blank">'
+                            . '<a href="pdf_solicitud_estu.php?not_id=<?php echo (int)$not_id; ?>&id_atencion=<?php echo (int)$id_atencion; ?>" target="_blank">'
                             . '<button type="button" class="btn btn-success"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>'
                             . '</a></center></td>'
                             . '<td class="fondosan" style="color:white;"><center>'

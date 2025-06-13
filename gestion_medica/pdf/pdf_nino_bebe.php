@@ -165,24 +165,6 @@ $pdf->Cell(13, 5, utf8_decode('Género: '), 0, 0, 'L');
 $pdf->SetFont('Arial', '', 9);
 $pdf->Cell(14, 5,  $sexo, 'B', 0,'L');
 $pdf->Ln(5);
-$pesoh="";
-$tallah="";
-$sql_sig ="select * from dat_hclinica WHERE Id_exp=$id_atencion ORDER by id_hc DESC LIMIT 1";
-$result_sig = $conexion->query($sql_sig);
-while ($row_hc = $result_sig->fetch_assoc()) {
-$pesoh=$row_hc['peso'];
-$tallah=$row_hc['talla'];
-}
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(10, 5, utf8_decode('Peso: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(14, 5,  utf8_decode($pesoh.' Kilos'), 'B', 0,'L');
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(11, 5, utf8_decode(' Talla: '), 0, 0, 'L');
-$pdf->SetFont('Arial', '', 9);
-$pdf->Cell(18, 5,  utf8_decode($tallah.' Metros'), 'B', 0,'L');
 
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->Cell(17, 5, utf8_decode(' Domicilio: '), 0, 0,'L');

@@ -44,6 +44,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE  dat_ingreso.
  <div class="col-sm-2">
             <a type="submit" class="btn btn-danger btn-sm" onclick="history.back()"><font color="white">Regresar</font></a>
         </div>
+        <br>
 <div class="container">
         <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
                  <tr><strong><center>PRESUPUESTOS</center></strong>
@@ -221,6 +222,7 @@ $fecha_actual = date("Y-m-d H:i:s");
     </div>
    
 
+</div>
 </div>
 </div>
 <footer class="main-footer">

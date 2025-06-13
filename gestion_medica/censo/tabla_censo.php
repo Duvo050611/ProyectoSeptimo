@@ -93,7 +93,7 @@ include("../header_medico.php");
     <div class="container box">
       <div class="container-fluid">
         <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 18px;">
-                     <tr><center><strong>HOSPITALIZACIÓN</strong></center><p>
+                     <tr><center><strong>CONSULTA EXTERNA</strong></center><p>
         </div>
 
         <div class="row">
@@ -112,7 +112,7 @@ include("../header_medico.php");
               <thead class="thead">
                 <tr>
                   <center>
-                    <th scope="col">Habitación</th>
+                    <th scope="col">Espacio</th>
                   </center>
                   <th scope="col">
                     <center>Fecha de ingreso</center>
@@ -140,7 +140,7 @@ include("../header_medico.php");
               <tbody>
                 <tr>
                   <?php
-                  $sql = "SELECT * from cat_camas where TIPO ='HOSPITALIZACION' ORDER BY num_cama ASC ";
+                  $sql = "SELECT * from cat_camas where TIPO ='CONSULTA' ORDER BY num_cama ASC ";
                   $result = $conexion->query($sql);
                   while ($row = $result->fetch_assoc()) {
                     $id_at_cam = $row['id_atencion'];
@@ -218,7 +218,262 @@ include("../header_medico.php");
       </div>
     </div>
 
+    <div class="container box">
+      <div class="container-fluid">
+        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 18px;">
+                     <tr><center><strong>PREPARACIÓN</strong></center><p>
+        </div>
 
+        <div class="row">
+          <br />
+
+          <div class="col-md-4">
+            <input type="text" class="form-control pull-right" id="search" placeholder="BUSCAR">
+          </div>
+
+         <!-- <div class="col-md-4">
+            <a href="../../gestion_administrativa/censo/pdf_censo_hosp.php" class="btn btn-md btn-md btn-block btn-success" target="_blank">IMPRIMIR CENSO HOSPITALIZACIÓN</a>
+          </div>-->
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="mytable">
+              <thead class="thead">
+                <tr>
+                  <center>
+                    <th scope="col">Habitación</th>
+                  </center>
+                  <th scope="col">
+                    <center>Fecha de ingreso</center>
+                  </th>
+                  <th scope="col">
+                    <center>Paciente</center>
+                  </th>
+                  <th scope="col">
+                    <center>Edad</center>
+                  </th>
+                  <th scope="col">
+                    <center>Diagnóstico de ingreso</center>
+                  </th>
+                  <th scope="col">
+                    <center>Expediente</center>
+                  </th>
+                  <th scope="col">
+                    <center>Médico tratante</center>
+                  </th>
+                  <th scope="col">
+                    <center>Alta médica</center>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <?php
+                  $sql = "SELECT * from cat_camas where TIPO ='HOSPITALIZACIÓN' ORDER BY num_cama ASC ";
+                  $result = $conexion->query($sql);
+                  while ($row = $result->fetch_assoc()) {
+                    $id_at_cam = $row['id_atencion'];
+                    $estatus = $row['estatus'];
+                    $usuario = $_SESSION['login'];
+                    $id_usua= $usuario['id_usua'];
+                    $rol= $usuario['id_rol'];
+                    $sql_tabla = "SELECT p.fecnac,p.Id_exp, p.folio, p.papell, p.sapell,p.nom_pac, df.aseg, di.fecha, di.motivo_atn, di.alta_med,ru.pre, ru.papell as nom_doc from dat_ingreso di, dat_financieros df, paciente p, reg_usuarios ru WHERE p.Id_exp = di.Id_exp and di.id_atencion=df.id_atencion and di.id_usua = ru.id_usua and di.id_atencion = $id_at_cam LIMIT 1";
+                    $result_tabla = $conexion->query($sql_tabla);
+                    $rowcount = mysqli_num_rows($result_tabla);
+                    if ($rowcount != 0) {
+                      while ($row_tabla = $result_tabla->fetch_assoc()) {
+                        $alta=$row_tabla['alta_med'];
+                        $date1 = date_create($row_tabla['fecha']);
+                        $fecingr = date_format($date1,"d/m/Y H:i");
+                        if($alta=='SI'){
+                         echo '<td class="fondo2"> <font color="white" size="2">' . $row['num_cama'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $fecingr . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['papell'] . ' ' . $row_tabla['sapell'] . ' ' . $row_tabla['nom_pac'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . calculaedad($row_tabla['fecnac']) .'</font></font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['motivo_atn'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['folio'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['pre'] . ' ' . $row_tabla['nom_doc'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['alta_med'] . '</font></td>';
+                        echo '<tr>';
+                        }else{
+                         echo '<td class="fondo"><font color="white" size="2">' . $row['num_cama'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $fecingr . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['papell'] . ' ' . $row_tabla['sapell'] . ' ' . $row_tabla['nom_pac'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . calculaedad($row_tabla['fecnac']) . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['motivo_atn'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['folio'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['pre'] . ' ' . $row_tabla['nom_doc'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['alta_med'] . '</font></td>';
+                        echo '<tr>';
+                        }
+                      }
+                    }  elseif($estatus=="MANTENIMIENTO"){
+                       echo '<td class="cuenta">' . $row['num_cama'] . '</td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta">HABITACIÓN</td>';
+                      echo '<td class="cuenta">NO</td>';
+                      echo '<td class="cuenta">DISPONIBLE</td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta"></td></tr>';
+                    }elseif($estatus=="EN PROCESO DE LIBERA"){
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3">' . $row['num_cama'] . '</td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3">POR </td>';
+                      echo '<td class="fondo3">LIBERAR</td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3"></td></tr>';
+                    }
+                    else {
+                      echo '<td>' . $row['num_cama'] . '</td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '</tr>';
+                    }
+                  }
+                  ?>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+        <div class="container box">
+      <div class="container-fluid">
+        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 18px;">
+                     <tr><center><strong>RECUPERACIÓN</strong></center><p>
+        </div>
+
+        <div class="row">
+          <br />
+
+          <div class="col-md-4">
+            <input type="text" class="form-control pull-right" id="search" placeholder="BUSCAR">
+          </div>
+
+         <!-- <div class="col-md-4">
+            <a href="../../gestion_administrativa/censo/pdf_censo_hosp.php" class="btn btn-md btn-md btn-block btn-success" target="_blank">IMPRIMIR CENSO HOSPITALIZACIÓN</a>
+          </div>-->
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="mytable">
+              <thead class="thead">
+                <tr>
+                  <center>
+                    <th scope="col">Habitación</th>
+                  </center>
+                  <th scope="col">
+                    <center>Fecha de ingreso</center>
+                  </th>
+                  <th scope="col">
+                    <center>Paciente</center>
+                  </th>
+                  <th scope="col">
+                    <center>Edad</center>
+                  </th>
+                  <th scope="col">
+                    <center>Diagnóstico de ingreso</center>
+                  </th>
+                  <th scope="col">
+                    <center>Expediente</center>
+                  </th>
+                  <th scope="col">
+                    <center>Médico tratante</center>
+                  </th>
+                  <th scope="col">
+                    <center>Alta médica</center>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <?php
+                  $sql = "SELECT * from cat_camas where TIPO ='OBSERVACIÓN' ORDER BY num_cama ASC ";
+                  $result = $conexion->query($sql);
+                  while ($row = $result->fetch_assoc()) {
+                    $id_at_cam = $row['id_atencion'];
+                    $estatus = $row['estatus'];
+                    $usuario = $_SESSION['login'];
+                    $id_usua= $usuario['id_usua'];
+                    $rol= $usuario['id_rol'];
+                    $sql_tabla = "SELECT p.fecnac,p.Id_exp, p.folio, p.papell, p.sapell,p.nom_pac, df.aseg, di.fecha, di.motivo_atn, di.alta_med,ru.pre, ru.papell as nom_doc from dat_ingreso di, dat_financieros df, paciente p, reg_usuarios ru WHERE p.Id_exp = di.Id_exp and di.id_atencion=df.id_atencion and di.id_usua = ru.id_usua and di.id_atencion = $id_at_cam LIMIT 1";
+                    $result_tabla = $conexion->query($sql_tabla);
+                    $rowcount = mysqli_num_rows($result_tabla);
+                    if ($rowcount != 0) {
+                      while ($row_tabla = $result_tabla->fetch_assoc()) {
+                        $alta=$row_tabla['alta_med'];
+                        $date1 = date_create($row_tabla['fecha']);
+                        $fecingr = date_format($date1,"d/m/Y H:i");
+                        if($alta=='SI'){
+                         echo '<td class="fondo2"> <font color="white" size="2">' . $row['num_cama'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $fecingr . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['papell'] . ' ' . $row_tabla['sapell'] . ' ' . $row_tabla['nom_pac'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . calculaedad($row_tabla['fecnac']) .'</font></font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['motivo_atn'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['folio'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['pre'] . ' ' . $row_tabla['nom_doc'] . '</font></td>';
+                        echo '<td class="fondo2"><font color="white" size="2">' . $row_tabla['alta_med'] . '</font></td>';
+                        echo '<tr>';
+                        }else{
+                         echo '<td class="fondo"><font color="white" size="2">' . $row['num_cama'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $fecingr . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['papell'] . ' ' . $row_tabla['sapell'] . ' ' . $row_tabla['nom_pac'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . calculaedad($row_tabla['fecnac']) . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['motivo_atn'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['folio'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['pre'] . ' ' . $row_tabla['nom_doc'] . '</font></td>';
+                        echo '<td class="fondo"><font color="white" size="2">' . $row_tabla['alta_med'] . '</font></td>';
+                        echo '<tr>';
+                        }
+                      }
+                    }  elseif($estatus=="MANTENIMIENTO"){
+                       echo '<td class="cuenta">' . $row['num_cama'] . '</td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta">HABITACIÓN</td>';
+                      echo '<td class="cuenta">NO</td>';
+                      echo '<td class="cuenta">DISPONIBLE</td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta"></td>';
+                      echo '<td class="cuenta"></td></tr>';
+                    }elseif($estatus=="EN PROCESO DE LIBERA"){
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3">' . $row['num_cama'] . '</td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3">POR </td>';
+                      echo '<td class="fondo3">LIBERAR</td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3"></td>';
+                      echo '<td class="fondo3"></td></tr>';
+                    }
+                    else {
+                      echo '<td>' . $row['num_cama'] . '</td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '<td></td>';
+                      echo '</tr>';
+                    }
+                  }
+                  ?>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </section>
   </div>
   <footer class="main-footer">

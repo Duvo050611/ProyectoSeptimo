@@ -331,7 +331,7 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
           if (isset($_SESSION['hospital'])) {
           ?>
                     <li class="treeview">
-                        <a href="../historia_clinica/h_clinica.php">
+                        <a href="../historia_clinica/his_clinica.php">
                             <i class="fa fa-folder" aria-hidden="true"></i> <span>
                                 <font size="2">HISTORIA CLÍNICA</font>
                             </span>
@@ -350,7 +350,7 @@ if (!in_array($usuario['id_rol'], [2, 5, 12])) {
                             <li><a href="/gestion_medica/notas_medicas/refraccion_antiguas.php">
                                     <i class="fa fa-arrows-to-eye"></i> REFRACCIONES ANTIGUAS
                                 </a></li>
-                            <li><a href="/gestion_medica/notas_medicas/refraccion_actual.php">
+                            <li><a href="/gestion_medica/notas_medicas/autorefractor.php">
                                     <i class="fa fa-eye"></i> AUTOREFRACTOR /<br> QUERATOCONO
                                 </a></li>
                     </li>

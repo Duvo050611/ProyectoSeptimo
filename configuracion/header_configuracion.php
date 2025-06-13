@@ -25,7 +25,8 @@ if (!($usuario['id_rol'] == 6 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
 
 <head>
     <meta charset="UTF-8">
-  <title>INEO Metepec</title>
+  <title>INEO Metepec
+  </title>
   <link rel="icon" href="../imagenes/SIF.PNG">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">

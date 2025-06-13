@@ -11,6 +11,7 @@ if (session_status() !== PHP_SESSION_ACTIVE || !isset($_SESSION['login'])) {
 }
 
 include "../../conexionbd.php";
+include "../header_labo.php";
 
 $usuario = $_SESSION['login'];
 $id_rol = $usuario['id_rol'];
@@ -35,7 +36,7 @@ $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/resulta
 $base_url = '/gestion_medica/notas_medicas/resultados_gabinete/';
 $allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg'];
 $allowed_mime_types = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-$max_file_size = 5242880; // 5MB
+$max_file_size = 25000000; // 5MB
 
 // Ensure upload directory exists and is writable
 if (!file_exists($upload_dir) && !mkdir($upload_dir, 0775, true)) {
@@ -163,7 +164,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
                 break;
             } elseif ($file_size > $max_file_size) {
                 $error = true;
-                $message = 'El archivo es demasiado grande (máximo 5MB).';
+                $message = 'El archivo es demasiado grande (máximo 25MB).';
                 break;
             } elseif ($file_error !== UPLOAD_ERR_OK) {
                 $error = true;
@@ -347,7 +348,7 @@ if (isset($_POST['edit']) && isset($_FILES['resultado'])) {
         </div>
     </div>
 </section>
-
+</div>
 <footer class="main-footer">
     <?php include "../../template/footer.php"; ?>
 </footer>

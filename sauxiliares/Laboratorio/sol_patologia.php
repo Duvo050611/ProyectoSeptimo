@@ -136,7 +136,7 @@ if ($usuario['id_rol'] == 10) {
                             <tbody>
                             <?php   
 
-                            include "../conexionbd.php";
+                            include "../../conexionbd.php";
 
                             $query = "SELECT * FROM notificaciones_pato n, reg_usuarios u where n.realizado = 'NO' and n.id_usua = u.id_usua order by fecha DESC ";
                             $result = $conexion->query($query);
@@ -184,6 +184,7 @@ if ($usuario['id_rol'] == 10) {
             </section><!-- /.content -->
 </section>
     </div><!-- /.content-wrapper -->
+    </div>
 
     <footer class="main-footer">
         <?php

@@ -3,6 +3,8 @@ include '../../conexionbd.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_exp = $_POST['id_exp'];
+    $id_usua = $_POST['id_usua'];
+    $id_atencion = $_POST['id_atencion'];
 
     $reflejo_od = $_POST['reflejo_od'] ?? null;
     $eje_visual_od = $_POST['eje_visual_od'] ?? null;
@@ -19,15 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "INSERT INTO ninobebe (
         reflejo_od, eje_visual_od, fijacion_od, esquiascopia_od, posicion_od,
         reflejo_oi, eje_visual_oi, fijacion_oi, esquiascopia_oi, posicion_oi,
-        id_exp
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        id_exp, id_usua, id_atencion
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param(
-        "ssssssssssi",
+        "ssssssssssiii",
         $reflejo_od, $eje_visual_od, $fijacion_od, $esquiascopia_od, $posicion_od,
         $reflejo_oi, $eje_visual_oi, $fijacion_oi, $esquiascopia_oi, $posicion_oi,
-        $id_exp
+        $id_exp, $id_usua, $id_atencion
     );
 
     if ($stmt->execute()) {

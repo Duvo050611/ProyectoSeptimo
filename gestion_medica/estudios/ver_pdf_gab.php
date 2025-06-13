@@ -84,70 +84,109 @@ if ($not_id === 0) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <!-- Bootstrap 4.5.2 CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <!-- Font Awesome 5.15.4 -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-    <!-- jQuery 3.5.1 -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <!-- Popper.js 1.16.0 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <!-- Bootstrap 4.5.2 JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/select2.css">
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/select2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/main.js"></script>
     <title>Detalles de Resultados de Gabinete</title>
     <style>
-        .preview-container { max-width: 100%; height: 600px; overflow: auto; margin-bottom: 20px; }
-        .preview-container img { max-width: 100%; height: auto; }
-        .preview-container iframe { width: 100%; height: 600px; border: none; }
-        .annotation-area { border: 1px solid #ccc; padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
-        #det_gab_display { white-space: pre-wrap; margin-bottom: 15px; }
-        .missing-file { color: red; font-style: italic; }
+    .preview-container {
+        max-width: 100%;
+        height: 600px;
+        overflow: auto;
+        margin-bottom: 20px;
+    }
+
+    .preview-container img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .preview-container iframe {
+        width: 100%;
+        height: 600px;
+        border: none;
+    }
+
+    .annotation-area {
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    #det_gab_display {
+        white-space: pre-wrap;
+        margin-bottom: 15px;
+    }
+
+    .missing-file {
+        color: red;
+        font-style: italic;
+    }
     </style>
     <script>
-        $(document).ready(function() {
-            $('.result-file').click(function(e) {
-                e.preventDefault();
-                var fileUrl = $(this).attr('href');
-                var fileExt = fileUrl.split('.').pop().toLowerCase();
-                var $previewArea = $('#previewArea');
-                
-                $previewArea.empty();
-                if (fileExt === 'pdf') {
-                    $previewArea.html('<iframe src="' + fileUrl + '" class="preview-container"></iframe>');
-                } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
-                    $previewArea.html('<img src="' + fileUrl + '" alt="Resultado" class="preview-container">');
-                } else {
-                    $previewArea.html('<p>Formato de archivo no compatible para vista previa. <a href="' + fileUrl + '" download>Descargar archivo</a></p>');
-                }
-            });
+    $(document).ready(function() {
+        $('.result-file').click(function(e) {
+            e.preventDefault();
+            var fileUrl = $(this).attr('href');
+            var fileExt = fileUrl.split('.').pop().toLowerCase();
+            var $previewArea = $('#previewArea');
+
+            $previewArea.empty();
+            if (fileExt === 'pdf') {
+                $previewArea.html('<iframe src="' + fileUrl + '" class="preview-container"></iframe>');
+            } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
+                $previewArea.html('<img src="' + fileUrl +
+                    '" alt="Resultado" class="preview-container">');
+            } else {
+                $previewArea.html('<p>Formato de archivo no compatible para vista previa. <a href="' +
+                    fileUrl + '" download>Descargar archivo</a></p>');
+            }
         });
+    });
     </script>
 </head>
+
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="text-center">
-                <i class="fas fa-plus-square"></i> Resultados de Gabinete
-            </h2>
-            <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center">
+                    <i class="fas fa-plus-square"></i> Resultados de Gabinete
+                </h2>
+                <hr>
+            </div>
         </div>
     </div>
-</div>
 
-<section class="content container-fluid">
-    <div class="container">
-        <div class="content">
-            <div class="row">
-                <div class="col-md-8">
-                    <a href="estudios.php" class="btn btn-danger mb-3">Regresar</a>
-                    <?php if ($error_message): ?>
+    <section class="content container-fluid">
+        <div class="container">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <a href="estudios.php" class="btn btn-danger mb-3">Regresar</a>
+                        <?php if ($error_message): ?>
                         <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
-                    <?php elseif ($success_message): ?>
+                        <?php elseif ($success_message): ?>
                         <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
-                    <?php elseif ($row): ?>
+                        <?php elseif ($row): ?>
                         <?php
                         // Parse resultado as comma-separated string (previously JSON)
                         $file_names = $row['resultado'] ? array_map('trim', explode(',', $row['resultado'])) : [];
@@ -159,78 +198,88 @@ if ($not_id === 0) {
                         ?>
                         <h3>Resultados Disponibles:</h3>
                         <?php if (!empty($file_names)): ?>
-                            <ul class="list-group mb-3">
-                                <?php foreach ($file_names as $index => $file_name): ?>
-                                    <?php
+                        <ul class="list-group mb-3">
+                            <?php foreach ($file_names as $index => $file_name): ?>
+                            <?php
                                     // Sanitize filename to prevent directory traversal
                                     $file_name = basename($file_name);
                                     $file_path = $base_url . $file_name;
                                     $file_exists = file_exists($upload_dir . $file_name);
                                     $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
                                     ?>
-                                    <li class="list-group-item">
-                                        <a href="<?php echo htmlspecialchars($file_path); ?>" class="result-file">
-                                            Resultado <?php echo ($index + 1); ?>
-                                            <?php if (!$file_exists): ?>
-                                                <span class="missing-file">(No encontrado)</span>
-                                            <?php endif; ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                            <h3>Vista Previa</h3>
-                            <div id="previewArea" class="preview-container">
-                                <?php if ($first_file_path && file_exists($upload_dir . $first_file)): ?>
-                                    <?php if (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['pdf'])): ?>
-                                        <iframe src="<?php echo htmlspecialchars($first_file_path); ?>" class="preview-container"></iframe>
-                                    <?php elseif (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg'])): ?>
-                                        <img src="<?php echo htmlspecialchars($first_file_path); ?>" alt="Resultado" class="preview-container">
-                                    <?php else: ?>
-                                        <p>Formato de archivo no compatible para vista previa. <a href="<?php echo htmlspecialchars($first_file_path); ?>" download>Descargar archivo</a></p>
+                            <li class="list-group-item">
+                                <a href="<?php echo htmlspecialchars($file_path); ?>" class="result-file">
+                                    Resultado <?php echo ($index + 1); ?>
+                                    <?php if (!$file_exists): ?>
+                                    <span class="missing-file">(No encontrado)</span>
                                     <?php endif; ?>
-                                <?php else: ?>
-                                    <p>No hay archivos disponibles para vista previa.</p>
-                                <?php endif; ?>
-                            </div>
+                                </a>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <h3>Vista Previa</h3>
+                        <div id="previewArea" class="preview-container">
+                            <?php if ($first_file_path && file_exists($upload_dir . $first_file)): ?>
+                            <?php if (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['pdf'])): ?>
+                            <iframe src="<?php echo htmlspecialchars($first_file_path); ?>"
+                                class="preview-container"></iframe>
+                            <?php elseif (in_array(strtolower(pathinfo($first_file_path, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg'])): ?>
+                            <img src="<?php echo htmlspecialchars($first_file_path); ?>" alt="Resultado"
+                                class="preview-container">
+                            <?php else: ?>
+                            <p>Formato de archivo no compatible para vista previa. <a
+                                    href="<?php echo htmlspecialchars($first_file_path); ?>" download>Descargar
+                                    archivo</a></p>
+                            <?php endif; ?>
+                            <?php else: ?>
+                            <p>No hay archivos disponibles para vista previa.</p>
+                            <?php endif; ?>
+                        </div>
                         <?php else: ?>
-                            <div class="alert alert-warning">No se encontraron archivos de resultados.</div>
+                        <div class="alert alert-warning">No se encontraron archivos de resultados.</div>
                         <?php endif; ?>
-                    <?php else: ?>
-                        <div class="alert alert-danger">No se encontraron resultados para la notificación ID <?php echo $not_id; ?>.</div>
-                    <?php endif; ?>
-                </div>
-                <div class="col-md-4">
-                    <div class="annotation-area">
-                        <h4>Anotaciones</h4>
-                        <?php if ($row && !empty($row['det_gab'])): ?>
+                        <?php else: ?>
+                        <div class="alert alert-danger">No se encontraron resultados para la notificación ID
+                            <?php echo $not_id; ?>.</div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="annotation-area">
+                            <h4>Anotaciones</h4>
+                            <?php if ($row && !empty($row['det_gab'])): ?>
                             <div id="det_gab_display"><?php echo htmlspecialchars($row['det_gab']); ?></div>
-                        <?php else: ?>
+                            <?php else: ?>
                             <p>No hay anotaciones disponibles.</p>
-                        <?php endif; ?>
-                        <form method="POST" action="">
-                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <div class="form-group">
-                                <label for="anotacion">Nueva Anotación:</label>
-                                <textarea class="form-control" id="anotacion" name="anotacion" rows="4" placeholder="Escribe tu anotación aquí..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Guardar Anotación</button>
-                        </form>
+                            <?php endif; ?>
+                            <form method="POST" action="">
+                                <input type="hidden" name="csrf_token"
+                                    value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                                <div class="form-group">
+                                    <label for="anotacion">Nueva Anotación:</label>
+                                    <textarea class="form-control" id="anotacion" name="anotacion" rows="4"
+                                        placeholder="Escribe tu anotación aquí..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar Anotación</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
     </div>
-</section>
 
-<footer class="main-footer">
-    <?php include "../../template/footer.php"; ?>
-</footer>
 
-<!-- Avoid duplicate jQuery and potential conflicts -->
-<!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
-<!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
-<script src="../../template/dist/js/app.min.js"></script>
+    <footer class="main-footer">
+        <?php include "../../template/footer.php"; ?>
+    </footer>
+
+    <!-- Avoid duplicate jQuery and potential conflicts -->
+    <!-- <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script> -->
+    <!-- <script src="../../template/plugins/fastclick/fastclick.min.js"></script> -->
+    <script src="../../template/dist/js/app.min.js"></script>
 </body>
+
 </html>
 <?php
 $conexion->close();

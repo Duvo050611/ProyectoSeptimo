@@ -1,5 +1,4 @@
 <?php
-use PDF as GlobalPDF;
 ob_start();
 session_start();
 include "../../conexionbd.php";
@@ -113,13 +112,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $sol_estudios = implode(", ", $studies);
-    $fecha_ord = date("Y-m-d H:i:s");
+    $fecha_ord = date("Y-m-d H:i:s"); // Set fecha_ord to current date and time
     $det_gab = $otros_gabinete ?? "Consulta médica";
     $fecha_actual_sql = date("Y-m-d H:i:s");
     $cant = 1;
 
+    // Debug: Log the fecha_ord value
+    error_log("fecha_ord before insertion: $fecha_ord");
+
     // Insert selected services into ocular_examenes_gabinete and dat_ctapac
     $success = true;
+    $last_insert_id = 0;
     if (!empty($selected_services) || $otros_gabinete) {
         // Prepare insert for ocular_examenes_gabinete
         $sql_insert = "INSERT INTO ocular_examenes_gabinete (id_atencion, Id_exp, id_usua, id_serv, otros_gabinete, precio_total) VALUES (?, ?, ?, ?, ?, ?)";
@@ -155,6 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     error_log("Insert failed for service $serv_id in ocular_examenes_gabinete: " . $stmt_insert->error);
                     break;
                 }
+                // Capture the last inserted id_examen_gab
+                $last_insert_id = $stmt_insert->insert_id;
 
                 // Insert into dat_ctapac
                 $stmt_ctapac->bind_param("iisdisi", $id_atencion, $serv_id, $fecha_actual_sql, $cant, $prices[$serv_id], $id_usua, $area);
@@ -173,6 +178,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$stmt_insert->execute()) {
                 $success = false;
                 error_log("Insert failed for custom service in ocular_examenes_gabinete: " . $stmt_insert->error);
+            } else {
+                // Capture the last inserted id_examen_gab for custom service
+                $last_insert_id = $stmt_insert->insert_id;
             }
 
             // Insert custom service into dat_ctapac
@@ -213,18 +221,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pac_alergias = $row_pac['alergias'] ?? 'No especificado';
         $stmt_pac->close();
 
-        // Fetch vital signs
-        $sql_signs = "SELECT p_sistol, p_diastol, fresp, temper, satoxi FROM signos_vitales WHERE id_atencion = ? ORDER BY id_sig DESC LIMIT 1";
+        // Fetch vital signs from exploracion_fisica
+        $sql_signs = "SELECT presion_sistolica, presion_diastolica, frecuencia_respiratoria, temperatura, spo2 
+                    FROM exploracion_fisica 
+                    WHERE id_atencion = ? 
+                    ORDER BY fecha DESC LIMIT 1";
         $stmt_signs = $conexion->prepare($sql_signs);
         $stmt_signs->bind_param("i", $id_atencion);
         $stmt_signs->execute();
         $result_signs = $stmt_signs->get_result();
         $row_signs = $result_signs->fetch_assoc();
-        $p_sistolica = $row_signs['p_sistol'] ?? '';
-        $p_diastolica = $row_signs['p_diastol'] ?? '';
-        $f_resp = $row_signs['fresp'] ?? '';
-        $temp = $row_signs['temper'] ?? '';
-        $sat_oxigeno = $row_signs['satoxi'] ?? '';
+        $p_sistolica = $row_signs['presion_sistolica'] ?? '';
+        $p_diastolica = $row_signs['presion_diastolica'] ?? '';
+        $f_resp = $row_signs['frecuencia_respiratoria'] ?? '';
+        $temp = $row_signs['temperatura'] ?? '';
+        $sat_oxigeno = $row_signs['spo2'] ?? '';
         $stmt_signs->close();
 
         // Calculate age
@@ -265,10 +276,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fecha_actual = date("d/m/Y H:i:s");
 
         // Create PDF class
-        class PDF extends FPDF
-        {
-            function Header()
-            {
+        class PDF extends FPDF {
+            function Header() {
                 include '../../conexionbd.php';
                 $resultado = $conexion->query("SELECT * FROM img_sistema ORDER BY id_simg DESC LIMIT 1") or die($conexion->error);
                 while ($f = mysqli_fetch_array($resultado)) {
@@ -280,8 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $this->Ln(32);
             }
 
-            function Footer()
-            {
+            function Footer() {
                 $this->SetY(-15);
                 $this->SetFont('Arial', '', 8);
                 $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
@@ -304,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->SetFont('Arial', '', 9);
         $pdf->Cell(0, 5, utf8_decode("Paciente: {$folio} - {$pac_papell} {$pac_sapell} {$pac_nom_pac}"), 0, 1, 'L');
         $pdf->Cell(0, 5, utf8_decode("Signos vitales:"), 0, 1, 'L');
-        $pdf->Cell(0, 5, utf8_decode("Presión arterial: {$p_sistolica}/{$p_diastolica} mmHG                            Frecuencia: {$f_resp} Resp/min                       Temperatura: {$temp} °C                       Saturación: {$sat_oxigeno}%"), 0, 1, 'L');
+        $pdf->Cell(0, 5, utf8_decode("Presión arterial: {$p_sistolica}/{$p_diastolica} mmHg                            Frecuencia: {$f_resp} Resp/min                       Temperatura: {$temp} °C                       Saturación: {$sat_oxigeno}%"), 0, 1, 'L');
         $pdf->Cell(0, 5, utf8_decode("Edad: {$edad}                                          Sexo: {$pac_sexo}                                     Fecha de ingreso: {$pac_fecing}"), 0, 1, 'L');
         $pdf->Cell(0, 5, utf8_decode("Fecha de solicitud: {$fecha_actual}                                                               Fecha y hora de solicitud: {$fecha_actual}"), 0, 1, 'L');
         $pdf->Cell(0, 5, utf8_decode("Médico tratante: {$doctor}"), 0, 1, 'L');
@@ -325,29 +333,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->Line(1, 8, 1, $bottom_y);
         $pdf->Line(209, 8, 209, $bottom_y);
 
-        // Save PDF to file
-        $carpeta = $_SERVER['DOCUMENT_ROOT'] . '/gestion_medica/notas_medicas/solicitudes_gabinete/';
-        if (!file_exists($carpeta) && !mkdir($carpeta, 0777, true)) {
-            error_log("Failed to create directory: {$carpeta}");
-            ob_end_clean();
-            $_SESSION['message'] = "Error al crear directorio.";
-            $_SESSION['message_type'] = "danger";
-            header("Location: examenes_gab.php");
-            exit();
-        }
-        $nombre_pdf = "solicitud_estudios_{$folio}_" . date('Ymd_His') . ".pdf";
-        $nombre_final = $carpeta . $nombre_pdf;
-        if (!is_writable($carpeta)) {
-            error_log("Directory not writable: {$carpeta}");
-            ob_end_clean();
-            $_SESSION['message'] = "Directorio no escribible.";
-            $_SESSION['message_type'] = "danger";
-            header("Location: examenes_gab.php");
-            exit();
-        }
-
-        // Insert into notificaciones_gabinete
-        $sql_gab = "INSERT INTO notificaciones_gabinete (id_atencion, habitacion, fecha_ord, id_usua, sol_estudios, det_gab, activo, realizado, pdf_solicitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Insert into notificaciones_gabinete using NOW() for fecha_ord
+        $sql_gab = "INSERT INTO notificaciones_gabinete (id_atencion, Id_exp, id_usua, habitacion, fecha_ord, sol_estudios, det_gab, activo, realizado, pdf_solicitud, resultado, fecha_resultado, id_usua_resul) VALUES (?, ?, ?, ?, NOW(), ?, ?, 'SI', 'NO', NULL, NULL, NULL, NULL)";
         $stmt_gab = $conexion->prepare($sql_gab);
         if (!$stmt_gab) {
             error_log("Prepare failed for notificaciones_gabinete: " . $conexion->error);
@@ -357,32 +344,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: examenes_gab.php");
             exit();
         }
-        $activo = 'SI';
-        $realizado = 'NO';
-        $stmt_gab->bind_param("ississsss", $id_atencion, $habitacion, $fecha_ord, $id_usua, $sol_estudios, $det_gab, $activo, $realizado, $nombre_pdf);
-
-        if ($stmt_gab->execute()) {
-            if ($pdf->Output('F', $nombre_final) === false) {
-                error_log("Failed to generate PDF: {$nombre_final}");
-                ob_end_clean();
-                $_SESSION['message'] = "Error al generar PDF.";
-                $_SESSION['message_type'] = "danger";
-                header("Location: examenes_gab.php");
-                exit();
-            }
-
-            $_SESSION['message'] = "Solicitud registrada y PDF generado exitosamente.";
-            $_SESSION['message_type'] = "success";
-
-            ob_end_clean();
-            $pdf_url = "/gestion_medica/notas_medicas/solicitudes_gabinete/{$nombre_pdf}";
-
-            echo "<script>
-                window.open('$pdf_url', '_blank');
-                window.location.href = 'examenes_gab.php';
-            </script>";
-            exit();
-        } else {
+        $stmt_gab->bind_param("iiisss", $id_atencion, $Id_exp, $id_usua, $habitacion, $sol_estudios, $det_gab);
+        if (!$stmt_gab->execute()) {
             error_log("Insert failed for notificaciones_gabinete: " . $stmt_gab->error);
             ob_end_clean();
             $_SESSION['message'] = "Error al registrar notificación.";
@@ -390,6 +353,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: examenes_gab.php");
             exit();
         }
+        $stmt_gab->close();
+
+        // Get PDF content as string and encode in base64
+        $pdf_content = $pdf->Output('solicitud_gab.pdf', 'S');
+        $pdf_base64 = base64_encode($pdf_content);
+
+        // Output JavaScript to open PDF in new tab and redirect with success message
+        ob_end_clean();
+        echo "<script>
+            // Open PDF in new tab
+            var pdfData = 'data:application/pdf;base64,{$pdf_base64}';
+            var newTab = window.open();
+            newTab.document.write('<html><body><embed src=\"' + pdfData + '\" width=\"100%\" height=\"100%\" type=\"application/pdf\"></body></html>');
+            // Redirect original page with success message
+            window.location.href = 'examenes_gab.php?success=1';
+        </script>";
+        exit();
     } else {
         error_log("Insert failed for ocular_examenes_gabinete or dat_ctapac");
         ob_end_clean();

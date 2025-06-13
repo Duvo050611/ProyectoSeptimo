@@ -473,6 +473,7 @@ include("../header_medico.php");
             </center>
         </form>
     </div>
+    </div>
     <footer class="main-footer">
         <?php include("../../template/footer.php"); ?>
     </footer>

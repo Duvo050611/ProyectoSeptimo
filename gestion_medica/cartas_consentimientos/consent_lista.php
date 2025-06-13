@@ -8,63 +8,63 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 <html>
 
 <head>
-  <meta charset="gb18030">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <!--  Bootstrap  -->
-  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
-  <script src="../../js/jquery-3.3.1.min.js"></script>
-  <script src="../../js/jquery-ui.js"></script>
-  <script src="../../js/popper.min.js"></script>
-  <script src="../../js/bootstrap.min.js"></script>
-  <script src="../../js/jquery.magnific-popup.min.js"></script>
-  <script src="../../js/aos.js"></script>
-  <script src="../../js/main.js"></script>
-
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script>
+    <meta charset="gb18030">
+    <link rel="stylesheet" type="text/css" href="css/select2.css">
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/select2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
     // Write on keyup event of keyword input element
     $(document).ready(function() {
-      $("#search").keyup(function() {
-        _this = this;
-        // Show only matching TR, hide rest of them
-        $.each($("#mytable tbody tr"), function() {
-          if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-            $(this).hide();
-          else
-            $(this).show();
+        $("#search").keyup(function() {
+            _this = this;
+            // Show only matching TR, hide rest of them
+            $.each($("#mytable tbody tr"), function() {
+                if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
         });
-      });
     });
-  </script>
+    </script>
 
-  <title>DOCUMENTACIÓN </title>
+    <title>DOCUMENTACIÓN </title>
 
 </head>
 <!--seccion urgencias-->
 
 <body>
 
-  <section class="container">
+    <section class="container">
 
-    <!--------------------------
+        <!--------------------------
     | Your Page Content Here |
     -------------------------->
-    
-          <a href="../../template/menu_medico.php" class="btn-sm btn-danger">Regresar...</a>
-   
-     <p>
-<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;">
-  <center><strong>IMPRESIÓN DE DOCUMENTOS</strong></center><p>
-</div> 
-     <div class="container">
 
-     <?php
+        <a href="../../template/menu_medico.php" class="btn-sm btn-danger">Regresar...</a>
+
+        <p>
+        <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 22px;">
+            <center><strong>IMPRESIÓN DE DOCUMENTOS</strong></center>
+            <p>
+        </div>
+        <div class="container">
+
+            <?php
 
         include "../../conexionbd.php";
 
@@ -72,10 +72,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
         $resultado2 = $conexion->query("SELECT id_usua, curp_u, nombre, papell,sapell,fecnac,mat,cedp,cargp,email,u_activo FROM reg_usuarios") or die($conexion->error);
         ?>
 
-        <!--Fin de los filtros-->
-       
+            <!--Fin de los filtros-->
 
-           <?php
+
+            <?php
               $id_atencion = $_SESSION['hospital'];
               $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
 
@@ -91,18 +91,18 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-             <hr>
-       </div>
-  </section>
+            <hr>
+        </div>
+    </section>
 
 
-<section class="Container">
+    <section class="Container">
 
-  
-    <div class="container box">
-    
 
-        <?php
+        <div class="container box">
+
+
+            <?php
 
         include "../../conexionbd.php";
 
@@ -113,16 +113,16 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
         $resultado2 = $conexion->query("SELECT id_usua, curp_u, nombre, papell,sapell,fecnac,mat,cedp,cargp,email,u_activo FROM reg_usuarios") or die($conexion->error);
         ?>
 
-        <!--Fin de los filtros-->
-       
-      
-        
+            <!--Fin de los filtros-->
 
-<div class="container" style="background-color: #5880B4; color:white;">
-  <div class="row" >
-    <div class="col" >
-     <p></p>
- <?php
+
+
+
+            <div class="container" style="background-color: #5880B4; color:white;">
+                <div class="row">
+                    <div class="col">
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -148,10 +148,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
               ?>
 
-              <strong>1. Hoja Inicial</strong>
-              <p><p>
-                       
-             <?php
+                        <strong>1. Hoja Inicial</strong>
+                        <p>
+                        <p>
+
+                            <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -175,9 +176,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-               <strong>2. Hoja Frontal </strong>
-              <p><p>
-              <?php
+                            <strong>2. Hoja Frontal </strong>
+                        <p>
+                        <p>
+                            <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -190,7 +192,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                     href="../historia_clinica/buscar_hc.php"><span class="fa fa-file-pdf-o"
+                     href="../historia_clinica/vista_his.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
 
@@ -198,15 +200,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-      <strong>3. Historia clínica  </strong>
-              <hr>
+                            <strong>3. Historia clínica </strong>
+                            <hr>
 
-<strong>4. Observación</strong>
-      <p></p>   
+                            <strong>4. Observación</strong>
+                        <p></p>
 
-<strong>5. Notas médicas</strong>
-      <p></p>
-<?php
+                        <strong>5. Notas médicas</strong>
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -220,7 +222,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                     href="../vistas_pdf/vista_ingreso.php?Id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
+                     href="../vistas_pdf/vista_explo_fi.php?Id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
                      ><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
@@ -232,10 +234,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-5.01 Exploracion Fisica  
-<p></p>
+                        5.01 Exploracion Fisica
+                        <p></p>
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -249,7 +251,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_evo_pdf.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
+                    href="../vistas_pdf/vista_refra_a.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
                      target=""><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
@@ -262,10 +264,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
               ?>
 
-5.02 Refracciones antiguas
-<p></p>
+                        5.02 Refracciones antiguas
+                        <p></p>
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -279,21 +281,21 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_inter_pdf.php?Id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
+                    href="../vistas_pdf/vista_auto.php?Id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
                      target=""><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-     
-
-5.03 Autorrefractor/Queratometria
-<p></p>
 
 
+                        5.03 Autorrefractor/Queratometria
+                        <p></p>
 
-       <?php
+
+
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -307,7 +309,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_traslado.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_refra.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
@@ -315,10 +317,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               ?>
 
 
-5.04 Refracción Actual
-<p></p>
+                        5.04 Refracción Actual
+                        <p></p>
 
-       <?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -332,7 +334,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_neona_pdf.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_anteojos_pdf.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
@@ -340,12 +342,12 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               ?>
 
 
-5.05 Receta Anteojos
-<p></p>
+                        5.05 Receta Anteojos
+                        <p></p>
 
 
 
-       <?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -359,7 +361,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_parto_pdf.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_len_cont.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
@@ -367,11 +369,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               ?>
 
 
-5.06 Receta Lentes de Contacto 
-<p></p>
+                        5.06 Receta Lentes de Contacto
+                        <p></p>
 
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -385,19 +387,19 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_egreso.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_prueba.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
 
-5.07 Pruebas 
-<p></p>
+                        5.07 Pruebas
+                        <p></p>
 
 
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -417,11 +419,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-5.08 Niño/bebe
-<p></p>
+                        5.08 Niño/bebe
+                        <p></p>
 
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -444,31 +446,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 
 
-5.09 Mediciones de la cornea
-<p></p>
-<?php
-              // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
-              $id_atencion = $_SESSION['hospital'];
-              // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
-              //  $result = $conn->query($sql);
-              $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
-
-              $no = 1;
-              while ($row = $resultado2->fetch_assoc()) {
-                 echo '<tr>'
-
-               
-               . '<td> <strong>
-                  <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_presion_intraocular.php"><span class="fa fa-file-pdf-o"
-                                           style="font-size:20px"></span></a>
-                  </strong></td>';
-                $no++;
-              }
-              ?>
-5.10 Presion intraocular
-<p></p>
-<?php
+                        5.09 Mediciones de la cornea
+                        <p></p>
+                        
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -489,9 +470,32 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
 
               ?>
-              5.11 Orbita, Parpados y Vias Lagrimales
-<p></p>
-<?php
+                        5.10 Orbita, Parpados y Vias Lagrimales
+                        <p></p>
+
+                        <?php
+              // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
+              $id_atencion = $_SESSION['hospital'];
+              // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
+              //  $result = $conn->query($sql);
+              $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
+
+              $no = 1;
+              while ($row = $resultado2->fetch_assoc()) {
+                 echo '<tr>'
+
+               
+               . '<td> <strong>
+                  <a type="submit" class="btn btn-danger btn-sm"
+                    href="../vistas_pdf/vista_presion_intraocular.php"><span class="fa fa-file-pdf-o"
+                                           style="font-size:20px"></span></a>
+                  </strong></td>';
+                $no++;
+              }
+              ?>
+                        5.11 Presion intraocular
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -511,9 +515,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-               5.12 Segmento Anterior
-<p></p>
-<?php
+                        5.12 Segmento Anterior
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -533,9 +537,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-               5.13 Segmento Posterior
-<p></p>
-<?php
+                        5.13 Segmento Posterior
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -549,15 +553,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_estudios.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.14 Estudios
-<p></p>
-<?php
+                        5.14 Estudios
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -571,15 +575,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_lente_intraocular.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.15 Lente Intraocular
-<p></p>
-<?php
+                        5.15 Lente Intraocular
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -593,15 +597,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_diagnostico.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.16 Diagnostico
-<p></p>
-<?php
+                        5.16 Diagnostico
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -615,15 +619,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_tratamiento.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.17 Tratamiento
-<p></p>
-<?php
+                        5.17 Tratamiento
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -637,15 +641,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_tratamiento_laser.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.18 Tratamiento Laser
-<p></p>
-<?php
+                        5.18 Tratamiento Laser
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -659,15 +663,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_examenes_laboratorio.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.19 Examenes de laboratorio
-<p></p>
-<?php
+                        5.19 Examenes de laboratorio
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -681,15 +685,15 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_examenes_gabinete.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               5.20 Recomendaciones
-<p></p>
-<?php
+                        5.21 Examenes de Gabinete
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -703,23 +707,24 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                    href="../vistas_pdf/vista_resumen.php"><span class="fa fa-file-pdf-o"
+                    href="../vistas_pdf/vista_recomendaciones.php"><span class="fa fa-file-pdf-o"
                                            style="font-size:20px"></span></a>
                   </strong></td>';
                 $no++;
               }
               ?>
-               
-5.21
-<hr>
+                        5.22 Recomendaciones
+                        <p></p>
+                        
+                        <hr>
 
- </div>
+                    </div>
 
-    <div class="col">
-      <p></p>
-<strong>10. Aviso de alta</strong>
-<hr>
-<?php
+                    <div class="col">
+                        <p></p>
+                        <strong>10. Aviso de alta</strong>
+                        <hr>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -740,17 +745,17 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-<strong>11. Recetas hospitalización </strong>
-<hr>
- </div>
-<div class="col">
-      <p></p>
+                        <strong>11. Recetas hospitalización </strong>
+                        <hr>
+                    </div>
+                    <div class="col">
+                        <p></p>
 
-<strong>12. Consentimientos (ENFERMERIA)</strong>
- 
-     <p></p>
+                        <strong>12. Consentimientos (ENFERMERIA)</strong>
 
- <?php
+                        <p></p>
+
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -771,9 +776,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-12.01 Procedimiento anestésico
-<p></p>
-             <?php
+                        12.01 Procedimiento anestésico
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -794,9 +799,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
               ?>
-12.02 Consentimiento informado 
-<p></p>
-            <?php
+                        12.02 Consentimiento informado
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -816,11 +821,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 
                 $no++;
               }
-              ?> 
+              ?>
 
-12.03 Consentimiento informado abierto 
-              <p></p>
-<?php
+                        12.03 Consentimiento informado abierto
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -840,11 +845,11 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 
                 $no++;
               }
-            ?> 
-         
-12.04 Para transfusión sanguínea 
-             <p></p>
-              <?php
+            ?>
+
+                        12.04 Para transfusión sanguínea
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -864,12 +869,12 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 
                 $no++;
               }
-            ?> 
-12.05 Consentimiento alto riesgo
-<p></p>
+            ?>
+                        12.05 Consentimiento alto riesgo
+                        <p></p>
 
 
-<?php
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -889,10 +894,10 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 
                 $no++;
               }
-            ?> 
-12.06 Responsiva alojamiento conjunto
-<p></p>
-          <?php
+            ?>
+                        12.06 Responsiva alojamiento conjunto
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -913,9 +918,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
             ?>
 
-12.07 Notificación a ministerio público 
-<p></p>
-<?php
+                        12.07 Notificación a ministerio público
+                        <p></p>
+                        <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
               // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
@@ -935,8 +940,12 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 $no++;
               }
             ?>
-            12.08 Responsiva de incineracion
-</script>
+                        12.08 Responsiva de incineracion
+                        </script>
+                        <!-- FastClick -->
+                        <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+                        <!-- AdminLTE App -->
+                        <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 </body>
 
 </html>

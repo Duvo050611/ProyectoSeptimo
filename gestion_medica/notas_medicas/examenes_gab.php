@@ -315,6 +315,7 @@ while ($row = $result_services->fetch_assoc()) {
             </center>
         </form>
     </div>
+    </div>
     <footer class="main-footer">
         <?php include("../../template/footer.php"); ?>
     </footer>

@@ -1,31 +1,31 @@
 <?php
 session_start();
-include '../../conexionbd.php';
+include "../../conexionbd.php";
 
-if (!isset($_SESSION['hospital'])) {
-    header("Location: ../login.php");
-    exit();
+if (!$conexion) {
+    die("Error de conexión a la base de datos");
 }
 
-$id_atencion = $_SESSION['hospital'];
+// Validar claves foráneas
+$id_exp = isset($_POST['id_exp']) && $_POST['id_exp'] !== '' ? intval($_POST['id_exp']) : null;
+$id_usua = isset($_POST['id_usua']) && $_POST['id_usua'] !== '' ? intval($_POST['id_usua']) : null;
+$id_atencion = isset($_POST['id_atencion']) && $_POST['id_atencion'] !== '' ? intval($_POST['id_atencion']) : null;
 
-// Obtener id_exp a partir de id_atencion
-$sql = "SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?";
-$stmt = $conexion->prepare($sql);
-$stmt->bind_param("i", $id_atencion);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-
-if (!$row) {
-    echo "No se encontró el paciente para esta atención.";
-    exit();
+if (is_null($id_exp) || is_null($id_usua) || is_null($id_atencion)) {
+    die("Faltan datos obligatorios");
 }
 
-$id_exp = $row['Id_exp'];
-$stmt->close();
+// Función para escapar texto
+function escapa($conexion, $dato) {
+    return $dato === null ? 'NULL' : "'" . $conexion->real_escape_string($dato) . "'";
+}
 
-// Recolectar datos del formulario
+// Función para valores numéricos
+function valor_numero($dato) {
+    return ($dato === null || $dato === '') ? 'NULL' : floatval($dato);
+}
+
+// Recibir campos
 $apertura_palpebral = $_POST['apertura_palpebral'] ?? null;
 $hendidura_palpebral = $_POST['hendidura_palpebral'] ?? null;
 $funcion_musculo_elevador = $_POST['funcion_musculo_elevador'] ?? null;
@@ -34,6 +34,14 @@ $laxitud_horizontal = $_POST['laxitud_horizontal'] ?? null;
 $laxitud_vertical = $_POST['laxitud_vertical'] ?? null;
 $desplazamiento_ocular = $_POST['desplazamiento_ocular'] ?? null;
 $maniobra_vatsaha = $_POST['maniobra_vatsaha'] ?? null;
+$distancia_margen_reflejo_1 = $_POST['distancia_margen_reflejo_1'] ?? null;
+$distancia_margen_reflejo_2 = $_POST['distancia_margen_reflejo_2'] ?? null;
+$exposicion_escleral_superior = $_POST['exposicion_escleral_superior'] ?? null;
+$exposicion_escleral_inferior = $_POST['exposicion_escleral_inferior'] ?? null;
+$altura_surco = $_POST['altura_surco'] ?? null;
+$distancia_ceja_pestana = $_POST['distancia_ceja_pestana'] ?? null;
+$exoftalmometria = $_POST['exoftalmometria'] ?? null;
+$exoftalmometria_base = $_POST['exoftalmometria_base'] ?? null;
 
 $apertura_palpebral_oi = $_POST['apertura_palpebral_oi'] ?? null;
 $hendidura_palpebral_oi = $_POST['hendidura_palpebral_oi'] ?? null;
@@ -46,34 +54,61 @@ $maniobra_vatsaha_oi = $_POST['maniobra_vatsaha_oi'] ?? null;
 
 $observaciones = $_POST['observaciones'] ?? null;
 
-// Insertar en la base de datos
-$sql_insert = "INSERT INTO exploraciones (
-    id_exp, 
+// Query
+$sql = "INSERT INTO exploraciones (
+    id_exp, id_usua, id_atencion,
+
+    -- Ojo derecho
     apertura_palpebral, hendidura_palpebral, funcion_musculo_elevador,
-    fenomeno_bell, laxitud_horizontal, laxitud_vertical, desplazamiento_ocular,
-    maniobra_vatsaha, apertura_palpebral_oi, hendidura_palpebral_oi, funcion_musculo_elevador_oi,
-    fenomeno_bell_oi, laxitud_horizontal_oi, laxitud_vertical_oi, desplazamiento_ocular_oi,
-    maniobra_vatsaha_oi, observaciones
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    distancia_margen_reflejo_1, distancia_margen_reflejo_2,
+    exposicion_escleral_superior, exposicion_escleral_inferior,
+    altura_surco, distancia_ceja_pestana,
+    fenomeno_bell, laxitud_horizontal, laxitud_vertical,
+    exoftalmometria, exoftalmometria_base,
+    desplazamiento_ocular, maniobra_vatsaha,
 
-$stmt_insert = $conexion->prepare($sql_insert);
-$stmt_insert->bind_param(
-    "idddssssddddssssss",
-    $id_exp,
-    $apertura_palpebral, $hendidura_palpebral, $funcion_musculo_elevador,
-    $fenomeno_bell, $laxitud_horizontal, $laxitud_vertical, $desplazamiento_ocular,
-    $maniobra_vatsaha, $apertura_palpebral_oi, $hendidura_palpebral_oi, $funcion_musculo_elevador_oi,
-    $fenomeno_bell_oi, $laxitud_horizontal_oi, $laxitud_vertical_oi, $desplazamiento_ocular_oi,
-    $maniobra_vatsaha_oi, $observaciones
-);
+    -- Ojo izquierdo
+    apertura_palpebral_oi, hendidura_palpebral_oi, funcion_musculo_elevador_oi,
+    fenomeno_bell_oi, laxitud_horizontal_oi, laxitud_vertical_oi,
+    desplazamiento_ocular_oi, maniobra_vatsaha_oi,
 
-if ($stmt_insert->execute()) {
+    observaciones
+) VALUES (
+    $id_exp, $id_usua, $id_atencion,
+
+    " . valor_numero($apertura_palpebral) . ",
+    " . valor_numero($hendidura_palpebral) . ",
+    " . valor_numero($funcion_musculo_elevador) . ",
+    " . valor_numero($distancia_margen_reflejo_1) . ",
+    " . valor_numero($distancia_margen_reflejo_2) . ",
+    " . valor_numero($exposicion_escleral_superior) . ",
+    " . valor_numero($exposicion_escleral_inferior) . ",
+    " . valor_numero($altura_surco) . ",
+    " . valor_numero($distancia_ceja_pestana) . ",
+    " . escapa($conexion, $fenomeno_bell) . ",
+    " . escapa($conexion, $laxitud_horizontal) . ",
+    " . escapa($conexion, $laxitud_vertical) . ",
+    " . valor_numero($exoftalmometria) . ",
+    " . valor_numero($exoftalmometria_base) . ",
+    " . escapa($conexion, $desplazamiento_ocular) . ",
+    " . escapa($conexion, $maniobra_vatsaha) . ",
+
+    " . valor_numero($apertura_palpebral_oi) . ",
+    " . valor_numero($hendidura_palpebral_oi) . ",
+    " . valor_numero($funcion_musculo_elevador_oi) . ",
+    " . escapa($conexion, $fenomeno_bell_oi) . ",
+    " . escapa($conexion, $laxitud_horizontal_oi) . ",
+    " . escapa($conexion, $laxitud_vertical_oi) . ",
+    " . escapa($conexion, $desplazamiento_ocular_oi) . ",
+    " . escapa($conexion, $maniobra_vatsaha_oi) . ",
+
+    " . escapa($conexion, $observaciones) . "
+)";
+if ($conexion->query($sql) === TRUE) {
     header("Location: formulario_exploracion.php");
-    exit();
 } else {
-    echo "Error al guardar la exploración: " . $stmt_insert->error;
+    echo "Error al guardar: " . $conexion->error;
 }
 
-$stmt_insert->close();
 $conexion->close();
 ?>

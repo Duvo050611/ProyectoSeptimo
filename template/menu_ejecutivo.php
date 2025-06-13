@@ -26,7 +26,7 @@ if (!($usuario['id_usua'] == 1 || $usuario['id_usua'] == 200 || $usuario['id_usu
 
 <head>
   <meta charset="UTF-8">
-  <title>MÉDICA SAN ISIDRO</title>
+  <title>INEO Metepec</title>
 <link rel="icon" href="../imagenes/SIF.PNG">
     
     <!-- Bootstrap 3.3.2 -->
