@@ -624,7 +624,7 @@ $usuario = $_SESSION['login'];
 
             </div>
         </div>
-    </div>
+        
 
 
     <center class="mt-3">
