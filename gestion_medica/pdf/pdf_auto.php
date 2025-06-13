@@ -36,10 +36,10 @@ $tipo_a = $row_preop['tipo_a'] ?? '';
 $fecha_ing = $row_preop['fecha'] ?? '';
 $id_usua = $row_preop['id_usua'] ?? '';
 
-$sql_auto = "SELECT * FROM autorefractor WHERE id_atencion = $id_atencion ORDER BY id DESC LIMIT 1";
-$result_auto = $conexion->query($sql_auto);
-$row_auto = $result_auto->fetch_assoc();
 
+$id_auto = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$sql_auto = "SELECT * FROM autorefractor WHERE id = $id_auto LIMIT 1";$result_auto = $conexion->query($sql_auto);
+$row_auto = $result_auto->fetch_assoc();
 
 if (!$row_auto) {
     echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
@@ -138,7 +138,7 @@ class PDF extends FPDF
         include '../../conexionbd.php';
         $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
         while ($f = mysqli_fetch_array($resultado)) {
-            $this->Image("../../configuracion/admin/img2/" . $f['img_ipdf'], 5, 11, 40, 25);
+            $this->Image("../../configuracion/admin/img2/" . $f['img_ipdf'], 7, 11, 40, 25);
             $this->Image("../../configuracion/admin/img3/" . $f['img_cpdf'], 58, 15, 109, 24);
             $this->Image("../../configuracion/admin/img4/" . $f['img_dpdf'], 168, 16, 38, 14);
 
@@ -174,27 +174,27 @@ $pdf->Cell(0, 8, 'Datos del Paciente:', 0, 1, 'L', true);
 
 $pdf->SetFont('Arial', '', 10);
 $pdf->SetFillColor(255,255,255);
-$pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
-$pdf->Cell(55, 5, utf8_decode($tipo_a), 0, 0, 'L');
-$pdf->Cell(35, 5, 'Fecha de registro:', 0, 0, 'L');
-$pdf->Cell(0, 5, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
-$pdf->Cell(35, 5, 'Paciente:', 0, 0, 'L');
-$pdf->Cell(55, 5, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
-$pdf->Cell(35, 5, utf8_decode('Teléfono:'), 0, 0, 'L');
-$pdf->Cell(0, 5, utf8_decode($tel), 0, 1, 'L');
+$pdf->Cell(35, 7, 'Servicio:', 0, 0, 'L');
+$pdf->Cell(55, 7, utf8_decode($tipo_a), 0, 0, 'L');
+$pdf->Cell(35, 7, 'Fecha de registro:', 0, 0, 'L');
+$pdf->Cell(0, 7, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
+$pdf->Cell(35, 7, 'Paciente:', 0, 0, 'L');
+$pdf->Cell(55, 7, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
+$pdf->Cell(35, 7, utf8_decode('Teléfono:'), 0, 0, 'L');
+$pdf->Cell(0, 7, utf8_decode($tel), 0, 1, 'L');
 
-$pdf->Cell(35, 5, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
-$pdf->Cell(30, 5, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
-$pdf->Cell(10, 5, utf8_decode('Edad:'), 0, 0, 'L');
-$pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
-$pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
-$pdf->Cell(20, 5, utf8_decode($sexo), 0, 0, 'L');
-$pdf->Cell(20, 5, utf8_decode('Ocupación:'), 0, 0, 'L');
-$pdf->Cell(0, 5, utf8_decode($ocup), 0, 1, 'L');
+$pdf->Cell(35, 7, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
+$pdf->Cell(30, 7, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
+$pdf->Cell(10, 7, utf8_decode('Edad:'), 0, 0, 'L');
+$pdf->Cell(15, 7, utf8_decode($edad), 0, 0, 'L');
+$pdf->Cell(15, 7, utf8_decode('Género:'), 0, 0, 'L');
+$pdf->Cell(20, 7, utf8_decode($sexo), 0, 0, 'L');
+$pdf->Cell(20, 7, utf8_decode('Ocupación:'), 0, 0, 'L');
+$pdf->Cell(0, 7, utf8_decode($ocup), 0, 1, 'L');
 
-$pdf->Cell(20, 5, utf8_decode('Domicilio:'), 0, 0, 'L');
-$pdf->Cell(0, 5, utf8_decode($dir), 0, 1, 'L');
-$pdf->Ln(8);
+$pdf->Cell(20, 7, utf8_decode('Domicilio:'), 0, 0, 'L');
+$pdf->Cell(0, 7, utf8_decode($dir), 0, 1, 'L');
+$pdf->Ln(4);
 $pdf->SetFont('Arial', 'B', 13);
 $pdf->SetFillColor(220, 230, 250);
 $pdf->Cell(0, 12, utf8_decode('AUTORREFRACCIÓN  / QUERATOCONO'), 0, 1, 'C', true);
@@ -202,25 +202,29 @@ $pdf->Ln(2);
 
 function tablaCentralizada($pdf, $titulo, $tipo, $od, $oi) {
     $pdf->SetFont('Arial', 'B', 11);
-    $pdf->SetFillColor(245, 245, 245);
+    $pdf->SetFillColor(230, 230, 230);
     $pdf->Cell(0, 9, utf8_decode($titulo . ($tipo ? ": $tipo" : "")), 0, 1, 'C', true);
     $pdf->SetFont('Arial', '', 10);
 
-    $startX = ($pdf->GetPageWidth() - 100) / 2;
+    $ancho_col1 = 30;
+    $ancho_col2 = 30;
+    $ancho_col3 = 30;
+
+    $totalWidth = $ancho_col1 + $ancho_col2 + $ancho_col3;
+    $startX = ($pdf->GetPageWidth() - $totalWidth) / 2;
     $pdf->SetX($startX);
-    $pdf->Cell(40, 5, '', 1, 0, 'C', true);
-    $pdf->Cell(30, 5, 'OD', 1, 0, 'C', true);
-    $pdf->Cell(30, 5, 'OI', 1, 1, 'C', true);
+    $pdf->Cell($ancho_col1, 6, '', 1, 0, 'C', true);
+    $pdf->Cell($ancho_col2, 6, 'OD', 1, 0, 'C', true);
+    $pdf->Cell($ancho_col3, 6, 'OI', 1, 1, 'C', true);
 
     foreach ($od as $i => $val) {
         $pdf->SetX($startX);
-        $pdf->Cell(40, 5, $val[0], 1, 0, 'C');
-        $pdf->Cell(30, 5, $val[1], 1, 0, 'C');
-        $pdf->Cell(30, 5, $oi[$i][1], 1, 1, 'C');
+        $pdf->Cell($ancho_col1, 7, $val[0], 1, 0, 'C');
+        $pdf->Cell($ancho_col2, 7, $val[1], 1, 0, 'C');
+        $pdf->Cell($ancho_col3, 7, $oi[$i][1], 1, 1, 'C');
     }
     $pdf->Ln(2);
 }
-
 tablaCentralizada($pdf, 'Refracción Previa 1', $previa_tipo1, [
     ['ESF', $previa1_od_esf],
     ['CIL', $previa1_od_cil],
@@ -287,9 +291,8 @@ tablaCentralizada($pdf, 'Queratometría', '', [
     ['CYL', $q_oi_cyl . ' / ' . $q_oi_cyl_eje]
 ]);
 
-
-
-$pdf->Ln(12);
+$pdf->Ln(10);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -297,9 +300,8 @@ if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $pdf->Ln(22);
 }
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 5, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(0, 5, utf8_decode($cargp .' Céd. Prof. ' . $ced_p), 0, 1, 'C');
-
-
+$pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
 $pdf->Output();

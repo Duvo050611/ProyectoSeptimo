@@ -174,7 +174,7 @@ $pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(220, 230, 250);
 $pdf->Cell(0, 10, utf8_decode('Refracción Antigua'), 0, 1, 'C', true);
-
+$pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(40, 8, '', 1, 0, 'C', true);
@@ -253,7 +253,7 @@ $pdf->SetXY($x + 95, $y);
 $pdf->MultiCell(95, 40, utf8_decode($detalle_refra_ojo_izq), 1, 'J', false);
 $pdf->Ln(5);
 
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -265,6 +265,4 @@ $pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . '
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
 $pdf->Output();

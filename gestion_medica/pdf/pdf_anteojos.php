@@ -36,9 +36,12 @@ $tipo_a = $row_preop['tipo_a'] ?? '';
 $fecha_ing = $row_preop['fecha'] ?? '';
 $id_usua = $row_preop['id_usua'] ?? '';
 
-$sql_receta = "SELECT * FROM recetas_anteojos WHERE id_atencion = $id_atencion ORDER BY id DESC LIMIT 1";
-$result_receta = $conexion->query($sql_receta);
+
+
+$id_receta = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$sql_receta = "SELECT * FROM recetas_anteojos WHERE id = $id_receta LIMIT 1";$result_receta = $conexion->query($sql_receta);
 $row_receta = $result_receta->fetch_assoc();
+
 
 if (!$row_receta) {
     echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
@@ -183,7 +186,7 @@ $pdf->Cell(0, 12, utf8_decode('RECETA DE ANTEOJOS'), 0, 1, 'C', true);
 $pdf->Ln(2);
 
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(35); 
 $pdf->Cell(140, 8, utf8_decode('Lejana'), 0, 1, 'C', true);
 $pdf->SetFont('Arial', '', 10);
@@ -218,7 +221,7 @@ $pdf->Ln(4);
 
 $pdf->Ln(4);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(35);
 $pdf->Cell(140, 8, utf8_decode('Intermedia'), 0, 1, 'C', true);
 $pdf->SetFont('Arial', '', 10);
@@ -245,7 +248,7 @@ $pdf->Cell(28, 7, $dip_intermedia_oi, 1, 1, 'C');
 
 $pdf->Ln(4);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(35);
 $pdf->Cell(140, 8, utf8_decode('Cercana'), 0, 1, 'C', true);
 $pdf->SetFont('Arial', '', 10);
@@ -273,7 +276,7 @@ $pdf->Cell(23, 7, $eje_cercana_oi, 1, 0, 'C');
 $pdf->Cell(23, 7, $dip_cercana_oi, 1, 0, 'C');
 $pdf->Cell(23, 7, $prisma_cercana_oi, 1, 1, 'C');
 
-$pdf->Ln(4);
+$pdf->Ln(25);
 
 $pdf->SetFont('Arial', 'B', 11);
 $pdf->SetFillColor(245, 245, 245);
@@ -289,7 +292,7 @@ $pdf->Cell(0, 8, utf8_decode('Observaciones'), 0, 1, 'L', true);
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(0, 7, utf8_decode($observaciones), 1, 'J', false);
 
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -301,6 +304,4 @@ $pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . '
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
 $pdf->Output();

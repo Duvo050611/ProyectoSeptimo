@@ -275,7 +275,7 @@ $pdf->Cell(50, 7, 'Observaciones:', 1, 0, 'L');
 $pdf->Cell(0, 7, utf8_decode($row_prueba['observaciones']), 1, 1, 'L');
 $pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Resultados OD (Ojo Derecho)'), 0, 1, 'C', true); // Cambia 'L' por 'C'
 
 $pdf->SetFont('Arial', '', 10);
@@ -311,7 +311,7 @@ $pdf->Row(['Amsler', utf8_decode($row_prueba['amsler_od'])]);
 
 $pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Resultados OI (Ojo Izquierdo)'), 0, 1, 'C', true); // Cambia 'L' por 'C'
 
 $pdf->SetFont('Arial', '', 10);
@@ -352,9 +352,7 @@ $pdf->Cell(0, 8, utf8_decode('Detalle de la Prueba'), 0, 1, 'L', true);
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(0, 7, utf8_decode($row_prueba['detalle_prueba']), 1, 'J', false);
 
-
-
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -366,6 +364,4 @@ $pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . '
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
 $pdf->Output();

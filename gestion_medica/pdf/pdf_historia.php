@@ -36,9 +36,10 @@ $tipo_a = $row_preop['tipo_a'] ?? '';
 $fecha_ing = $row_preop['fecha'] ?? '';
 $id_usua = $row_preop['id_usua'] ?? '';
 
-$sql_hist = "SELECT * FROM historia_clinica WHERE id_atencion = $id_atencion ORDER BY id DESC LIMIT 1";
-$result_hist = $conexion->query($sql_hist);
+$id_hist = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$sql_hist = "SELECT * FROM historia_clinica WHERE id = $id_hist LIMIT 1";$result_hist = $conexion->query($sql_hist);
 $row_hist = $result_hist->fetch_assoc();
+
 
 if (!$row_hist) {
     echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
@@ -229,7 +230,7 @@ $pdf->MultiCell(0, 7, utf8_decode($pat_otras_cirugias), 1, 'J', false);
 
 $pdf->Ln(15);
 
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -241,6 +242,4 @@ $pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . '
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
 $pdf->Output();

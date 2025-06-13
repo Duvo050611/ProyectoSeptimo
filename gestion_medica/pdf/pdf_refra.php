@@ -205,7 +205,7 @@ $pdf->MultiCell(0, 5, utf8_decode($detalle_refra), 1, 'J', false);
 
 $pdf->Ln(3);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 9, utf8_decode('Subjetiva Sin Cicloplégico'), 0, 1, 'C', true);
 
 $esferas_sin_ciclo_od = $row_refra['esferas_sin_ciclo_od'] ?? '';
@@ -265,9 +265,9 @@ $pdf->Cell(0, 9, utf8_decode('Detalle de Subjetiva Sin Cicloplégico'), 0, 1, 'C
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(0, 5, utf8_decode($detalle_ref_subjetiv_sin), 1, 'J', false);
 
-$pdf->Ln(3);
+$pdf->Ln(7);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 9, utf8_decode('Subjetiva Con Cicloplégico'), 0, 1, 'C', true);
 
 $esferas_con_ciclo_od = $row_refra['esferas_con_ciclo_od'] ?? '';
@@ -357,7 +357,7 @@ $pdf->Cell(40, 5, $av_cercana_con_corr_oi, 1, 1, 'C');
 $pdf->Ln(2);
 
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 9, utf8_decode('Refracción de Cerca'), 0, 1, 'C', true);
 
 $esf_cerca_od = $row_refra['esf_cerca_od'] ?? '';
@@ -403,13 +403,15 @@ $pdf->Cell(40, 5, $prisma_cerca_od, 1, 0, 'C');
 $pdf->Cell(40, 5, $prisma_cerca_oi, 1, 1, 'C');
 
 $pdf->Ln(2);
+$pdf->SetFillColor(245, 245, 245);
+
 $pdf->Cell(0, 9, utf8_decode('Detalle de Refracción de Cerca'), 0, 1, 'C', true);
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(0, 5, utf8_decode($row_refra['detalle_ref_subjetiv'] ?? ''), 1, 'J', false);
 
 $pdf->Ln(10);
 
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -417,8 +419,8 @@ if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $pdf->Ln(22);
 }
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 5, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(0, 5, utf8_decode($cargp .' Céd. Prof. ' . $ced_p), 0, 1, 'C');
-
+$pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
 $pdf->Output();

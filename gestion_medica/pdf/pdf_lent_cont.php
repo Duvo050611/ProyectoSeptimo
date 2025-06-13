@@ -189,11 +189,11 @@ $pdf->Cell(0, 12, utf8_decode('RECETA DE LENTES DE CONTACTO'), 0, 1, 'C', true);
 $pdf->Ln(2);
 
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Lentes de Contacto Suaves'), 0, 1, 'C', true);
 
 $pdf->SetFont('Arial', '', 10);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(25);
 $pdf->Cell(35, 7, '', 1, 0, 'C', true);
 $pdf->Cell(30, 7, 'Esfera', 1, 0, 'C', true);
@@ -219,13 +219,13 @@ $pdf->Ln(2);
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 7, 'Tipo OD: ' . utf8_decode($row_receta['tipo_suaves_der']) . '   |   Tipo OI: ' . utf8_decode($row_receta['tipo_suaves_izq']), 0, 1, 'C');
 
-$pdf->Ln(5);
+$pdf->Ln(2);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Lentes de Contacto Duros'), 0, 1, 'C', true);
 
 $pdf->SetFont('Arial', '', 10);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(25);
 $pdf->Cell(35, 7, '', 1, 0, 'C', true);
 $pdf->Cell(30, 7, 'Esfera', 1, 0, 'C', true);
@@ -251,13 +251,13 @@ $pdf->Ln(2);
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 7, 'Tangente OD: ' . $row_receta['receta_duros_der_tangente'] . ' | Altura OD: ' . $row_receta['receta_duros_der_altura'] . ' | EL OD: ' . $row_receta['receta_duros_der_el'] . ' | OR OD: ' . $row_receta['receta_duros_der_or'], 0, 1, 'C');
 $pdf->Cell(0, 7, 'Tangente OI: ' . $row_receta['receta_duros_izq_tangente'] . ' | Altura OI: ' . $row_receta['receta_duros_izq_altura'] . ' | EL OI: ' . $row_receta['receta_duros_izq_el'] . ' | OR OI: ' . $row_receta['receta_duros_izq_or'], 0, 1, 'C');
-$pdf->Ln(5);
+$pdf->Ln(3);
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(220, 230, 250);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Lentes de Contacto Híbridos'), 0, 1, 'C', true);
 
 $pdf->SetFont('Arial', '', 10);
-$pdf->SetFillColor(230, 240, 255);
+$pdf->SetFillColor(245, 245, 245);
 $pdf->SetX(45);
 $pdf->Cell(60, 7, utf8_decode('AV Híbrido OD'), 1, 0, 'C', true);
 $pdf->Cell(60, 7, utf8_decode('AV Híbrido OI'), 1, 1, 'C', true);
@@ -329,9 +329,7 @@ $pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(0, 8, utf8_decode('Detalle de Contactología'), 0, 1, 'L', true);
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(0, 7, utf8_decode($row_receta['detalle_contacto']), 1, 'J', false);
-
-
-$pdf->Ln(12);
+$pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
     $imgWidth = 40;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
@@ -343,6 +341,4 @@ $pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . '
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
-
 $pdf->Output();
