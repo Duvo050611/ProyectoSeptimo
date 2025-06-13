@@ -311,15 +311,46 @@ $usuario = $_SESSION['login'];
                         </h2>
                     </div>
 
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#eyeAccordion">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="observaciones_texto" style="color:#2b2d7f; font-weight:bold;">Motivo de Consulta</label>
-                                <textarea class="form-control" name="observaciones" id="observaciones_texto" rows="3" placeholder="Motivo de consulta del paciente."></textarea>
-                                <small style="color:#2b2d7f; font-weight:bold;">Historial</small>
-                            </div>
-                        </div>
-                    </div>
+<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#eyeAccordion">
+    <div class="card-body">
+        <div class="form-group">
+            <label for="observaciones_texto" style="color:#2b2d7f; font-weight:bold;">Motivo de Consulta</label>
+            <div class="botones mb-2">
+                <button type="button" class="btn btn-danger btn-sm" id="grabar_motivo"><i class="fas fa-microphone"></i></button>
+                <button type="button" class="btn btn-primary btn-sm" id="detener_motivo"><i class="fas fa-microphone-slash"></i></button>
+                <button type="button" class="btn btn-success btn-sm" id="reproducir_motivo"><i class="fas fa-play"></i></button>
+            </div>
+            <textarea class="form-control" name="observaciones" id="observaciones_texto" rows="3" placeholder="Motivo de consulta del paciente."></textarea>
+            <small style="color:#2b2d7f; font-weight:bold;">Historial</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    const grabar = document.getElementById('grabar_motivo');
+    const detener = document.getElementById('detener_motivo');
+    const reproducir = document.getElementById('reproducir_motivo');
+    const campoTexto = document.getElementById('observaciones_texto');
+
+    reproducir.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoTexto.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimiento = new webkitSpeechRecognition();
+    reconocimiento.lang = "es-ES";
+    reconocimiento.continuous = true;
+    reconocimiento.interimResults = false;
+
+    reconocimiento.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoTexto.value += frase + ' ';
+    };
+
+    grabar.addEventListener('click', () => reconocimiento.start());
+    detener.addEventListener('click', () => reconocimiento.abort());
+</script>
 
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#eyeAccordion">
                         <div class="card-body">
@@ -344,13 +375,44 @@ $usuario = $_SESSION['login'];
                                     <label><input type="checkbox" name="sinto[]" value="Secreción"> Secreción</label>
                                 </div>
                                 <div class="mt-2">
-                                    <label>Otros</label>
-                                    <textarea class="form-control" name="sinto_otros" rows="1"></textarea>
-                                </div>
+    <label style="color:#2b2d7f; font-weight:bold;">Otros</label>
+    <div class="botones mb-2">
+        <button type="button" class="btn btn-danger btn-sm" id="grabar_otros"><i class="fas fa-microphone"></i></button>
+        <button type="button" class="btn btn-primary btn-sm" id="detener_otros"><i class="fas fa-microphone-slash"></i></button>
+        <button type="button" class="btn btn-success btn-sm" id="reproducir_otros"><i class="fas fa-play"></i></button>
+    </div>
+    <textarea class="form-control" name="sinto_otros" id="otros_texto" rows="1" placeholder="Otros síntomas o notas adicionales."></textarea>
+</div>
+
                             </div>
                         </div>
                     </div>
+                   <script>
+    const grabarOtros = document.getElementById('grabar_otros');
+    const detenerOtros = document.getElementById('detener_otros');
+    const reproducirOtros = document.getElementById('reproducir_otros');
+    const campoOtros = document.getElementById('otros_texto');
 
+    reproducirOtros.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoOtros.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimientoOtros = new webkitSpeechRecognition();
+    reconocimientoOtros.lang = "es-ES";
+    reconocimientoOtros.continuous = true;
+    reconocimientoOtros.interimResults = false;
+
+    reconocimientoOtros.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoOtros.value += frase + ' ';
+    };
+
+    grabarOtros.addEventListener('click', () => reconocimientoOtros.start());
+    detenerOtros.addEventListener('click', () => reconocimientoOtros.abort());
+</script>
+        
                     <div id="collapseHerFam" class="collapse" aria-labelledby="headingHerFam" data-parent="#eyeAccordion">
                         <div class="card-body">
                             <div class="form-group row">
@@ -366,14 +428,43 @@ $usuario = $_SESSION['login'];
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Otros</label>
-                                <div class="col-sm-9">
-                                    <textarea class="form-control" name="heredo_otros" rows="2"></textarea>
-                                </div>
-                            </div>
+    <label class="col-sm-3 col-form-label" style="color:#2b2d7f; font-weight:bold;">Otros</label>
+    <div class="col-sm-9">
+        <div class="botones mb-2">
+            <button type="button" class="btn btn-danger btn-sm" id="grabar_otrosh"><i class="fas fa-microphone"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" id="detener_otrosh"><i class="fas fa-microphone-slash"></i></button>
+            <button type="button" class="btn btn-success btn-sm" id="reproducir_otrosh"><i class="fas fa-play"></i></button>
+        </div>
+        <textarea class="form-control" name="heredo_otros" id="otrosh_texto" rows="2" placeholder="Otros antecedentes heredofamiliares..."></textarea>
+    </div>
+</div>
                         </div>
                     </div>
+<script>
+    const grabarOtrosh = document.getElementById('grabar_otrosh');
+    const detenerOtrosh = document.getElementById('detener_otrosh');
+    const reproducirOtrosh = document.getElementById('reproducir_otrosh');
+    const campoOtrosh = document.getElementById('otrosh_texto');
 
+    reproducirOtrosh.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoOtrosh.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimientoOtrosh = new webkitSpeechRecognition();
+    reconocimientoOtrosh.lang = "es-ES";
+    reconocimientoOtrosh.continuous = true;
+    reconocimientoOtrosh.interimResults = false;
+
+    reconocimientoOtrosh.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoOtrosh.value += frase + ' ';
+    };
+
+    grabarOtrosh.addEventListener('click', () => reconocimientoOtrosh.start());
+    detenerOtrosh.addEventListener('click', () => reconocimientoOtrosh.abort());
+</script>
                     <div id="collapseNoPat" class="collapse" aria-labelledby="headingNoPat" data-parent="#eyeAccordion">
                         <div class="card-body">
                             <div class="form-group row">
@@ -389,14 +480,43 @@ $usuario = $_SESSION['login'];
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Otros</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" name="nopat_otros" rows="2"></textarea>
-                                </div>
-                            </div>
+    <label class="col-sm-3 col-form-label" style="color:#2b2d7f; font-weight:bold;">Otros</label>
+    <div class="col-sm-9">
+        <div class="botones mb-2">
+            <button type="button" class="btn btn-danger btn-sm" id="grabar_otrosa"><i class="fas fa-microphone"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" id="detener_otrosa"><i class="fas fa-microphone-slash"></i></button>
+            <button type="button" class="btn btn-success btn-sm" id="reproducir_otrosa"><i class="fas fa-play"></i></button>
+        </div>
+        <textarea class="form-control" name="personales_otros" id="otrosa_texto" rows="2" placeholder="Otros antecedentes no personales patológicos..."></textarea>
+    </div>
+</div>
                         </div>
                     </div>
+    <script>
+    const grabarOtrosa = document.getElementById('grabar_otrosa');
+    const detenerOtrosa = document.getElementById('detener_otrosa');
+    const reproducirOtrosa = document.getElementById('reproducir_otrosa');
+    const campoOtrosa = document.getElementById('otrosa_texto');
 
+    reproducirOtrosa.addEventListener('click', () => {
+        const speech = new SpeechSynthesisUtterance(campoOtrosa.value);
+        window.speechSynthesis.speak(speech);
+    });
+
+    const reconocimientoOtrosa = new webkitSpeechRecognition();
+    reconocimientoOtrosa.lang = "es-ES";
+    reconocimientoOtrosa.continuous = true;
+    reconocimientoOtrosa.interimResults = false;
+
+    reconocimientoOtrosa.onresult = (event) => {
+        const results = event.results;
+        const frase = results[results.length - 1][0].transcript;
+        campoOtrosa.value += frase + ' ';
+    };
+
+    grabarOtrosa.addEventListener('click', () => reconocimientoOtrosa.start());
+    detenerOtrosa.addEventListener('click', () => reconocimientoOtrosa.abort());
+</script>
                     <div id="collapsePat" class="collapse" aria-labelledby="headingPat" data-parent="#eyeAccordion">
                         <div class="card-body">
                             <div class="form-group row">
