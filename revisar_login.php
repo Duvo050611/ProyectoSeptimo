@@ -27,8 +27,7 @@ if(isset($_POST['usuario']) && isset($_POST['pass'])) {
             'firma' => $firma
 
         );
-                $_SESSION['id_usua'] = $id_usua;
-
+$_SESSION['id_usua'] = $id_usua;
         if ($id_rol == '1') {
             header('Location: ./template/menu_administrativo.php');
 
