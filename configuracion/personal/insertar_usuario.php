@@ -11,12 +11,13 @@ $mat=($_POST['mat']);
 if (isset($_POST['curp_u']) and  
 	isset($_POST['nombre']) and 
 	isset($_POST['papell']) and 
-	
+	isset($_POST['sapell']) and 
 	isset($_POST['fecnac']) and 
 	isset($_POST['cargp']) and 
 	isset($_POST['tel']) and 
 	isset($_POST['email']) and 
 	isset($_POST['pre']) and 
+	isset($_POST['usuario']) and 
 	isset($_POST['pass']) and 
 	isset($_POST['id_rol'])){
 
@@ -40,7 +41,7 @@ $curp_u=($_POST['curp_u']);
 
 $nombre=($_POST['nombre']);
 $papell=($_POST['papell']);
-
+$sapell=($_POST['sapell']);
 $fecnac=($_POST['fecnac']);
 
 $mat=($_POST['mat']);
@@ -55,12 +56,12 @@ $tel=($_POST['tel']);
 $email=($_POST['email']);
 
 $pre=($_POST['pre']);
-
+$usu=($_POST['usuario']);
 $pass=($_POST['pass']);
 $id_rol=($_POST['id_rol']);
 
-    $ingresar=mysqli_query($conexion,'insert into reg_usuarios (curp_u,nombre,papell,fecnac,mat,cedp,cargp,tel,email,pre,pass,id_rol,img_perfil,firma) values
-    ("'.$curp_u.'","'.$nombre.'","'.$papell.'","'.$fecnac.'","'.$mat.'","'.$cedp.'","'.$cargp.'","'.$tel.'","'.$email.'","'.$pre.'","'.$pass.'","'.$id_rol.'","'.$nombreFinal.'","'.$nombreFinalfirma.'")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));
+    $ingresar=mysqli_query($conexion,'insert into reg_usuarios (curp_u,nombre,papell,sapell,fecnac,mat,cedp,cargp,tel,email,pre,pass,id_rol,img_perfil,firma,usuario) values
+    ("'.$curp_u.'","'.$nombre.'","'.$papell.'","'.$sapell.'","'.$fecnac.'","'.$mat.'","'.$cedp.'","'.$cargp.'","'.$tel.'","'.$email.'","'.$pre.'","'.$pass.'","'.$id_rol.'","'.$nombreFinal.'","'.$nombreFinalfirma.'","'.$usu.'")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));
 
 header ('location: alta_usuarios.php');
 

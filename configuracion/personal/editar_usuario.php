@@ -92,11 +92,25 @@ Fecha de nacimiento:<strong> <?php  $date = date_create($f[5]);
                     <input type="text" name="curp_u" class="form-control" value="<?php echo $f[1];?>" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                 </div>
              </div>
-             
-             <div class="col-sm-4">
+        </div>     
+        <div class="row">
+          
+              <div class="col-sm-4">
                 <div class="form-group">
-                    <label>Nombre completo:</label><br>
+                    <label>Primer Apellido:</label><br>
                     <input type="text" name="papell" class="form-control" value="<?php echo $f[3];?>" >
+                </div>
+             </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Segundo Apellido:</label><br>
+                    <input type="text" name="sapell" class="form-control" value="<?php echo $f[4];?>" >
+                </div>
+             </div>
+               <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Nombre:</label><br>
+                    <input type="text" name="nombre" class="form-control" value="<?php echo $f[2];?>" >
                 </div>
              </div>
        </div>
@@ -147,7 +161,7 @@ Fecha de nacimiento:<strong> <?php  $date = date_create($f[5]);
              <div class="col-sm-4">
                 <div class="form-group">
                     <label>Usuario:</label><br>
-                    <input type="text" name="nombre" class="form-control" value="<?php echo $f[2];?>">
+                    <input type="text" name="usu" class="form-control" value="<?php echo $f[18];?>">
                 </div>
                 </div>
              <div class="col-sm-4">
@@ -233,6 +247,7 @@ if (isset($_POST['guardar'])) {
            $tel    = mysqli_real_escape_string($conexion, (strip_tags($_POST["tel"], ENT_QUOTES)));
           $email    = mysqli_real_escape_string($conexion, (strip_tags($_POST["email"], ENT_QUOTES)));
           $pre    = mysqli_real_escape_string($conexion, (strip_tags($_POST["pre"], ENT_QUOTES)));
+          $usu    = mysqli_real_escape_string($conexion, (strip_tags($_POST["usu"], ENT_QUOTES)));
           $pass    = mysqli_real_escape_string($conexion, (strip_tags($_POST["pass"], ENT_QUOTES)));
           $id_rol    = mysqli_real_escape_string($conexion, (strip_tags($_POST["id_rol"], ENT_QUOTES)));
         
@@ -282,7 +297,7 @@ if (isset($_POST['guardar'])) {
 
 
         
-        $sql2 = "UPDATE reg_usuarios SET curp_u='$curp_u' , nombre='$nombre', papell='$papell', sapell='$sapell', fecnac='$fecnac', tel='$tel', email='$email', pre='$pre', pass='$pass', id_rol=$id_rol, cedp='$cedp', cargp='$cargp' WHERE id_usua= ".$_GET['id_usua'];
+        $sql2 = "UPDATE reg_usuarios SET curp_u='$curp_u' , nombre='$nombre', papell='$papell', sapell='$sapell', fecnac='$fecnac', tel='$tel', email='$email', pre='$pre', usuario='$usu',pass='$pass', id_rol=$id_rol, cedp='$cedp', cargp='$cargp' WHERE id_usua= ".$_GET['id_usua'];
      // echo $sql2;
       // return 'hbgk';
         $result = $conexion->query($sql2);

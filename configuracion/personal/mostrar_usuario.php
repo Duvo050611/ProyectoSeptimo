@@ -74,8 +74,8 @@ if( isset($_GET['id_usua'])) { //si existe el id mandado por metodo GET, se hara
          <div class="row">
     <div class="col">
        No: <strong><?php echo $f[0];?></strong> <br>
-     Usuario: <strong><?php echo $f[2];?></strong><br>
-     Nombre completo: <strong><?php echo $f[3];?></strong><br>
+     Usuario: <strong><?php echo $f[18];?></strong><br>
+     Nombre completo: <strong><?php echo $f[2].' '.$f[3].' '.$f[4];?></strong><br>
       
 Fecha de nacimiento:<strong> <?php  $date = date_create($f[5]);
  echo date_format($date,"d/m/Y");?></strong>
@@ -87,18 +87,31 @@ Fecha de nacimiento:<strong> <?php  $date = date_create($f[5]);
        </div>
 <br>
 <div class="container">
-       <div class="row">
-             <div class="col-sm-4">
+     <div class="col-sm-4">
+        <div class="row">
                 <div class="form-group">
                     <label>CURP:</label><br>
                     <input type="text" name="curp_u" class="form-control" value="<?php echo $f[1];?>" disabled >
                 </div>
              </div>
-             
+        </div>
+        <div class="row">
              <div class="col-sm-4">
                 <div class="form-group">
-                    <label>Nombre completo:</label><br>
+                    <label>Primer Apellido:</label><br>
                     <input type="text" name="papell" class="form-control" value="<?php echo $f[3];?>" disabled >
+                </div>
+             </div>
+             <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Segundo Apellido:</label><br>
+                    <input type="text" name="sapell" class="form-control" value="<?php echo $f[4];?>" disabled >
+                </div>
+             </div>
+                          <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Nombre:</label><br>
+                    <input type="text" name="nombre" class="form-control" value="<?php echo $f[2];?>" disabled >
                 </div>
              </div>
        </div>
@@ -148,7 +161,7 @@ Fecha de nacimiento:<strong> <?php  $date = date_create($f[5]);
              <div class="col-sm-4">
                 <div class="form-group">
                     <label>Usuario:</label><br>
-                    <input type="text" name="nombre" class="form-control" value="<?php echo $f[2];?>" disabled >
+                    <input type="text" name="usuario" class="form-control" value="<?php echo $f[18];?>" disabled >
                 </div>
              </div>
              <div class="col-sm-4">

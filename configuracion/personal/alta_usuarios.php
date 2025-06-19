@@ -92,15 +92,19 @@ $id_usu=$usuario['id_usua'];
 
         
           <div class="form-group">
-            <label for="papell">Nombre completo:</label>
+            <label for="papell">Primer Apellido:</label>
             <input type="text" name="papell" id="papell" class="form-control"  required>
           </div>
-<!--
-<div class="form-group">
-            <label for="sapell">SEGUNDO APELLIDO:</label>
-            <input type="text" name="sapell" id="sapell" class="form-control" style="text-transform:uppercase;" value=""  onkeyup="javascript:this.value=this.value.toUpperCase();" required>
+
+        <div class="form-group">
+            <label for="sapell">Segundo Apellido:</label>
+            <input type="text" name="sapell" id="sapell" class="form-control"  required>
+         </div> 
+         <div class="form-group">
+            <label for="nombre">Nombre(s):</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" required>
           </div> 
--->
+
 <div class="form-group">
             <label for="fecha">Fecha de nacimiento:</label>
             <input type="date" name="fecnac"  id="fecha" class="form-control" required>
@@ -141,8 +145,8 @@ $id_usu=$usuario['id_usua'];
 </div>
 
 <div class="form-group">
-            <label for="nombre">Usuario:</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" required>
+            <label for="usuario">Usuario:</label>
+            <input type="text" name="usuario" id="nombre" class="form-control" required>
           </div> 
 <div class="form-group">
             <label for="pass">Contraseña:</label>
@@ -252,7 +256,7 @@ $resultado1 = $conexion ->query("SELECT * FROM rol where id_rol!=5")or die($cone
 
           //  $result = $conn->query($sql);
 
-            $resultado2=$conexion->query("SELECT id_usua, curp_u, nombre, papell,fecnac,mat,cedp,cargp,email,u_activo FROM reg_usuarios") or die($conexion->error);
+            $resultado2=$conexion->query("SELECT id_usua, curp_u, nombre, papell,sapell,fecnac,mat,cedp,cargp,email,u_activo FROM reg_usuarios") or die($conexion->error);
             ?>
 
 
@@ -273,8 +277,9 @@ $resultado1 = $conexion ->query("SELECT * FROM rol where id_rol!=5")or die($cone
                         <th>Ver datos</th>
                         <th>Id</th>
                         <th>Usuario</th>
-                        <th>Nombre completo</th>
-                                               
+                        <th>Primer apellido</th>
+                        <th>Segundo apellido</th>
+                        <th>Nombre(s)</th>                       
                         <th>Cédula profesional</th>
                         <th>Función</th>
                         <th>Activo</th>
@@ -285,7 +290,7 @@ $resultado1 = $conexion ->query("SELECT * FROM rol where id_rol!=5")or die($cone
                     <?php
                    // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
                   //  $result = $conn->query($sql);
-                    $resultado2=$conexion->query("SELECT id_usua, curp_u, nombre,papell,fecnac,mat,cedp,cargp,tel,email,u_activo FROM reg_usuarios") or die($conexion->error);
+                    $resultado2=$conexion->query("SELECT id_usua, curp_u, nombre,papell,sapell,fecnac,mat,cedp,cargp,tel,email,u_activo,usuario FROM reg_usuarios") or die($conexion->error);
 
                     $no = 1;
                     while ($row = $resultado2->fetch_assoc()) {
@@ -296,10 +301,10 @@ $resultado1 = $conexion ->query("SELECT * FROM rol where id_rol!=5")or die($cone
                         . '<td> <a href="mostrar_usuario.php?id_usua=' . $row['id_usua'] . '" title="Mostrar datos" class="btn btn-warning btn-sm "><span class="fa fa-indent" aria-hidden="true"></span></a></td>'
                             . '<td>' . $row['id_usua'] . '</td>'
                           
-                            . '<td>'. $row['nombre'] . '</a></td>'
-                            . '<td>' . $row['papell'] . '</td>'
-                            
-                           
+                            . '<td>'. $row['usuario'] . '</a></td>'
+                            . '<td>' . $row['papell']. '</td>'
+                            . '<td>' . $row['sapell']. '</td>'
+                           . '<td>' . $row['nombre'] . '</td>'
                             . '<td>' . $row['cedp'] . '</td>'
                             . '<td>' . $row['cargp'] . '</td>'
                              ?>
