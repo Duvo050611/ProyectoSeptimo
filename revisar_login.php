@@ -1,10 +1,10 @@
 <?php
 include 'conexionbd.php';
 session_start();
-if(isset($_POST['nombre']) && isset($_POST['pass'])) {
-    $nombre=$conexion->real_escape_string($_POST['nombre']);
+if(isset($_POST['usuario']) && isset($_POST['pass'])) {
+    $usuario=$conexion->real_escape_string($_POST['usuario']);
     $pass=$conexion->real_escape_string($_POST['pass']);
-    $resultado = $conexion->query("select * from reg_usuarios where nombre='$nombre' and pass='$pass' and u_activo='SI' limit 1") or die($conexion->error);
+    $resultado = $conexion->query("select * from reg_usuarios where usuario='$usuario' and pass='$pass' and u_activo='SI' limit 1") or die($conexion->error);
     if (mysqli_num_rows($resultado) > 0) {
         $datos_usuario = mysqli_fetch_row($resultado);
         $nombre = $datos_usuario[2];
@@ -15,7 +15,7 @@ if(isset($_POST['nombre']) && isset($_POST['pass'])) {
         $id_rol = $datos_usuario[13];
         $img_perfil = $datos_usuario[15];
         $firma = $datos_usuario[16];
-        
+        $usuario = $datos_usuario[18];
         $_SESSION['login'] = array(
             'nombre' => $nombre,
             'papell' => $papell,
@@ -27,6 +27,8 @@ if(isset($_POST['nombre']) && isset($_POST['pass'])) {
             'firma' => $firma
 
         );
+                $_SESSION['id_usua'] = $id_usua;
+
         if ($id_rol == '1') {
             header('Location: ./template/menu_administrativo.php');
 
