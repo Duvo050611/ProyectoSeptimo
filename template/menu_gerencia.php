@@ -329,7 +329,7 @@ while($f = mysqli_fetch_array($resultado)){
                   </a>
                   <ul class="treeview-menu">
                     <li><a href="../template/menu_sauxiliares.php"><i class="fa fa-circle"></i>ALMACENES</a></li>
-                    <li><a href="../template/menu_imagenologia.php"><i class="fa fa-circle"></i>IMAGENOLOGÍA</a></li>
+                    <!-- <li><a href="../template/menu_imagenologia.php"><i class="fa fa-circle"></i>IMAGENOLOGÍA</a></li> -->
                     <li><a href="../template/menu_laboratorio.php"><i class="fa fa-circle"></i>LABORATORIO</a></li>
                    
                   </ul>

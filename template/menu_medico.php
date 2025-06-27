@@ -193,6 +193,19 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
             font-size: 7px;
         }
     }
+    .treeview-menu-separator {
+        padding: 10px 15px;
+        font-weight: bold;
+        color: blue;
+        /* Adjust color as needed */
+        cursor: default;
+        /* Ensures the cursor doesn't change to a pointer */
+        background-color: #f4f4f4;
+        /* Optional: light background for emphasis */
+        border-top: 1px solid #ddd;
+        /* Optional: add a border for separation */
+        border-bottom: 1px solid #ddd;
+    }
     </style>
 </head>
 
@@ -428,6 +441,7 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                         </a></li>
                     <li><a href="/gestion_medica/notas_medicas/formulario_segmento_posterior.php">
                             <i class="fa fa-forward" aria-hidden="true"></i> SEGMENTO POSTERIOR
+                        </a>
                     <li>
                     <li>
                         <a href="/gestion_medica/notas_medicas/estudios.php">
@@ -475,6 +489,28 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     <li>
                         <a href="/gestion_medica/notas_medicas/recomendaciones.php">
                             <i class="fa fa-child"></i> RECOMENDACIONES
+                        </a>
+                    </li>
+
+                    <li class="treeview-menu-separator">
+                        <span><i aria-hidden="true"></i> REGISTROS</span>
+                    </li>
+
+                    <li>
+                        <a href="/gestion_medica/notas_medicas/reg_preanestesico.php">
+                            <i class="fa fa-prescription-bottle-medical" aria-hidden="true"></i> PREANESTESICO
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gestion_medica/notas_medicas/reg_anestesia.php">
+                            <i class="fa fa-kit-medical" aria-hidden="true"></i> ANESTESIA
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gestion_medica/notas_medicas/reg_post_anestesia.php">
+                            <i class="fa fa-signs-post" aria-hidden="true"></i> POST ANESTESIA
                         </a>
                     </li>
 
@@ -637,6 +673,28 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
                     <li>
                         <a href="select_pac_hosp.php">
                             <i class="fa fa-child"></i> RECOMENDACIONES
+                        </a>
+                    </li>
+
+                    <li class="treeview-menu-separator">
+                        <span><i aria-hidden="true"></i> REGISTROS</span>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                           <i class="fa fa-prescription-bottle-medical" aria-hidden="true"></i> PREANESTESICO
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-kit-medical" aria-hidden="true"></i> ANESTESIA
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="select_pac_hosp.php">
+                            <i class="fa fa-signs-post" aria-hidden="true"></i> POST ANESTESIA
                         </a>
                     </li>
                 </li>

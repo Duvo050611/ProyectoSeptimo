@@ -448,7 +448,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
                         5.09 Mediciones de la cornea
                         <p></p>
-                        
+
                         <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
               $id_atencion = $_SESSION['hospital'];
@@ -715,12 +715,82 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               ?>
                         5.22 Recomendaciones
                         <p></p>
-                        
+
                         <hr>
 
                     </div>
 
                     <div class="col">
+                        <p></p>
+                        <strong>7. Registros anestésicos</strong>
+                        <hr>
+                        <?php
+                          // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
+                          $id_atencion = $_SESSION['hospital'];
+                          // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
+                          //  $result = $conn->query($sql);
+                          $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
+
+                          $no = 1;
+                          while ($row = $resultado2->fetch_assoc()) {
+                            echo '<tr>'
+
+                          
+                          . '<td> <strong>
+                              <a type="submit" class="btn btn-danger btn-sm"
+                                href="../vistas_pdf/vista_preanestesia.php"><span class="fa fa-file-pdf-o"
+                                                      style="font-size:20px"></span></a>
+                              </strong></td>';
+                            $no++;
+                          }
+                        ?>
+                        7.01 Registro Preanestésico
+                        <p></p>
+                        <?php
+                          // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
+                          $id_atencion = $_SESSION['hospital'];
+                          // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
+                          //  $result = $conn->query($sql);
+                          $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
+
+                          $no = 1;
+                          while ($row = $resultado2->fetch_assoc()) {
+                            echo '<tr>'
+
+                          
+                          . '<td> <strong>
+                              <a type="submit" class="btn btn-danger btn-sm"
+                                href="../vistas_pdf/vista_anestesia.php"><span class="fa fa-file-pdf-o"
+                                                      style="font-size:20px"></span></a>
+                              </strong></td>';
+                            $no++;
+                          }
+                        ?>
+                        7.02 Registro Anestésico
+                        <p></p>
+                        <?php
+                          // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
+                          $id_atencion = $_SESSION['hospital'];
+                          // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
+                          //  $result = $conn->query($sql);
+                          $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE DI.id_atencion=$id_atencion and P.Id_exp=DI.Id_exp ") or die($conexion->error);
+
+                          $no = 1;
+                          while ($row = $resultado2->fetch_assoc()) {
+                            echo '<tr>'
+
+                          
+                          . '<td> <strong>
+                              <a type="submit" class="btn btn-danger btn-sm"
+                                href="../vistas_pdf/vista_post_anestesia.php"><span class="fa fa-file-pdf-o"
+                                                      style="font-size:20px"></span></a>
+                              </strong></td>';
+                            $no++;
+                          }
+                        ?>
+                        7.03 Registro Post Anestésico
+                        <p></p>
+                        <hr>
                         <p></p>
                         <strong>10. Aviso de alta</strong>
                         <hr>
