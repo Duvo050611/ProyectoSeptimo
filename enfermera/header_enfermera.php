@@ -92,6 +92,8 @@ if (!($usuario['id_rol'] == 3 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
     <!-- ChartJS 1.0.1 -->
     <script src="../../template/plugins/chartjs/Chart.min.js" type="text/javascript"></script>
 
+        <script src="https://kit.fontawesome.com/e547be4475.js" crossorigin="anonymous"></script>
+
 
     <style>
         .dropdwn {
@@ -364,7 +366,7 @@ while($f = mysqli_fetch_array($resultado)){
               <i class="fa fa-folder"></i><font size ="2"><span>REGISTRO CLÍNICO</span></font><i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-              <li><a href="../registro_clinico/reg_clin.php"><i class="fa fa-folder"></i> <span>HOSPITALIZACIÓN</span></a></li>
+              <li><a href="../registro_procedimientos/reg_pro.php"><i class="fa-solid fa-file-medical"></i> <span>REGISTRO DE  <br>PROCEDIMIENTOS</span></a></li>
                <li><a href="../registro_quirurgico/hoja_progquir.php"><i class="fa fa-folder"></i> <span>HOJA PROGRAMACIÓN<br> QUIRÚRGICA</span></a></li>
               <li><a href="../registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>
               
