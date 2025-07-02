@@ -9,6 +9,14 @@ if (!isset($_SESSION['hospital'])) {
 }
 
 $id_atencion = $_SESSION['hospital'];
+
+// Check if id_registro_anestesico is provided in the URL
+if (!isset($_GET['id_registro_anestesico']) || !is_numeric($_GET['id_registro_anestesico'])) {
+    echo '<script type="text/javascript">alert("No se proporcionó un ID de registro anestésico válido."); window.location.href="../notas_medicas/reg_anestesia.php";</script>';
+    exit;
+}
+
+$id_registro_anestesico = (int)$_GET['id_registro_anestesico'];
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +52,7 @@ $id_atencion = $_SESSION['hospital'];
             </div>
             <div class="col-sm-4">
                 <center>
-                    <img src="<?php echo $img_cpdf; ?>" height="100"  style="margin-top: 20px; margin-left: 110px">
+                    <img src="<?php echo $img_cpdf; ?>" height="100" style="margin-top: 20px; margin-left: 110px">
                 </center>
             </div>
             <div class="col-sm-2">
@@ -144,7 +152,7 @@ $id_atencion = $_SESSION['hospital'];
                         }
 
                         $d = "";
-                        $sql_motd = "SELECT diagprob_i FROM dat_not_ingreso WHERE id_atencion = ? ORDER BY id_not_ingreso DESC LIMIT 1";
+                        $sql_motd = "SELECT diagprob_i FROM dat_not_ingreso WHERE id_atencion =  ? ORDER BY id_not_ingreso DESC LIMIT 1";
                         $stmt = $conexion->prepare($sql_motd);
                         $stmt->bind_param("i", $id_atencion);
                         $stmt->execute();
@@ -253,7 +261,7 @@ $id_atencion = $_SESSION['hospital'];
                 <div class="row">
                     <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
                     <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area;?> </strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $area; ?> </strong></div>
                 </div>
             </div>
         </div>
@@ -262,17 +270,31 @@ $id_atencion = $_SESSION['hospital'];
     <hr>
 
     <?php
-    // Fetch anesthesia record
+    // Fetch anesthesia record for specific id_registro_anestesico
     $sql_anest = "SELECT tipo_anestesia, llega_quirofano, inicia_anestesia, inicia_cirugia, termina_cirugia, termina_anestesia, pasa_recuperacion, ta, fc, fr, spo2, temp 
                   FROM registro_anestesico 
-                  WHERE id_atencion = ? 
-                  ORDER BY id_registro_anestesico DESC LIMIT 1";
+                  WHERE id_registro_anestesico = ? AND id_atencion = ?";
     $stmt_anest = $conexion->prepare($sql_anest);
-    $stmt_anest->bind_param("i", $id_atencion);
+    $stmt_anest->bind_param("ii", $id_registro_anestesico, $id_atencion);
     $stmt_anest->execute();
     $result_anest = $stmt_anest->get_result();
+    if ($result_anest->num_rows === 0) {
+        echo '<script type="text/javascript">alert("No se encontró el registro anestésico especificado."); window.location.href="../notas_medicas/reg_anestesia.php";</script>';
+        $stmt_anest->close();
+        exit;
+    }
     $anest_data = $result_anest->fetch_assoc();
     $stmt_anest->close();
+
+    // Split ta (blood pressure) into systolic and diastolic
+    $ta = $anest_data['ta'] ?? '';
+    $systolic = '';
+    $diastolic = '';
+    if ($ta && strpos($ta, '/') !== false) {
+        list($systolic, $diastolic) = explode('/', $ta);
+        $systolic = trim($systolic);
+        $diastolic = trim($diastolic);
+    }
     ?>
 
     <div class="container">
@@ -318,11 +340,18 @@ $id_atencion = $_SESSION['hospital'];
     <script>
         const $grafica = document.querySelector("#grafica");
         const etiquetas = ["1"];
-        const presion = {
-            label: "Presión arterial",
-            data: ["<?php echo htmlspecialchars($anest_data['ta'] ?? ''); ?>"],
+        const presionSistolica = {
+            label: "Presión Sistólica",
+            data: [<?php echo json_encode($systolic); ?>],
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        };
+        const presionDiastolica = {
+            label: "Presión Diastólica",
+            data: [<?php echo json_encode($diastolic); ?>],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1
         };
         const frec = {
@@ -357,7 +386,7 @@ $id_atencion = $_SESSION['hospital'];
             type: 'line',
             data: {
                 labels: etiquetas,
-                datasets: [presion, frec, fresp, sat, temp]
+                datasets: [presionSistolica, presionDiastolica, frec, fresp, sat, temp]
             },
             options: {
                 scales: {
