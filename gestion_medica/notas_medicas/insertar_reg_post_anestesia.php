@@ -22,17 +22,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // General Information
     $data['ojo_operado'] = filter_var($_POST['ojo_operado'] ?? '', FILTER_SANITIZE_STRING);
     $data['tecnica_anestesica'] = filter_var($_POST['tecnica_anestesica'] ?? '', FILTER_SANITIZE_STRING);
-    $data['sangre_liquidos'] = filter_var($_POST['sangre_liquidos'] ?? '', FILTER_SANITIZE_STRING);
-    $data['incidentes'] = filter_var($_POST['incidentes'] ?? '', FILTER_SANITIZE_STRING);
-    $data['detalle_incidentes'] = filter_var($_POST['detalle_incidentes'] ?? '', FILTER_SANITIZE_STRING);
+    $data['sangre_liquidos'] = filter_var($_POST['sangre_liquidos'] ?? '', FILTER_SANITIZE_STRING) ?: null;
+    $data['incidentes'] = filter_var($_POST['incidentes'] ?? '', FILTER_SANITIZE_STRING) ?: null;
+    $data['detalle_incidentes'] = filter_var($_POST['detalle_incidentes'] ?? '', FILTER_SANITIZE_STRING) ?: null;
     $data['plan_manejo'] = filter_var($_POST['plan_manejo'] ?? '', FILTER_SANITIZE_STRING);
 
     // Vital Signs at Admission
-    $data['ta_ingreso'] = filter_var($_POST['ta_ingreso'] ?? '', FILTER_SANITIZE_STRING);
+    $data['ta_ingreso'] = filter_var($_POST['ta_ingreso'] ?? '', FILTER_SANITIZE_STRING) ?: null;
     $data['fc_ingreso'] = filter_var($_POST['fc_ingreso'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
     $data['fr_ingreso'] = filter_var($_POST['fr_ingreso'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
     $data['sato2_ingreso'] = filter_var($_POST['sato2_ingreso'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
-    $data['pio_ingreso'] = filter_var($_POST['pio_ingreso'] ?? '', FILTER_SANITIZE_STRING);
+    $data['pio_ingreso'] = filter_var($_POST['pio_ingreso'] ?? '', FILTER_SANITIZE_STRING) ?: null;
 
     // Aldrete Scale
     $aldrete_fields = [
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'actividad_alta', 'respiracion_alta', 'circulacion_alta', 'conciencia_alta', 'saturacion_alta'
     ];
     foreach ($aldrete_fields as $field) {
-        $value = filter_var($_POST[$field] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 2]]) ?: 0;
+        $value = filter_var($_POST[$field] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 2]]) ?: null;
         $data[$field] = $value;
     }
 
@@ -56,38 +56,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Aldrete Total Scores
-    $data['total_ingreso'] = filter_var($_POST['total_ingreso'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
-    $data['total_alta'] = filter_var($_POST['total_alta'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
+    $data['total_ingreso'] = filter_var($_POST['total_ingreso'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
+    $data['total_alta'] = filter_var($_POST['total_alta'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
 
     // Post-Anesthetic Evolution
-    $data['evolucion_alta'] = filter_var($_POST['evolucion_alta'] ?? '', FILTER_SANITIZE_STRING);
+    $data['evolucion_alta'] = filter_var($_POST['evolucion_alta'] ?? '', FILTER_SANITIZE_STRING) ?: null;
 
     // Vital Signs at Discharge
-    $data['ta_alta'] = filter_var($_POST['ta_alta'] ?? '', FILTER_SANITIZE_STRING);
+    $data['ta_alta'] = filter_var($_POST['ta_alta'] ?? '', FILTER_SANITIZE_STRING) ?: null;
     $data['fc_alta'] = filter_var($_POST['fc_alta'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
     $data['fr_alta'] = filter_var($_POST['fr_alta'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
     $data['sato2_alta'] = filter_var($_POST['sato2_alta'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
-    $data['pio_alta'] = filter_var($_POST['pio_alta'] ?? '', FILTER_SANITIZE_STRING);
+    $data['pio_alta'] = filter_var($_POST['pio_alta'] ?? '', FILTER_SANITIZE_STRING) ?: null;
 
     // Pain Control
-    $data['control_dolor'] = filter_var($_POST['control_dolor'] ?? '', FILTER_SANITIZE_STRING);
+    $data['control_dolor'] = filter_var($_POST['control_dolor'] ?? '', FILTER_SANITIZE_STRING) ?: null;
 
     // Anesthesiology Discharge
     $data['horas_post_anestesia'] = filter_var($_POST['horas_post_anestesia'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
-    $data['ta_final'] = filter_var($_POST['ta_final'] ?? '', FILTER_SANITIZE_STRING);
+    $data['ta_final'] = filter_var($_POST['ta_final'] ?? '', FILTER_SANITIZE_STRING) ?: null;
     $data['pulso_final'] = filter_var($_POST['pulso_final'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
     $data['resp_final'] = filter_var($_POST['resp_final'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
-    $data['estado_conciencia'] = filter_var($_POST['estado_conciencia'] ?? '', FILTER_SANITIZE_STRING);
+    $data['estado_conciencia'] = filter_var($_POST['estado_conciencia'] ?? '', FILTER_SANITIZE_STRING) ?: null;
 
     // Symptoms Checkboxes
     $checkboxes = ['nauseas', 'vomito', 'cefalea', 'diuresis', 'dolor_ocular', 'vision_borrosa'];
     foreach ($checkboxes as $checkbox) {
-        $data[$checkbox] = isset($_POST[$checkbox]) && $_POST[$checkbox] === 'Sí' ? 1 : 0;
+        $data[$checkbox] = isset($_POST[$checkbox]) && $_POST[$checkbox] === 'Sí' ? 'Sí' : '';
     }
 
     // Final Evolution and Ambulation
     $data['evolucion_final'] = filter_var($_POST['evolucion_final'] ?? '', FILTER_SANITIZE_STRING);
-    $data['deambulacion'] = filter_var($_POST['deambulacion'] ?? '', FILTER_SANITIZE_STRING);
+    $data['deambulacion'] = filter_var($_POST['deambulacion'] ?? '', FILTER_SANITIZE_STRING) ?: null;
     $data['indicaciones_alta'] = filter_var($_POST['indicaciones_alta'] ?? '', FILTER_SANITIZE_STRING);
 
     // Date Field (not in POST, default to NOW())
@@ -100,51 +100,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($data['ojo_operado'])) $errors[] = "El ojo operado es obligatorio.";
     if (empty($data['tecnica_anestesica'])) $errors[] = "La técnica anestésica es obligatoria.";
     if (empty($data['plan_manejo'])) $errors[] = "El plan de manejo es obligatorio.";
-    if (empty($data['ta_ingreso'])) $errors[] = "La T.A. de ingreso es obligatoria.";
-    if (!is_numeric($data['fc_ingreso'])) $errors[] = "La F.C. de ingreso es obligatoria.";
-    if (!is_numeric($data['fr_ingreso'])) $errors[] = "La F.R. de ingreso es obligatoria.";
-    if (!is_numeric($data['sato2_ingreso'])) $errors[] = "La SatO2 de ingreso es obligatoria.";
-    if (empty($data['pio_ingreso'])) $errors[] = "La presión intraocular de ingreso es obligatoria.";
-    if (empty($data['evolucion_alta'])) $errors[] = "La evolución y alta postanestésica es obligatoria.";
-    if (empty($data['ta_alta'])) $errors[] = "La T.A. de alta es obligatoria.";
-    if (!is_numeric($data['fc_alta'])) $errors[] = "La F.C. de alta es obligatoria.";
-    if (!is_numeric($data['fr_alta'])) $errors[] = "La F.R. de alta es obligatoria.";
-    if (!is_numeric($data['sato2_alta'])) $errors[] = "La SatO2 de alta es obligatoria.";
-    if (empty($data['pio_alta'])) $errors[] = "La presión intraocular de alta es obligatoria.";
-    if (empty($data['control_dolor'])) $errors[] = "El control de dolor es obligatorio.";
-    if (!is_numeric($data['horas_post_anestesia'])) $errors[] = "Las horas post anestesia son obligatorias.";
-    if (empty($data['ta_final'])) $errors[] = "La T.A. final es obligatoria.";
-    if (!is_numeric($data['pulso_final'])) $errors[] = "El pulso final es obligatorio.";
-    if (!is_numeric($data['resp_final'])) $errors[] = "La respiración final es obligatoria.";
-    if (empty($data['estado_conciencia'])) $errors[] = "El estado de conciencia es obligatorio.";
     if (empty($data['evolucion_final'])) $errors[] = "La evolución final es obligatoria.";
-    if (empty($data['deambulacion'])) $errors[] = "La deambulación es obligatoria.";
     if (empty($data['indicaciones_alta'])) $errors[] = "Las indicaciones de alta son obligatorias.";
 
-    // Validate incidentes
-    if (!in_array($data['incidentes'], ['Sí', 'No'])) {
+    // Validate incidentes if provided
+    if (!empty($data['incidentes']) && !in_array($data['incidentes'], ['Sí', 'No'])) {
         $errors[] = "Seleccione un valor válido para incidentes: Sí o No.";
     } elseif ($data['incidentes'] === 'Sí' && empty($data['detalle_incidentes'])) {
         $errors[] = "El detalle de incidentes es obligatorio si hay incidentes.";
     }
 
-    // Validate Aldrete fields
-    foreach ($aldrete_fields as $field) {
-        if (!is_numeric($data[$field])) {
-            $errors[] = "El campo '{$field}' del score Aldrete debe ser 0, 1 o 2.";
+    // Validate blood pressure fields if provided
+    $bp_fields = ['ta_ingreso', 'ta_alta', 'ta_final'];
+    foreach ($bp_fields as $field) {
+        if (!empty($data[$field]) && !preg_match('/^\d{2,3}\/\d{2,3}$/', $data[$field])) {
+            $errors[] = "El formato de T.A. para {$field} debe ser sistólica/diastólica (ej. 120/80).";
         }
     }
 
-    // Validate time fields
-    foreach ($time_fields as $field) {
-        if (empty($data[$field])) {
-            $errors[] = "El campo de hora '{$field}' es obligatorio.";
+    // Validate numeric fields if provided
+    $numeric_fields = [
+        'fc_ingreso' => ['min' => 0, 'max' => 300, 'label' => 'F.C. Ingreso'],
+        'fr_ingreso' => ['min' => 0, 'max' => 100, 'label' => 'F.R. Ingreso'],
+        'sato2_ingreso' => ['min' => 0, 'max' => 100, 'label' => 'SatO2 Ingreso'],
+        'fc_alta' => ['min' => 0, 'max' => 300, 'label' => 'F.C. Alta'],
+        'fr_alta' => ['min' => 0, 'max' => 100, 'label' => 'F.R. Alta'],
+        'sato2_alta' => ['min' => 0, 'max' => 100, 'label' => 'SatO2 Alta'],
+        'pulso_final' => ['min' => 0, 'max' => 300, 'label' => 'Pulso Final'],
+        'resp_final' => ['min' => 0, 'max' => 100, 'label' => 'Resp. Final'],
+        'horas_post_anestesia' => ['min' => 0, 'max' => 999, 'label' => 'Horas Post Anestesia'],
+        'total_ingreso' => ['min' => 0, 'max' => 10, 'label' => 'Total Ingreso Aldrete'],
+        'total_alta' => ['min' => 0, 'max' => 10, 'label' => 'Total Alta Aldrete']
+    ];
+    foreach ($numeric_fields as $field => $constraints) {
+        if (!is_null($data[$field]) && ($data[$field] < $constraints['min'] || $data[$field] > $constraints['max'])) {
+            $errors[] = "{$constraints['label']} debe estar entre {$constraints['min']} y {$constraints['max']}.";
+        }
+    }
+
+    // Validate Aldrete fields if provided
+    foreach ($aldrete_fields as $field) {
+        if (!is_null($data[$field]) && !in_array($data[$field], [0, 1, 2])) {
+            $errors[] = "El campo '{$field}' del score Aldrete debe ser 0, 1 o 2.";
         }
     }
 
     // --- Insert Data into Database ---
     if (empty($errors)) {
-        // Define table columns (47 from POST + 1 fecha_registro)
+        // Define table columns
         $columns = [
             'id_atencion', 'Id_exp', 'id_usua', 'ojo_operado', 'tecnica_anestesica', 'sangre_liquidos',
             'incidentes', 'detalle_incidentes', 'plan_manejo', 'ta_ingreso', 'fc_ingreso', 'fr_ingreso', 'sato2_ingreso',
@@ -159,14 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'vision_borrosa', 'evolucion_final', 'deambulacion', 'indicaciones_alta', 'fecha_registro'
         ];
 
-        // Log raw POST data for debugging
-        file_put_contents('post_data.log', print_r($_POST, true));
-
-        // Log incidentes for debugging encoding
-        $incidentes_bytes = bin2hex($data['incidentes']);
-        file_put_contents('incidentes_bytes.log', $incidentes_bytes . "\n", FILE_APPEND);
-        file_put_contents('incidentes.log', $data['incidentes'] . "\n", FILE_APPEND);
-
+        // Prepare values and types for bind_param
         $placeholders = implode(', ', array_fill(0, count($columns), '?'));
         $sql = "INSERT INTO nota_post_anestesia_oftalmologia (" . implode(', ', $columns) . ") VALUES ($placeholders)";
 
@@ -179,20 +175,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Prepare values and types for bind_param
+        // Prepare values and types
         $values = [];
         $types = '';
         foreach ($columns as $col) {
             $val = $data[$col];
             $values[] = $val;
-            if (is_int($val) || ($col === 'id_atencion' && is_numeric($val)) || ($col === 'Id_exp' && is_numeric($val)) || ($col === 'id_usua' && is_numeric($val))) {
-                $types .= 'i';
+            if (in_array($col, ['id_atencion', 'Id_exp', 'id_usua']) || in_array($col, $aldrete_fields) || in_array($col, ['total_ingreso', 'total_alta', 'horas_post_anestesia', 'fc_ingreso', 'fr_ingreso', 'sato2_ingreso', 'fc_alta', 'fr_alta', 'sato2_alta', 'pulso_final', 'resp_final'])) {
+                $types .= 'i'; // Integer for IDs, Aldrete scores, and numeric fields
             } elseif (in_array($col, $checkboxes)) {
-                $types .= 'i'; // Checkboxes are stored as 0 or 1
+                $types .= 's'; // String for checkboxes ('Sí' or '')
             } elseif (is_null($val)) {
                 $types .= 's'; // NULL values are treated as strings
             } else {
-                $types .= 's';
+                $types .= 's'; // Strings for text and time fields
             }
         }
 

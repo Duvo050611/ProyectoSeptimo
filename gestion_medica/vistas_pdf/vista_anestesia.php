@@ -273,6 +273,7 @@ if (!isset($_SESSION['hospital']) || !isset($_SESSION['login'])) {
             </div>
         </section>
     </div>
+    </div>
     <footer class="main-footer">
         <?php include "../../template/footer.php"; ?>
     </footer>

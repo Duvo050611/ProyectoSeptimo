@@ -40,75 +40,6 @@ if (isset($_SESSION['hospital'])) {
         header("Location: ../../index.php");
         exit;
     }
-
-    $sql = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, p.fecnac, 
-                   p.tip_san, p.sexo, p.ocup, di.fecha, di.area, di.alta_med, di.activo, di.alergias, di.motivo_atn, 
-                   di.edo_salud, di.fec_egreso, c.num_cama,
-                   (SELECT diagprob_i FROM dat_not_ingreso WHERE id_atencion = di.id_atencion ORDER BY id_not_ingreso DESC LIMIT 1) AS diagprob_i,
-                   (SELECT diagprob_i FROM dat_nevol WHERE id_atencion = di.id_atencion ORDER BY id_ne DESC LIMIT 1) AS diagprob_i_nevol
-            FROM paciente p
-            INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp
-            LEFT JOIN cat_camas c ON di.id_atencion = c.id_atencion
-            WHERE di.id_atencion = ?
-            ORDER BY di.fecha DESC LIMIT 1";
-
-    $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("i", $id_atencion);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $data = $result->fetch_assoc();
-    $stmt->close();
-
-    if (!$data) {
-        echo '<script>window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
-        exit;
-    }
-
-    // Assign patient data
-    $pac_papell = $data['papell'] ?? '';
-    $pac_sapell = $data['sapell'] ?? '';
-    $pac_nom_pac = $data['nom_pac'] ?? '';
-    $pac_dir = $data['dir'] ?? '';
-    $pac_id_edo = $data['id_edo'] ?? '';
-    $pac_id_mun = $data['id_mun'] ?? '';
-    $pac_tel = $data['tel'] ?? '';
-    $pac_fecnac = $data['fecnac'] ?? '';
-    $pac_fecing = $data['fecha'] ?? '';
-    $pac_tip_sang = $data['tip_san'] ?? '';
-    $pac_sexo = $data['sexo'] ?? '';
-    $area = $data['area'] ?? 'No asignada';
-    $alta_med = $data['alta_med'] ?? '';
-    $id_exp = $data['Id_exp'] ?? '';
-    $folio = $data['folio'] ?? '';
-    $alergias = $data['alergias'] ?? '';
-    $ocup = $data['ocup'] ?? '';
-    $activo = $data['activo'] ?? '';
-    $num_cama = $data['num_cama'] ?? '';
-    $edo_salud = $data['edo_salud'] ?? '';
-    $motivo_atn = $data['motivo_atn'] ?? '';
-    $diagprob_i = $data['diagprob_i'] ?? $data['diagprob_i_nevol'] ?? '';
-
-    // Calculate hospital stay
-    if ($activo === 'SI') {
-        $sql_est = "SELECT DATEDIFF(CURDATE(), fecha) as estancia FROM dat_ingreso WHERE id_atencion = ?";
-        $stmt = $conexion->prepare($sql_est);
-        $stmt->bind_param("i", $id_atencion);
-        $stmt->execute();
-        $estancia = $stmt->get_result()->fetch_assoc()['estancia'] ?? 0;
-        $stmt->close();
-    } else {
-        $sql_est = "SELECT DATEDIFF(fec_egreso, fecha) as estancia FROM dat_ingreso WHERE id_atencion = ?";
-        $stmt = $conexion->prepare($sql_est);
-        $stmt->bind_param("i", $id_atencion);
-        $stmt->execute();
-        $estancia = $stmt->get_result()->fetch_assoc()['estancia'] ?? 1;
-        $stmt->close();
-    }
-
-    $conexion->close();
-} else {
-    echo '<script>window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
-    exit;
 }
 ?>
 
@@ -140,6 +71,7 @@ if (isset($_SESSION['hospital'])) {
     <script src="../../js/jquery.magnific-popup.min.js"></script>
     <script src="../../js/aos.js"></script>
     <script src="../../js/main.js"></script>
+    <script src="https://kit.fontawesome.com/e547be4475.js" crossorigin="anonymous"></script>
     <style>
     .thead {
         background-color: #2b2d7f;
@@ -175,14 +107,13 @@ if (isset($_SESSION['hospital'])) {
         margin-bottom: 20px;
     }
 
-    .section-btn {
-        margin-right: 5px;
-        margin-bottom: 10px;
+    .accordion .card {
+        border: none;
     }
 
-    .section-btn.active {
-        background-color: #2b2d7f;
-        color: white;
+    .accordion .card-header {
+        background-color: #e9ecef;
+        cursor: pointer;
     }
 
     .form-group label {
@@ -202,10 +133,36 @@ if (isset($_SESSION['hospital'])) {
         cursor: help;
     }
 
-    .section-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+    .nav-tabs {
+        border-bottom: 2px solid #2b2d7f;
+        background-color: #f8f9fa;
+    }
+
+    .nav-tabs .nav-link {
+        color: #2b2d7f;
+        font-weight: 600;
+        padding: 10px 20px;
+        border: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .nav-tabs .nav-link:hover {
+        border-bottom: 3px solid #2b2d7f;
+        background-color: #e9ecef;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #2b2d7f;
+        border-bottom: 3px solid #2b2d7f;
+        background-color: #fff;
+    }
+
+    .tab-content {
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        background-color: #fff;
     }
     </style>
 </head>
@@ -417,510 +374,551 @@ if (isset($_SESSION['hospital'])) {
         <br>
 
         <div class="thead"><strong>VALORACIÓN PREANESTÉSICA</strong></div>
-        <br>
-        <div class="section-buttons mb-3">
-            <button type="button" class="btn btn-primary section-btn active" data-toggle="collapse"
-                data-target="#generalInfo">Información General</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#antecedentes">Antecedentes</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#exploracionFisica">Exploración Física</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#laboratorio">Laboratorio</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#asaSection">Estado Físico ASA</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#planAnestesico">Plan Anestésico</button>
-            <button type="button" class="btn btn-primary section-btn" data-toggle="collapse"
-                data-target="#indicacionesPreanestesicas">Indicaciones Preanestésicas</button>
-        </div>
-
         <form action="insertar_preanestesia.php" method="POST" onsubmit="return checkSubmit();" id="preanestesiaForm">
             <input type="hidden" name="Id_exp" value="<?php echo htmlspecialchars($id_exp); ?>">
             <input type="hidden" name="id_usua" value="<?php echo htmlspecialchars($_SESSION['login']['id_usua']); ?>">
             <input type="hidden" name="id_atencion" value="<?php echo htmlspecialchars($_SESSION['hospital']); ?>">
+            <!-- Horizontal Tabs Navigation -->
 
-            <!-- Información General -->
-            <div class="form-section collapse show" id="generalInfo">
-                <div class="form-group">
-                    <label for="anestesiologo">Anestesiólogo:</label>
-                    <select class="form-control" name="anestesiologo_id" id="anestesiologo" required>
-                        <option value="">Seleccione un anestesiólogo</option>
-                        <?php foreach ($anesthesiologists as $anestesiologo): ?>
-                        <option value="<?php echo htmlspecialchars($anestesiologo['id_usua']); ?>">
-                            <?php echo htmlspecialchars($anestesiologo['full_name']); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <div class="invalid-feedback">Seleccione un anestesiólogo válido.</div>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Cirugía:</label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="urgencia" id="urgencia" value="Urgencia"
-                            required>
-                        <label class="form-check-label" for="urgencia">Urgencia</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="urgencia" id="electiva" value="Electiva">
-                        <label class="form-check-label" for="electiva">Electiva</label>
-                    </div>
-                    <div class="invalid-feedback">Seleccione el tipo de cirugía.</div>
-                </div>
-                <div class="form-group">
-                    <label for="cirujano">Cirujano:</label>
-                    <select class="form-control" name="cirujano_id" id="cirujano" required>
-                        <option value="">Seleccione un cirujano</option>
-                        <?php foreach ($surgeons as $cirujano): ?>
-                        <option value="<?php echo htmlspecialchars($cirujano['id_usua']); ?>">
-                            <?php echo htmlspecialchars($cirujano['full_name']); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <div class="invalid-feedback">Seleccione un cirujano válido.</div>
-                </div>
-                <div class="form-group">
-                    <label for="diagnostico_preoperatorio">Diagnóstico Preoperatorio:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn"
-                            data-target="diagnostico_preoperatorio"><i class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn"
-                            data-target="diagnostico_preoperatorio"><i class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn"
-                            data-target="diagnostico_preoperatorio"><i class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="diagnostico_preoperatorio" id="diagnostico_preoperatorio"
-                        rows="4" required></textarea>
-                    <div class="invalid-feedback">El diagnóstico preoperatorio es obligatorio.</div>
-                </div>
-                <div class="form-group">
-                    <label for="cirugia_programada">Cirugía Programada:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn"
-                            data-target="cirugia_programada"><i class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn"
-                            data-target="cirugia_programada"><i class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn"
-                            data-target="cirugia_programada"><i class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="cirugia_programada" id="cirugia_programada" rows="4"
-                        required></textarea>
-                    <div class="invalid-feedback">La cirugía programada es obligatoria.</div>
-                </div>
-            </div>
+            <ul class="nav nav-tabs" id="preanestesiaTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="generalInfo-tab" data-toggle="tab" href="#generalInfo" role="tab"
+                        aria-controls="generalInfo" aria-selected="true">Información General</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="antecedentes-tab" data-toggle="tab" href="#antecedentes" role="tab"
+                        aria-controls="antecedentes" aria-selected="false">Antecedentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="exploracionFisica-tab" data-toggle="tab" href="#exploracionFisica"
+                        role="tab" aria-controls="exploracionFisica" aria-selected="false">Exploración Física</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="laboratorio-tab" data-toggle="tab" href="#laboratorio" role="tab"
+                        aria-controls="laboratorio" aria-selected="false">Laboratorio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="asaPlanIndicaciones-tab" data-toggle="tab" href="#asaPlanIndicaciones"
+                        role="tab" aria-controls="asaPlanIndicaciones" aria-selected="false">Estado Físico ASA, Plan
+                        Anestésico e Indicaciones</a>
+                </li>
+            </ul>
 
-            <!-- Antecedentes -->
-            <div class="form-section collapse" id="antecedentes">
-                <div class="row">
-                    <?php
-                    $antecedentes = [
-                        ['name' => 'tabaquismo', 'label' => 'Tabaquismo', 'detail' => 'Tiempo y tratamiento'],
-                        ['name' => 'asma', 'label' => 'Asma', 'detail' => 'Tiempo y tratamiento'],
-                        ['name' => 'alcoholismo', 'label' => 'Alcoholismo', 'detail' => 'Tiempo y tratamiento'],
-                        ['name' => 'alergias', 'label' => 'Alergias', 'detail' => 'Detalles'],
-                        ['name' => 'toxicomanias', 'label' => 'Toxicomanías', 'detail' => 'Detalles'],
-                        ['name' => 'diabetes', 'label' => 'Diabetes', 'detail' => 'Tiempo y tratamiento'],
-                        ['name' => 'hepatopatias', 'label' => 'Hepatopatías', 'detail' => 'Detalles'],
-                        ['name' => 'enf_tiroideas', 'label' => 'Enfermedades Tiroideas', 'detail' => 'Detalles'],
-                        ['name' => 'neumopatias', 'label' => 'Neumopatías', 'detail' => 'Detalles'],
-                        ['name' => 'hipertension', 'label' => 'Hipertensión', 'detail' => 'Tiempo y tratamiento'],
-                        ['name' => 'nefropatias', 'label' => 'Nefropatías', 'detail' => 'Detalles'],
-                        ['name' => 'cancer', 'label' => 'Cáncer', 'detail' => 'Detalles'],
-                        ['name' => 'transfusiones', 'label' => 'Transfusiones', 'detail' => 'Detalles'],
-                        ['name' => 'artritis', 'label' => 'Artritis', 'detail' => 'Detalles'],
-                        ['name' => 'cardiopatias', 'label' => 'Cardiopatías', 'detail' => 'Detalles'],
-                    ];
-                    $half = ceil(count($antecedentes) / 2);
-                    $left_antecedentes = array_slice($antecedentes, 0, $half);
-                    $right_antecedentes = array_slice($antecedentes, $half);
-                    ?>
-                    <div class="col-md-6">
-                        <?php foreach ($left_antecedentes as $antecedente): ?>
-                        <div class="form-group">
-                            <label><?php echo htmlspecialchars($antecedente['label']); ?>:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="<?php echo $antecedente['name']; ?>"
-                                    id="<?php echo $antecedente['name']; ?>_no" value="No" required checked>
-                                <label class="form-check-label" for="<?php echo $antecedente['name']; ?>_no">No</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="<?php echo $antecedente['name']; ?>"
-                                    id="<?php echo $antecedente['name']; ?>_si" value="Sí">
-                                <label class="form-check-label" for="<?php echo $antecedente['name']; ?>_si">Sí</label>
-                            </div>
-                            <input type="text" class="form-control mt-2 hidden"
-                                name="<?php echo $antecedente['name']; ?>_detalle"
-                                id="<?php echo $antecedente['name']; ?>_detalle"
-                                placeholder="<?php echo htmlspecialchars($antecedente['detail']); ?>">
-                            <div class="invalid-feedback">Seleccione una opción para
-                                <?php echo htmlspecialchars($antecedente['label']); ?>.</div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?php foreach ($right_antecedentes as $antecedente): ?>
-                        <div class="form-group">
-                            <label><?php echo htmlspecialchars($antecedente['label']); ?>:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="<?php echo $antecedente['name']; ?>"
-                                    id="<?php echo $antecedente['name']; ?>_no" value="No" required checked>
-                                <label class="form-check-label" for="<?php echo $antecedente['name']; ?>_no">No</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="<?php echo $antecedente['name']; ?>"
-                                    id="<?php echo $antecedente['name']; ?>_si" value="Sí">
-                                <label class="form-check-label" for="<?php echo $antecedente['name']; ?>_si">Sí</label>
-                            </div>
-                            <input type="text" class="form-control mt-2 hidden"
-                                name="<?php echo $antecedente['name']; ?>_detalle"
-                                id="<?php echo $antecedente['name']; ?>_detalle"
-                                placeholder="<?php echo htmlspecialchars($antecedente['detail']); ?>">
-                            <div class="invalid-feedback">Seleccione una opción para
-                                <?php echo htmlspecialchars($antecedente['label']); ?>.</div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <label for="medicamentos_actuales">Medicamentos Actuales:</label>
-                        <div class="botones">
-                            <button type="button" class="btn btn-danger btn-sm voice-btn"
-                                data-target="medicamentos_actuales"><i class="fas fa-microphone"></i></button>
-                            <button type="button" class="btn btn-primary btn-sm mute-btn"
-                                data-target="medicamentos_actuales"><i class="fas fa-volume-mute"></i></button>
-                            <button type="button" class="btn btn-success btn-sm play-btn"
-                                data-target="medicamentos_actuales"><i class="fas fa-play"></i></button>
-                        </div>
-                        <textarea class="form-control" name="medicamentos_actuales" id="medicamentos_actuales"
-                            rows="4"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="anestesias_previas">Anestesias Previas:</label>
-                        <div class="botones">
-                            <button type="button" class="btn btn-danger btn-sm voice-btn"
-                                data-target="anestesias_previas"><i class="fas fa-microphone"></i></button>
-                            <button type="button" class="btn btn-primary btn-sm mute-btn"
-                                data-target="anestesias_previas"><i class="fas fa-volume-mute"></i></button>
-                            <button type="button" class="btn btn-success btn-sm play-btn"
-                                data-target="anestesias_previas"><i class="fas fa-play"></i></button>
-                        </div>
-                        <textarea class="form-control" name="anestesias_previas" id="anestesias_previas"
-                            rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="otros_antecedentes">Otros:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn"
-                            data-target="otros_antecedentes"><i class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn"
-                            data-target="otros_antecedentes"><i class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn"
-                            data-target="otros_antecedentes"><i class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="otros_antecedentes" id="otros_antecedentes"
-                        rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="padecimiento_actual">Padecimiento Actual:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn"
-                            data-target="padecimiento_actual"><i class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn"
-                            data-target="padecimiento_actual"><i class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn"
-                            data-target="padecimiento_actual"><i class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="padecimiento_actual" id="padecimiento_actual" rows="4"
-                        required></textarea>
-                    <div class="invalid-feedback">El padecimiento actual es obligatorio.</div>
-                </div>
-            </div>
 
-            <!-- Exploración Física -->
-            <div class="form-section collapse" id="exploracionFisica">
-                <div class="row">
-                    <div class="col-md-4">
+            <!-- Tab Content -->
+            <div class="tab-content" id="preanestesiaTabContent">
+                <!-- Información General -->
+                <div class="tab-pane fade show active" id="generalInfo" role="tabpanel"
+                    aria-labelledby="generalInfo-tab">
+                    <div class="form-section">
                         <div class="form-group">
-                            <label for="peso">Peso (kg):</label>
-                            <input type="number" class="form-control" name="peso" id="peso" step="0.1" min="0" max="500"
-                                required aria-describedby="pesoFeedback">
-                            <div class="invalid-feedback" id="pesoFeedback">El peso debe estar entre 0 y 500 kg.</div>
+                            <label for="anestesiologo">Anestesiólogo:</label>
+                            <select class="form-control" name="anestesiologo_id" id="anestesiologo">
+                                <option value="">Seleccione un anestesiólogo</option>
+                                <?php foreach ($anesthesiologists as $anestesiologo): ?>
+                                <option value="<?php echo htmlspecialchars($anestesiologo['id_usua']); ?>">
+                                    <?php echo htmlspecialchars($anestesiologo['full_name']); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="invalid-feedback">Seleccione un anestesiólogo válido.</div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="talla">Talla (m):</label>
-                            <input type="number" class="form-control" name="talla" id="talla" step="0.01" min="0"
-                                max="3" required aria-describedby="tallaFeedback">
-                            <div class="invalid-feedback" id="tallaFeedback">La talla debe estar entre 0 y 3 metros.
+                            <label>Tipo de Cirugía:</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="urgencia" id="urgencia"
+                                    value="Urgencia">
+                                <label class="form-check-label" for="urgencia">Urgencia</label>
                             </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="urgencia" id="electiva"
+                                    value="Electiva">
+                                <label class="form-check-label" for="electiva">Electiva</label>
+                            </div>
+                            <div class="invalid-feedback">Seleccione el tipo de cirugía.</div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="ta_sistolica">T.A. Sistólica (mmHg):</label>
-                            <input type="number" class="form-control" name="ta_sistolica" id="ta_sistolica" step="1"
-                                min="0" max="300" required aria-describedby="taSistolicaFeedback">
-                            <div class="invalid-feedback" id="taSistolicaFeedback">La presión sistólica debe estar entre
-                                0 y 300 mmHg.</div>
+                            <label for="cirujano">Cirujano:</label>
+                            <select class="form-control" name="cirujano_id" id="cirujano">
+                                <option value="">Seleccione un cirujano</option>
+                                <?php foreach ($surgeons as $cirujano): ?>
+                                <option value="<?php echo htmlspecialchars($cirujano['id_usua']); ?>">
+                                    <?php echo htmlspecialchars($cirujano['full_name']); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="invalid-feedback">Seleccione un cirujano válido.</div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="ta_diastolica">T.A. Diastólica (mmHg):</label>
-                            <input type="number" class="form-control" name="ta_diastolica" id="ta_diastolica" step="1"
-                                min="0" max="200" required aria-describedby="taDiastolicaFeedback">
-                            <div class="invalid-feedback" id="taDiastolicaFeedback">La presión diastólica debe estar
-                                entre 0 y 200 mmHg.</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="fc">F.C. (x min):</label>
-                            <input type="number" class="form-control" name="fc" id="fc" step="1" min="0" max="300"
-                                required aria-describedby="fcFeedback">
-                            <div class="invalid-feedback" id="fcFeedback">La frecuencia cardíaca debe estar entre 0 y
-                                300 por minuto.</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="fr">F.R. (rpm):</label>
-                            <input type="number" class="form-control" name="fr" id="fr" step="1" min="0" max="100"
-                                required aria-describedby="frFeedback">
-                            <div class="invalid-feedback" id="frFeedback">La frecuencia respiratoria debe estar entre 0
-                                y 100 rpm.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="temperatura">Temperatura (°C):</label>
-                            <input type="number" class="form-control" name="temperatura" id="temperatura" step="0.1"
-                                min="0" max="45" required aria-describedby="temperaturaFeedback">
-                            <div class="invalid-feedback" id="temperaturaFeedback">La temperatura debe estar entre 0 y
-                                45 °C.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Estado de Conciencia:</label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="edo_conciencia" id="consciente"
-                            value="Consciente" required>
-                        <label class="form-check-label" for="consciente">Consciente</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="edo_conciencia" id="inconsciente"
-                            value="Inconsciente">
-                        <label class="form-check-label" for="inconsciente">Inconsciente</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="edo_conciencia" id="desorientado"
-                            value="Desorientado">
-                        <label class="form-check-label" for="desorientado">Desorientado</label>
-                    </div>
-                    <div class="invalid-feedback">Seleccione el estado de conciencia.</div>
-                </div>
-                <div class="row">
-                    <?php
-                    $exploracion_fields = [
-                        ['id' => 'cabeza_cuello', 'label' => 'Cabeza y Cuello'],
-                        ['id' => 'via_aerea', 'label' => 'Vía Aérea'],
-                        ['id' => 'cardiopulmonar', 'label' => 'Cardiopulmonar'],
-                        ['id' => 'abdomen', 'label' => 'Abdomen'],
-                        ['id' => 'columna', 'label' => 'Columna'],
-                        ['id' => 'extremidades', 'label' => 'Extremidades'],
-                        ['id' => 'otros_exploracion', 'label' => 'Otros']
-                    ];
-                    $half_exp = ceil(count($exploracion_fields) / 2);
-                    $left_exp = array_slice($exploracion_fields, 0, $half_exp);
-                    $right_exp = array_slice($exploracion_fields, $half_exp);
-                    ?>
-                    <div class="col-md-6">
-                        <?php foreach ($left_exp as $field): ?>
-                        <div class="form-group">
-                            <label
-                                for="<?php echo $field['id']; ?>"><?php echo htmlspecialchars($field['label']); ?>:</label>
+                            <label for="diagnostico_preoperatorio">Diagnóstico Preoperatorio:</label>
                             <div class="botones">
                                 <button type="button" class="btn btn-danger btn-sm voice-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i class="fas fa-microphone"></i></button>
+                                    data-target="diagnostico_preoperatorio"><i class="fas fa-microphone"></i></button>
                                 <button type="button" class="btn btn-primary btn-sm mute-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i
-                                        class="fas fa-volume-mute"></i></button>
+                                    data-target="diagnostico_preoperatorio"><i
+                                        class="fas fa-microphone-slash"></i></button>
                                 <button type="button" class="btn btn-success btn-sm play-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i class="fas fa-play"></i></button>
+                                    data-target="diagnostico_preoperatorio"><i class="fas fa-play"></i></button>
                             </div>
-                            <textarea class="form-control" name="<?php echo $field['id']; ?>"
-                                id="<?php echo $field['id']; ?>" rows="3"></textarea>
+                            <textarea class="form-control" name="diagnostico_preoperatorio"
+                                id="diagnostico_preoperatorio" rows="4"></textarea>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?php foreach ($right_exp as $field): ?>
                         <div class="form-group">
-                            <label
-                                for="<?php echo $field['id']; ?>"><?php echo htmlspecialchars($field['label']); ?>:</label>
+                            <label for="cirugia_programada">Cirugía Programada:</label>
                             <div class="botones">
                                 <button type="button" class="btn btn-danger btn-sm voice-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i class="fas fa-microphone"></i></button>
+                                    data-target="cirugia_programada"><i class="fas fa-microphone"></i></button>
                                 <button type="button" class="btn btn-primary btn-sm mute-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i
-                                        class="fas fa-volume-mute"></i></button>
+                                    data-target="cirugia_programada"><i class="fas fa-microphone-slash"></i></button>
                                 <button type="button" class="btn btn-success btn-sm play-btn"
-                                    data-target="<?php echo $field['id']; ?>"><i class="fas fa-play"></i></button>
+                                    data-target="cirugia_programada"><i class="fas fa-play"></i></button>
                             </div>
-                            <textarea class="form-control" name="<?php echo $field['id']; ?>"
-                                id="<?php echo $field['id']; ?>" rows="3"></textarea>
+                            <textarea class="form-control" name="cirugia_programada" id="cirugia_programada"
+                                rows="4"></textarea>
                         </div>
-                        <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
 
-            <!-- Laboratorio -->
-            <div class="form-section collapse" id="laboratorio">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label for="hb">Hemoglobina:</label>
-                        <input type="number" class="form-control" name="hb" id="hb" step="0.1" min="0" max="50"
-                            aria-describedby="hbFeedback">
-                        <div class="invalid-feedback" id="hbFeedback">Valor entre 0 y 50 g/dL.</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="hto">Hematocrito:</label>
-                        <input type="number" class="form-control" name="hto" id="hto" step="0.1" min="0" max="100"
-                            aria-describedby="htoFeedback">
-                        <div class="invalid-feedback" id="htoFeedback">Valor entre 0 y 100 %.</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="tp">T.P.:</label>
-                        <input type="number" class="form-control" name="tp" id="tp" step="0.1" min="0" max="100"
-                            aria-describedby="tpFeedback">
-                        <div class="invalid-feedback" id="tpFeedback">Valor entre 0 y 100 segundos.</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="tpt">T.P.T.:</label>
-                        <input type="number" class="form-control" name="tpt" id="tpt" step="0.1" min="0" max="100"
-                            aria-describedby="tptFeedback">
-                        <div class="invalid-feedback" id="tptFeedback">Valor entre 0 y 100 segundos.</div>
+                <!-- Antecedentes -->
+                <div class="tab-pane fade" id="antecedentes" role="tabpanel" aria-labelledby="antecedentes-tab">
+                    <div class="form-section">
+                        <div class="card-body">
+                            <div class="row">
+                                <?php
+                                $antecedentes = [
+                                    ['name' => 'tabaquismo', 'label' => 'Tabaquismo', 'detail' => 'Tiempo y tratamiento'],
+                                    ['name' => 'asma', 'label' => 'Asma', 'detail' => 'Tiempo y tratamiento'],
+                                    ['name' => 'alcoholismo', 'label' => 'Alcoholismo', 'detail' => 'Tiempo y tratamiento'],
+                                    ['name' => 'alergias', 'label' => 'Alergias', 'detail' => 'Detalles'],
+                                    ['name' => 'toxicomanias', 'label' => 'Toxicomanías', 'detail' => 'Detalles'],
+                                    ['name' => 'diabetes', 'label' => 'Diabetes', 'detail' => 'Tiempo y tratamiento'],
+                                    ['name' => 'hepatopatias', 'label' => 'Hepatopatías', 'detail' => 'Detalles'],
+                                    ['name' => 'enf_tiroideas', 'label' => 'Enfermedades Tiroideas', 'detail' => 'Detalles'],
+                                    ['name' => 'neumopatias', 'label' => 'Neumopatías', 'detail' => 'Detalles'],
+                                    ['name' => 'hipertension', 'label' => 'Hipertensión', 'detail' => 'Tiempo y tratamiento'],
+                                    ['name' => 'nefropatias', 'label' => 'Nefropatías', 'detail' => 'Detalles'],
+                                    ['name' => 'cancer', 'label' => 'Cáncer', 'detail' => 'Detalles'],
+                                    ['name' => 'transfusiones', 'label' => 'Transfusiones', 'detail' => 'Detalles'],
+                                    ['name' => 'artritis', 'label' => 'Artritis', 'detail' => 'Detalles'],
+                                    ['name' => 'cardiopatias', 'label' => 'Cardiopatías', 'detail' => 'Detalles'],
+                                ];
+                                $half = ceil(count($antecedentes) / 2);
+                                $left_antecedentes = array_slice($antecedentes, 0, $half);
+                                $right_antecedentes = array_slice($antecedentes, $half);
+                                ?>
+                                <div class="col-md-6">
+                                    <?php foreach ($left_antecedentes as $antecedente): ?>
+                                    <div class="form-group">
+                                        <label><?php echo htmlspecialchars($antecedente['label']); ?>:</label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                name="<?php echo $antecedente['name']; ?>"
+                                                id="<?php echo $antecedente['name']; ?>_no" value="No" checked>
+                                            <label class="form-check-label"
+                                                for="<?php echo $antecedente['name']; ?>_no">No</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                name="<?php echo $antecedente['name']; ?>"
+                                                id="<?php echo $antecedente['name']; ?>_si" value="Sí">
+                                            <label class="form-check-label"
+                                                for="<?php echo $antecedente['name']; ?>_si">Sí</label>
+                                        </div>
+                                        <input type="text" class="form-control mt-2 hidden"
+                                            name="<?php echo $antecedente['name']; ?>_detalle"
+                                            id="<?php echo $antecedente['name']; ?>_detalle"
+                                            placeholder="<?php echo htmlspecialchars($antecedente['detail']); ?>">
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?php foreach ($right_antecedentes as $antecedente): ?>
+                                    <div class="form-group">
+                                        <label><?php echo htmlspecialchars($antecedente['label']); ?>:</label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                name="<?php echo $antecedente['name']; ?>"
+                                                id="<?php echo $antecedente['name']; ?>_no" value="No" checked>
+                                            <label class="form-check-label"
+                                                for="<?php echo $antecedente['name']; ?>_no">No</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                name="<?php echo $antecedente['name']; ?>"
+                                                id="<?php echo $antecedente['name']; ?>_si" value="Sí">
+                                            <label class="form-check-label"
+                                                for="<?php echo $antecedente['name']; ?>_si">Sí</label>
+                                        </div>
+                                        <input type="text" class="form-control mt-2 hidden"
+                                            name="<?php echo $antecedente['name']; ?>_detalle"
+                                            id="<?php echo $antecedente['name']; ?>_detalle"
+                                            placeholder="<?php echo htmlspecialchars($antecedente['detail']); ?>">
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label for="medicamentos_actuales">Medicamentos Actuales:</label>
+                                    <div class="botones">
+                                        <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                            data-target="medicamentos_actuales"><i
+                                                class="fas fa-microphone"></i></button>
+                                        <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                            data-target="medicamentos_actuales"><i
+                                                class="fas fa-microphone-slash"></i></button>
+                                        <button type="button" class="btn btn-success btn-sm play-btn"
+                                            data-target="medicamentos_actuales"><i class="fas fa-play"></i></button>
+                                    </div>
+                                    <textarea class="form-control" name="medicamentos_actuales"
+                                        id="medicamentos_actuales" rows="4"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="anestesias_previas">Anestesias Previas:</label>
+                                    <div class="botones">
+                                        <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                            data-target="anestesias_previas"><i class="fas fa-microphone"></i></button>
+                                        <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                            data-target="anestesias_previas"><i
+                                                class="fas fa-microphone-slash"></i></button>
+                                        <button type="button" class="btn btn-success btn-sm play-btn"
+                                            data-target="anestesias_previas"><i class="fas fa-play"></i></button>
+                                    </div>
+                                    <textarea class="form-control" name="anestesias_previas" id="anestesias_previas"
+                                        rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="otros_antecedentes">Otros:</label>
+                                <div class="botones">
+                                    <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                        data-target="otros_antecedentes"><i class="fas fa-microphone"></i></button>
+                                    <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                        data-target="otros_antecedentes"><i
+                                            class="fas fa-microphone-slash"></i></button>
+                                    <button type="button" class="btn btn-success btn-sm play-btn"
+                                        data-target="otros_antecedentes"><i class="fas fa-play"></i></button>
+                                </div>
+                                <textarea class="form-control" name="otros_antecedentes" id="otros_antecedentes"
+                                    rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="padecimiento_actual">Padecimiento Actual:</label>
+                                <div class="botones">
+                                    <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                        data-target="padecimiento_actual"><i class="fas fa-microphone"></i></button>
+                                    <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                        data-target="padecimiento_actual"><i
+                                            class="fas fa-microphone-slash"></i></button>
+                                    <button type="button" class="btn btn-success btn-sm play-btn"
+                                        data-target="padecimiento_actual"><i class="fas fa-play"></i></button>
+                                </div>
+                                <textarea class="form-control" name="padecimiento_actual" id="padecimiento_actual"
+                                    rows="4"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-3">
-                        <label for="tipo_rh">Tipo y Rh:</label>
-                        <select class="form-control" name="tipo_rh" id="tipo_rh" aria-describedby="tipoRhFeedback">
-                            <option value="">Seleccione</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
-                        <div class="invalid-feedback" id="tipoRhFeedback">Seleccione un tipo válido (A+, A-, B+, B-,
-                            AB+, AB-, O+, O-).</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="glucosa">Glucosa:</label>
-                        <input type="number" class="form-control" name="glucosa" id="glucosa" step="0.1" min="0"
-                            max="1000" aria-describedby="glucosaFeedback">
-                        <div class="invalid-feedback" id="glucosaFeedback">Valor entre 0 y 1000 mg/dL.</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="urea">Urea:</label>
-                        <input type="number" class="form-control" name="urea" id="urea" step="0.1" min="0" max="1000"
-                            aria-describedby="ureaFeedback">
-                        <div class="invalid-feedback" id="ureaFeedback">Valor entre 0 y 1000 mg/dL.</div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="creatinina">Creatinina:</label>
-                        <input type="number" class="form-control" name="creatinina" id="creatinina" step="0.1" min="0"
-                            max="100" aria-describedby="creatininaFeedback">
-                        <div class="invalid-feedback" id="creatininaFeedback">Valor entre 0 y 100 mg/dL.</div>
-                    </div>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="otros_laboratorio">Otros Laboratorio:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn" data-target="otros_laboratorio"><i
-                                class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn" data-target="otros_laboratorio"><i
-                                class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn" data-target="otros_laboratorio"><i
-                                class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="otros_laboratorio" id="otros_laboratorio" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="gabinete">Gabinete:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn" data-target="gabinete"><i
-                                class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn" data-target="gabinete"><i
-                                class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn" data-target="gabinete"><i
-                                class="fas fa-play"></i></button>
-                    </div>
-                    <textarea class="form-control" name="gabinete" id="gabinete" rows="4"></textarea>
-                </div>
-            </div>
 
-            <!-- Estado Físico ASA -->
-            <div class="form-section collapse" id="asaSection">
-                <div class="form-group">
-                    <label>Estado Físico ASA:</label><br>
-                    <?php foreach (['I', 'II', 'III', 'IV', 'V'] as $asa): ?>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="asa" id="asa_<?php echo $asa; ?>"
-                            value="<?php echo $asa; ?>" required>
-                        <label class="form-check-label" for="asa_<?php echo $asa; ?>"><?php echo $asa; ?></label>
+                <!-- Exploración Física -->
+                <div class="tab-pane fade" id="exploracionFisica" role="tabpanel"
+                    aria-labelledby="exploracionFisica-tab">
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="peso">Peso (kg):</label>
+                                    <input type="number" class="form-control" name="peso" id="peso" step="0.1" min="0"
+                                        max="500" aria-describedby="pesoFeedback">
+                                    <div class="invalid-feedback" id="pesoFeedback">El peso debe estar entre 0 y 500 kg.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="talla">Talla (m):</label>
+                                    <input type="number" class="form-control" name="talla" id="talla" step="0.01"
+                                        min="0" max="3" aria-describedby="tallaFeedback">
+                                    <div class="invalid-feedback" id="tallaFeedback">La talla debe estar entre 0 y 3
+                                        metros.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ta_sistolica">T.A. Sistólica (mmHg):</label>
+                                    <input type="number" class="form-control" name="ta_sistolica" id="ta_sistolica"
+                                        step="1" min="0" max="300" aria-describedby="taSistolicaFeedback">
+                                    <div class="invalid-feedback" id="taSistolicaFeedback">La presión sistólica debe
+                                        estar entre
+                                        0 y 300 mmHg.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ta_diastolica">T.A. Diastólica (mmHg):</label>
+                                    <input type="number" class="form-control" name="ta_diastolica" id="ta_diastolica"
+                                        step="1" min="0" max="200" aria-describedby="taDiastolicaFeedback">
+                                    <div class="invalid-feedback" id="taDiastolicaFeedback">La presión diastólica
+                                        debe estar
+                                        entre 0 y 200 mmHg.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="fc">F.C. (x min):</label>
+                                    <input type="number" class="form-control" name="fc" id="fc" step="1" min="0"
+                                        max="300" aria-describedby="fcFeedback">
+                                    <div class="invalid-feedback" id="fcFeedback">La frecuencia cardíaca debe estar
+                                        entre 0 y
+                                        300 por minuto.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="fr">F.R. (rpm):</label>
+                                    <input type="number" class="form-control" name="fr" id="fr" step="1" min="0"
+                                        max="100" aria-describedby="frFeedback">
+                                    <div class="invalid-feedback" id="frFeedback">La frecuencia respiratoria debe
+                                        estar entre 0
+                                        y 100 rpm.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="temperatura">Temperatura (°C):</label>
+                                    <input type="number" class="form-control" name="temperatura" id="temperatura"
+                                        step="0.1" min="0" max="45" aria-describedby="temperaturaFeedback">
+                                    <div class="invalid-feedback" id="temperaturaFeedback">La temperatura debe estar
+                                        entre 0 y
+                                        45 °C.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado de Conciencia:</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="edo_conciencia" id="consciente"
+                                    value="Consciente">
+                                <label class="form-check-label" for="consciente">Consciente</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="edo_conciencia" id="inconsciente"
+                                    value="Inconsciente">
+                                <label class="form-check-label" for="inconsciente">Inconsciente</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="edo_conciencia" id="desorientado"
+                                    value="Desorientado">
+                                <label class="form-check-label" for="desorientado">Desorientado</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <?php
+                                $exploracion_fields = [
+                                    ['id' => 'cabeza_cuello', 'label' => 'Cabeza y Cuello'],
+                                    ['id' => 'via_aerea', 'label' => 'Vía Aérea'],
+                                    ['id' => 'cardiopulmonar', 'label' => 'Cardiopulmonar'],
+                                    ['id' => 'abdomen', 'label' => 'Abdomen'],
+                                    ['id' => 'columna', 'label' => 'Columna'],
+                                    ['id' => 'extremidades', 'label' => 'Extremidades'],
+                                    ['id' => 'otros_exploracion', 'label' => 'Otros']
+                                ];
+                                $half_exp = ceil(count($exploracion_fields) / 2);
+                                $left_exp = array_slice($exploracion_fields, 0, $half_exp);
+                                $right_exp = array_slice($exploracion_fields, $half_exp);
+                                ?>
+                            <div class="col-md-6">
+                                <?php foreach ($left_exp as $field): ?>
+                                <div class="form-group">
+                                    <label
+                                        for="<?php echo $field['id']; ?>"><?php echo htmlspecialchars($field['label']); ?>:</label>
+                                    <div class="botones">
+                                        <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-microphone"></i></button>
+                                        <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-microphone-slash"></i></button>
+                                        <button type="button" class="btn btn-success btn-sm play-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-play"></i></button>
+                                    </div>
+                                    <textarea class="form-control" name="<?php echo $field['id']; ?>"
+                                        id="<?php echo $field['id']; ?>" rows="3"></textarea>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?php foreach ($right_exp as $field): ?>
+                                <div class="form-group">
+                                    <label
+                                        for="<?php echo $field['id']; ?>"><?php echo htmlspecialchars($field['label']); ?>:</label>
+                                    <div class="botones">
+                                        <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-microphone"></i></button>
+                                        <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-microphone-slash"></i></button>
+                                        <button type="button" class="btn btn-success btn-sm play-btn"
+                                            data-target="<?php echo $field['id']; ?>"><i
+                                                class="fas fa-play"></i></button>
+                                    </div>
+                                    <textarea class="form-control" name="<?php echo $field['id']; ?>"
+                                        id="<?php echo $field['id']; ?>" rows="3"></textarea>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
-                    <?php endforeach; ?>
-                    <div class="invalid-feedback">Seleccione el estado físico ASA.</div>
                 </div>
-            </div>
 
-            <!-- Plan Anestésico -->
-            <div class="form-section collapse" id="planAnestesico">
-                <div class="form-group">
-                    <label for="plan_anestesico">Plan Anestésico:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn" data-target="plan_anestesico"><i
-                                class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn" data-target="plan_anestesico"><i
-                                class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn" data-target="plan_anestesico"><i
-                                class="fas fa-play"></i></button>
+
+                <!-- Laboratorio -->
+                <div class="tab-pane fade" id="laboratorio" role="tabpanel" aria-labelledby="laboratorio-tab">
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="hb">Hemoglobina:</label>
+                                <input type="number" class="form-control" name="hb" id="hb" step="0.1" min="0" max="50"
+                                    aria-describedby="hbFeedback">
+                                <div class="invalid-feedback" id="hbFeedback">Valor entre 0 y 50 g/dL.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="hto">Hematocrito:</label>
+                                <input type="number" class="form-control" name="hto" id="hto" step="0.1" min="0"
+                                    max="100" aria-describedby="htoFeedback">
+                                <div class="invalid-feedback" id="htoFeedback">Valor entre 0 y 100 %.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="tp">T.P.:</label>
+                                <input type="number" class="form-control" name="tp" id="tp" step="0.1" min="0" max="100"
+                                    aria-describedby="tpFeedback">
+                                <div class="invalid-feedback" id="tpFeedback">Valor entre 0 y 100 segundos.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="tpt">T.P.T.:</label>
+                                <input type="number" class="form-control" name="tpt" id="tpt" step="0.1" min="0"
+                                    max="100" aria-describedby="tptFeedback">
+                                <div class="invalid-feedback" id="tptFeedback">Valor entre 0 y 100 segundos.</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <label for="tipo_rh">Tipo y Rh:</label>
+                                <select class="form-control" name="tipo_rh" id="tipo_rh"
+                                    aria-describedby="tipoRhFeedback">
+                                    <option value="">Seleccione</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                                <div class="invalid-feedback" id="tipoRhFeedback">Seleccione un tipo válido (A+, A-,
+                                    B+, B-,
+                                    AB+, AB-, O+, O-).</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="glucosa">Glucosa:</label>
+                                <input type="number" class="form-control" name="glucosa" id="glucosa" step="0.1" min="0"
+                                    max="1000" aria-describedby="glucosaFeedback">
+                                <div class="invalid-feedback" id="glucosaFeedback">Valor entre 0 y 1000 mg/dL.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="urea">Urea:</label>
+                                <input type="number" class="form-control" name="urea" id="urea" step="0.1" min="0"
+                                    max="1000" aria-describedby="ureaFeedback">
+                                <div class="invalid-feedback" id="ureaFeedback">Valor entre 0 y 1000 mg/dL.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="creatinina">Creatinina:</label>
+                                <input type="number" class="form-control" name="creatinina" id="creatinina" step="0.1"
+                                    min="0" max="100" aria-describedby="creatininaFeedback">
+                                <div class="invalid-feedback" id="creatininaFeedback">Valor entre 0 y 100 mg/dL.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="otros_laboratorio">Otros Laboratorio:</label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                    data-target="otros_laboratorio"><i class="fas fa-microphone"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                    data-target="otros_laboratorio"><i class="fas fa-microphone-slash"></i></button>
+                                <button type="button" class="btn btn-success btn-sm play-btn"
+                                    data-target="otros_laboratorio"><i class="fas fa-play"></i></button>
+                            </div>
+                            <textarea class="form-control" name="otros_laboratorio" id="otros_laboratorio"
+                                rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gabinete">Gabinete:</label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm voice-btn" data-target="gabinete"><i
+                                        class="fas fa-microphone"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm mute-btn" data-target="gabinete"><i
+                                        class="fas fa-microphone-slash"></i></button>
+                                <button type="button" class="btn btn-success btn-sm play-btn" data-target="gabinete"><i
+                                        class="fas fa-play"></i></button>
+                            </div>
+                            <textarea class="form-control" name="gabinete" id="gabinete" rows="4"></textarea>
+                        </div>
                     </div>
-                    <textarea class="form-control" name="plan_anestesico" id="plan_anestesico" rows="4"
-                        required></textarea>
-                    <div class="invalid-feedback">El plan anestésico es obligatorio.</div>
                 </div>
-            </div>
 
-            <!-- Indicaciones Preanestésicas -->
-            <div class="form-section collapse" id="indicacionesPreanestesicas">
-                <div class="form-group">
-                    <label for="indicaciones_preanestesicas">Indicaciones Preanestésicas:</label>
-                    <div class="botones">
-                        <button type="button" class="btn btn-danger btn-sm voice-btn"
-                            data-target="indicaciones_preanestesicas"><i class="fas fa-microphone"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm mute-btn"
-                            data-target="indicaciones_preanestesicas"><i class="fas fa-volume-mute"></i></button>
-                        <button type="button" class="btn btn-success btn-sm play-btn"
-                            data-target="indicaciones_preanestesicas"><i class="fas fa-play"></i></button>
+
+                <!-- Estado Físico ASA, Plan Anestésico, Indicaciones Preanestésicas -->
+                <div class="tab-pane fade" id="asaPlanIndicaciones" role="tabpanel"
+                    aria-labelledby="asaPlanIndicaciones-tab">
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label>Estado Físico ASA:</label><br>
+                            <?php foreach (['I', 'II', 'III', 'IV', 'V'] as $asa): ?>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="asa" id="asa_<?php echo $asa; ?>"
+                                    value="<?php echo $asa; ?>">
+                                <label class="form-check-label"
+                                    for="asa_<?php echo $asa; ?>"><?php echo $asa; ?></label>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="form-group">
+                            <label for="plan_anestesico">Plan Anestésico:</label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                    data-target="plan_anestesico"><i class="fas fa-microphone"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                    data-target="plan_anestesico"><i class="fas fa-microphone-slash"></i></button>
+                                <button type="button" class="btn btn-success btn-sm play-btn"
+                                    data-target="plan_anestesico"><i class="fas fa-play"></i></button>
+                            </div>
+                            <textarea class="form-control" name="plan_anestesico" id="plan_anestesico"
+                                rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="indicaciones_preanestesicas">Indicaciones Preanestésicas:</label>
+                            <div class="botones">
+                                <button type="button" class="btn btn-danger btn-sm voice-btn"
+                                    data-target="indicaciones_preanestesicas"><i class="fas fa-microphone"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm mute-btn"
+                                    data-target="indicaciones_preanestesicas"><i
+                                        class="fas fa-microphone-slash"></i></button>
+                                <button type="button" class="btn btn-success btn-sm play-btn"
+                                    data-target="indicaciones_preanestesicas"><i class="fas fa-play"></i></button>
+                            </div>
+                            <textarea class="form-control" name="indicaciones_preanestesicas"
+                                id="indicaciones_preanestesicas" rows="4"></textarea>
+                        </div>
                     </div>
-                    <textarea class="form-control" name="indicaciones_preanestesicas" id="indicaciones_preanestesicas"
-                        rows="4" required></textarea>
-                    <div class="invalid-feedback">Las indicaciones preanestésicas son obligatorias.</div>
                 </div>
             </div>
 
@@ -945,12 +943,6 @@ if (isset($_SESSION['hospital'])) {
     // Reset enviando on page load
     window.addEventListener('load', function() {
         enviando = false;
-    });
-
-    // Toggle active class on button click
-    $('.section-btn').on('click', function() {
-        $('.section-btn').removeClass('active');
-        $(this).addClass('active');
     });
 
     // Voice recognition setup
@@ -1024,7 +1016,6 @@ if (isset($_SESSION['hospital'])) {
         }
     });
 
-    // Toggle detail fields
     const antecedentes = <?php echo json_encode(array_column($antecedentes, 'name')); ?>;
     antecedentes.forEach(name => {
         const siRadio = document.getElementById(`${name}_si`);
@@ -1044,42 +1035,11 @@ if (isset($_SESSION['hospital'])) {
         noRadio.addEventListener('change', toggleDetailField);
         toggleDetailField();
     });
-    // Client-side form validation
+
     document.getElementById('preanestesiaForm').addEventListener('submit', function(event) {
         let isValid = true;
         const errors = [];
 
-        // Validate required fields
-        const requiredInputs = document.querySelectorAll(
-            'input[required], textarea[required], select[required]');
-        requiredInputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('is-invalid');
-                errors.push(`El campo ${input.name} es obligatorio.`);
-            } else {
-                input.classList.remove('is-invalid');
-            }
-        });
-
-        // Validate radio buttons
-        const radioGroups = ['urgencia', 'edo_conciencia', 'asa', ...antecedentes];
-        radioGroups.forEach(name => {
-            const radios = document.querySelectorAll(`input[name="${name}"]:checked`);
-            if (radios.length === 0) {
-                isValid = false;
-                const radioContainer = document.querySelector(`input[name="${name}"]`).closest(
-                    '.form-group');
-                radioContainer.querySelector('.invalid-feedback').style.display = 'block';
-                errors.push(`Seleccione una opción para ${name}.`);
-            } else {
-                const radioContainer = document.querySelector(`input[name="${name}"]`).closest(
-                    '.form-group');
-                radioContainer.querySelector('.invalid-feedback').style.display = 'none';
-            }
-        });
-
-        // Validate numeric fields
         const numericInputs = [{
                 id: 'peso',
                 min: 0,
@@ -1177,7 +1137,6 @@ if (isset($_SESSION['hospital'])) {
             }
         });
 
-        // Validate tipo_rh
         const tipoRh = document.getElementById('tipo_rh');
         if (tipoRh.value && !/^(A|B|AB|O)[+-]$/.test(tipoRh.value)) {
             isValid = false;
@@ -1185,25 +1144,6 @@ if (isset($_SESSION['hospital'])) {
             errors.push('El tipo y Rh debe ser A+, A-, B+, B-, AB+, AB-, O+, o O-.');
         } else {
             tipoRh.classList.remove('is-invalid');
-        }
-
-        // Validate doctor selections
-        const anestesiologo = document.getElementById('anestesiologo');
-        if (!anestesiologo.value) {
-            isValid = false;
-            anestesiologo.classList.add('is-invalid');
-            errors.push('Seleccione un anestesiólogo.');
-        } else {
-            anestesiologo.classList.remove('is-invalid');
-        }
-
-        const cirujano = document.getElementById('cirujano');
-        if (!cirujano.value) {
-            isValid = false;
-            cirujano.classList.add('is-invalid');
-            errors.push('Seleccione un cirujano.');
-        } else {
-            cirujano.classList.remove('is-invalid');
         }
 
         if (!isValid) {
@@ -1223,12 +1163,10 @@ if (isset($_SESSION['hospital'])) {
         }
     }
 
-    // Initialize tooltips
     $(function() {
         $('[data-toggle="tooltip"]').tooltip();
     });
 
-    // Initialize Select2 for doctor selection
     $(document).ready(function() {
         $('#anestesiologo').select2({
             placeholder: "Seleccione un anestesiólogo",

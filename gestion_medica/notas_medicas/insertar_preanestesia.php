@@ -15,24 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $required_fields = [
         'Id_exp' => 'ID de expediente',
         'id_usua' => 'ID de usuario',
-        'id_atencion' => 'ID de atención',
-        'anestesiologo_id' => 'Anestesiólogo', // Changed to anestesiologo_id
-        'urgencia' => 'Tipo de cirugía',
-        'cirujano_id' => 'Cirujano', // Changed to cirujano_id
-        'diagnostico_preoperatorio' => 'Diagnóstico preoperatorio',
-        'cirugia_programada' => 'Cirugía programada',
-        'padecimiento_actual' => 'Padecimiento actual',
-        'peso' => 'Peso',
-        'talla' => 'Talla',
-        'ta_sistolica' => 'T.A. Sistólica',
-        'ta_diastolica' => 'T.A. Diastólica',
-        'fc' => 'Frecuencia cardíaca',
-        'fr' => 'Frecuencia respiratoria',
-        'temperatura' => 'Temperatura',
-        'edo_conciencia' => 'Estado de conciencia',
-        'asa' => 'Estado físico ASA',
-        'plan_anestesico' => 'Plan anestésico',
-        'indicaciones_preanestesicas' => 'Indicaciones preanestésicas'
+        'id_atencion' => 'ID de atención'
     ];
 
     // Antecedentes fields
@@ -70,51 +53,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Fetch doctor names
-    $anestesiologo_id = $data['anestesiologo_id'];
-    $cirujano_id = $data['cirujano_id'];
+    // Fetch doctor names (optional)
+    $anestesiologo_id = isset($_POST['anestesiologo_id']) && !empty(trim($_POST['anestesiologo_id'])) ? trim($_POST['anestesiologo_id']) : null;
+    $cirujano_id = isset($_POST['cirujano_id']) && !empty(trim($_POST['cirujano_id'])) ? trim($_POST['cirujano_id']) : null;
 
-    // Get anesthesiologist name
-    $sql_anest = "SELECT CONCAT(nombre, ' ', papell, ' ', sapell) AS full_name FROM reg_usuarios WHERE id_usua = ? AND u_activo = 'SI' AND cargp = 'Anestesiólogo'";
-    $stmt_anest = $conexion->prepare($sql_anest);
-    $stmt_anest->bind_param("i", $anestesiologo_id);
-    $stmt_anest->execute();
-    $result_anest = $stmt_anest->get_result();
-    if ($result_anest->num_rows > 0) {
-        $data['anestesiologo'] = $result_anest->fetch_assoc()['full_name'];
+    if ($anestesiologo_id) {
+        $sql_anest = "SELECT CONCAT(nombre, ' ', papell, ' ', sapell) AS full_name FROM reg_usuarios WHERE id_usua = ? AND u_activo = 'SI' AND cargp = 'Anestesiólogo'";
+        $stmt_anest = $conexion->prepare($sql_anest);
+        $stmt_anest->bind_param("i", $anestesiologo_id);
+        $stmt_anest->execute();
+        $result_anest = $stmt_anest->get_result();
+        if ($result_anest->num_rows > 0) {
+            $data['anestesiologo'] = $result_anest->fetch_assoc()['full_name'];
+        } else {
+            $errors[] = "Anestesiólogo no encontrado o inválido.";
+        }
+        $stmt_anest->close();
     } else {
-        $errors[] = "Anestesiólogo no encontrado o inválido.";
+        $data['anestesiologo'] = null;
     }
-    $stmt_anest->close();
 
-    // Get surgeon name
-    $sql_cir = "SELECT CONCAT(nombre, ' ', papell, ' ', sapell) AS full_name FROM reg_usuarios WHERE id_usua = ? AND u_activo = 'SI' AND cargp = 'Cirujano'";
-    $stmt_cir = $conexion->prepare($sql_cir);
-    $stmt_cir->bind_param("i", $cirujano_id);
-    $stmt_cir->execute();
-    $result_cir = $stmt_cir->get_result();
-    if ($result_cir->num_rows > 0) {
-        $data['cirujano'] = $result_cir->fetch_assoc()['full_name'];
+    if ($cirujano_id) {
+        $sql_cir = "SELECT CONCAT(nombre, ' ', papell, ' ', sapell) AS full_name FROM reg_usuarios WHERE id_usua = ? AND u_activo = 'SI' AND cargp = 'Cirujano'";
+        $stmt_cir = $conexion->prepare($sql_cir);
+        $stmt_cir->bind_param("i", $cirujano_id);
+        $stmt_cir->execute();
+        $result_cir = $stmt_cir->get_result();
+        if ($result_cir->num_rows > 0) {
+            $data['cirujano'] = $result_cir->fetch_assoc()['full_name'];
+        } else {
+            $errors[] = "Cirujano no encontrado o inválido.";
+        }
+        $stmt_cir->close();
     } else {
-        $errors[] = "Cirujano no encontrado o inválido.";
+        $data['cirujano'] = null;
     }
-    $stmt_cir->close();
 
     // Validate antecedentes
     foreach ($antecedentes as $antecedente) {
-        if (!isset($_POST[$antecedente]) || !in_array($_POST[$antecedente], ['No', 'Sí'])) {
-            $errors[] = "Seleccione una opción válida para $antecedente.";
-        } else {
-            $data[$antecedente] = $_POST[$antecedente];
-            $data[$antecedente . '_detalle'] = isset($_POST[$antecedente . '_detalle']) && $_POST[$antecedente] === 'Sí' ? trim($_POST[$antecedente . '_detalle']) : null;
-        }
+        $data[$antecedente] = isset($_POST[$antecedente]) && in_array($_POST[$antecedente], ['No', 'Sí']) ? $_POST[$antecedente] : 'No';
+        $data[$antecedente . '_detalle'] = isset($_POST[$antecedente . '_detalle']) && $_POST[$antecedente] === 'Sí' ? trim($_POST[$antecedente . '_detalle']) : null;
     }
 
     // Validate optional text fields
     $optional_text_fields = [
-        'medicamentos_actuales', 'anestesias_previas', 'otros_antecedentes',
-        'cabeza_cuello', 'via_aerea', 'cardiopulmonar', 'abdomen', 'columna',
-        'extremidades', 'otros_exploracion', 'otros_laboratorio', 'gabinete'
+        'diagnostico_preoperatorio', 'cirugia_programada', 'medicamentos_actuales', 'anestesias_previas',
+        'otros_antecedentes', 'padecimiento_actual', 'cabeza_cuello', 'via_aerea', 'cardiopulmonar',
+        'abdomen', 'columna', 'extremidades', 'otros_exploracion', 'otros_laboratorio', 'gabinete',
+        'plan_anestesico', 'indicaciones_preanestesicas'
     ];
     foreach ($optional_text_fields as $field) {
         $data[$field] = isset($_POST[$field]) ? trim($_POST[$field]) : null;
@@ -141,21 +127,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "El tipo y Rh deben ser A+, A-, B+, B-, AB+, AB-, O+, O-, o vacío.";
     }
 
-    // Validate specific fields
-    if (!isset($errors['anestesiologo']) && !preg_match("/^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/", $data['anestesiologo'])) {
-        $errors[] = "El nombre del anestesiólogo debe contener solo letras y espacios.";
+    // Validate and capture urgencia
+    $valid_urgencia = ['Urgencia', 'Electiva', ''];
+    $data['urgencia'] = isset($_POST['urgencia']) && in_array($_POST['urgencia'], ['Urgencia', 'Electiva']) ? $_POST['urgencia'] : null;
+    if (isset($_POST['urgencia']) && !in_array($_POST['urgencia'], $valid_urgencia)) {
+        $errors[] = "El tipo de cirugía debe ser 'Urgencia', 'Electiva', o vacío.";
     }
-    if (!isset($errors['cirujano']) && !preg_match("/^[A-Za-z\sáéíóúÁÉÍÓÚ]+$/", $data['cirujano'])) {
-        $errors[] = "El nombre del cirujano debe contener solo letras y espacios.";
+
+    // Validate and capture edo_conciencia
+    $valid_edo_conciencia = ['Consciente', 'Inconsciente', 'Desorientado', ''];
+    $data['edo_conciencia'] = isset($_POST['edo_conciencia']) && in_array($_POST['edo_conciencia'], ['Consciente', 'Inconsciente', 'Desorientado']) ? $_POST['edo_conciencia'] : null;
+    if (isset($_POST['edo_conciencia']) && !in_array($_POST['edo_conciencia'], $valid_edo_conciencia)) {
+        $errors[] = "El estado de conciencia debe ser 'Consciente', 'Inconsciente', 'Desorientado', o vacío.";
     }
-    if (!in_array($data['urgencia'], ['Urgencia', 'Electiva'])) {
-        $errors[] = "El tipo de cirugía debe ser 'Urgencia' o 'Electiva'.";
-    }
-    if (!in_array($data['edo_conciencia'], ['Consciente', 'Inconsciente', 'Desorientado'])) {
-        $errors[] = "El estado de conciencia debe ser 'Consciente', 'Inconsciente' o 'Desorientado'.";
-    }
-    if (!in_array($data['asa'], ['I', 'II', 'III', 'IV', 'V'])) {
-        $errors[] = "El estado físico ASA debe ser I, II, III, IV o V.";
+
+    // Validate and capture asa
+    $valid_asa = ['I', 'II', 'III', 'IV', 'V', ''];
+    $data['asa'] = isset($_POST['asa']) && in_array($_POST['asa'], ['I', 'II', 'III', 'IV', 'V']) ? $_POST['asa'] : null;
+    if (isset($_POST['asa']) && !in_array($_POST['asa'], $valid_asa)) {
+        $errors[] = "El estado físico ASA debe ser I, II, III, IV, V, o vacío.";
     }
 
     // If no errors, proceed with insertion
@@ -176,7 +166,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'gabinete', 'asa', 'plan_anestesico', 'indicaciones_preanestesicas'
         ];
 
-        // Prepare types and values dynamically
         $types = '';
         $values = [];
         foreach ($columns as $col) {
@@ -202,7 +191,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Bind parameters dynamically
         $stmt->bind_param($types, ...$values);
 
         if ($stmt->execute()) {
