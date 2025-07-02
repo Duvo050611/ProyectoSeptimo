@@ -247,61 +247,58 @@ while ($row_reg_usrs = $result_reg_usrs->fetch_assoc()) {
   $cargp = $row_reg_usrs['cargp'];
 }
    ?>
-<form action="pdf_consent_BI_medico.php?id_atencion=<?php echo $id_atencion; ?>&id_exp=<?php echo $id_exp ?>" method="POST" target="_blank ">
-<div class="row">
+<form action="pdf_consent_BI_medico.php?id_atencion=<?= $id_atencion ?>&id_exp=<?= $id_exp ?>" method="POST" target="_blank">
+  <div class="row">
     <div class="col">
-        <hr>
-        <label><strong>Los médicos del servicio de: </strong><p><input type="text" name="medico" class="form-control">
-</p> me han informado de mi(s)
-padecimiento(s), por lo que necesito someterme a estudios de laboratorio, gabinete,histopatológicos, y de procedmientos anestésicos, asi como tratamiento(s) médico(s) y/o quirúrgico(s) considerados como indispensables para recuperar mi salud.</label><label> Los médicos me informaron de los riesgos y de las posibles cmplicaciones de los medios de diagnóstico y tratamientos médico y/o quirúrgicos, por lo que por este medio, libremente y sin presión alguna acepto a someterme a:</label>
-       
-        <label><strong>Diagnóstico(s) clinico(s) </strong></label><br> 
+      <hr>
 
-        <input name="diagnostico_pdf" class="form-control">
-          
-            
-          
-        
+      <label><strong>Nombre del Servicio o Especialidad Médica:</strong></label>
+      <input type="text" name="medico_servicio" class="form-control" required>
 
-        <br><strong>Estudios de laboratorio, gabinete e histopatológicos:</strong>
-        <p><input type="text" name="estudios" class="form-control" placeholder="Los indicados previamente por su médico tratante, tales como: biometria hematica, quimica
-sanguínea, electrolitos séricos, tiempos de coagulación, electrocardiograma, radiografia y/o tomografia"></p> <strong>
+      <label class="mt-3">
+        Los médicos del servicio arriba mencionado me han informado sobre mi(s) padecimiento(s), por lo que necesito someterme a estudios, procedimientos y tratamientos médicos considerados como necesarios para recuperar mi salud.
+      </label>
 
-        <p>Actos anestésicos: 
-        <p><input type="text" name="actos" class="form-control" placeholder="Los necesarios, previamente indicado por su médico tratante."></p>
+      <label class="mt-3"><strong>Diagnóstico clínico principal (formato libre o CIE-10):</strong></label>
+      <input type="text" name="diagnostico_pdf" class="form-control" required>
 
-        <p>Tratamiento(s) médico(s):</p>
-        <p><input type="text" name="trat" class="form-control" placeholder=" Los indicados previamente por su médico tratante, tales como: soluciones parenterales, medicamentos intravenosos,
-colocación de sonda urinaria, sonda nasogástrica,etc.."></p>
+      <label class="mt-3"><strong>Estudios de laboratorio, gabinete e histopatológicos indicados:</strong></label>
+      <input type="text" name="estudios" class="form-control"
+        placeholder="Ejemplo: biometría hemática, química sanguínea, radiografías..." required>
 
-        <p>Tratamiento(s) quirúrgico(s):</p>
-        <p><input type="text" name="tratquir" class="form-control" placeholder="El indicado por el médico tratante"></p>
+      <label class="mt-3"><strong>Actos anestésicos requeridos:</strong></label>
+      <input type="text" name="actos" class="form-control"
+        placeholder="Ejemplo: anestesia local/regional/general, previamente indicada por su médico." required>
 
-  <p>Riesgos y complicaciones:</strong></p>
-<p><input type="text" name="ries" class="form-control"  placeholder=" Los propios del padecimiento y/o procedimiento, tales como: infección, hemorragia, reacción alergica, sepsis, choque e
-incluso la muerte."></p></strong>
+      <label class="mt-3"><strong>Tratamientos médicos:</strong></label>
+      <input type="text" name="trat" class="form-control"
+        placeholder="Ejemplo: medicamentos, sondas, soluciones intravenosas..." required>
 
+      <label class="mt-3"><strong>Tratamientos quirúrgicos:</strong></label>
+      <input type="text" name="tratquir" class="form-control"
+        placeholder="Ejemplo: cirugía oftálmica, indicada por su médico tratante." required>
 
-<p>He sido informado de los riesgos que entraña el procedimiento, por lo que acepto los riesgos que implica el mismo.</p>
-<p>
-Autorizo a los médicos de este hospital para que realicen los estudios y tratamientos convenientes.</p>
-<p>
-En igual sentido, autorizo ante cualquier complicación o efecto adverso durante el procedimiento, especialmente ante una urgencia médica, que se
-apliquen las técnicas y procedimientos necesarios.</p>
-<p>
-Tengo la plena librtad de evocar la autorización de los estudios y tratamientos en cualquier momento, antes de realizarse.</p>
-<p>
-En caso de ser menor de edad o con capacidades diferentes, se informó y autoriza el responsable del paciente.</p>
-        
+      <label class="mt-3"><strong>Riesgos y complicaciones informadas:</strong></label>
+      <input type="text" name="ries" class="form-control"
+        placeholder="Ejemplo: infección, hemorragia, reacciones adversas, riesgo vital..." required>
+
+      <hr class="my-4">
+      <p>He sido informado(a) de los riesgos que entrañan los procedimientos, por lo que acepto voluntariamente someterme a los mismos.</p>
+      <p>Autorizo a los médicos del hospital a realizar los estudios, tratamientos y procedimientos necesarios, incluyendo aquellos ante cualquier complicación o urgencia médica.</p>
+      <p>Declaro que tengo plena libertad de revocar esta autorización en cualquier momento antes del procedimiento.</p>
+      <p>En caso de ser menor de edad o tener capacidades diferentes, se informa y autoriza al responsable del paciente.</p>
+
+      <center class="mt-4">
+        <button type="submit" name="btn" class="btn btn-primary">
+          <strong>Generar PDF</strong>
+        </button>
+        <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
+      </center>
+
     </div>
-</div>
-
- <center><hr>
-  <button type="submit" name="btn" class="btn btn-primary"><font size="3">Aceptar</font></button>
- <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
- </center>
- <br>        
+  </div>
 </form>
+
     </div>
 </div>
 

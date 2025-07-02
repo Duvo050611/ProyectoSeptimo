@@ -1,27 +1,32 @@
 <?php
 include "../conexionbd.php";
+
+// Establecer tiempo de vida de la sesión antes de iniciar sesión
+$lifetime = 11000;
+session_set_cookie_params($lifetime);
+
 session_start();
-//
+
 if (!isset($_SESSION['login'])) {
     // remove all session variables
     session_unset();
     // destroy the session
     session_destroy();
     header('Location: ../index.php');
-}else{
-    $lifetime=11000;
-  session_set_cookie_params($lifetime);
-}
-$usuario = $_SESSION['login'];
-//$resultado = $conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='" . $usuario . "'") or die($conexion->error);
-if (!($usuario['id_rol'] == 3 || $usuario['id_rol'] == 5 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 1)) {
-    session_unset();
-    session_destroy();
-    // echo "<script>window.Location='../index.php';</script>";
-    header('Location: ../index.php');
-}
+    exit(); // siempre recomendable después de header
+} else {
+    $usuario = $_SESSION['login'];
 
+    // Verificar roles permitidos
+    if (!($usuario['id_rol'] == 3 || $usuario['id_rol'] == 5 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 1)) {
+        session_unset();
+        session_destroy();
+        header('Location: ../index.php');
+        exit();
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -49,6 +54,8 @@ if (!($usuario['id_rol'] == 3 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
     <!-- AdminLTE Skins. Choose a skin from the css/skins
            folder instead of downloading all of them to reduce the load. -->
     <link href="dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://kit.fontawesome.com/e547be4475.js" crossorigin="anonymous"></script>
+
 
     <style>
         .dropdwn {
@@ -355,7 +362,7 @@ if (isset($_SESSION['pac']) && ($usuario['id_rol']== 5 || $usuario['id_rol']== 3
               <i class="fa fa-folder"></i> <span>REGISTRO CLÍNICO</span><i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-              <li><a href="../enfermera/registro_clinico/reg_clin.php"><i class="fa fa-folder"></i> <span>HOSPITALIZACIÓN</span></a></li>
+              <li><a href="../registro_procedimientos/reg_pro.php"><i class="fa-solid fa-file-medical"></i> <span>REGISTRO DE  <br>PROCEDIMIENTOS</span></a></li>
               <li><a href="../enfermera/registro_quirurgico/hoja_progquir.php"><i class="fa fa-folder"></i> <span>HOJA PROGRAMACIÓN<br> QUIRÚRGICA</span></a></li>
               <li><a href="../enfermera/registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>
               <li><a href="../enfermera/registro_urgencias/reg_urg.php"><i class="fa fa-folder"></i> <span>OBSERVACIÓN</span></a></li>
@@ -640,7 +647,7 @@ return $tiempo;
           $biomedica = $row['biomedica'];
           $mantenimiento = $row['mantenimiento'];
           $serv_generales = $row['serv_generales'];
-            $intendencia = $row['intendencia'];
+          #$intendencia = $row['intendencia'];
 
           if ($estaus == "LIBRE" or $estaus == "Libre") {
         ?>
@@ -948,7 +955,7 @@ $tiempom=tiempoTranscurridoFechas($i,$fecha_actual);}
           $biomedica = $row['biomedica'];
           $mantenimiento = $row['mantenimiento'];
           $serv_generales = $row['serv_generales'];
-            $intendencia = $row['intendencia'];
+          $intendencia = $row['intendencia'];
           if ($estaus == "LIBRE" or $estaus == "Libre") {
         ?>
              <div class="col-lg-1.9 col-xs-1">

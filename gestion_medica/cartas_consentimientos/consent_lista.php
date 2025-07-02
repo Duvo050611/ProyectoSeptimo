@@ -908,7 +908,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
                . '<td> <strong>
                   <a type="submit" class="btn btn-danger btn-sm"
-                     href="../../gestion_administrativa/cartas_consentimientos/pdf_consent_trans.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
+                     href="../../gestion_administrativa/cartas_consentimientos/pdf_carta_liberacion.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '"
                      target="_blank"><span class="fa fa-file-pdf-o"
                                            style="font-size:18px"></span></a>
                   </strong></td>';
@@ -917,7 +917,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               }
             ?>
 
-                        12.04 Para transfusión sanguínea
+                        12.04 Carta de Liberación de Responsabilidades
                         <p></p>
                         <?php
               // ../../gestion_medica/cartas_consentimientos/pdf_consent_BI_medico.php?id_exp=' . $row['Id_exp'] . '&id_atencion=' . $row['id_atencion'] . '
