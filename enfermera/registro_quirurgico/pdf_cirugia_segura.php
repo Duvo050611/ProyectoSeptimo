@@ -1,1313 +1,414 @@
 <?php
-require '../../fpdf/fpdf.php';
-include '../../conexionbd.php';
-$id_atencion = @$_GET['id'];
-$id_exp = @$_GET['id_exp'];
-$id_cirseg = @$_GET['id_cir_seg'];
-$id_med = @$_GET['id_med'];
+session_start();
+include "../../conexionbd.php";
+require "../../fpdf/fpdf.php";
 
-$sql_seg = "SELECT * FROM dat_cir_seg  where id_atencion = $id_atencion";
-$result_seg = $conexion->query($sql_seg);
+$id_atencion = $_SESSION['hospital'];
 
-while ($row_seg = $result_seg->fetch_assoc()) {
-$id_cir_seg = $row_seg['id_cir_seg'];
+// Obtener datos del checklist
+$sql_check = "SELECT * FROM dat_cir_seg WHERE id_atencion = ? LIMIT 1";
+$stmt = $conexion->prepare($sql_check);
+$stmt->bind_param("i", $id_atencion);
+$stmt->execute();
+$res_check = $stmt->get_result();
+$data = $res_check->fetch_assoc();
+$stmt->close();
+
+if (!$data) {
+    die("Checklist quirúrgico no encontrado.");
 }
 
-if(isset($id_cir_seg)){
-    $id_cir_seg = $id_cir_seg;
-  }else{
-    $id_cir_seg ='sin doc';
-  }
+// Obtener datos del paciente
+$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.Id_exp, p.resp, p.paren, p.edad, p.sexo, p.dir, p.tel, di.id_usua, p.fecnac
+            FROM paciente p 
+            JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
+            WHERE di.id_atencion = ? LIMIT 1";
+$stmt = $conexion->prepare($sql_pac);
+$stmt->bind_param("i", $id_atencion);
+$stmt->execute();
+$res_pac = $stmt->get_result();
+$pac = $res_pac->fetch_assoc();
+$stmt->close();
 
-if($id_cir_seg=="sin doc"){
-  echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
-    echo '<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>';
-    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>';
-    echo '<script>
-                    $(document).ready(function() {
-                        swal({
-                            title: "NO EXISTE NOTA DE CIRUGÍA SEGURA QUIRÚRGICA PARA ESTE PACIENTE", 
-                            type: "error",
-                            confirmButtonText: "ACEPTAR"
-                        }, function(isConfirm) { 
-                            if (isConfirm) {
-                                window.close();
-                            }
-                        });
-                    });
-                </script>';
-}else{
-mysqli_set_charset($conexion, "utf8");
-
-class PDF extends FPDF
-{
-  function Header()
-  {
-    $id = @$_GET['id'];
-    $id_med = @$_GET['id_med'];
-    include '../../conexionbd.php';
-
-    $id = @$_GET['id'];
-
-include '../../conexionbd.php';
-$resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-while($f = mysqli_fetch_array($resultado)){
-       $bas=$f['img_ipdf'];
-
-    $this->Image("../../configuracion/admin/img2/".$bas, 10, 1, 55, 30);
-    $this->Image("../../configuracion/admin/img3/".$f['img_cpdf'],95,5, 100, 25);
-    $this->Image("../../configuracion/admin/img4/".$f['img_dpdf'], 235, 7, 55, 20);
+if (!$pac) {
+    die("Paciente no encontrado.");
 }
 
-    $this->SetFont('Arial', 'B', 15);
-    $this->SetTextColor(43, 45, 127);
-    
-    $this->Ln(10);
-    $this->SetDrawColor(43, 45, 180);
-    //$this->Line(78, 18, 220, 18);
-   
-   
-    $this->Ln(12);
- 
-  }
-  function Footer()
-  {
-    $this->Ln(8);
-    $this->SetY(-15);
-    $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}' ), 0, 0, 'C');
-    $this->Cell(0, 10, utf8_decode('CMSI-15.02'), 0, 1, 'R');
-  }
+// Clase PDF
+class PDF extends FPDF {
+    function Header() {
+        include "../../conexionbd.php";
+        $resultado = $conexion->query("SELECT * FROM img_sistema ORDER BY id_simg DESC LIMIT 1") or die($conexion->error);
+        while ($f = mysqli_fetch_assoc($resultado)) {
+            $this->Image("../../configuracion/admin/img2/{$f['img_ipdf']}", 7, 11, 40, 25);
+            $this->Image("../../configuracion/admin/img3/{$f['img_cpdf']}", 58, 15, 109, 24);
+            $this->Image("../../configuracion/admin/img4/{$f['img_dpdf']}", 168, 16, 38, 14);
+        }
+        $this->SetY(40);
+        $this->SetFont('Arial', 'B', 15);
+        $this->SetTextColor(40, 40, 40);
+        $this->Cell(0, 12, utf8_decode('LISTA DE VERIFICACIÓN DE CIRUGÍA SEGURA'), 0, 1, 'C');
+        $this->SetFont('Arial', '', 10);
+        $this->SetTextColor(100, 100, 100);
+        $this->Cell(0, 6, utf8_decode('Fecha: ') . date('d/m/Y H:i'), 0, 1, 'R');
+        $this->Ln(5);
+    }
+
+    function Footer() {
+    $this->SetY(-25);
+    $this->SetFont('Arial', '', 8);
+    $this->MultiCell(0, 4, utf8_decode(
+        "Av. Tecnológico 1020, Col. Bellavista, C.P. 52172, Metepec, Edo. de México,\n" .
+        "Teléfonos. (722) 232.8086 / (722) 238.6901, inst.enfermedadesoculares@gmail.com."
+    ), 0, 'C');
+    $this->Ln(1);
+    $this->SetFont('Arial', 'I', 8);
+    $this->Cell(0, 5, utf8_decode('Página ') . $this->PageNo() . '/{nb}', 0, 0, 'C');
+}
+    function NbLines($w, $txt) {
+        $cw = &$this->CurrentFont['cw'];
+        if ($w == 0)
+            $w = $this->w - $this->rMargin - $this->x;
+        $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
+        $s = str_replace("\r", '', $txt);
+        $nb = strlen($s);
+        if ($nb > 0 and $s[$nb - 1] == "\n")
+            $nb--;
+        $sep = -1;
+        $i = 0;
+        $j = 0;
+        $l = 0;
+        $nl = 1;
+        while ($i < $nb) {
+            $c = $s[$i];
+            if ($c == "\n") {
+                $i++;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+                continue;
+            }
+            if ($c == ' ')
+                $sep = $i;
+            $l += $cw[$c];
+            if ($l > $wmax) {
+                if ($sep == -1) {
+                    if ($i == $j)
+                        $i++;
+                } else
+                    $i = $sep + 1;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+            } else
+                $i++;
+        }
+        return $nl;
+    }
+function Row($data, $widths, $line_height = 5) {
+    $nb = 0;
+    for ($i = 0; $i < count($data); $i++) {
+        $nb = max($nb, $this->NbLines($widths[$i], $data[$i]));
+    }
+    $h = $line_height * $nb;
+    $this->CheckPageBreak($h);
+    for ($i = 0; $i < count($data); $i++) {
+        $w = $widths[$i];
+        $x = $this->GetX();
+        $y = $this->GetY();
+        $this->Rect($x, $y, $w, $h);
+        $this->MultiCell($w, $line_height, $data[$i], 0, 'L');
+        $this->SetXY($x + $w, $y);
+    }
+    $this->Ln($h);
+}
+
+function CheckPageBreak($h) {
+    if ($this->GetY() + $h > $this->PageBreakTrigger) {
+        $this->AddPage($this->CurOrientation);
+    }
+}
+
+}
+
+function mostrar($estado) {
+    return $estado ? '[X]' : '[ ]';
 }
 
 
 
-
-$sql_pac = "SELECT * FROM paciente where Id_exp=$id_exp";
-$result_pac = $conexion->query($sql_pac);
-
-while ($row_pac = $result_pac->fetch_assoc()) {
-  $papell = $row_pac['papell'];
-  $nom_pac = $row_pac['nom_pac'];
-  $fecnac = $row_pac['fecnac'];
-  $sapell = $row_pac['sapell'];
-  $edad = $row_pac['edad'];
-  $sexo = $row_pac['sexo'];
-  $Id_exp = $row_pac['Id_exp'];
-  $dir = $row_pac['dir'];
-  $id_edo = $row_pac['id_edo'];
-  $id_mun = $row_pac['id_mun'];
-  $tel = $row_pac['tel'];
-  $ocup = $row_pac['ocup'];
-  $resp = $row_pac['resp'];
-  $paren = $row_pac['paren'];
-  $tel_resp = $row_pac['tel_resp'];
-    $edociv = $row_pac['edociv'];
-    $edad=$row_pac['edad'];
-}
-
-//INICIO CONSULTA CIRUGIA SEGURA
-$sql_seg = "SELECT * FROM dat_cir_seg where id_atencion =$id_atencion";
-$result_seg = $conexion->query($sql_seg);
-
-while ($row_seg = $result_seg->fetch_assoc()) {
-$identidad = $row_seg['identidad'];
-$sitquir = $row_seg['sitquir'];
-$procquir = $row_seg['procquir'];
-$suconsen = $row_seg['suconsen'];
-$lug_noproc = $row_seg['lug_noproc'];
-$fecha_registro= $row_seg['fecha_registro'];
-$circonfase = $row_seg['circonfase'];
-$conseg = $row_seg['conseg'];
-$oximetro = $row_seg['oximetro'];
-$alerg_con = $row_seg['alerg_con'];
-$dif_via_aerea = $row_seg['dif_via_aerea'];
-$reishemo = $row_seg['reishemo'];
-
-  $nechemo = $row_seg['nechemo'];
-  $fcirujano = $row_seg['fcirujano'];
-  $fayucir = $row_seg['fayucir'];
-  $fanest = $row_seg['fanest'];
-  $instrumentista = $row_seg['instrumentista'];
-  $fotros = $row_seg['fotros'];
-  $paccorr = $row_seg['paccorr'];
-  $proccorr = $row_seg['proccorr'];
-
-  $sitquird = $row_seg['sitquird'];
-  $encas = $row_seg['encas'];
-  $casmul = $row_seg['casmul'];
-  $poscpac = $row_seg['poscpac'];
-  $anverpro = $row_seg['anverpro'];
-  $img_diag = $row_seg['img_diag'];
-
- $pasocri = $row_seg['pasocri'];
-  $durope = $row_seg['durope'];
-  $persangre = $row_seg['persangre'];
-  $exriesen = $row_seg['exriesen'];
-  $fechm = $row_seg['fechm'];
-  $exproble = $row_seg['exproble'];
-
-  $nomprocre = $row_seg['nomprocre'];
-  $recuento = $row_seg['recuento'];
-  $etqmu = $row_seg['etqmu'];
-  $proineq = $row_seg['proineq'];
-  $prinrecpost = $row_seg['prinrecpost'];
-  $plantrat = $row_seg['plantrat'];
-
-
- $riesgpaci = $row_seg['riesgpaci'];
-  $eventosad = $row_seg['eventosad'];
-  $reieventad = $row_seg['reieventad'];
-  $donde = $row_seg['donde'];
-  
-
-  $fir_cir = $row_seg['fir_cir'];
-  $fir_anest = $row_seg['fir_anest'];
-  $fir_enf = $row_seg['fir_enf'];
-
-
-
-
-}
- 
-//TERMINO CONSULTA CIRUGIA SEGURA
-$sql_pac = "SELECT tipo_a FROM dat_ingreso where id_atencion = $id_atencion and Id_exp=Id_exp";
-$result_pac = $conexion->query($sql_pac);
-while ($row_pac = $result_pac->fetch_assoc()) {
-  $tipo_a = $row_pac['tipo_a'];
-}
-
-$pdf = new PDF('L','mm','A4');
+$pdf = new PDF('P','mm','Letter');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetTextColor(43, 45, 127);
+$pdf->SetFont('Arial','',10);
+
+// Datos generales del paciente
+$fechaNacimiento =$pac['fecnac']; // Agrégalo si tienes este campo
+$diagnostico = ''; // Si lo tienes en la BD
+$procedimientoQx = ''; // Si lo tienes en la BD
+$fechaHoy = date("d/m/Y");
+
+// Tabla de encabezado completa
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->SetFillColor(200, 200, 200);
+$pdf->Cell(0, 10, utf8_decode("LISTA DE VERIFICACIÓN DE CIRUGÍA SEGURA"), 1, 1, 'C', true);
+$pdf->SetFont('Arial', '', 10);
+
+$nombreCompleto = $pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac'];
+
+$pdf->Cell(65, 8, utf8_decode("Nombre del paciente"), 1, 0, 'L');
+$pdf->Cell(125, 8, utf8_decode($nombreCompleto), 1, 1, 'L');
+
+$pdf->Cell(65, 8, utf8_decode("Fecha de nacimiento"), 1, 0, 'L');
+$pdf->Cell(125, 8, utf8_decode($fechaNacimiento), 1, 1, 'L');
+
+$pdf->Cell(65, 8, utf8_decode("Fecha de elaboración"), 1, 0, 'L');
+$pdf->Cell(125, 8, utf8_decode($fechaHoy), 1, 1, 'L');
+
+$pdf->Cell(65, 8, utf8_decode("Diagnóstico"), 1, 0, 'L');
+$pdf->Cell(125, 8, utf8_decode($diagnostico), 1, 1, 'L');
+
+$pdf->Cell(65, 8, utf8_decode("Procedimiento quirúrgico"), 1, 0, 'L');
+$pdf->Cell(125, 8, utf8_decode($procedimientoQx), 1, 1, 'L');
+
+// Secciones con espacio para hora
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(280, 6, utf8_decode('Hoja de cirugía segura'), 1,1, 'C');
-$pdf->Setx(255);
-$pdf->SetFont('Arial', '', 8);
-
-$fecha_actual = date("d/m/Y H:i");
-$pdf->Cell(35, 5, 'Fecha: ' . $fecha_actual, 0, 1, 'R');
-$pdf->Ln(-4);
-
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(17, 6, 'Servicio: ', 0, 'L');  
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(126, 6, utf8_decode($tipo_a) , 'B', 'L');
-
-$sql_ing = "SELECT * FROM dat_ingreso  where Id_exp = $id_exp";
-$result_ing = $conexion->query($sql_ing);
-while ($row_ing = $result_ing->fetch_assoc()) {
-$especialidad = $row_ing['especialidad'];
-  $fechai = $row_ing['fecha'];
-  $area= $row_ing['area'];
-    $tipo_a= $row_ing['tipo_a'];
-
-
-}
-
-$date=date_create($fechai);
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(26, 6, utf8_decode(' Fecha de ingreso:'),0 , 0, 'L');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(20, 6, date_format($date,'d/m/Y'), 'B', 0, 'C');
-
-$fech_registro=date_create($fecha_registro);
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(23, 6, utf8_decode(' Fecha de nota:'),0 , 0, 'L');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(31, 6, date_format($fech_registro,'d/m/Y H:i a'), 'B', 0, 'L');
-
-$pdf->Ln(6);
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(22, 6, utf8_decode('Expediente: '), 0, 0, 'C');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(8, 6, utf8_decode($id_exp), 'B', 0, 'L');
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(17, 6, ' Nombre: ', 0, 'L');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(96, 6, utf8_decode($papell . ' ' . $sapell . ' ' . $nom_pac), 'B', 'L');
-$pdf->SetFont('Arial', 'B', 8);
-
-$date=date_create($fecnac);
-$pdf->Cell(37, 6, ' Fecha de nacimiento: ', 0, 'L');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(17, 6, date_format($date,"d/m/Y"), 'B', 'C');
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(14, 6, ' Edad: ', 0, 'L');
-
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(18, 6, utf8_decode($edad), 'B', 'C');
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->Cell(13, 6, utf8_decode(' Género: '), 0, 'L');
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(39, 6,  $sexo, 'B', 'L');
-
-$pdf->Ln(8);
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->Cell(94, 4, utf8_decode('Fase 1:
-Entrada'), 1,0, 'C');
-$pdf->Cell(94, 4, utf8_decode('Fase 2: Pausa quirúrgica') , 1,0, 'C');
-$pdf->Cell(94, 4, utf8_decode('Fase 3: Salida') , 1,1, 'C');
-$pdf->SetFont('Arial', 'B', 7);
-
-$pdf->Cell(94, 4, utf8_decode('Antes de la inducción de la anestesia'), 1,0, 'C');
-$pdf->Cell(94, 4, utf8_decode('Antes de la incisión cutánea') , 1,0, 'C');
-$pdf->Cell(94, 4, utf8_decode('Antes de que el paciente salga de quirófano') , 1,1, 'C');
-
-
-//contenido
-$pdf->SetY(62); /* Inicio */
-$pdf->MultiCell(94, 3.5, utf8_decode('El cirujano, el anestesiólogo y el personal de enfermería en presencia del paciente han confirmado:'),0, 'J');
-
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(69);
-$pdf->SetX(5);
-$pdf->MultiCell(93.9, 4, utf8_decode('Su identidad.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($identidad=='Si'){
-$pdf->SetY(69.5);
-$pdf->SetX(35);
-$identidad= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($identidad),1, 'L');
-}else if ($identidad=='No') {
-$pdf->SetY(69.5);
-$pdf->SetX(35);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(73);
-$pdf->SetX(8);
-$pdf->MultiCell(93.9, 4, utf8_decode('El sitio quirúrgico.'), 0, 'C'); 
-
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($sitquir=='Si'){
-$pdf->SetY(73.5);
-$pdf->SetX(35);
-$sitquir= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($sitquir),1, 'L');
-}else if ($sitquir=='No') {
-$pdf->SetY(73.5);
-$pdf->SetX(35);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(77);
-$pdf->SetX(13);
-$pdf->MultiCell(93.9, 4, utf8_decode('El procedimiento quirúrgico.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($procquir=='Si'){
-$pdf->SetY(77.5);
-$pdf->SetX(35);
-$procquir= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($procquir),1, 'L');
-}else if ($procquir=='No') {
-$pdf->SetY(77.5);
-$pdf->SetX(35);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(81);
-$pdf->SetX(8.3);
-$pdf->MultiCell(93.9, 4, utf8_decode('Su consentimiento.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($suconsen=='Si'){
-$pdf->SetY(81.5);
-$pdf->SetX(35);
-$suconsen= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($suconsen),1, 'L');
-}else if ($suconsen=='No') {
-$pdf->SetY(81.5);
-$pdf->SetX(35);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(85);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('¿El personal de enfermería ha confirmado con el cirujano que esté marcado el sitio quirúrgico?'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($lug_noproc=='Si'){
-$pdf->SetY(91.5);
-$pdf->SetX(35);
-$lug_noproc= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($lug_noproc),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(91.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-}else if ($lug_noproc=='No procede') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(91.5);
-$pdf->SetX(35);
-$lug_noproc= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(91.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode($lug_noproc),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(95.5);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('El cirujano ha confirmado la realización de asepsia en el sitio quirúrgico:'), 0, 'J'); 
-
-
-if($circonfase=='Si'){
-$pdf->SetY(99.9);
-$pdf->SetX(35);
-$circonfase= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($circonfase),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(99.9);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($circonfase=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(99.9);
-$pdf->SetX(35);
-$circonfase= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(99.9);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode($circonfase),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(104);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('El anestesiólogo ha completado el control de la seguridad de la anestesia al revisar: medicamentos, equipo (funcionalidad y condiciones óptimas) y el riesgo anestésico del paciente.'), 0, 'J'); 
-
-if($conseg=='Si'){
-$pdf->SetY(114);
-$pdf->SetX(35);
-$conseg= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($conseg),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(114);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($conseg=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(114);
-$pdf->SetX(35);
-$conseg= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(114);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode($conseg),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(118);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('El anestesiólogo ha colocado y comprobado que funcione el oxímetro de pulso correctamente.'), 0, 'J'); 
-
-
-if($oximetro=='Si'){
-$pdf->SetY(124.5);
-$pdf->SetX(35);
-$oximetro= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($oximetro),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(124.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($oximetro=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(124.5);
-$pdf->SetX(35);
-$oximetro= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(124.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode($oximetro),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(128);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('El anestesiólogo ha confirmado si el paciente tiene: ¿Alergias conocidas?'), 0, 'J'); 
-
-if($alerg_con=='Si'){
-$pdf->SetY(131.5);
-$pdf->SetX(35);
-$alerg_con= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($alerg_con),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(131.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($alerg_con=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(131.5);
-$pdf->SetX(35);
-$alerg_con= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(131.5);
-$pdf->SetX(55);
-$pdf->Cell(3.5, 3, utf8_decode($alerg_con),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(135.5);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('¿Vía aérea difícil y/o riesgo de aspiración?'), 0, 'J'); 
-
-if($dif_via_aerea=='Si'){
-$pdf->SetY(139);
-$pdf->SetX(35);
-$dif_via_aerea= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($dif_via_aerea),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->MultiCell(35, 3, utf8_decode('Si, y se cuenta con material, equipo y ayuda disponible.'),0, 'J');
-$pdf->SetY(139);
-$pdf->SetX(80);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($dif_via_aerea=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(139);
-$pdf->SetX(35);
-$dif_via_aerea= 'X';
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->mULTICell(35, 3, utf8_decode('Si, y se cuenta con material, equipo y ayuda disponible.'),0, 'J');
-$pdf->SetY(139);
-$pdf->SetX(80);
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode($dif_via_aerea),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(148.5);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('¿Riesgo de hemorragia en adultos >500 ml. (niños >7 ml / kg)?'), 0, 'J');
-
-if($reishemo=='Si'){
-$pdf->SetY(152.5);
-$pdf->SetX(35);
-$reishemo= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($reishemo),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->MultiCell(35, 3, utf8_decode('Si, y se ha previsto la disponibilidad de líquidos y dos vías centrales.'),0, 'J');
-$pdf->SetY(152.5);
-$pdf->SetX(80);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($reishemo=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(152.5);
-$pdf->SetX(35);
-$reishemo= 'X';
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->mULTICell(35, 3, utf8_decode('Si, y se ha previsto la disponibilidad de líquidos y dos vías centrales.'),0, 'J');
-$pdf->SetY(152.5);
-$pdf->SetX(80);
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode($reishemo),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(161.5);
-$pdf->MultiCell(93.9, 2.9, utf8_decode('¿Posible necesidad de hemoderivados y soluciones disponibles?'), 0, 'J');
-
-if($nechemo=='Si'){
-$pdf->SetY(166);
-$pdf->SetX(35);
-$nechemo= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($nechemo),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->MultiCell(35, 3, utf8_decode('Si, y ya se ha realizado el cruce de sangre'),0, 'J');
-$pdf->SetY(166);
-$pdf->SetX(80);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($nechemo=='No') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(166);
-$pdf->SetX(35);
-$nechemo= 'X';
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->mULTICell(35, 3, utf8_decode('Si, y ya se ha realizado el cruce de sangre'),0, 'J');
-$pdf->SetY(166);
-$pdf->SetX(80);
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode($nechemo),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-$pdf->SetY(62);
-$pdf->SetX(104); 
- /* 2da culomn */
- $pdf->SetFont('Arial', 'B', 7.0);
-$pdf->MultiCell(94, 3.5, utf8_decode('El circulante ha identificado a cada uno de los miembros del quipo quirúrgico para se presenten por su nombre y función, sin omisiones.'),0, 'J');
-
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(69);
-$pdf->SetX(96.3);
-$pdf->MultiCell(93.9, 4, utf8_decode('Cirujano.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($fcirujano=='Si'){
-$pdf->SetY(69.5);
-$pdf->SetX(130);
-$fcirujano= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($fcirujano),1, 'L');
-}else if ($fcirujano=='No') {
-$pdf->SetY(69.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(73);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 4, utf8_decode('Ayudante de cirujano.'), 0, 'C'); 
-
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($fayucir=='Si'){
-$pdf->SetY(73.5);
-$pdf->SetX(130);
-$fayucir= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($fayucir),1, 'L');
-}else if ($fayucir=='No') {
-$pdf->SetY(73.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(77);
-$pdf->SetX(99.4);
-$pdf->MultiCell(93.9, 4, utf8_decode('Antestesiólogo'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($fanest=='Si'){
-$pdf->SetY(77.5);
-$pdf->SetX(130);
-$fanest= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($fanest),1, 'L');
-}else if ($fanest=='No') {
-$pdf->SetY(77.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(81);
-$pdf->SetX(99.2);
-$pdf->MultiCell(93.9, 4, utf8_decode('Instrumentista'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($instrumentista=='Si'){
-$pdf->SetY(81.5);
-$pdf->SetX(130);
-$instrumentista= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($instrumentista),1, 'L');
-}else if ($instrumentista=='No') {
-$pdf->SetY(81.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(85);
-$pdf->SetX(94.5);
-$pdf->MultiCell(93.9, 4, utf8_decode('Otros'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($fotros=='Si'){
-$pdf->SetY(85.5);
-$pdf->SetX(130);
-$fotros= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($fotros),1, 'L');
-}else if ($fotros=='No') {
-$pdf->SetY(85.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetY(89.5);
-$pdf->SetX(104); 
- /* 2da culomn */
- $pdf->SetFont('Arial', 'B', 7.0);
-$pdf->MultiCell(94, 3.5, utf8_decode('El cirujano, ha confirmado de manera verbal con el anestesiólogo y el personal de enfermería:'),0, 'J');
-
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(96);
-$pdf->SetX(101);
-$pdf->MultiCell(93.9, 4, utf8_decode('Paciente correcto.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($paccorr=='Si'){
-$pdf->SetY(96.5);
-$pdf->SetX(130);
-$paccorr= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($paccorr),1, 'L');
-}else if ($paccorr=='No') {
-$pdf->SetY(96.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(100);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 4, utf8_decode('Procedimiento correcto'), 0, 'C'); 
-
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($proccorr=='Si'){
-$pdf->SetY(100.5);
-$pdf->SetX(130);
-$proccorr= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($proccorr),1, 'L');
-}else if ($proccorr=='No') {
-$pdf->SetY(100.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(104);
-$pdf->SetX(98.5);
-$pdf->MultiCell(93.9, 4, utf8_decode('Sitio quirúrgico'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($sitquird=='Si'){
-$pdf->SetY(104.5);
-$pdf->SetX(130);
-$sitquird= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($sitquird),1, 'L');
-}else if ($sitquird=='No') {
-$pdf->SetY(104.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(108);
-$pdf->SetX(136.3);
-$pdf->MultiCell(61, 3, utf8_decode('En caso de órgano bilateral, ha marcado derecho o izquierdo, según corresponda'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($encas=='Si'){
-$pdf->SetY(108.5);
-$pdf->SetX(130);
-$encas= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($encas),1, 'L');
-}else if ($encas=='No') {
-$pdf->SetY(108.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(114.5);
-$pdf->SetX(136.3);
-$pdf->MultiCell(61, 3, utf8_decode('En caso de estructura múltiple, ha especificado el nivel a operar.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($casmul=='Si'){
-$pdf->SetY(115.5);
-$pdf->SetX(130);
-$casmul= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($casmul),1, 'L');
-}else if ($casmul=='No') {
-$pdf->SetY(115.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(120);
-$pdf->SetX(107.2);
-$pdf->MultiCell(93.9, 4, utf8_decode('Posición correcta del paciente.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($poscpac=='Si'){
-$pdf->SetY(120.5);
-$pdf->SetX(130);
-$poscpac= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($poscpac),1, 'L');
-}else if ($poscpac=='No') {
-$pdf->SetY(120.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(125);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('¿El anestesiólogo y el personal de enfermería han verificado que se haya aplicado la profilaxis antibiótica conforme a las indicaciones médicas?'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($anverpro=='Si'){
-$pdf->SetY(132);
-$pdf->SetX(130);
-$anverpro= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($anverpro),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(148);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(165);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-
-}else if ($anverpro=='No') {
-$pdf->SetY(132);
-$pdf->SetX(130);
-$anverpro= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(148);
-$pdf->Cell(3.5, 3, utf8_decode($anverpro),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(165);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-
-}else if ($anverpro=='No procede') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(132);
-$pdf->SetX(130);
-$anverpro= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(148);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-$pdf->SetY(132);
-$pdf->SetX(165);
-$pdf->Cell(3.5, 3, utf8_decode($anverpro),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(137);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('El cirujano y el personal de enfermería han verificado que cuenta con los estudios de imagen que requiere?'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($img_diag=='Si'){
-$pdf->SetY(143.9);
-$pdf->SetX(130);
-$img_diag= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($img_diag),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(143.9);
-$pdf->SetX(165);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-}else if ($img_diag=='No procede') {
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->SetY(143.9);
-$pdf->SetX(130);
-$img_diag= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(143.9);
-$pdf->SetX(165);
-$pdf->Cell(3.5, 3, utf8_decode($img_diag),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No procede'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 8);
-$pdf->SetY(148.5);
-$pdf->SetX(104);
-$pdf->MultiCell(90, 2.8, utf8_decode('Previsión de Eventos Críticos:'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(151);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('El cirujano ha informado:'), 0, 'J'); 
-
-
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(153.5);
-$pdf->SetX(136.5);
-$pdf->MultiCell(93.9, 4, utf8_decode('Los pasos críticos o no sistematizados.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($pasocri=='Si'){
-$pdf->SetY(154);
-$pdf->SetX(130);
-$pasocri= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($pasocri),1, 'L');
-}else if ($pasocri=='No') {
-$pdf->SetY(154);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(158);
-$pdf->SetX(107.5);
-$pdf->MultiCell(93.9, 4, utf8_decode('La duración de la operación.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($durope=='Si'){
-$pdf->SetY(158.5);
-$pdf->SetX(130);
-$durope= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($durope),1, 'L');
-}else if ($durope=='No') {
-$pdf->SetY(158.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(162);
-$pdf->SetX(107.5);
-$pdf->MultiCell(93.9, 4, utf8_decode('La pérdida de sangre prevista.'), 0, 'C'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($persangre=='Si'){
-$pdf->SetY(162.5);
-$pdf->SetX(130);
-$persangre= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($persangre),1, 'L');
-}else if ($persangre=='No') {
-$pdf->SetY(162.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(166);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('El anestesiólogo ha informado:'), 0, 'J'); 
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(168.5);
-$pdf->SetX(137);
-$pdf->MultiCell(60.5, 2.5, utf8_decode('La existencia de algún riesgo o enfermedad en el paciente que pueda complicar la cirugía.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($exriesen=='Si'){
-$pdf->SetY(169.5);
-$pdf->SetX(130);
-$exriesen= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($exriesen),1, 'L');
-}else if ($exriesen=='No') {
-$pdf->SetY(169.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(173.9);
-$pdf->SetX(104);
-$pdf->MultiCell(93.9, 2.8, utf8_decode('El personal de enfermería ha informado:'), 0, 'J'); 
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(176.5);
-$pdf->SetX(137);
-$pdf->MultiCell(60.5, 2.5, utf8_decode('La fecha y método de esterilización del equipo y el instrumental.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($fechm=='Si'){
-$pdf->SetY(177.5);
-$pdf->SetX(130);
-$fechm= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($fechm),1, 'L');
-}else if ($fechm=='No') {
-$pdf->SetY(177.5);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(182);
-$pdf->SetX(137);
-$pdf->MultiCell(60.5, 2.5, utf8_decode('La existencia de algún problema con el instrumental, los equipos y el conteo del mismo.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($exproble=='Si'){
-$pdf->SetY(182.9);
-$pdf->SetX(130);
-$exproble= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($exproble),1, 'L');
-}else if ($exproble=='No') {
-$pdf->SetY(182.9);
-$pdf->SetX(130);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-//$f=date_create($fecha);
-
-//$pdf->Cell(94, 4, 'Fecha: ' . date_format($f,"d-m-Y"), 1, 'L');
-
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(62.5); 
-$pdf->SetX(198); 
-$pdf->MultiCell(94.5, 2.8, utf8_decode('El cirujano responsable de la atención del paciente, en presencia del anestesiólogo y el personal de enfermería, ha aplicado la Lista de Verificación de la Seguridad de la Cirugía y ha confirmado verbalmente:'), 0, 'J'); 
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(73);
-$pdf->SetX(225);
-$pdf->MultiCell(60.5, 2.5, utf8_decode('El nombre del procedimiento realizado:'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($nomprocre=='Si'){
-$pdf->SetY(72.6);
-$pdf->SetX(218);
-$nomprocre= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($nomprocre),1, 'L');
-}else if ($nomprocre=='No') {
-$pdf->SetY(72.6);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(77);
-$pdf->SetX(225);
-$pdf->MultiCell(90.5, 2.5, utf8_decode('El recuento completo del instrumental, gasas y agujas.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($recuento=='Si'){
-$pdf->SetY(76.7);
-$pdf->SetX(218);
-$recuento= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($recuento),1, 'L');
-}else if ($recuento=='No') {
-$pdf->SetY(76.7);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(81);
-$pdf->SetX(225);
-$pdf->MultiCell(67.5, 2.5, utf8_decode('El etiquetado de las muestras (nombre completo del paciente, fecha de nacimiento, fecha de cirugía y descripción general).'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($etqmu=='Si'){
-$pdf->SetY(81.5);
-$pdf->SetX(218);
-$etqmu= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($etqmu),1, 'L');
-}else if ($etqmu=='No') {
-$pdf->SetY(81.5);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(89.5);
-$pdf->SetX(225);
-$pdf->MultiCell(67.5, 2.5, utf8_decode('Los problemas con el instrumental y los equipos que deben ser notificados y resueltos.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($proineq=='Si'){
-$pdf->SetY(90);
-$pdf->SetX(218);
-$proineq= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($proineq),1, 'L');
-}else if ($proineq=='No') {
-$pdf->SetY(90);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(96); 
-$pdf->SetX(198); 
-$pdf->MultiCell(94.5, 2.8, utf8_decode('El cirujano y el anestesiólogo han comentado al personal de enfermería circulante:'), 0, 'J');
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(102);
-$pdf->SetX(225);
-$pdf->MultiCell(67.5, 2.5, utf8_decode('Los principales aspectos de la recuperación postoperatoria.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($prinrecpost=='Si'){
-$pdf->SetY(102);
-$pdf->SetX(218);
-$prinrecpost= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($prinrecpost),1, 'L');
-}else if ($prinrecpost=='No') {
-$pdf->SetY(102);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(106.9);
-$pdf->SetX(225);
-$pdf->MultiCell(67.5, 2.5, utf8_decode('El plan de tratamiento.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($plantrat=='Si'){
-$pdf->SetY(106.5);
-$pdf->SetX(218);
-$plantrat= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($plantrat),1, 'L');
-}else if ($plantrat=='No') {
-$pdf->SetY(106.5);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-$pdf->SetFont('Arial', '', 7);
-$pdf->SetY(111);
-$pdf->SetX(225);
-$pdf->MultiCell(67.5, 2.5, utf8_decode('Los riesgos del paciente.'), 0, 'J'); 
-
-$pdf->SetFont('Arial', 'B', 7.5);
-if($riesgpaci=='Si'){
-$pdf->SetY(110.7);
-$pdf->SetX(218);
-$riesgpaci= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($riesgpaci),1, 'L');
-}else if ($riesgpaci=='No') {
-$pdf->SetY(110.7);
-$pdf->SetX(218);
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'C');
-}
-
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(115.5); 
-$pdf->SetX(198); 
-$pdf->MultiCell(94.5, 2.8, utf8_decode('¿Ocurrieron eventos adversos?'), 0, 'J');
-
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(119); 
-$pdf->SetX(198);
-if($eventosad=='Si'){
-$pdf->SetY(119);
-$pdf->SetX(218);
-$eventosad= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($eventosad),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(119);
-$pdf->SetX(245);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-
-}else if ($eventosad=='No') {
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(119);
-$pdf->SetX(218);
-$eventosad= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(119);
-$pdf->SetX(245);
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode($eventosad),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(124); 
-$pdf->SetX(198); 
-$pdf->MultiCell(94.5, 2.8, utf8_decode('¿Se registro el evento adverso?'), 0, 'J');
-
-$pdf->SetFont('Arial', 'B', 7);
-if($reieventad=='Si'){
-$pdf->SetY(128);
-$pdf->SetX(218);
-$reieventad= 'X';
-$pdf->Cell(3.5, 3, utf8_decode($reieventad),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(128);
-$pdf->SetX(245);
-$pdf->Cell(3.5, 3, utf8_decode(' '),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}else if ($reieventad=='No') {
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->SetY(128);
-$pdf->SetX(218);
-$reieventad= 'X';
-$pdf->Cell(3.5, 3, utf8_decode(''),1, 'L');
-$pdf->Cell(5, 4, utf8_decode('Si'),0, 'C');
-$pdf->SetY(128);
-$pdf->SetX(245);
-$pdf->SetFont('Arial', 'B', 7.5);
-$pdf->Cell(3.5, 3, utf8_decode($reieventad),1, 'L');
-$pdf->SetFont('Arial', '', 7.5);
-$pdf->Cell(5, 4, utf8_decode('No'),0, 'C');
-}
-
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetY(133); 
-$pdf->SetX(199); 
-$pdf->Cell(12, 2.8, utf8_decode('¿Dónde?'), 0, 'J');
-$pdf->Cell(81, 2.8, utf8_decode($donde), 'B', 'J');
-
-
-
-$pdf->SetY(139); 
-$pdf->SetX(200); 
-$pdf->MultiCell(92, 5, utf8_decode('Cirujano(s)' ) , 0,'C');
-
-$pdf->SetY(144); 
-$pdf->SetX(200); 
-$pdf->Cell(15, 3, utf8_decode('Nombre(s):' ) , 0,'C');
-$pdf->MultiCell(77, 3, utf8_decode($fir_cir) , 'B', 'L');
-
-
-$pdf->SetY(148); 
-$pdf->SetX(200); 
-$pdf->MultiCell(92, 5, utf8_decode('Antestesiólogo(s)' ) , 0,'C');
-
-$pdf->SetY(152); 
-$pdf->SetX(200); 
-$pdf->Cell(15, 3, utf8_decode('Nombre(s):' ) , 0,'C');
-$pdf->MultiCell(77, 3, utf8_decode($fir_anest) , 'B', 'L');
-
-
-
-
-
-$pdf->SetY(159); 
-$pdf->SetX(200); 
-$pdf->MultiCell(92, 5, utf8_decode('Personal de enfermería' ) , 0,'C');
-
-$pdf->SetY(161); 
-$pdf->SetX(200); 
-$pdf->Cell(15, 3, utf8_decode('Nombre(s):' ) , 0,'C');
-$pdf->MultiCell(77, 3, utf8_decode($fir_enf) , 'B', 'L');
-
-
-
-$sql_med_id = "SELECT id_usua FROM dat_cir_seg WHERE id_atencion = $id_atencion";
-    $result_med_id = $conexion->query($sql_med_id);
-
-    while ($row_med_id = $result_med_id->fetch_assoc()) {
-      $id_med = $row_med_id['id_usua'];
+$pdf->SetFillColor(230, 230, 230);
+
+$pdf->Cell(140, 8, utf8_decode("ENTRADA ANTES DE LA INDUCCIÓN DE LA ANESTESIA"), 1, 0, 'L', true);
+$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+
+$pdf->Cell(140, 8, utf8_decode("PAUSA QUIRÚRGICA ANTES DE LA INCISIÓN"), 1, 0, 'L', true);
+$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+
+$pdf->Cell(140, 8, utf8_decode("SALIDA ANTES DE QUE EL PACIENTE SALGA DEL QUIRÓFANO"), 1, 0, 'L', true);
+$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+
+$pdf->Ln(5);
+
+// Definir textos para cada sección
+$entradas_textos = [
+    "(Con el enfermero y el anestesista, como mínimo)",
+    "¿Ha confirmado el paciente su identidad, el sitio quirúrgico, el procedimiento y su consentimiento?",
+    "¿Se ha marcado el sitio quirúrgico?",
+    "¿Se ha completado la comprobación de los aparatos de anestesia y la medicación anestésica?",
+    "¿Se ha colocado el pulsioxímetro al paciente y funciona?",
+    "¿Tiene el paciente alergias conocidas?",
+    "¿Tiene el paciente vía aérea difícil / riesgo de aspiración?",
+    "¿Sí, y hay materiales y equipos / ayuda disponible?",
+    "¿Riesgo de hemorragia > 500 ml (7 ml/kg en niños)?"
+];
+
+$entradas_valores = [
+    "",
+    mostrar($data['confirmacion_identidad']),
+    mostrar($data['sitio_marcado_si']),
+    mostrar($data['verificacion_anestesia']),
+    mostrar($data['pulsioximetro']),
+    mostrar($data['alergias_si']),
+    mostrar($data['via_aerea_si']),
+    "", // este dato no está en BD o no definido
+    mostrar($data['riesgo_hemo_si']),
+];
+
+$pausas_textos = [
+    "(Con el enfermero, el anestesista y el cirujano)",
+    "Confirmar que todos los miembros del equipo se hayan presentado por su nombre",
+    "Confirmar la identidad del paciente, el sitio quirúrgico y el procedimiento",
+    "¿Se ha administrado profilaxis antibiótica en los últimos 60 minutos?",
+    "Previsión de eventos críticos",
+    "Cirujano:",
+    "¿Cuáles serán los pasos críticos o no sistematizados?",
+    "¿Cuánto durará la operación?",
+    "¿Cuál es la pérdida de sangre prevista?",
+    "Anestesista:",
+    "¿Presenta el paciente algún problema específico?",
+    "Equipo de enfermería:",
+    "¿Se ha confirmado la esterilidad (con resultados de los indicadores)?",
+    "¿Hay dudas o problemas relacionados con el instrumental y los equipos?",
+    "¿Pueden visualizarse las imágenes diagnósticas esenciales?"
+];
+
+$pausas_valores = [
+    "",
+    mostrar($data['miembros_presentados']),
+    mostrar($data['confirmacion_identidad_equipo']),
+    mostrar($data['profilaxis_antibiotica_si']),
+    "", // texto general sin estado
+    "",
+    mostrar($data['pasos_criticos']),
+    mostrar($data['duracion_operacion']),
+    mostrar($data['perdida_sangre']),
+    "",
+    mostrar($data['problemas_paciente']),
+    "",
+    mostrar($data['esterilidad_confirmada']),
+    mostrar($data['problemas_instrumental']),
+    mostrar($data['imagenes_visibles_si']),
+];
+
+$salidas_textos = [
+    "(Con el enfermero, el anestesista y el cirujano)",
+    "El enfermero confirma verbalmente:",
+    "El nombre del procedimiento",
+    "El recuento de instrumentos, gasas y agujas",
+    "El etiquetado de las muestras (lectura de la etiqueta en voz alta, incluido el nombre del paciente)",
+    "Si hay problemas que resolver relacionados con el instrumental y los equipos",
+    "Cirujano, anestesista y enfermero:",
+    "¿Cuáles son los aspectos críticos de la recuperación y el tratamiento del paciente?"
+];
+
+$salidas_valores = [
+    "",
+    "",
+    mostrar($data['nombre_procedimiento']),
+    mostrar($data['recuento_instrumental']),
+    mostrar($data['etiquetado_muestras']),
+    mostrar($data['problemas_instrumental_final']),
+    "",
+    mostrar($data['aspectos_recuperacion']),
+];
+
+// Máximo de filas para imprimir
+$max_filas = max(count($entradas_textos), count($pausas_textos), count($salidas_textos));
+
+$pdf->SetFont('Arial', '', 9);
+
+$w1 = 63;
+$w2 = 63;
+$w3 = 64;
+$line_height = 5;
+
+$widths = [$w1, $w2, $w3];
+
+// Palabras/frases que deben ir en negrita y con fondo
+function esResaltado($texto) {
+    $frases_clave = [
+        '(Con el enfermero y el anestesista, como mínimo)',
+        '(Con el enfermero, el anestesista y el cirujano)',
+        'Cirujano:',
+        'Anestesista:',
+        'Equipo de enfermería:',
+        'Cirujano, anestesista y enfermero:'
+    ];
+    foreach ($frases_clave as $clave) {
+        if (stripos($texto, $clave) !== false) return true;
     }
-    $sql_med = "SELECT * FROM reg_usuarios WHERE id_usua = $id_med";
-    $result_med = $conexion->query($sql_med);
- while ($row_med = $result_med->fetch_assoc()) {
-      $nom = $row_med['nombre'];
-      $app = $row_med['papell'];
-      $apm = $row_med['sapell'];
-      $pre = $row_med['pre'];
-      $firma = $row_med['firma'];
-      $ced_p = $row_med['cedp'];
-  $cargp = $row_med['cargp'];
+    return false;
 }
-      $pdf->SetY(-60);
-      $pdf->SetFont('Arial', 'B', 6);
-      $pdf->Image('../../imgfirma/' . $firma, 241, $pdf->SetY(-45), 15, 10);
-      
-       if ($firma==null) {
- 
- $pdf->Image('../../imgfirma/FIRMA.jpg', 241, $pdf->SetY(-45), 15, 10);
-} else {
-  $pdf->Image('../../imgfirma/' . $firma, 241, $pdf->SetY(-45), 15, 10);
-}
-      
-      $pdf->Ln(2);
-      $pdf->SetX(225);
-      $pdf->Cell(50, 3, utf8_decode($pre . '. ' . $app), 0, 0, 'C');
-      $pdf->Ln(3);
-     $pdf->SetFont('Arial', 'B', 6);
-      $pdf->SetX(200);
-      $pdf->Cell(100, 3, utf8_decode($cargp . ' ' .'Céd. prof. ' . $ced_p), 0, 0, 'C');
-      
-      $pdf->Ln(3);
-       $pdf->SetX(160);
-      $pdf->Cell(180, 3, utf8_decode('Nombre y firma de enfermera'), 0, 0, 'C');
-      $pdf->Ln(3);
-       $pdf->SetX(160);
-      
-      $pdf->Cell(180, 3, utf8_decode('Coordinador de lista de verificación'), 0, 0, 'C');
-   
 
- $pdf->Output();
+for ($i = 0; $i < $max_filas; $i++) {
+    $col1_raw = $entradas_textos[$i] ?? "";
+    $col2_raw = $pausas_textos[$i] ?? "";
+    $col3_raw = $salidas_textos[$i] ?? "";
+
+    $col1_val = $entradas_valores[$i] ?? "";
+    $col2_val = $pausas_valores[$i] ?? "";
+    $col3_val = $salidas_valores[$i] ?? "";
+
+    $col1 = utf8_decode($col1_raw . ($col1_val ? "  $col1_val" : ""));
+    $col2 = utf8_decode($col2_raw . ($col2_val ? "  $col2_val" : ""));
+    $col3 = utf8_decode($col3_raw . ($col3_val ? "  $col3_val" : ""));
+
+    $bold1 = esResaltado($col1_raw);
+    $bold2 = esResaltado($col2_raw);
+    $bold3 = esResaltado($col3_raw);
+
+    // Altura máxima de la fila
+    $h1 = $pdf->NbLines($w1, $col1) * $line_height;
+    $h2 = $pdf->NbLines($w2, $col2) * $line_height;
+    $h3 = $pdf->NbLines($w3, $col3) * $line_height;
+    $h = max($h1, $h2, $h3);
+
+    $pdf->CheckPageBreak($h);
+    $x = $pdf->GetX();
+    $y = $pdf->GetY();
+
+    // Dibujar bordes sin texto
+    $pdf->Rect($x, $y, $w1, $h);
+    $pdf->Rect($x + $w1, $y, $w2, $h);
+    $pdf->Rect($x + $w1 + $w2, $y, $w3, $h);
+
+    // Columna 1
+    $pdf->SetFont('Arial', $bold1 ? 'B' : '', 9);
+    $pdf->SetXY($x, $y);
+    $pdf->MultiCell($w1, $line_height, $col1, 0, 'L');
+
+    // Columna 2
+    $pdf->SetFont('Arial', $bold2 ? 'B' : '', 9);
+    $pdf->SetXY($x + $w1, $y);
+    $pdf->MultiCell($w2, $line_height, $col2, 0, 'L');
+
+    // Columna 3
+    $pdf->SetFont('Arial', $bold3 ? 'B' : '', 9);
+    $pdf->SetXY($x + $w1 + $w2, $y);
+    $pdf->MultiCell($w3, $line_height, $col3, 0, 'L');
+
+    // Salto a la siguiente fila
+    $pdf->SetXY($x, $y + $h);
 }
+
+$pdf->Ln(10);
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(0, 10, utf8_decode("FIRMAS DEL EQUIPO QUIRÚRGICO"), 0, 1, 'C');
+$pdf->Ln(5);
+
+$pdf->SetFont('Arial', '', 10);
+
+$firmas = [
+    "NOMBRE Y FIRMA DE MÉDICO CIRUJANO",
+    "NOMBRE Y FIRNA DE MÉDICO ANESTESIÓLOGO",
+    "NOMBRE Y FIRMA DEL MÉDICO AYUDANTE",
+    "NOMBRE Y FIRMA DE MÉDICO AYUDANTE 2",
+    "NOMBRE Y FIRMA DE LA ENFERMERA CIRCULANTE",
+    "NOMBRE Y FIRMA DEL INSTRUMENTISTA"
+];
+
+$ancho_celda = 65;
+$alto_firma = 20;
+$alto_linea = 5;
+$padding = 2;
+
+for ($row = 0; $row < 2; $row++) {
+    // Línea para firmas
+    for ($col = 0; $col < 3; $col++) {
+        $index = $row * 3 + $col;
+        if (isset($firmas[$index])) {
+            $pdf->Cell($ancho_celda, $alto_firma, "__________________________", 1, 0, 'C');
+        } else {
+            $pdf->Cell($ancho_celda, $alto_firma, "", 1, 0);
+        }
+    }
+    $pdf->Ln();
+
+    // Altura uniforme por fila (opcional: calcular dinámicamente)
+    $altura_celda_texto = 15;
+
+    $y_inicio = $pdf->GetY();
+
+    // Segunda fila: textos centrados y en paralelo
+    for ($col = 0; $col < 3; $col++) {
+        $index = $row * 3 + $col;
+        $x = 10 + $col * $ancho_celda;
+        $pdf->SetXY($x, $y_inicio);
+        $pdf->Rect($x, $y_inicio, $ancho_celda, $altura_celda_texto); // Borde de la celda
+
+        if (isset($firmas[$index])) {
+            $pdf->SetXY($x + $padding, $y_inicio + 3); // pequeño margen superior
+            $pdf->MultiCell($ancho_celda - 2 * $padding, 5, utf8_decode($firmas[$index]), 0, 'C');
+        }
+
+        // Restaurar Y y avanzar X
+        $pdf->SetXY($x + $ancho_celda, $y_inicio);
+    }
+
+    $pdf->Ln($altura_celda_texto);
+}
+
+// Salida
+header('Content-Type: application/pdf');
+header('Content-Disposition: inline; filename="checklist_quirurgico.pdf"');
+$pdf->Output('I', 'checklist_quirurgico.pdf');
+exit();

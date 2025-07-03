@@ -70,24 +70,47 @@ $usuario = $_SESSION['login'];
         hr.new4 {
             border: 1px solid red;
         }
+        .card-container {
+    display: flex;
+    gap: 20px;
+}
+.card {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #f9f9f9;
+}
+.card h4 {
+    margin-bottom: 15px;
+}
     </style>
+
 </head>
 
 <body>
 <section class="content container-fluid">
 
     <?php
-
     include "../../conexionbd.php";
 
     if (isset($_SESSION['pac'])) {
-      $id_atencion = $_SESSION['pac'];
+    $id_atencion = $_SESSION['pac'];
+    
+    $sql_pac = "SELECT 
+    p.sapell, p.papell, p.nom_pac, p.dir, 
+    p.id_edo, p.id_mun, p.Id_exp AS id_exp, p.tel, 
+    p.fecnac, p.tip_san, p.sexo, p.folio,
+    di.fecha, di.area, di.alta_med, di.alergias,
+    di.id_usua
+FROM paciente p
+INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp
+WHERE di.id_atencion = $id_atencion";
 
-      $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.tel, p.fecnac,p.tip_san, di.fecha, di.area, di.alta_med, p.sexo, di.alergias, p.folio FROM paciente p, dat_ingreso di WHERE p.Id_exp=di.Id_exp and di.id_atencion =$id_atencion";
 
-      $result_pac = $conexion->query($sql_pac);
+    $result_pac = $conexion->query($sql_pac);
 
-      while ($row_pac = $result_pac->fetch_assoc()) {
+    while ($row_pac = $result_pac->fetch_assoc()) {
         $pac_papell = $row_pac['papell'];
         $pac_sapell = $row_pac['sapell'];
         $pac_nom_pac = $row_pac['nom_pac'];
@@ -101,26 +124,23 @@ $usuario = $_SESSION['login'];
         $pac_sexo = $row_pac['sexo'];
         $area = $row_pac['area'];
         $alta_med = $row_pac['alta_med'];
-        $id_exp = $row_pac['Id_exp'];
+        $id_exp = $row_pac['id_exp'];
         $alergias = $row_pac['alergias'];
         $folio = $row_pac['folio'];
-      }
+        $pac_id_usua = $row_pac['id_usua']; // ✅ Aquí está el id_usua
+    }
 
-      $sql_now = "SELECT DATE_ADD(NOW(), INTERVAL 12 HOUR) as dat_now FROM dat_ingreso WHERE id_atencion = $id_atencion";
-
-      $result_now = $conexion->query($sql_now);
-
-      while ($row_now = $result_now->fetch_assoc()) {
+    $sql_now = "SELECT DATE_ADD(NOW(), INTERVAL 12 HOUR) as dat_now FROM dat_ingreso WHERE id_atencion = $id_atencion";
+    $result_now = $conexion->query($sql_now);
+    while ($row_now = $result_now->fetch_assoc()) {
         $dat_now = $row_now['dat_now'];
-      }
+    }
 
-      $sql_est = "SELECT DATEDIFF( '$dat_now' , fecha) as estancia FROM dat_ingreso WHERE id_atencion = $id_atencion";
-
-      $result_est = $conexion->query($sql_est);
-
-      while ($row_est = $result_est->fetch_assoc()) {
+    $sql_est = "SELECT DATEDIFF('$dat_now', fecha) as estancia FROM dat_ingreso WHERE id_atencion = $id_atencion";
+    $result_est = $conexion->query($sql_est);
+    while ($row_est = $result_est->fetch_assoc()) {
         $estancia = $row_est['estancia'];
-      }
+    }
 
       ///inicio bisiesto
 function bisiesto($anio_actual){
@@ -329,562 +349,204 @@ $d="";
 <hr>
  
 <form action="insertar_cir_seg.php" method="POST">
+<input type="hidden" name="id_exp" value="<?= htmlspecialchars($id_exp) ?>">
+    <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
+    <input type="hidden" name="id_atencion" value="<?= htmlspecialchars($id_atencion) ?>">
 
-  <div class="row">
-    <div class="col-sm">
-     <!--INICIO DE CARD-->
-<div class="card" style="width: 22rem;">
-  <div class="card-body">
-    <center><h6 class="card-title"><strong>Fase 1: Entrada <p>Antes de la inducción de la anestesia</strong></h6></center><hr>
-    <h7 class="card-subtitle text-bold">El cirujano, el anestesiólogo y el personal de enfermería en presencia del paciente han confirmado:</h7><p>
-     <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="URGENCIAS" value="Si" name="identidad">
-  <label class="form-check-label" for="URGENCIAS">
-  Su identidad.
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="sitquir" value="Si" name="sitquir">
-  <label class="form-check-label" for="sitquir">
-    
-  El sitio quirúrgico.
-  
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="procquir" value="Si" name="procquir">
-  <label class="form-check-label" for="procquir">
-    
-  El procedimiento quirúrgico.
-  
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="suconsen" value="Si" name="suconsen">
-  <label class="form-check-label" for="suconsen">
-    
-  Su consentimiento.
-  
-  </label>
-</div>
-<hr>
-<div class="container">
-  <div class="row">
-    <strong>¿El personal de enfermería ha confirmado con el cirujano que esté marcado el sitio quirúrgico?</strong>
-      <div class="form-check col-4">
-  <input class="form-check-input" type="radio" id="lugar" value="Si" name="lug_noproc">
-  <label class="form-check-label" for="lugar">
-   Si
-  </label>
-</div>
- 
-    
-       <div class="form-check">
-  <input class="form-check-input" type="radio" id="noprocede" value="No procede" name="lug_noproc">
-  <label class="form-check-label" for="noprocede">
-    No procede
-  </label>
-</div>
-    
-    </div>
-  </div>
-  <hr>
-  <strong>El cirujano ha confirmado la realización de asepsia en el sitio quirúrgico:</strong>
-   <div class="form-check">
-  <input class="form-check-input" type="radio" id="verificado" value="Si" name="circonfase">
-  <label class="form-check-label" for="verificado">
-    Si
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="verificadono" value="No" name="circonfase">
-  <label class="form-check-label" for="verificadono">
-    No
-  </label>
-</div>
-<hr>
-<strong>El anestesiólogo ha completado el control de la seguridad de la anestesia al revisar: medicamentos, equipo (funcionalidad y condiciones óptimas) y el riesgo anestésico del paciente.</strong>
- <div class="form-check">
-  <input class="form-check-input" type="radio" id="conseg" value="Si" name="conseg">
-  <label class="form-check-label" for="conseg">
-   Si
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="consegno" value="No" name="conseg">
-  <label class="form-check-label" for="consegno">
-   No
-  </label>
-</div>
-<hr>
+    <div class="card-container">
+        <!-- Sección 1 -->
+        <div class="card">
+            <h4>Con el enfermero y el anestesista</h4>
 
-<strong>El anestesiólogo ha colocado y comprobado que funcione el oxímetro de pulso correctamente.</strong>
- <div class="form-check">
-  <input class="form-check-input" type="radio" id="oximetro" value="Si" name="oximetro">
-  <label class="form-check-label" for="oximetro">
-   Si
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="oximetrono" value="No" name="oximetro">
-  <label class="form-check-label" for="oximetrono">
-   No
-  </label>
-</div>
-   <hr>
-    <strong>El anestesiólogo ha confirmado si el paciente tiene:</strong><br>
-    <p>¿Alergias conocidas?</p>
-  <div class="row">
-    <div class="col-sm">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="aler_conno" value="No" name="alerg_con">
-  <label class="form-check-label" for="aler_conno">
- No
-  </label>
-</div>
-    </div>
-    <div class="col-sm-9">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="aler_consi" value="Si" name="alerg_con">
-  <label class="form-check-label" for="aler_consi">
-   Si
-  </label>
-</div>
-    </div>
-  </div>
-  <hr>
-   
-    <p><strong>¿Vía aérea difícil y/o riesgo de aspiración?</strong></p>
-  <div class="row">
-    <div class="col-sm">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="difviano" value="No" name="dif_via_aerea">
-  <label class="form-check-label" for="difviano">
- No
-  </label>
-</div>
-    </div>
-    <div class="col-sm-9">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="difviasi" value="Si" name="dif_via_aerea">
-  <label class="form-check-label" for="difviasi">
-   Si, y se cuenta con material, equipo y ayuda disponible.
-  </label>
-</div>
-    </div>
-  </div>
-<hr>
-   <p><strong>¿Riesgo de hemorragia en adultos >500 ml. (niños >7 ml / kg)?</strong></p>
-  <div class="row">
-    <div class="col-sm">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="hematiesno" value="No" name="reishemo">
-  <label class="form-check-label" for="hematiesno">
- No
-  </label>
-</div>
-    </div>
-    <div class="col-sm-9">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="hematiessi" value="Si" name="reishemo">
-  <label class="form-check-label" for="hematiessi">
-   Si, y se ha previsto la disponibilidad de líquidos y dos vías centrales.
-  </label>
-</div>
-    </div>
-  </div>
-  <hr>
-   <p><strong>¿Posible necesidad de hemoderivados y soluciones disponibles?</strong></p>
-  <div class="row">
-    <div class="col-sm">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="posned" value="No" name="nechemo">
-  <label class="form-check-label" for="posned">
- No
-  </label>
-</div>
-    </div>
-    <div class="col-sm-9">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="cruce" value="Si" name="nechemo">
-  <label class="form-check-label" for="cruce">
- Si, y ya se ha realizado el cruce de sangre
-  </label>
-</div>
-    </div>
-  </div>
+            <div class="checkbox-group">
+                <strong>¿Ha confirmado el paciente su identidad, el sitio quirúrgico, el procedimiento y su consentimiento?</strong><br>
+                <input type="checkbox" name="confirmacion_identidad" value="Sí"> Sí
+            </div>
+    <hr>
 
-  </div>
-</div>
-     <!--FIN DE CARD-->
+            <div class="checkbox-group">
+                <strong>¿Se ha marcado el sitio quirúrgico?</strong><br>
+                <input type="checkbox" name="sitio_marcado[]" value="Sí"> Sí<br>
+                <input type="checkbox" name="sitio_marcado[]" value="No procede"> No procede
+            </div>
+    <hr>
+
+            <div class="checkbox-group">
+                <strong>¿Se ha completado la comprobación de los aparatos de anestesia y la medicación anestésica?</strong><br>
+                <input type="checkbox" name="verificacion_anestesia" value="Sí"> Sí
+            </div>
+    <hr>
+
+            <div class="checkbox-group">
+                <strong>¿Se ha colocado el pulsioximetro al paciente y funciona?</strong><br>
+                <input type="checkbox" name="pulsioximetro" value="Sí"> Sí
+            </div>
+    <hr>
+
+            <div class="checkbox-group">
+                <strong>¿Tiene el paciente alergias conocidas?</strong><br>
+                <input type="checkbox" name="alergias[]" value="No"> No<br>
+                <input type="checkbox" name="alergias[]" value="Sí"> Sí
+            </div>
+
+            <div class="checkbox-group">
+                <strong>¿Tiene el paciente vía aérea difícil / riesgo de aspiración?</strong><br>
+                <input type="checkbox" name="via_aerea_dificil[]" value="No"> No<br>
+                <input type="checkbox" name="via_aerea_dificil[]" value="Sí, y hay materiales y equipos / ayuda disponible"> Sí, y hay materiales y equipos / ayuda disponible
+            </div>
+
+            <div class="checkbox-group">
+                <strong>¿Riesgo de hemorragia &gt; 500 ml (7 ml/kg en niños)?</strong><br>
+                <input type="checkbox" name="riesgo_hemorragia[]" value="No"> No<br>
+                <input type="checkbox" name="riesgo_hemorragia[]" value="Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales"> Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales
+            </div>
+        </div>
+
+        <!-- Sección 2 -->
+        <div class="card">
+    <h4>Con el enfermero, el anestesista y el cirujano</h4>
+
+    <div class="checkbox-group">
+        <input type="hidden" name="miembros_presentados" value="0">
+        <label>
+            <input type="checkbox" name="miembros_presentados" value="1">
+            <strong>Confirmar que todos los miembros del equipo se hayan presentado por su nombre</strong>
+        </label>
     </div>
-    <div class="col-sm">
-      <!--INICIO DE SEGUNDA CARD-->
-<div class="card" style="width: 22rem;">
-  <div class="card-body">
-    <h6 class="card-title"><strong><center>Fase 2: Pausa quirúrgica<p>Antes de la incisión cutánea</strong></center></h6><hr>
-    <h7 class="card-subtitle mb-2 text-bold">El circulante ha identificado a cada uno de los miembros del quipo quirúrgico para se presenten por su nombre y función, sin omisiones.</h7><p>
-   
-      <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="confmp" value="Si" name="fcirujano">
-  <label class="form-check-label" for="confmp">
-   Cirujano
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="fayucir" value="Si" name="fayucir">
-  <label class="form-check-label" for="fayucir">
-   Ayudante de cirujano
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="fanest" value="Si" name="fanest">
-  <label class="form-check-label" for="fanest">
-  Antestesiólogo
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="Instrumentista" value="Si" name="instrumentista">
-  <label class="form-check-label" for="Instrumentista">
-   Instrumentista
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="fotros" value="Otros" name="fotros">
-  <label class="form-check-label" for="fotros">
-   Otros
-  </label>
-</div>
+    <hr>
 
-<hr>
- 
-    <strong>El cirujano, ha confirmado de manera verbal con el anestesiólogo y el personal de enfermería:</strong>
-    
- <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="paccorr" value="Si" name="paccorr">
-  <label class="form-check-label" for="paccorr">
-  Paciente correcto
-  </label>
-</div>
-
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="proccorr" value="Si" name="proccorr">
-  <label class="form-check-label" for="proccorr">
-    Procedimiento correcto
-  </label>
-</div>
-
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="sitquird" value="Si" name="sitquird">
-  <label class="form-check-label" for="sitquird">
-    Sitio quirúrgico
-  </label>
-</div>
-
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="encas" value="Si" name="encas">
-  <label class="form-check-label" for="encas">
-    En caso de órgano bilateral, ha marcado derecho o izquierdo, según corresponda
-  </label>
-</div>
-  
-  <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="casmul" value="Si" name="casmul">
-  <label class="form-check-label" for="casmul">
-    En caso de estructura múltiple, ha especificado el nivel a operar.
-  </label>
-</div>
-  
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="poscpac" value="Si" name="poscpac">
-  <label class="form-check-label" for="poscpac">
-      Posición correcta del paciente.
-  </label>
-</div>
-   
-  
-  
-<hr>
-<strong><p>¿El anestesiólogo y el personal de enfermería han verificado que se haya aplicado la profilaxis antibiótica conforme a las indicaciones médicas?</p></strong>
-  <div class="form-check">
-  <input class="form-check-input" type="radio" id="cirresi" value="Si" name="anverpro">
-  <label class="form-check-label" for="cirresi">
-  Si
-  </label>
-</div>
-
-     <div class="form-check">
-  <input class="form-check-input" type="radio" id="anesresi" value="No" name="anverpro">
-  <label class="form-check-label" for="anesresi">
-  No
-  </label>
-</div>
-
- <div class="form-check">
-  <input class="form-check-input" type="radio" id="enfresi" value="No procede" name="anverpro">
-  <label class="form-check-label" for="enfresi">
-  No procede
-  </label>
-</div>
-<hr>
-
-<p><strong>El cirujano y el personal de enfermería han verificado que cuenta con los estudios de imagen que requiere?</strong></p>
-  <div class="row">
-    <div class="col-sm">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="diag_esesi" value="Si" name="img_diag">
-  <label class="form-check-label" for="diag_esesi">
- Si
-  </label>
-</div>
+    <div class="checkbox-group">
+        <input type="hidden" name="confirmacion_identidad_equipo" value="0">
+        <label>
+            <input type="checkbox" name="confirmacion_identidad_equipo" value="1">
+            <strong>Confirmar la identidad del paciente, el sitio quirúrgico y el procedimiento</strong>
+        </label>
     </div>
-    <div class="col-sm-9">
-      <div class="form-check">
-  <input class="form-check-input" type="radio" id="diag_eseno" value="No procede" name="img_diag">
-  <label class="form-check-label" for="diag_eseno">
-  No procede
-  </label>
-</div>
-    </div>
-  </div>
-<hr>
-  <div class="form-group">
-    <label for="texto"></i><strong> Previsión de Eventos Críticos:</strong></label>
-  <p><strong>El cirujano ha informado:</strong>
+    <hr>
 
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="pasocri" value="Si" name="pasocri">
-  <label class="form-check-label" for="pasocri">
-  Los pasos críticos o no sistematizados.
-</label>
-    </div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="durope" value="Si" name="durope">
-  <label class="form-check-label" for="durope">
-  La duración de la operación.
-</label>
-    </div>
-    <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="persangre" value="Si" name="persangre">
-  <label class="form-check-label" for="persangre">
-  La pérdida de sangre prevista.
-</label>
+    <div class="checkbox-group">
+        <strong>¿Se ha administrado profilaxis antibiótica en los últimos 60 minutos?</strong><br>
+        <input type="hidden" name="profilaxis_antibiotica_si" value="0">
+        <input type="checkbox" name="profilaxis_antibiotica_si" value="1"> Sí<br>
+
+        <input type="hidden" name="profilaxis_antibiotica_np" value="0">
+        <input type="checkbox" name="profilaxis_antibiotica_np" value="1"> No procede
     </div>
 
-<strong>El anestesiólogo ha informado:</strong>
- <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="exriesen" value="Si" name="exriesen">
-  <label class="form-check-label" for="exriesen">
-  La existencia de algún riesgo o enfermedad en el paciente que pueda complicar la cirugía.
-</label>
+    <hr>
+    <strong>Previsión de eventos críticos</strong>
+
+    <div class="checkbox-group">
+      <input type="hidden" name="problemas_instrumental" value="0">
+        <label>
+                <input type="checkbox" name="pasos_criticos" value="1">
+        <strong>Cirujano: ¿Cuáles serán los pasos críticos o no sistematizados?</strong> 
+      </label>
     </div>
 
-<strong>El personal de enfermería ha informado:</strong>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="fechm" value="Si" name="fechm">
-  <label class="form-check-label" for="fechm">
- La fecha y método de esterilización del equipo y el instrumental.
+    <div class="checkbox-group">
+      <input type="hidden" name="duracion_operacion" value="0">
+        <label>
+          <input type="checkbox" name="duracion_operacion" value="1">
+          <strong>Cirujano: ¿Cuánto durará la operación?</strong>
+        </label>
     </div>
- 
-     <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="exproble" value="Si" name="exproble">
-  <label class="form-check-label" for="exproble">
-La existencia de algún problema con el instrumental, los equipos y el conteo del mismo.
-    </div> 
-  
-</div>
-</div>
-</div>
 
-      <!--TERMINO DE SEGUNDA CAR-->
-
+    <div class="checkbox-group">
+            <input type="hidden" name="perdida_sangre" value="0">
+        <label>
+          <input type="checkbox" name="perdida_sangre" value="1">
+            <strong>Cirujano: ¿Cuál es la pérdida de sangre prevista?</strong>        
+      </label>
     </div>
-    <div class="col-sm">
-     <!--INICIO DE TERCER CAR-->
-<div class="card" style="width: 22rem;">
-  <div class="card-body">
-    <h6 class="card-title"><strong><center>Fase 3: Salida</center><p>Antes de que el paciente salga de quirófano</strong></h6><hr>
-    <h7 class="card-subtitle mb-2 text-bold">El cirujano responsable de la atención del paciente, en presencia del anestesiólogo y el personal de enfermería, ha aplicado la Lista de Verificación de la Seguridad de la Cirugía y ha confirmado verbalmente:</h7><p>
-   <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="nomprocre" value="Si" name="nomprocre">
-  <label class="form-check-label" for="nomprocre">
-  El nombre del procedimiento realizado:
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="recuento" value="Si" name="recuento">
-  <label class="form-check-label" for="recuento">
-El recuento completo del instrumental, gasas y agujas.
-  </label>
-</div>
-<div class="container">
-  <div class="row">
-   <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="etqmu" value="Si" name="etqmu">
-  <label class="form-check-label" for="etqmu">
-El etiquetado de las muestras (nombre completo del paciente, fecha de nacimiento, fecha de cirugía y descripción general).
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" id="proineq" value="Si" name="proineq">
-  <label class="form-check-label" for="proineq">
-Los problemas con el instrumental y los equipos que deben ser notificados y resueltos.
-  </label>
-</div> 
-   
-  </div>
-</div>
-<hr>
-<p><strong>El cirujano y el anestesiólogo han comentado al personal de enfermería circulante:</strong></p>
-  <div class="row">
-    
-   <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="prinrecpost" value="Si" name="prinrecpost">
-  <label class="form-check-label" for="prinrecpost">
-Los principales aspectos de la recuperación postoperatoria.
-  </label>
-</div> 
-    
-     <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="plantrat" value="Si" name="plantrat">
-  <label class="form-check-label" for="plantrat">
-El plan de tratamiento.
-  </label>
-</div> 
-    <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="riesgpaci" value="Si" name="riesgpaci">
-  <label class="form-check-label" for="riesgpaci">
-Los riesgos del paciente.
-  </label>
-</div> 
-  </div>
 
-<hr>
-<strong>¿Ocurrieron eventos adversos?</strong>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="eventosad" value="Si" name="eventosad">
-  <label class="form-check-label" for="eventosad">
-Si
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="eventosadno" value="No" name="eventosad">
-  <label class="form-check-label" for="eventosadno">
-No
-  </label>
-</div> 
-<hr>
-
-<strong>¿Se registro el evento adverso?</strong>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="eventosada" value="Si" name="reieventad">
-  <label class="form-check-label" for="eventosada">
-Si
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" id="eventosadnoa" value="No" name="reieventad">
-  <label class="form-check-label" for="eventosadnoa">
-No
-  </label><p>
-  ¿Dónde?<input type="text" name="donde" class="form-control">
-</div> 
-
-<hr>
-<div class="form-group">
-    <label for="exampleFormControlTextarea1"><strong>Listado del personal responsable que participó en la aplicación y llenado de esta lista de verificación.</strong></label>
-
-
-  </div>
-    <div class="form-group">
-    <label for="cirujano"><button type="button" class="btn btn-success btn-sm" id="playcir"><i class="fas fa-play"></button></i>
- Cirujano(s)</label>
-    <input type="text" class="form-control" id="cirujano" value="" name="fir_cir">
-  </div>
-<script type="text/javascript">
-const cirujano = document.getElementById('cirujano');
-const btnPlayTextjano = document.getElementById('playcir');
-
-btnPlayTextjano.addEventListener('click', () => {
-        leerTexto(cirujano.value);
-});
-
-function leerTexto(cirujano){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= cirujano;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-    <div class="form-group">
-    <label for="anes"><button type="button" class="btn btn-success btn-sm" id="playtes"><i class="fas fa-play"></button></i> Antestesiólogo(s)</label>
-    <input type="text" class="form-control" id="anes" value="" name="fir_anest">
-  </div>
-<script type="text/javascript">
-const anes = document.getElementById('anes');
-const btnPlayTextlogo = document.getElementById('playtes');
-
-btnPlayTextlogo.addEventListener('click', () => {
-        leerTexto(anes.value);
-});
-
-function leerTexto(anes){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= anes;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-    <div class="form-group">
-    <label for="enfermera"><button type="button" class="btn btn-success btn-sm" id="playfer"><i class="fas fa-play"></button></i>Personal de Enfermería</label>
-    <input type="text" class="form-control" id="enfermera" value="" name="fir_enf">
-  </div>
-    <script type="text/javascript">
-const enfermera = document.getElementById('enfermera');
-const btnPlayTxte = document.getElementById('playfer');
-
-btnPlayTxte.addEventListener('click', () => {
-        leerTexto(enfermera.value);
-});
-
-function leerTexto(enfermera){
-    const speech = new SpeechSynthesisUtterance();
-    speech.text= enfermera;
-    speech.volume=1;
-    speech.rate=1;
-    speech.pitch=0;
-    window.speechSynthesis.speak(speech);
-}
-</script>
-  </div>
-</div>
-     <!--TERMINO DE CAR-->
+    <div class="checkbox-group">
+            <input type="hidden" name="problemas_paciente" value="0">
+        <label>
+          <input type="checkbox" name="problemas_paciente" value="1">
+              <strong>Anestesista: ¿Presenta el paciente algún problema específico?</strong>
+          </label>
     </div>
-  </div>
+
+    <div class="checkbox-group">
+        <input type="hidden" name="esterilidad_confirmada" value="0">
+        <label>
+            <input type="checkbox" name="esterilidad_confirmada" value="1">
+            <strong>¿Se ha confirmado la esterilidad (con resultados de los indicadores)?</strong>
+        </label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="hidden" name="problemas_instrumental" value="0">
+        <label>
+                <input type="checkbox" name="problemas_instrumental" value="1">
+          <strong>¿Hay dudas o problemas relacionados con el instrumental y los equipos?</strong>
+        </label>
+    </div>
+
+    <div class="checkbox-group">
+        <strong>¿Pueden visualizarse las imágenes diagnósticas esenciales?</strong><br>
+        <input type="hidden" name="imagenes_visibles_si" value="0">
+        <input type="checkbox" name="imagenes_visibles_si" value="1"> Sí<br>
+
+        <input type="hidden" name="imagenes_visibles_np" value="0">
+        <input type="checkbox" name="imagenes_visibles_np" value="1"> No procede
+    </div>
 </div>
 
 
+        <!-- Sección 3 -->
+        <div class="card">
+            <h4>Antes de salir del quirófano</h4>
 
-<!--<?php 
-//$usuario = $_SESSION['login'];
-//$resultado = $conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='" . $usuario . "'") or die($conexion->error);
- ?>-->
+            <div class="checkbox-group">
+                    <input type="hidden" name="nombre_procedimiento" value="0">
+                <label>
+                  <input type="checkbox" name="nombre_procedimiento" value="1">
+                  <strong>El enfermero confirma verbalmente: El nombre del procedimiento</strong>
+                </label>
+            </div>
 
+            <div class="checkbox-group">
+                    <input type="hidden" name="recuento_instrumental" value="0">
+                    <label>
+                      <input type="checkbox" name="recuento_instrumental" value="1">
+                      <strong>El recuento de instrumentos, gasas y agujas</strong>
+                    </label>
+            </div>
 
+            <div class="checkbox-group">
+              <input type="hidden" name="etiquetado_muestras" value="0">
+                    <label>
+                    <input type="checkbox" name="etiquetado_muestras" value="1">
+                <strong>El etiquetado de las muestras (lectura de la etiqueta en voz alta, incluido el nombre del paciente)</strong>
+                    </label>
+            </div>
 
- <hr>
+            <div class="form-group">
+              <input type="hidden" name="problemas_instrumental_final" value="0">
+                <label>
+                <input type="checkbox" name="problemas_instrumental_final" value="1">
+                  <strong>Si hay problemas que resolver relacionados con el instrumental y los equipos</strong>
+                </label>
+            </div>
 
-                        <center><div class="form-group col-6">
-                            <button type="submit" class="btn btn-primary">FIRMAR Y GUARDAR</button>
-                            <button type="button" class="btn btn-danger" onclick="history.back()">CANCELAR</button>
-                        </div></center>
+            <div class="form-group">
+              <input type="hidden" name="aspectos_recuperacion" value="0">
+                <label>
+                  <strong>Cirujano, anestesista y enfermero:</strong><br>
+                  <input type="checkbox" name="aspectos_recuperacion" value="1">
+                ¿Cuáles son los aspectos críticos de la recuperación y el tratamiento del paciente?
+              </label>
+            </div>
+        </div>
+    </div>
 
-                        <br>
-                        </form>
+    <br>
+            <button type="submit" class="btn btn-primary">FIRMAR</button>
+        <a href="../../template/select_pac_enf.php" class="btn btn-secondary">Cancelar</a>
+</form>
+
 </div> <!--TERMINO DE NOTA MEDICA div container-->
 
 
