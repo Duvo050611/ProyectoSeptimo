@@ -1,9 +1,25 @@
 <?php
 session_start();
 include "../../conexionbd.php";
-require "../../fpdf/fpdf.php";
+require '../../fpdf/fpdf.php';
 
-$id_atencion = $_SESSION['hospital'];
+// Evita el caché del navegador
+header("Expires: 0");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+
+if (!isset($_SESSION['login'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// Obtener id_atencion desde GET o SESSION
+$id_atencion = isset($_GET['id']) ? intval($_GET['id']) : ($_SESSION['hospital'] ?? null);
+
+if (!$id_atencion) {
+    die("ID de atención no definido.");
+}
+
 
 // Obtener datos del checklist
 $sql_check = "SELECT * FROM dat_cir_seg WHERE id_atencion = ? LIMIT 1";
@@ -17,14 +33,16 @@ $stmt->close();
 if (!$data) {
     die("Checklist quirúrgico no encontrado.");
 }
-
+$id_exp = $data['id_exp'];
 // Obtener datos del paciente
-$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.Id_exp, p.resp, p.paren, p.edad, p.sexo, p.dir, p.tel, di.id_usua, p.fecnac
+$$id_exp = $data['id_exp']; // del checklist actual
+
+$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.Id_exp, p.resp, p.paren, p.edad, p.sexo, p.dir, p.tel, p.fecnac
             FROM paciente p 
-            JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
-            WHERE di.id_atencion = ? LIMIT 1";
+            WHERE p.Id_exp = ? LIMIT 1";
 $stmt = $conexion->prepare($sql_pac);
-$stmt->bind_param("i", $id_atencion);
+
+$stmt->bind_param("i", $id_exp);
 $stmt->execute();
 $res_pac = $stmt->get_result();
 $pac = $res_pac->fetch_assoc();
