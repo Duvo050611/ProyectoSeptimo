@@ -80,7 +80,7 @@ if (!$row_hist) {
     echo '<script>
         $(document).ready(function() {
             swal({
-                title: "NO EXISTE HISTORIA CLÍNICA PARA ESTE PACIENTE", 
+                title: "NO EXISTE HOJA INICIAL PARA ESTE PACIENTE", 
                 type: "error",
                 confirmButtonText: "ACEPTAR"
             }, function(isConfirm) { 
@@ -122,7 +122,7 @@ class PDF extends FPDF
         $this->SetY(40);
         $this->SetFont('Arial', 'B', 15);
         $this->SetTextColor(40, 40, 40);
-        $this->Cell(0, 12, utf8_decode('NOTA DE HOJA INICIAL'), 0, 1, 'C');
+        $this->Cell(0, 12, utf8_decode('HOJA INICIAL'), 0, 1, 'C');
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(100, 100, 100);
         $this->Cell(0, 6, utf8_decode('Fecha: ') . date('d/m/Y H:i', strtotime($GLOBALS['fecha_ing'])), 0, 1, 'R');
@@ -174,7 +174,7 @@ $pdf->Ln(4);
 
 $pdf->SetFont('Arial', 'B', 13);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 12, utf8_decode(' HOJA INICIAL'), 0, 1, 'C', true);
+$pdf->Cell(0, 12, utf8_decode(' '), 0, 1, 'C', true);
 $pdf->Ln(2);
 
 $pdf->SetFont('Arial', 'B', 9);
