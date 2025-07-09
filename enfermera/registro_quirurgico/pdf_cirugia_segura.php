@@ -74,7 +74,7 @@ class PDF extends FPDF {
 
     function Footer() {
     $this->SetY(-25);
-    $this->SetFont('Arial', '', 8);
+    $this->SetFont('Arial', '', 9);
     $this->MultiCell(0, 4, utf8_decode(
         "Av. Tecnológico 1020, Col. Bellavista, C.P. 52172, Metepec, Edo. de México,\n" .
         "Teléfonos. (722) 232.8086 / (722) 238.6901, inst.enfermedadesoculares@gmail.com."
@@ -158,6 +158,7 @@ function mostrar($estado) {
 
 
 $pdf = new PDF('P','mm','Letter');
+$pdf->SetAutoPageBreak(true, 25); // Reservar espacio para el footer
 $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Arial','',10);
@@ -176,33 +177,33 @@ $pdf->SetFont('Arial', '', 10);
 
 $nombreCompleto = $pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac'];
 
-$pdf->Cell(65, 8, utf8_decode("Nombre del paciente"), 1, 0, 'L');
-$pdf->Cell(125, 8, utf8_decode($nombreCompleto), 1, 1, 'L');
+$pdf->Cell(66, 8, utf8_decode("Nombre del paciente"), 1, 0, 'L');
+$pdf->Cell(130, 8, utf8_decode($nombreCompleto), 1, 1, 'L');
 
-$pdf->Cell(65, 8, utf8_decode("Fecha de nacimiento"), 1, 0, 'L');
-$pdf->Cell(125, 8, utf8_decode($fechaNacimiento), 1, 1, 'L');
+$pdf->Cell(66, 8, utf8_decode("Fecha de nacimiento"), 1, 0, 'L');
+$pdf->Cell(130, 8, utf8_decode($fechaNacimiento), 1, 1, 'L');
 
-$pdf->Cell(65, 8, utf8_decode("Fecha de elaboración"), 1, 0, 'L');
-$pdf->Cell(125, 8, utf8_decode($fechaHoy), 1, 1, 'L');
+$pdf->Cell(66, 8, utf8_decode("Fecha de elaboración"), 1, 0, 'L');
+$pdf->Cell(130, 8, utf8_decode($fechaHoy), 1, 1, 'L');
 
-$pdf->Cell(65, 8, utf8_decode("Diagnóstico"), 1, 0, 'L');
-$pdf->Cell(125, 8, utf8_decode($diagnostico), 1, 1, 'L');
+$pdf->Cell(66, 8, utf8_decode("Diagnóstico"), 1, 0, 'L');
+$pdf->Cell(130, 8, utf8_decode($diagnostico), 1, 1, 'L');
 
-$pdf->Cell(65, 8, utf8_decode("Procedimiento quirúrgico"), 1, 0, 'L');
-$pdf->Cell(125, 8, utf8_decode($procedimientoQx), 1, 1, 'L');
+$pdf->Cell(66, 8, utf8_decode("Procedimiento quirúrgico"), 1, 0, 'L');
+$pdf->Cell(130, 8, utf8_decode($procedimientoQx), 1, 1, 'L');
 
 // Secciones con espacio para hora
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetFillColor(230, 230, 230);
 
 $pdf->Cell(140, 8, utf8_decode("ENTRADA ANTES DE LA INDUCCIÓN DE LA ANESTESIA"), 1, 0, 'L', true);
-$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+$pdf->Cell(56, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
 
 $pdf->Cell(140, 8, utf8_decode("PAUSA QUIRÚRGICA ANTES DE LA INCISIÓN"), 1, 0, 'L', true);
-$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+$pdf->Cell(56, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
 
 $pdf->Cell(140, 8, utf8_decode("SALIDA ANTES DE QUE EL PACIENTE SALGA DEL QUIRÓFANO"), 1, 0, 'L', true);
-$pdf->Cell(50, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
+$pdf->Cell(56, 8, utf8_decode("Hora: ___________"), 1, 1, 'L');
 
 $pdf->Ln(5);
 
@@ -294,9 +295,9 @@ $max_filas = max(count($entradas_textos), count($pausas_textos), count($salidas_
 
 $pdf->SetFont('Arial', '', 9);
 
-$w1 = 63;
-$w2 = 63;
-$w3 = 64;
+$w1 = 65;
+$w2 = 65;
+$w3 = 66;
 $line_height = 5;
 
 $widths = [$w1, $w2, $w3];

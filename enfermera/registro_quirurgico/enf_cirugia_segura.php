@@ -335,200 +335,184 @@ if (!isset($peso)){
       }
         ?>
 <form action="insertar_cir_seg.php" method="POST">
-<input type="hidden" name="id_exp" value="<?= htmlspecialchars($id_exp) ?>">
-    <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
-    <input type="hidden" name="id_atencion" value="<?= htmlspecialchars($id_atencion) ?>">
+  <input type="hidden" name="id_exp" value="<?= htmlspecialchars($id_exp) ?>">
+  <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
+  <input type="hidden" name="id_atencion" value="<?= htmlspecialchars($id_atencion) ?>">
 
-    <div class="card-container">
-        <!-- Sección 1 -->
-        <div class="card">
-            <h4>Con el enfermero y el anestesista</h4>
+  <div class="card-container">
+    <!-- Sección 1 -->
+    <div class="card">
+      <h4>Con el enfermero y el anestesista</h4>
 
-            <div class="checkbox-group">
-                <strong>¿Ha confirmado el paciente su identidad, el sitio quirúrgico, el procedimiento y su consentimiento?</strong><br>
-                <input type="checkbox" name="confirmacion_identidad" value="Sí"> Sí
-            </div>
-    <hr>
+      <div class="checkbox-group">
+        <strong>¿Ha confirmado el paciente su identidad, el sitio quirúrgico, el procedimiento y su consentimiento?</strong><br>
+        <input type="checkbox" name="confirmacion_identidad" value="Sí"> Sí
+      </div>
+      <hr>
 
-            <div class="checkbox-group">
-                <strong>¿Se ha marcado el sitio quirúrgico?</strong><br>
-                <input type="checkbox" name="sitio_marcado[]" value="Sí"> Sí<br>
-                <input type="checkbox" name="sitio_marcado[]" value="No procede"> No procede
-            </div>
-    <hr>
+      <div class="checkbox-group">
+        <strong>¿Se ha marcado el sitio quirúrgico?</strong><br>
+        <input type="checkbox" name="sitio_marcado[]" value="Sí"> Sí<br>
+        <input type="checkbox" name="sitio_marcado[]" value="No procede"> No procede
+      </div>
+      <hr>
 
-            <div class="checkbox-group">
-                <strong>¿Se ha completado la comprobación de los aparatos de anestesia y la medicación anestésica?</strong><br>
-                <input type="checkbox" name="verificacion_anestesia" value="Sí"> Sí
-            </div>
-    <hr>
+      <div class="checkbox-group">
+        <strong>¿Se ha completado la comprobación de los aparatos de anestesia y la medicación anestésica?</strong><br>
+        <input type="checkbox" name="verificacion_anestesia" value="Sí"> Sí
+      </div>
+      <hr>
 
-            <div class="checkbox-group">
-                <strong>¿Se ha colocado el pulsioximetro al paciente y funciona?</strong><br>
-                <input type="checkbox" name="pulsioximetro" value="Sí"> Sí
-            </div>
-    <hr>
+      <div class="checkbox-group">
+        <strong>¿Se ha colocado el pulsioximetro al paciente y funciona?</strong><br>
+        <input type="checkbox" name="pulsioximetro" value="Sí"> Sí
+      </div>
+      <hr>
 
-            <div class="checkbox-group">
-                <strong>¿Tiene el paciente alergias conocidas?</strong><br>
-                <input type="checkbox" name="alergias[]" value="No"> No<br>
-                <input type="checkbox" name="alergias[]" value="Sí"> Sí
-            </div>
+      <div class="checkbox-group">
+        <strong>¿Tiene el paciente alergias conocidas?</strong><br>
+        <input type="checkbox" name="alergias[]" value="No"> No<br>
+        <input type="checkbox" name="alergias[]" value="Sí"> Sí
+      </div>
 
-            <div class="checkbox-group">
-                <strong>¿Tiene el paciente vía aérea difícil / riesgo de aspiración?</strong><br>
-                <input type="checkbox" name="via_aerea_dificil[]" value="No"> No<br>
-                <input type="checkbox" name="via_aerea_dificil[]" value="Sí, y hay materiales y equipos / ayuda disponible"> Sí, y hay materiales y equipos / ayuda disponible
-            </div>
+      <div class="checkbox-group">
+        <strong>¿Tiene el paciente vía aérea difícil / riesgo de aspiración?</strong><br>
+        <input type="checkbox" name="via_aerea_dificil[]" value="No"> No<br>
+        <input type="checkbox" name="via_aerea_dificil[]" value="Sí, y hay materiales y equipos / ayuda disponible"> Sí, y hay materiales y equipos / ayuda disponible
+      </div>
 
-            <div class="checkbox-group">
-                <strong>¿Riesgo de hemorragia &gt; 500 ml (7 ml/kg en niños)?</strong><br>
-                <input type="checkbox" name="riesgo_hemorragia[]" value="No"> No<br>
-                <input type="checkbox" name="riesgo_hemorragia[]" value="Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales"> Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales
-            </div>
-        </div>
-
-        <!-- Sección 2 -->
-        <div class="card">
-    <h4>Con el enfermero, el anestesista y el cirujano</h4>
-
-    <div class="checkbox-group">
-        <input type="hidden" name="miembros_presentados" value="0">
-        <label>
-            <input type="checkbox" name="miembros_presentados" value="1">
-            <strong>Confirmar que todos los miembros del equipo se hayan presentado por su nombre</strong>
-        </label>
+      <div class="checkbox-group">
+        <strong>¿Riesgo de hemorragia &gt; 500 ml (7 ml/kg en niños)?</strong><br>
+        <input type="checkbox" name="riesgo_hemorragia[]" value="No"> No<br>
+        <input type="checkbox" name="riesgo_hemorragia[]" value="Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales"> Sí, y se ha previsto la disponibilidad de líquidos y dos vías IV o centrales
+      </div>
     </div>
-    <hr>
 
-    <div class="checkbox-group">
-        <input type="hidden" name="confirmacion_identidad_equipo" value="0">
+    <!-- Sección 2 -->
+    <div class="card">
+      <h4>Con el enfermero, el anestesista y el cirujano</h4>
+
+      <div class="checkbox-group">
         <label>
-            <input type="checkbox" name="confirmacion_identidad_equipo" value="1">
-            <strong>Confirmar la identidad del paciente, el sitio quirúrgico y el procedimiento</strong>
+          <input type="checkbox" name="miembros_presentados" value="1">
+          <strong>Confirmar que todos los miembros del equipo se hayan presentado por su nombre</strong>
         </label>
-    </div>
-    <hr>
+      </div>
+      <hr>
 
-    <div class="checkbox-group">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="confirmacion_identidad_equipo" value="1">
+          <strong>Confirmar la identidad del paciente, el sitio quirúrgico y el procedimiento</strong>
+        </label>
+      </div>
+      <hr>
+
+      <div class="checkbox-group">
         <strong>¿Se ha administrado profilaxis antibiótica en los últimos 60 minutos?</strong><br>
-        <input type="hidden" name="profilaxis_antibiotica_si" value="0">
         <input type="checkbox" name="profilaxis_antibiotica_si" value="1"> Sí<br>
-
-        <input type="hidden" name="profilaxis_antibiotica_np" value="0">
         <input type="checkbox" name="profilaxis_antibiotica_np" value="1"> No procede
-    </div>
+      </div>
+      <hr>
 
-    <hr>
-    <strong>Previsión de eventos críticos</strong>
+      <strong>Previsión de eventos críticos</strong>
 
-    <div class="checkbox-group">
-      <input type="hidden" name="problemas_instrumental" value="0">
+      <div class="checkbox-group">
         <label>
-                <input type="checkbox" name="pasos_criticos" value="1">
-        <strong>Cirujano: ¿Cuáles serán los pasos críticos o no sistematizados?</strong> 
-      </label>
-    </div>
+          <input type="checkbox" name="problemas_instrumental" value="1">
+          <strong>¿Hay dudas o problemas relacionados con el instrumental y los equipos?</strong>
+        </label>
+      </div>
 
-    <div class="checkbox-group">
-      <input type="hidden" name="duracion_operacion" value="0">
+      <div class="checkbox-group">
         <label>
           <input type="checkbox" name="duracion_operacion" value="1">
           <strong>Cirujano: ¿Cuánto durará la operación?</strong>
         </label>
-    </div>
+      </div>
 
-    <div class="checkbox-group">
-            <input type="hidden" name="perdida_sangre" value="0">
+      <div class="checkbox-group">
         <label>
           <input type="checkbox" name="perdida_sangre" value="1">
-            <strong>Cirujano: ¿Cuál es la pérdida de sangre prevista?</strong>        
-      </label>
-    </div>
+          <strong>Cirujano: ¿Cuál es la pérdida de sangre prevista?</strong>
+        </label>
+      </div>
 
-    <div class="checkbox-group">
-            <input type="hidden" name="problemas_paciente" value="0">
+      <div class="checkbox-group">
         <label>
           <input type="checkbox" name="problemas_paciente" value="1">
-              <strong>Anestesista: ¿Presenta el paciente algún problema específico?</strong>
-          </label>
-    </div>
-
-    <div class="checkbox-group">
-        <input type="hidden" name="esterilidad_confirmada" value="0">
-        <label>
-            <input type="checkbox" name="esterilidad_confirmada" value="1">
-            <strong>¿Se ha confirmado la esterilidad (con resultados de los indicadores)?</strong>
+          <strong>Anestesista: ¿Presenta el paciente algún problema específico?</strong>
         </label>
-    </div>
+      </div>
 
-    <div class="checkbox-group">
-      <input type="hidden" name="problemas_instrumental" value="0">
+      <div class="checkbox-group">
         <label>
-                <input type="checkbox" name="problemas_instrumental" value="1">
-          <strong>¿Hay dudas o problemas relacionados con el instrumental y los equipos?</strong>
+          <input type="checkbox" name="esterilidad_confirmada" value="1">
+          <strong>¿Se ha confirmado la esterilidad (con resultados de los indicadores)?</strong>
         </label>
-    </div>
+      </div>
 
-    <div class="checkbox-group">
+      <div class="checkbox-group">
         <strong>¿Pueden visualizarse las imágenes diagnósticas esenciales?</strong><br>
-        <input type="hidden" name="imagenes_visibles_si" value="0">
         <input type="checkbox" name="imagenes_visibles_si" value="1"> Sí<br>
-
-        <input type="hidden" name="imagenes_visibles_np" value="0">
         <input type="checkbox" name="imagenes_visibles_np" value="1"> No procede
-    </div>
-</div>
-
-
-        <!-- Sección 3 -->
-        <div class="card">
-            <h4>Antes de salir del quirófano</h4>
-
-            <div class="checkbox-group">
-                    <input type="hidden" name="nombre_procedimiento" value="0">
-                <label>
-                  <input type="checkbox" name="nombre_procedimiento" value="1">
-                  <strong>El enfermero confirma verbalmente: El nombre del procedimiento</strong>
-                </label>
-            </div>
-
-            <div class="checkbox-group">
-                    <input type="hidden" name="recuento_instrumental" value="0">
-                    <label>
-                      <input type="checkbox" name="recuento_instrumental" value="1">
-                      <strong>El recuento de instrumentos, gasas y agujas</strong>
-                    </label>
-            </div>
-
-            <div class="checkbox-group">
-              <input type="hidden" name="etiquetado_muestras" value="0">
-                    <label>
-                    <input type="checkbox" name="etiquetado_muestras" value="1">
-                <strong>El etiquetado de las muestras (lectura de la etiqueta en voz alta, incluido el nombre del paciente)</strong>
-                    </label>
-            </div>
-
-            <div class="form-group">
-              <input type="hidden" name="problemas_instrumental_final" value="0">
-                <label>
-                <input type="checkbox" name="problemas_instrumental_final" value="1">
-                  <strong>Si hay problemas que resolver relacionados con el instrumental y los equipos</strong>
-                </label>
-            </div>
-
-            <div class="form-group">
-              <input type="hidden" name="aspectos_recuperacion" value="0">
-                <label>
-                  <strong>Cirujano, anestesista y enfermero:</strong><br>
-                  <input type="checkbox" name="aspectos_recuperacion" value="1">
-                ¿Cuáles son los aspectos críticos de la recuperación y el tratamiento del paciente?
-              </label>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <br>
-            <button type="submit" class="btn btn-primary">FIRMAR</button>
-        <a href="../../template/select_pac_enf.php" class="btn btn-secondary">Cancelar</a>
+    <!-- Sección 3 -->
+    <div class="card">
+      <h4>Antes de salir del quirófano</h4>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="nombre_procedimiento" value="1">
+          <strong>El enfermero confirma verbalmente: El nombre del procedimiento</strong>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="recuento_instrumental" value="1">
+          <strong>El recuento de instrumentos, gasas y agujas</strong>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="etiquetado_muestras" value="1">
+          <strong>El etiquetado de las muestras (lectura de la etiqueta en voz alta, incluido el nombre del paciente)</strong>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="problemas_instrumental_final" value="1">
+          <strong>Si hay problemas que resolver relacionados con el instrumental y los equipos</strong>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <strong>Cirujano, anestesista y enfermero:</strong><br>
+          <input type="checkbox" name="aspectos_recuperacion" value="1">
+          ¿Cuáles son los aspectos críticos de la recuperación y el tratamiento del paciente?
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <button type="submit" class="btn btn-primary">FIRMAR</button>
+  <a href="../../template/select_pac_enf.php" class="btn btn-secondary">Cancelar</a>
 </form>
+
+<footer class="main-footer">
+        <?php
+        include("../../template/footer.php");
+        ?>
+    </footer>
+
+    <!-- FastClick -->
+    <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+    <!-- AdminLTE App -->
+    <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
