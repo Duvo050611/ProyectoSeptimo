@@ -59,6 +59,16 @@ while ($row = $result_services->fetch_assoc()) {
                         $(this).hide();
                     }
                 });
+                
+                // Hide empty columns if no results
+                $('.col-md-6').each(function() {
+                    var visibleItems = $(this).find('.service-item:visible').length;
+                    if (visibleItems === 0) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
             });
         });
     </script>
@@ -71,13 +81,14 @@ while ($row = $result_services->fetch_assoc()) {
                 role="alert">
                 <?php echo htmlspecialchars($_SESSION['message']); ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <?php
-            unset($_SESSION['message']);
-            unset($_SESSION['message_type']);
-            ?>
+        // Limpiar el mensaje
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+        ?>
             <?php endif; ?>
         </div>
         <div class="row">
@@ -229,7 +240,7 @@ while ($row = $result_services->fetch_assoc()) {
                     <div class="col-sm-4">Paciente:
                         <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac; ?></strong>
                     </div>
-                    <div class="col-sm-4">Fecha de ingreso:
+                    <div class="col-sm-4">Fecha de atención:
                         <strong><?php echo date_format(date_create($pac_fecing), "d/m/Y H:i:s"); ?></strong>
                     </div>
                 </div>
@@ -249,29 +260,22 @@ while ($row = $result_services->fetch_assoc()) {
                         if ($meses < 0) { --$anos; $meses += 12; }
                         echo ($anos > 0 ? $anos . " años" : ($meses > 0 ? $meses . " meses" : $dias . " días"));
                     ?></strong></div>
-                    <div class="col-sm-2">Habitación: <strong><?php echo $num_cama; ?></strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $num_cama .' - '.$area;?> </strong></div> 
                 </div>
                 <div class="row">
                     <div class="col-sm-8">
                         <?php echo $d ? "Diagnóstico: <strong>$d</strong>" : "Motivo de atención: <strong>$m</strong>"; 
                         ?>
                     </div>
-                    <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
-                </div>
-                <div class="row">
+
                     <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
-                    <div class="col-sm-4">Estado de salud: <strong><?php echo $edo_salud; ?></strong></div>
-                    <div class="col-sm-3">Tipo de sangre: <strong><?php echo $pac_tip_sang; ?></strong></div>
+                   
+                    
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
-                    <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area; ?> </strong></div>
-                </div>
+
             </div>
         </div>
-    </div>
-    <br><br>
+    </div><br>
     <div class="container">
         <div class="thead"><strong><center>EXÁMENES DE GABINETE</center></strong></div>
         <form action="insertar_examenes_gab.php" method="POST">
@@ -292,14 +296,41 @@ while ($row = $result_services->fetch_assoc()) {
                                 <div class="search-container">
                                     <input type="text" id="serviceSearch" class="form-control" placeholder="Buscar exámenes...">
                                 </div>
-                                <?php foreach ($services as $service) { ?>
-                                    <div class="form-check service-item">
-                                        <input class="form-check-input" type="checkbox" name="services[<?php echo $service['id_serv']; ?>]" id="service_<?php echo $service['id_serv']; ?>" value="1">
-                                        <label class="form-check-label" for="service_<?php echo $service['id_serv']; ?>">
-                                            <?php echo htmlspecialchars($service['serv_desc']); ?>
-                                        </label>
+                                <div class="row">
+                                    <?php 
+                                    $total_services = count($services);
+                                    $half = ceil($total_services / 2);
+                                    $count = 0;
+                                    ?>
+                                    <div class="col-md-6">
+                                        <?php foreach ($services as $service) { 
+                                            $count++;
+                                            if ($count <= $half) { ?>
+                                                <div class="form-check service-item">
+                                                    <input class="form-check-input" type="checkbox" name="services[<?php echo $service['id_serv']; ?>]" id="service_<?php echo $service['id_serv']; ?>" value="1">
+                                                    <label class="form-check-label" for="service_<?php echo $service['id_serv']; ?>">
+                                                        <?php echo htmlspecialchars($service['serv_desc']); ?>
+                                                    </label>
+                                                </div>
+                                            <?php }
+                                        } ?>
                                     </div>
-                                <?php } ?>
+                                    <div class="col-md-6">
+                                        <?php 
+                                        $count = 0;
+                                        foreach ($services as $service) { 
+                                            $count++;
+                                            if ($count > $half) { ?>
+                                                <div class="form-check service-item">
+                                                    <input class="form-check-input" type="checkbox" name="services[<?php echo $service['id_serv']; ?>]" id="service_<?php echo $service['id_serv']; ?>" value="1">
+                                                    <label class="form-check-label" for="service_<?php echo $service['id_serv']; ?>">
+                                                        <?php echo htmlspecialchars($service['serv_desc']); ?>
+                                                    </label>
+                                                </div>
+                                            <?php }
+                                        } ?>
+                                    </div>
+                                </div>
                                 <div class="form-group mt-3">
                                     <label for="otros_gabinete">Otros:</label>
                                     <textarea class="form-control" name="otros_gabinete" id="otros_gabinete" rows="2"></textarea>

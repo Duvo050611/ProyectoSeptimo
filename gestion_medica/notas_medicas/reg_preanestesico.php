@@ -168,24 +168,29 @@ if (isset($_SESSION['hospital'])) {
 </head>
 
 <body>
-    <div class="container mt-4">
-        <?php if (isset($_SESSION['message']) && isset($_SESSION['message_type'])): ?>
-        <div class="alert alert-<?php echo htmlspecialchars($_SESSION['message_type']); ?> alert-dismissible fade show"
-            role="alert">
-            <?php echo htmlspecialchars($_SESSION['message']); ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
+    <div class="container">
+        <div class="mt-3">
+            <?php if (isset($_SESSION['message']) && isset($_SESSION['message_type'])): ?>
+            <div class="alert alert-<?php echo htmlspecialchars($_SESSION['message_type']); ?> alert-dismissible fade show"
+                role="alert">
+                <?php echo htmlspecialchars($_SESSION['message']); ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php
+        // Limpiar el mensaje
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+        ?>
+            <?php endif; ?>
         </div>
-        <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
-        <?php endif; ?>
-
         <div class="row">
             <div class="col">
                 <div class="thead"><strong>
                         <center>DATOS DEL PACIENTE</center>
                     </strong></div>
-                <?php
+                    <?php
                     include "../../conexionbd.php";
                     if (isset($_SESSION['hospital'])) {
                         $id_atencion = $_SESSION['hospital'];
@@ -329,7 +334,7 @@ if (isset($_SESSION['hospital'])) {
                     <div class="col-sm-4">Paciente:
                         <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac; ?></strong>
                     </div>
-                    <div class="col-sm-4">Fecha de ingreso:
+                    <div class="col-sm-4">Fecha de atención:
                         <strong><?php echo date_format(date_create($pac_fecing), "d/m/Y H:i:s"); ?></strong>
                     </div>
                 </div>
@@ -349,28 +354,22 @@ if (isset($_SESSION['hospital'])) {
                         if ($meses < 0) { --$anos; $meses += 12; }
                         echo ($anos > 0 ? $anos . " años" : ($meses > 0 ? $meses . " meses" : $dias . " días"));
                     ?></strong></div>
-                    <div class="col-sm-2">Habitación: <strong><?php echo $num_cama; ?></strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $num_cama .' - '.$area;?> </strong></div> 
                 </div>
                 <div class="row">
                     <div class="col-sm-8">
                         <?php echo $d ? "Diagnóstico: <strong>$d</strong>" : "Motivo de atención: <strong>$m</strong>"; 
                         ?>
                     </div>
-                    <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
 
-                </div>
-                <div class="row">
                     <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
-                    <div class="col-sm-4">Estado de salud: <strong><?php echo $edo_salud; ?></strong></div>
-                    <div class="col-sm-3">Tipo de sangre: <strong><?php echo $pac_tip_sang; ?></strong></div>
+                   
+                    
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
-                    <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area;?> </strong></div>
-                </div>
+
             </div>
         </div>
+        
         <br>
 
         <div class="thead"><strong>VALORACIÓN PREANESTÉSICA</strong></div>
@@ -927,7 +926,6 @@ if (isset($_SESSION['hospital'])) {
                 <button type="button" class="btn btn-danger" onclick="history.back()">Cancelar</button>
             </div>
         </form>
-    </div>
     </div>
 
     <footer class="main-footer">

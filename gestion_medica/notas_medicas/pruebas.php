@@ -111,6 +111,7 @@ if ($conexion) {
                 </button>
             </div>
             <?php
+        // Limpiar el mensaje
         unset($_SESSION['message']);
         unset($_SESSION['message_type']);
         ?>
@@ -128,9 +129,7 @@ if ($conexion) {
                         $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup FROM paciente p, dat_ingreso di WHERE p.Id_exp=di.Id_exp AND di.id_atencion = ?";
                         $stmt = $conexion->prepare($sql_pac);
                         $stmt->bind_param("i", $id_atencion);
-                        if (!$stmt->execute()) {
-                            die("Error SQL: " . $stmt->error);
-                        }
+                        $stmt->execute();
                         $result_pac = $stmt->get_result();
                         while ($row_pac = $result_pac->fetch_assoc()) {
                             $pac_papell = $row_pac['papell'];
@@ -267,7 +266,7 @@ if ($conexion) {
                     <div class="col-sm-4">Paciente:
                         <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac; ?></strong>
                     </div>
-                    <div class="col-sm-4">Fecha de ingreso:
+                    <div class="col-sm-4">Fecha de atención:
                         <strong><?php echo date_format(date_create($pac_fecing), "d/m/Y H:i:s"); ?></strong>
                     </div>
                 </div>
@@ -287,30 +286,22 @@ if ($conexion) {
                         if ($meses < 0) { --$anos; $meses += 12; }
                         echo ($anos > 0 ? $anos . " años" : ($meses > 0 ? $meses . " meses" : $dias . " días"));
                     ?></strong></div>
-                    <div class="col-sm-2">Habitación: <strong><?php echo $num_cama; ?></strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $num_cama .' - '.$area;?> </strong></div> 
                 </div>
                 <div class="row">
                     <div class="col-sm-8">
                         <?php echo $d ? "Diagnóstico: <strong>$d</strong>" : "Motivo de atención: <strong>$m</strong>"; 
                         ?>
                     </div>
-                    <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
+
+                    <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
+                   
                     
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
-                    <div class="col-sm-4">Estado de salud: <strong><?php echo $edo_salud; ?></strong></div>
-                    <div class="col-sm-3">Tipo de sangre: <strong><?php echo $pac_tip_sang; ?></strong></div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
-                    <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area;?> </strong></div>
-                </div>
+
             </div>
         </div>
-    </div>
-    <br><br>
+    </div><br>
     <div>
     <div class="thead"><strong>
                 <center>PRUEBAS OFTALMOLÓGICAS</center>

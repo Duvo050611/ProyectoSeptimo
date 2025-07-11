@@ -78,7 +78,7 @@ if ($conexion) {
       padding-bottom: 5px;
     }
   </style>
-    <div class="container">
+   <div class="container">
         <div class="mt-3">
             <?php if (isset($_SESSION['message']) && isset($_SESSION['message_type'])): ?>
             <div class="alert alert-<?php echo htmlspecialchars($_SESSION['message_type']); ?> alert-dismissible fade show"
@@ -244,7 +244,7 @@ if ($conexion) {
                     <div class="col-sm-4">Paciente:
                         <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac; ?></strong>
                     </div>
-                    <div class="col-sm-4">Fecha de ingreso:
+                    <div class="col-sm-4">Fecha de atención:
                         <strong><?php echo date_format(date_create($pac_fecing), "d/m/Y H:i:s"); ?></strong>
                     </div>
                 </div>
@@ -264,30 +264,22 @@ if ($conexion) {
                         if ($meses < 0) { --$anos; $meses += 12; }
                         echo ($anos > 0 ? $anos . " años" : ($meses > 0 ? $meses . " meses" : $dias . " días"));
                     ?></strong></div>
-                    <div class="col-sm-2">Habitación: <strong><?php echo $num_cama; ?></strong></div>
+                    <div class="col-sm-4">Área: <strong><?php echo $num_cama .' - '.$area;?> </strong></div> 
                 </div>
                 <div class="row">
                     <div class="col-sm-8">
                         <?php echo $d ? "Diagnóstico: <strong>$d</strong>" : "Motivo de atención: <strong>$m</strong>"; 
                         ?>
                     </div>
-                    <div class="col-sm">Días estancia: <strong><?php echo $estancia; ?> días</strong></div>
+
+                    <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
+                   
                     
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">Alergias: <strong><?php echo $alergias; ?></strong></div>
-                    <div class="col-sm-4">Estado de salud: <strong><?php echo $edo_salud; ?></strong></div>
-                    <div class="col-sm-3">Tipo de sangre: <strong><?php echo $pac_tip_sang; ?></strong></div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">Peso: <strong><?php echo $peso; ?></strong></div>
-                    <div class="col-sm-4">Talla: <strong><?php echo $talla; ?></strong></div>
-                    <div class="col-sm-4">Área: <strong><?php echo $area;?> </strong></div>
-                </div>
+
             </div>
         </div>
-    </div>
-    <br><br>
+    </div><br>
     <!-- Formulario de Mediciones -->
         <div class="container">
             <h4 class="thead">Mediciones de la Córnea</h4>
@@ -355,10 +347,10 @@ if ($conexion) {
         </div>
     </div>
 
-    <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-success">Guardar Registro</button>
-        <a href="../hospitalizacion/vista_pac_hosp.php" class="btn btn-secondary">Cancelar</a>
-    </div>
+     <div class="mt-4 text-center">
+    <button type="submit" class="btn btn-primary">Firmar</button>
+    <a href="../hospitalizacion/vista_pac_hosp.php" class="btn btn-danger">Cancelar</a>
+  </div>
 </form>
 
         </div>
