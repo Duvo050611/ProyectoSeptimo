@@ -1,11 +1,9 @@
 <?php
 
-
 use PDF as GlobalPDF;
 
 require '../../fpdf/fpdf.php';
 include '../../conexionbd.php';
-
 
 $id = @$_GET['id'];
 $id_exp = @$_GET['id_exp'];
@@ -124,122 +122,122 @@ $pdf->AddPage();
 $pdf->SetMargins(15, 15, 15);
 $pdf->SetAutoPageBreak(true, 30);
 
-$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, 'Datos del Paciente:', 0, 1, 'L', true);
+$pdf->Cell(0, 6, 'Datos del Paciente:', 0, 1, 'L', true);
 
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetFillColor(255,255,255);
-$pdf->Cell(35, 7, 'Servicio:', 0, 0, 'L');
-$pdf->Cell(55, 7, utf8_decode($tipo_a), 0, 0, 'L');
-$pdf->Cell(35, 7, 'Fecha de registro:', 0, 0, 'L');
-$pdf->Cell(0, 7, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
-$pdf->Cell(35, 7, 'Paciente:', 0, 0, 'L');
-$pdf->Cell(55, 7, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
-$pdf->Cell(35, 7, utf8_decode('Teléfono:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($tel), 0, 1, 'L');
+$pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($tipo_a), 0, 0, 'L');
+$pdf->Cell(35, 5, 'Fecha de registro:', 0, 0, 'L');
+$pdf->Cell(0, 5, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
+$pdf->Cell(35, 5, 'Paciente:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
+$pdf->Cell(35, 5, utf8_decode('Teléfono:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($tel), 0, 1, 'L');
 
-$pdf->Cell(35, 7, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
-$pdf->Cell(30, 7, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
-$pdf->Cell(10, 7, utf8_decode('Edad:'), 0, 0, 'L');
-$pdf->Cell(15, 7, utf8_decode($edad), 0, 0, 'L');
-$pdf->Cell(15, 7, utf8_decode('Género:'), 0, 0, 'L');
-$pdf->Cell(20, 7, utf8_decode($sexo), 0, 0, 'L');
-$pdf->Cell(20, 7, utf8_decode('Ocupación:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($ocup), 0, 1, 'L');
+$pdf->Cell(35, 5, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
+$pdf->Cell(30, 5, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
+$pdf->Cell(10, 5, utf8_decode('Edad:'), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
+$pdf->Cell(20, 5, utf8_decode($sexo), 0, 0, 'L');
+$pdf->Cell(20, 5, utf8_decode('Ocupación:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($ocup), 0, 1, 'L');
 
-$pdf->Cell(20, 7, utf8_decode('Domicilio:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($dir), 0, 1, 'L');
+$pdf->Cell(20, 5, utf8_decode('Domicilio:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($dir), 0, 1, 'L');
 
+
+$pdf->Ln(4);
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFillColor(220, 230, 250);
+$pdf->Cell(0, 8, utf8_decode('HISTORIA CLÍNICA'), 0, 1, 'C', true);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Observaciones'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($observaciones), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Síntomas'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($sinto . ($sinto_otros ? ', Otros: ' . $sinto_otros : '')), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Heredo Familiares'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($heredo . ($heredo_otros ? ', Otros: ' . $heredo_otros : '')), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('No Patológicos'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($nopat . ($nopat_otros ? ', Otros: ' . $nopat_otros : '')), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Antecedentes Patológicos Interrogados'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_interrogados), 1, 'J', false);
+$pdf->Ln(1);
+
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Enfermedades'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_enf), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Medicamentos'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_medicamentos), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Otras Alergias'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_otras_alergias), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Antecedentes Oculares'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_oculares), 1, 'J', false);
+$pdf->Ln(1);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Otras Cirugías'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->MultiCell(0, 4, utf8_decode($pat_otras_cirugias), 1, 'J', false);
 
 $pdf->Ln(8);
-$pdf->SetFont('Arial', 'B', 13);
-$pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 12, utf8_decode('HISTORIA CLÍNICA'), 0, 1, 'C', true);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Observaciones'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($observaciones), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Síntomas'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($sinto . ($sinto_otros ? ', Otros: ' . $sinto_otros : '')), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Heredo Familiares'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($heredo . ($heredo_otros ? ', Otros: ' . $heredo_otros : '')), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('No Patológicos'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($nopat . ($nopat_otros ? ', Otros: ' . $nopat_otros : '')), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Antecedentes Patológicos Interrogados'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_interrogados), 1, 'J', false);
-$pdf->Ln(2);
-
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Enfermedades'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_enf), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Medicamentos'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_medicamentos), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Otras Alergias'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_otras_alergias), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Antecedentes Oculares'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_oculares), 1, 'J', false);
-$pdf->Ln(2);
-
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(245, 245, 245);
-$pdf->Cell(0, 9, utf8_decode('Otras Cirugías'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->MultiCell(0, 7, utf8_decode($pat_otras_cirugias), 1, 'J', false);
-
-$pdf->Ln(15);
 
 $pdf->SetY(-48);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
-    $imgWidth = 40;
+    $imgWidth = 35;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
     $pdf->Image('../../imgfirma/' . $firma, $imgX, $pdf->GetY(), $imgWidth);
-    $pdf->Ln(22);
+    $pdf->Ln(18);
 }
-$pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 4, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 4, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 4, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
 $pdf->Output();

@@ -5,13 +5,13 @@
 
         public function obtener_estados_select() {
             $db = new Connection();
-            $query = "SELECT id, nombre FROM estados"; // <- columna corregida
+            $query = "SELECT id_edo, nombre FROM estados"; // <- columna corregida
             $resultado = $db->query($query);
             $datos = [];
             if($resultado->num_rows) {
                 while ($row = $resultado->fetch_assoc()) {
                     $datos[] = [
-                        'id' => $row['id'],     // <- también se ajusta aquí
+                        'id' => $row['id_edo'],     // <- también se ajusta aquí
                         'nombre' => $row['nombre'],
                     ];
                 }

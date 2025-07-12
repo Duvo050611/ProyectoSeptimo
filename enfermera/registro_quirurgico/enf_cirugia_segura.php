@@ -68,18 +68,84 @@ include("../header_enfermera.php");
         }
         .card-container {
     display: flex;
-    gap: 20px;
+    gap: 25px;
+    margin: 20px 0;
 }
 .card {
     flex: 1;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background: #f9f9f9;
+    padding: 20px;
+    border: 2px solid #e3e6f0;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+    box-shadow: 0 4px 15px rgba(43, 45, 127, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(43, 45, 127, 0.15);
+    border-color: #2b2d7f;
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #2b2d7f, #5a67d8);
 }
 .card h4 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    color: #2b2d7f;
+    font-weight: 600;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e3e6f0;
 }
+.checkbox-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(43, 45, 127, 0.02);
+    border-radius: 8px;
+    border-left: 3px solid #2b2d7f;
+}
+.checkbox-group strong {
+    color: #2d3748;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+    accent-color: #2b2d7f;
+}
+.checkbox-group label {
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+.form-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(43, 45, 127, 0.02);
+    border-radius: 8px;
+    border-left: 3px solid #2b2d7f;
+}
+.btn {
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: none;
+    margin: 0 10px;
+}
+
   </style>
 <title>HOJA DE CIRUGIA SEGURA </title>
 </head>
@@ -91,7 +157,7 @@ include("../header_enfermera.php");
 <div class="col-12">
                 
 <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 24px;">
-<strong><center>HOJA DE CIRUGIA SEGURA</center></strong>
+<strong><center>DATOS DEL PACIENTE </center></strong>
 </div>
                 <hr>
 <?php
@@ -159,24 +225,23 @@ WHERE
  <font size="2">
          
   <div class="row">
-    
-    <div class="col-sm-4">
-     Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
+    <div class="col-sm-3">
+      Expediente: <strong><?php echo $folio?></strong>
     </div>
-    <div class="col-sm">
-      Expediente: <strong><?php echo $folio?> </strong>
+    <div class="col-sm-6">
+     Paciente: <strong><?php echo $pac_papell . ' ' . $pac_sapell . ' ' . $pac_nom_pac ?></strong>
     </div>
    <?php $date = date_create($pac_fecing);
    ?>
-      <div class="col-sm-4">
-      Fecha de ingreso: <strong><?php echo date_format($date, "d-m-Y H:i:s") ?></strong>
+    <div class="col-sm-3">
+      Fecha de atención: <strong><?php echo date_format($date, "d-m-Y H:i:s") ?></strong>
     </div>
   </div>
 </font>
  <font size="2">
      
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
        <?php $date1 = date_create($pac_fecnac);
    ?>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
@@ -243,7 +308,7 @@ function bisiesto($anio_actual){
  <!-- TERMINO DE FUNCION DE CALCULAR EDAD -->
       Fecha de nacimiento: <strong><?php echo date_format($date1, "d-m-Y") ?></strong>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
       Edad: <strong><?php if($anos > "0" ){
    echo $anos." años";
 }elseif($anos <="0" && $meses>"0"){
@@ -253,15 +318,9 @@ function bisiesto($anio_actual){
 }
 ?></strong>
     </div>
-    
-   
-      <div class="col-sm-2">
-      Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
-$result_hab = $conexion->query($sql_hab);                                                                                    while ($row_hab = $result_hab->fetch_assoc()) {
-  echo $row_hab['num_cama'];
-} ?></strong>
+    <div class="col-sm-3">
+      Área: <strong><?php echo $area ?></strong>
     </div>
-    
   </div>
 
 </font>
@@ -280,60 +339,44 @@ while ($row_mot = $result_mot->fetch_assoc()) {
 $m=$row_mot['motivo_atn'];
 } ?>
 
-<?php if ($d!=null) {
-   echo '<div class="col-sm-8"> Diagnóstico: <strong>' . $d .'</strong></div>';
-} else{
-      echo '<div class="col-sm-8"> Motivo de atención: <strong>' . $m .'</strong></div>';
-}?>
-    <div class="col-sm">
-      Tiempo estancia: <strong><?php echo $estancia ?> Dias</strong>
+    <div class="col-sm-12">
+      Motivo de atención: <strong><?php 
+      if ($d!=null) {
+         echo $d;
+      } else{
+            echo $m;
+      }?></strong>
     </div>
   </div>
 
 </font>
  <font size="2">
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
+      <!-- Espacio vacío para alineación -->
+    </div>
+    <div class="col-sm-6">
+      <!-- Espacio vacío para alineación -->
+    </div>
+    <div class="col-sm-3">
       Alergias: <strong><?php echo $alergias ?></strong>
     </div>
-     <div class="col-sm-4">
-      Estado de salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
-$result_edo = $conexion->query($sql_edo);while ($row_edo = $result_edo->fetch_assoc()) {
-  echo $row_edo['edo_salud'];
-} ?></strong>
-    </div>
-    <div class="col-sm-3">
-      Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
-    </div>
   </div>
-</font>
-<?php $sql_edo = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
-$result_edo = $conexion->query($sql_edo);
-while ($row_edo = $result_edo->fetch_assoc()) {
-  $peso=$row_edo['peso'];
-  $talla=$row_edo['talla'];
-} 
-if (!isset($peso)){
-    $peso=0;
-    $talla=0;
-}?>
- <font size="2">
-  <div class="row">
-     <div class="col-sm-4">
-      Peso: <strong><?php echo $peso ?></strong>
-    </div>
-    <div class="col-sm-3">
-      Talla: <strong><?php echo $talla ?></strong>
-    </div>
-  </div>
+
 </font>
 <hr>
+
+<div class="thead" style="background-color: #2b2d7f; color: white; font-size: 24px;">
+<strong><center>HOJA DE CIRUGIA SEGURA</center></strong>
+</div>
+                <hr>
 </div>
         <?php
       } else {
         echo '<script type="text/javascript"> window.location.href="../lista_pacientes/lista_pacientes.php";</script>';
       }
         ?>
+        
 <form action="insertar_cir_seg.php" method="POST">
   <input type="hidden" name="id_exp" value="<?= htmlspecialchars($id_exp) ?>">
   <input type="hidden" name="id_usua" value="<?= htmlspecialchars($pac_id_usua) ?>">
@@ -502,8 +545,10 @@ if (!isset($peso)){
   </div>
 
   <br>
-  <button type="submit" class="btn btn-primary">FIRMAR</button>
-  <a href="../../template/select_pac_enf.php" class="btn btn-secondary">Cancelar</a>
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">FIRMAR</button>
+    <a href="../../template/select_pac_enf.php" class="btn btn-danger">Cancelar</a>
+  </div>
 </form>
 
 <footer class="main-footer">
