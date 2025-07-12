@@ -60,20 +60,27 @@ if (!$row_explo) {
     exit;
 }
 
-$peso = $row_explo['peso'];
-$talla = $row_explo['talla'];
-$imc = $row_explo['imc'];
-$cintura = $row_explo['cintura'];
-$presion_sistolica = $row_explo['presion_sistolica'];
-$presion_diastolica = $row_explo['presion_diastolica'];
-$frecuencia_cardiaca = $row_explo['frecuencia_cardiaca'];
-$frecuencia_respiratoria = $row_explo['frecuencia_respiratoria'];
-$temperatura = $row_explo['temperatura'];
-$spo2 = $row_explo['spo2'];
-$glucemia = $row_explo['glucemia'];
-$glucosa_ayunas = $row_explo['glucosa_ayunas'];
-$exploracion = $row_explo['exploracion'];
-$fecha_explo = $row_explo['fecha'];
+$peso = $row_explo['peso'] ?? '';
+$talla = $row_explo['talla'] ?? '';
+$imc = $row_explo['imc'] ?? '';
+$cintura = $row_explo['cintura'] ?? '';
+$presion_sistolica = $row_explo['presion_sistolica'] ?? '';
+$presion_diastolica = $row_explo['presion_diastolica'] ?? '';
+$frecuencia_cardiaca = $row_explo['frecuencia_cardiaca'] ?? '';
+$frecuencia_respiratoria = $row_explo['frecuencia_respiratoria'] ?? '';
+$temperatura = $row_explo['temperatura'] ?? '';
+$spo2 = $row_explo['spo2'] ?? '';
+$glucemia = $row_explo['glucemia'] ?? '';
+$glucosa_ayunas = $row_explo['glucosa_ayunas'] ?? '';
+$dificultad = $row_explo['dificultad'] ?? '';
+$dificultad_especifica = $row_explo['dificultad_especifica'] ?? '';
+$tipo_dificultad = $row_explo['tipo_dificultad'] ?? '';
+$grado_dificultad = $row_explo['grado_dificultad'] ?? '';
+$origen_dificultad = $row_explo['origen_dificultad'] ?? '';
+$tuberculosis_probable = $row_explo['tuberculosis_probable'] ?? '';
+$habito_exterior = $row_explo['habito_exterior'] ?? '';
+$exploracion = $row_explo['exploracion'] ?? '';
+$fecha_explo = $row_explo['fecha'] ?? '';
 
 $sql_med = "SELECT * FROM reg_usuarios WHERE id_usua = $id_usua";
 $result_med = $conexion->query($sql_med);
@@ -101,11 +108,11 @@ class PDF extends FPDF
         $this->SetY(40);
         $this->SetFont('Arial', 'B', 15);
         $this->SetTextColor(40, 40, 40);
-        $this->Cell(0, 12, utf8_decode('NOTA DE EXPLORACIÓN FÍSICA'), 0, 1, 'C');
+        $this->Cell(0, 10, utf8_decode('NOTA DE EXPLORACIÓN FÍSICA'), 0, 1, 'C');
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(100, 100, 100);
         $this->Cell(0, 6, utf8_decode('Fecha: ') . date('d/m/Y H:i', strtotime($GLOBALS['fecha_explo'])), 0, 1, 'R');
-        $this->Ln(5);
+        $this->Ln(2);
     }
     function Footer()
     {
@@ -121,103 +128,138 @@ class PDF extends FPDF
 $pdf = new PDF('P', 'mm', 'Letter');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetMargins(15, 15, 15);
-$pdf->SetAutoPageBreak(true, 30);
+$pdf->SetMargins(15,15,15);
+#Establecemos el margen inferior:
+$pdf->SetAutoPageBreak(true,32); 
 
-$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, 'Datos del Paciente:', 0, 1, 'L', true);
+$pdf->Cell(0, 6, 'Datos del Paciente:', 0, 1, 'L', true);
 
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetFillColor(255,255,255);
-$pdf->Cell(35, 7, 'Servicio:', 0, 0, 'L');
-$pdf->Cell(55, 7, utf8_decode($tipo_a), 0, 0, 'L');
-$pdf->Cell(35, 7, 'Fecha de registro:', 0, 0, 'L');
-$pdf->Cell(0, 7, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
-$pdf->Cell(35, 7, 'Paciente:', 0, 0, 'L');
-$pdf->Cell(55, 7, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
-$pdf->Cell(35, 7, utf8_decode('Teléfono:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($tel), 0, 1, 'L');
+$pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($tipo_a), 0, 0, 'L');
+$pdf->Cell(35, 5, 'Fecha de registro:', 0, 0, 'L');
+$pdf->Cell(0, 5, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
+$pdf->Cell(35, 5, 'Paciente:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($folio . ' - ' . $papell . ' ' . $sapell . ' ' . $nom_pac), 0, 0, 'L');
+$pdf->Cell(35, 5, utf8_decode('Teléfono:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($tel), 0, 1, 'L');
 
-$pdf->Cell(35, 7, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
-$pdf->Cell(30, 7, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
-$pdf->Cell(10, 7, utf8_decode('Edad:'), 0, 0, 'L');
-$pdf->Cell(15, 7, utf8_decode($edad), 0, 0, 'L');
-$pdf->Cell(15, 7, utf8_decode('Género:'), 0, 0, 'L');
-$pdf->Cell(20, 7, utf8_decode($sexo), 0, 0, 'L');
-$pdf->Cell(20, 7, utf8_decode('Ocupación:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($ocup), 0, 1, 'L');
-
-$pdf->Cell(20, 7, utf8_decode('Domicilio:'), 0, 0, 'L');
-$pdf->Cell(0, 7, utf8_decode($dir), 0, 1, 'L');
-
-
+$pdf->Cell(35, 5, utf8_decode('Fecha de nacimiento:'), 0, 0, 'L');
+$pdf->Cell(30, 5, date('d/m/Y', strtotime($fecnac)), 0, 0, 'L');
+$pdf->Cell(10, 5, utf8_decode('Edad:'), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
+$pdf->Cell(20, 5, utf8_decode($sexo), 0, 0, 'L');
 $pdf->Ln(5);
 
-$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(20, 5, utf8_decode('Domicilio:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($dir), 0, 1, 'L');
+
+
+$pdf->Ln(3);
+
+$pdf->SetFont('Arial', 'B', 10);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 10, utf8_decode('Signos Vitales y Medidas'), 0, 1, 'C', true);
+$pdf->Cell(0, 7, utf8_decode('Signos Vitales y Medidas'), 0, 1, 'C', true);
 
 $tableWidth = 192;
 $colWidth = 32;
 $pdf->SetX(($pdf->GetPageWidth() - $tableWidth) / 2);
-$pdf->Cell($colWidth, 8, utf8_decode('Peso (kg)'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Talla (m)'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('IMC'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Cintura (cm)'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Temp. (°C)'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('SpO2 (%)'), 1, 1, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Peso (kg)'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Talla (m)'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('IMC'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Cintura (cm)'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Temp. (°C)'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('SpO2 (%)'), 1, 1, 'C', true);
 
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetX(($pdf->GetPageWidth() - $tableWidth) / 2);
-$pdf->Cell($colWidth, 8, utf8_decode($peso), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($talla), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($imc), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($cintura), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($temperatura), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($spo2), 1, 1, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($peso), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($talla), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($imc), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($cintura), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($temperatura), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($spo2), 1, 1, 'C');
 
-$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetFont('Arial', 'B', 8);
 $pdf->SetX(($pdf->GetPageWidth() - $tableWidth) / 2);
-$pdf->Cell($colWidth, 8, utf8_decode('Presión Sist.'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Presión Diast.'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('FC'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('FR'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Glucemia'), 1, 0, 'C', true);
-$pdf->Cell($colWidth, 8, utf8_decode('Glucosa Ayunas'), 1, 1, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Presión Sist.'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Presión Diast.'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('FC'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('FR'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Glucemia'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 6, utf8_decode('Glucosa Ayunas'), 1, 1, 'C', true);
 
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetX(($pdf->GetPageWidth() - $tableWidth) / 2);
-$pdf->Cell($colWidth, 8, utf8_decode($presion_sistolica), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($presion_diastolica), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($frecuencia_cardiaca), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($frecuencia_respiratoria), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($glucemia), 1, 0, 'C');
-$pdf->Cell($colWidth, 8, utf8_decode($glucosa_ayunas), 1, 1, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($presion_sistolica), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($presion_diastolica), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($frecuencia_cardiaca), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($frecuencia_respiratoria), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($glucemia), 1, 0, 'C');
+$pdf->Cell($colWidth, 6, utf8_decode($glucosa_ayunas), 1, 1, 'C');
+
+$pdf->Ln(2);
+
+// Nuevos campos adicionales
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Información Adicional'), 0, 1, 'L', true);
+
+$pdf->SetFont('Arial', '', 8);
+$pdf->SetFillColor(255,255,255);
+$pdf->Cell(30, 5, utf8_decode('Dificultad:'), 0, 0, 'L');
+$pdf->Cell(45, 5, utf8_decode($dificultad), 0, 0, 'L');
+$pdf->Cell(30, 5, utf8_decode('Tipo dificultad:'), 0, 0, 'L');
+$pdf->Cell(45, 5, utf8_decode($tipo_dificultad), 0, 0, 'L');
+$pdf->Cell(20, 5, utf8_decode('Grado:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($grado_dificultad), 0, 1, 'L');
+
+$pdf->Cell(30, 5, utf8_decode('Origen dificultad:'), 0, 0, 'L');
+$pdf->Cell(45, 5, utf8_decode($origen_dificultad), 0, 0, 'L');
+$pdf->Cell(30, 5, utf8_decode('Tuberculosis prob.:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($tuberculosis_probable), 0, 1, 'L');
+
+if (!empty($dificultad_especifica)) {
+    $pdf->Cell(30, 5, utf8_decode('Dificultad específica:'), 0, 0, 'L');
+    $pdf->Cell(0, 5, utf8_decode($dificultad_especifica), 0, 1, 'L');
+}
+
+$pdf->Ln(2);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Hábito Exterior'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->SetFillColor(255,255,255);
+$pdf->MultiCell(0, 4, utf8_decode($habito_exterior), 1, 'J', false);
+
+$pdf->Ln(2);
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->Cell(0, 6, utf8_decode('Exploración Física'), 0, 1, 'L', true);
+$pdf->SetFont('Arial', '', 8);
+$pdf->SetFillColor(255,255,255);
+$pdf->MultiCell(0, 4, utf8_decode($exploracion), 1, 'J', false);
 
 $pdf->Ln(8);
 
-$pdf->SetFont('Arial', 'B', 11);
-$pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, utf8_decode('Exploración Física'), 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->SetFillColor(255,255,255);
-$pdf->MultiCell(0, 8, utf8_decode($exploracion), 1, 'J', true);
-
-$pdf->Ln(15);
-
-$pdf->Ln(12);
+$pdf->SetY(-62);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
-    $imgWidth = 40;
+    $imgWidth = 30;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
     $pdf->Image('../../imgfirma/' . $firma, $imgX, $pdf->GetY(), $imgWidth);
-    $pdf->Ln(22);
+    $pdf->Ln(12);
 }
-$pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 3, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 3, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
 
 $pdf->Output();

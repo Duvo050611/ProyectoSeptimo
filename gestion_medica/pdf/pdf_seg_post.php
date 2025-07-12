@@ -82,29 +82,43 @@ $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetMargins(15, 15, 15);
 $pdf->SetAutoPageBreak(true, 30);
-
-// Datos del paciente
-$pdf->SetFont('Arial', 'B', 11);
+// Datos del paciente (formato compacto y alineado)
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, 'Datos del Paciente', 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(45, 7, 'Nombre:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac']), 0, 1);
-$pdf->Cell(45, 7, 'Edad:', 0, 0);
-$pdf->Cell(50, 7, utf8_decode($edad), 0, 0);
-$pdf->Cell(30, 7, 'Género:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['sexo']), 0, 1);
-$pdf->Cell(45, 7, 'Teléfono:', 0, 0);
-$pdf->Cell(50, 7, utf8_decode($pac['tel']), 0, 0);
-$pdf->Cell(30, 7, 'Fecha de ingreso:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['fecha']), 0, 1);
+$pdf->Cell(0, 6, 'Datos del Paciente:', 0, 1, 'L', true);
 
+$pdf->SetFont('Arial', '', 9);
+$pdf->SetFillColor(255, 255, 255);
+
+// Línea 1: Servicio y Fecha de Registro
+$pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($pac['tipo_a']), 0, 0, 'L');
+$pdf->Cell(35, 5, 'Fecha de registro:', 0, 0, 'L');
+$pdf->Cell(0, 5, date('d/m/Y H:i', strtotime($pac['fecha'])), 0, 1, 'L');
+
+// Línea 2: Paciente y Teléfono
+$pdf->Cell(35, 5, 'Paciente:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($pac['folio'] . ' - ' . $pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac']), 0, 0, 'L');
+$pdf->Cell(35, 5, utf8_decode('Teléfono:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($pac['tel']), 0, 1, 'L');
+
+// Línea 3: Fecha de nacimiento, Edad y Género
+$pdf->Cell(35, 5, 'Fecha de nacimiento:', 0, 0, 'L');
+$pdf->Cell(30, 5, date('d/m/Y', strtotime($pac['fecnac'])), 0, 0, 'L');
+$pdf->Cell(10, 5, 'Edad:', 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($pac['sexo']), 0, 1, 'L');
+
+// Línea 4: Domicilio
+$pdf->Cell(20, 5, 'Domicilio:', 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($pac['dir']), 0, 1, 'L');
 
 // Contenido
 $pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 8, 'Segmento Posterior - Evaluación Clínica', 0, 1, 'C', true);
+$pdf->Cell(0, 8, utf8_decode('Segmento Posterior - Evaluación Clínica'), 0, 1, 'C', true);
 $pdf->Ln(2);
 
 // Encabezados
@@ -139,21 +153,19 @@ $pdf->MultiCell(0, 6, utf8_decode($data['observaciones_dibujo']));
 
 
 // Firma del médico
-$pdf->Ln(15);
+$pdf->SetY(-60);
 if (!empty($med['firma']) && file_exists('../../imgfirma/' . $med['firma'])) {
-    $imgWidth = 40;
+    $imgWidth = 30;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
     $pdf->Image('../../imgfirma/' . $med['firma'], $imgX, $pdf->GetY(), $imgWidth);
-    $pdf->Ln(22);
+    $pdf->Ln(12);
 }
-$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetFont('Arial', 'B', 8);
 $pdf->Cell(0, 6, utf8_decode(trim($med['pre'] . ' ' . $med['papell'] . ' ' . $med['sapell'] . ' ' . $med['nombre'])), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->Cell(0, 6, utf8_decode($med['cargp']), 0, 1, 'C');
 $pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $med['cedp']), 0, 1, 'C');
 
 // Salida
-header('Content-Type: application/pdf');
-header('Content-Disposition: inline; filename="segmento_posterior.pdf"');
 $pdf->Output('I', 'segmento_posterior.pdf');
 exit();

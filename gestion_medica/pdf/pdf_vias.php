@@ -24,8 +24,8 @@ if (!$data = $res->fetch_assoc()) {
 }
 $stmt->close();
 
-// Datos del paciente
-$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.fecnac, p.folio, p.sexo, p.tel, p.ocup, p.dir, di.fecha, di.tipo_a 
+// Datos del paciente (modificado: añadimos di.id_usua)
+$sql_pac = "SELECT p.papell, p.sapell, p.nom_pac, p.fecnac, p.folio, p.sexo, p.tel, p.ocup, p.dir, di.fecha, di.tipo_a, di.id_usua 
             FROM paciente p 
             JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
             WHERE di.id_atencion = ?";
@@ -36,6 +36,11 @@ $res_pac = $stmt->get_result();
 if (!$pac = $res_pac->fetch_assoc()) {
     die("Paciente no encontrado.");
 }
+
+// Corrección: usamos $pac, no $row_preop
+$tipo_a = $pac['tipo_a'] ?? '';
+$fecha_ing = $pac['fecha'] ?? '';
+$id_usua = $pac['id_usua'] ?? 0;
 $stmt->close();
 
 // Médico
@@ -46,6 +51,17 @@ $stmt->execute();
 $res_doc = $stmt->get_result();
 $med = $res_doc->fetch_assoc();
 $stmt->close();
+
+$sql_med = "SELECT * FROM reg_usuarios WHERE id_usua = $id_usua";
+$result_med = $conexion->query($sql_med);
+$row_med = $result_med->fetch_assoc();
+$nom_med = $row_med['nombre'] ?? '';
+$app_med = $row_med['papell'] ?? '';
+$apm_med = $row_med['sapell'] ?? '';
+$pre_med = $row_med['pre'] ?? '';
+$firma = $row_med['firma'] ?? '';
+$ced_p = $row_med['cedp'] ?? '';
+$cargp = $row_med['cargp'] ?? '';
 
 // Edad
 function calculaedad($fecha) {
@@ -83,35 +99,43 @@ $pdf = new PDF('P', 'mm', 'Letter');
 $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetMargins(15, 15, 15);
-$pdf->SetAutoPageBreak(true, 30);
+$pdf->SetAutoPageBreak(true, 32);
 
-// Datos del paciente
-$pdf->SetFont('Arial', 'B', 11);
+// Datos del paciente en formato compacto
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, 'Datos del Paciente', 0, 1, 'L', true);
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(45, 7, 'Nombre:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac']), 0, 1);
-$pdf->Cell(45, 7, 'Edad:', 0, 0);
-$pdf->Cell(50, 7, utf8_decode($edad), 0, 0);
-$pdf->Cell(30, 7, 'Género:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['sexo']), 0, 1);
-$pdf->Cell(45, 7, 'Ocupación:', 0, 0);
-$pdf->Cell(50, 7, utf8_decode($pac['ocup']), 0, 0);
-$pdf->Cell(30, 7, 'Teléfono:', 0, 0);
-$pdf->Cell(0, 7, utf8_decode($pac['tel']), 0, 1);
-$pdf->Cell(45, 7, 'Domicilio:', 0, 0);
-$pdf->MultiCell(0, 7, utf8_decode($pac['dir']));
+$pdf->Cell(0, 6, 'Datos del Paciente:', 0, 1, 'L', true);
 
+$pdf->SetFont('Arial', '', 8);
+$pdf->SetFillColor(255, 255, 255);
+$pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($tipo_a), 0, 0, 'L');
+$pdf->Cell(35, 5, 'Fecha de registro:', 0, 0, 'L');
+$pdf->Cell(0, 5, date('d/m/Y H:i', strtotime($fecha_ing)), 0, 1, 'L');
+
+$pdf->Cell(35, 5, 'Paciente:', 0, 0, 'L');
+$pdf->Cell(55, 5, utf8_decode($pac['folio'] . ' - ' . $pac['papell'] . ' ' . $pac['sapell'] . ' ' . $pac['nom_pac']), 0, 0, 'L');
+$pdf->Cell(35, 5, utf8_decode('Teléfono:'), 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($pac['tel']), 0, 1, 'L');
+
+$pdf->Cell(35, 5, 'Fecha de nacimiento:', 0, 0, 'L');
+$pdf->Cell(30, 5, date('d/m/Y', strtotime($pac['fecnac'])), 0, 0, 'L');
+$pdf->Cell(10, 5, 'Edad:', 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
+$pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
+$pdf->Cell(20, 5, utf8_decode($pac['sexo']), 0, 1, 'L');
+
+$pdf->Cell(20, 5, 'Domicilio:', 0, 0, 'L');
+$pdf->Cell(0, 5, utf8_decode($pac['dir']), 0, 1, 'L');
+
+$pdf->Ln(3);
 // Datos exploratorios
-$pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 8, 'Resultados de Exploración', 0, 1, 'C', true);
+$pdf->Cell(0, 8,utf8_decode( 'Resultados de Exploración'), 0, 1, 'L', true);
 $pdf->Ln(5);
 
-
-// Tabla con OD y OI
+// Tabla OD / OI
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetFillColor(245, 245, 245);
 $pdf->Cell(60, 8, '', 1, 0, 'C', true);
@@ -150,22 +174,19 @@ $pdf->SetFont('Arial', '', 9);
 $pdf->MultiCell(0, 6, utf8_decode($data['observaciones']));
 
 // Firma
-$pdf->Ln(15);
-if (!empty($med['firma']) && file_exists('../../imgfirma/' . $med['firma'])) {
-    $imgWidth = 40;
+$pdf->SetY(-56);
+if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
+    $imgWidth = 30;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
-    $pdf->Image('../../imgfirma/' . $med['firma'], $imgX, $pdf->GetY(), $imgWidth);
-    $pdf->Ln(22);
+    $pdf->Image('../../imgfirma/' . $firma, $imgX, $pdf->GetY(), $imgWidth);
+    $pdf->Ln(12);
 }
-$pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 6, utf8_decode(trim($med['pre'] . ' ' . $med['papell'] . ' ' . $med['sapell'] . ' ' . $med['nombre'])), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(0, 6, utf8_decode($med['cargp']), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $med['cedp']), 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 3, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 3, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
 
-// Salida
-header('Content-Type: application/pdf');
-header('Content-Disposition: inline; filename="exploracion.pdf"');
 $pdf->Output('I', 'exploracion.pdf');
 exit();
-?>

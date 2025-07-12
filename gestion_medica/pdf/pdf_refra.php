@@ -119,14 +119,15 @@ class PDF extends FPDF
 $pdf = new PDF('P', 'mm', 'Letter');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetMargins(15, 15, 15);
-$pdf->SetAutoPageBreak(true, 30);
+$pdf->SetMargins(15,15,15);
+#Establecemos el margen inferior:
+$pdf->SetAutoPageBreak(true,32); 
 
-$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(230, 240, 255);
-$pdf->Cell(0, 8, 'Datos del Paciente:', 0, 1, 'L', true);
+$pdf->Cell(0, 6, 'Datos del Paciente:', 0, 1, 'L', true);
 
-$pdf->SetFont('Arial', '', 10);
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetFillColor(255,255,255);
 $pdf->Cell(35, 5, 'Servicio:', 0, 0, 'L');
 $pdf->Cell(55, 5, utf8_decode($tipo_a), 0, 0, 'L');
@@ -143,17 +144,17 @@ $pdf->Cell(10, 5, utf8_decode('Edad:'), 0, 0, 'L');
 $pdf->Cell(15, 5, utf8_decode($edad), 0, 0, 'L');
 $pdf->Cell(15, 5, utf8_decode('Género:'), 0, 0, 'L');
 $pdf->Cell(20, 5, utf8_decode($sexo), 0, 0, 'L');
-$pdf->Cell(20, 5, utf8_decode('Ocupación:'), 0, 0, 'L');
-$pdf->Cell(0, 5, utf8_decode($ocup), 0, 1, 'L');
+$pdf->Ln(5);
 
 $pdf->Cell(20, 5, utf8_decode('Domicilio:'), 0, 0, 'L');
 $pdf->Cell(0, 5, utf8_decode($dir), 0, 1, 'L');
 
 
+
 $pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 13);
+$pdf->SetFont('Arial', 'B', 10);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 12, utf8_decode('REFRACCIÓN ACTUAL'), 0, 1, 'C', true);
+$pdf->Cell(0, 7, utf8_decode('REFRACCIÓN ACTUAL'), 0, 1, 'C', true);
 $pdf->Ln(2);
 
 // Agudeza Visual Lejana
@@ -411,16 +412,18 @@ $pdf->MultiCell(0, 5, utf8_decode($row_refra['detalle_ref_subjetiv'] ?? ''), 1, 
 
 $pdf->Ln(10);
 
-$pdf->SetY(-48);
+$pdf->SetY(-62);
 if (!empty($firma) && file_exists('../../imgfirma/' . $firma)) {
-    $imgWidth = 40;
+    $imgWidth = 30;
     $imgX = ($pdf->GetPageWidth() - $imgWidth) / 2;
     $pdf->Image('../../imgfirma/' . $firma, $imgX, $pdf->GetY(), $imgWidth);
-    $pdf->Ln(22);
+    $pdf->Ln(12);
 }
-$pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(0, 6, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
-$pdf->SetFont('Arial', '', 10);
-$pdf->Cell(0, 6, utf8_decode($cargp), 0, 1, 'C');
-$pdf->Cell(0, 6, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 3, utf8_decode(trim($pre_med . ' ' . $app_med . ' ' . $apm_med . ' ' . $nom_med)), 0, 1, 'C');
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 3, utf8_decode($cargp), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Céd. Prof. ' . $ced_p), 0, 1, 'C');
+$pdf->Cell(0, 3, utf8_decode('Nombre y firma del médico'), 0, 1, 'C');
+
 $pdf->Output();
