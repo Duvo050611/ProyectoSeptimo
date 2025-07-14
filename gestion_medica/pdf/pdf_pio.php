@@ -70,10 +70,13 @@ class PDF extends FPDF {
         $this->Cell(0, 10, utf8_decode('Examen de Presión Intraocular (PIO)'), 0, 1, 'C');
     }
 
-    function Footer() {
+function Footer()
+    {
         $this->SetY(-20);
         $this->SetFont('Arial', 'I', 8);
+        $this->SetTextColor(120, 120, 120);
         $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
+        $this->Cell(0, 10, utf8_decode('INEO-000'), 0, 1, 'R');
     }
 }
 

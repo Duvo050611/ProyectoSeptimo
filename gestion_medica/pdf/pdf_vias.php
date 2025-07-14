@@ -88,10 +88,13 @@ class PDF extends FPDF {
         $this->Cell(0, 10, utf8_decode('Exploración Oftálmica'), 0, 1, 'C');
     }
 
-    function Footer() {
+   function Footer()
+    {
         $this->SetY(-20);
         $this->SetFont('Arial', 'I', 8);
+        $this->SetTextColor(120, 120, 120);
         $this->Cell(0, 10, utf8_decode('Página ' . $this->PageNo() . '/{nb}'), 0, 0, 'C');
+        $this->Cell(0, 10, utf8_decode('INEO-000'), 0, 1, 'R');
     }
 }
 
@@ -132,7 +135,7 @@ $pdf->Ln(3);
 // Datos exploratorios
 $pdf->SetFont('Arial', 'B', 9);
 $pdf->SetFillColor(220, 230, 250);
-$pdf->Cell(0, 8,utf8_decode( 'Resultados de Exploración'), 0, 1, 'L', true);
+$pdf->Cell(0, 8,utf8_decode( 'Resultados de Exploración'), 0, 1, 'C', true);
 $pdf->Ln(5);
 
 // Tabla OD / OI
