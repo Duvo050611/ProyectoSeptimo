@@ -944,6 +944,30 @@ if (isset($_SESSION['login'])) {
     <script>
         let enviandoFormulario = false;
         
+        // Estilos CSS para las filas de signos vitales
+        const styles = `
+            <style>
+                .guardado {
+                    background-color: #f8f9fa !important;
+                }
+                .guardando {
+                    animation: pulse 1s infinite;
+                }
+                @keyframes pulse {
+                    0% { background-color: #d4edda; }
+                    50% { background-color: #c3e6cb; }
+                    100% { background-color: #d4edda; }
+                }
+                .btn-guardado {
+                    cursor: default;
+                }
+                .editar-signos {
+                    margin-left: 5px;
+                }
+            </style>
+        `;
+        document.head.insertAdjacentHTML('beforeend', styles);
+        
         function enviarFormularioUnificado(event) {
             event.preventDefault(); // Prevenir el envío normal del formulario
             
@@ -1076,17 +1100,28 @@ if (isset($_SESSION['login'])) {
                 <td><input type="text" class="form-control" name="satg" placeholder="ej: 98" required></td>
                 <td><input type="text" class="form-control" name="tempg" placeholder="ej: 36.5" required></td>
                 <td><input type="time" class="form-control" name="hora_signos" required></td>
-                <td><button type="button" class="btn btn-primary btn-sm enviar-signos" data-tratamiento="${idTratamiento}">
-                    <i class="fas fa-save"></i> Guardar
-                </button></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm enviar-signos" data-tratamiento="${idTratamiento}">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-warning btn-sm editar-signos" style="display: none; margin-left: 5px;" data-tratamiento="${idTratamiento}">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </td>
             `;
             
             tbody.insertBefore(nuevaFila, btnRow);
             console.log('Fila agregada exitosamente');
             
             var btnGuardar = nuevaFila.querySelector('.enviar-signos');
+            var btnEditar = nuevaFila.querySelector('.editar-signos');
+            
             btnGuardar.addEventListener('click', function() {
                 enviarSignosVitales(nuevaFila, idTratamiento);
+            });
+            
+            btnEditar.addEventListener('click', function() {
+                editarSignosVitales(nuevaFila, idTratamiento);
             });
         }
 
@@ -1173,6 +1208,12 @@ if (isset($_SESSION['login'])) {
                     btnGuardar.className = 'btn btn-success btn-sm btn-guardado';
                     btnGuardar.disabled = true;
                     
+                    // Mostrar el botón de editar
+                    const btnEditar = fila.querySelector('.editar-signos');
+                    if (btnEditar) {
+                        btnEditar.style.display = 'inline-block';
+                    }
+                    
                     inputs.forEach(input => {
                         input.readOnly = true;
                         input.style.backgroundColor = '#c3e6cb';
@@ -1198,6 +1239,29 @@ if (isset($_SESSION['login'])) {
                 btnGuardar.disabled = false;
                 btnGuardar.innerHTML = textoOriginal;
             });
+        }
+
+        function editarSignosVitales(fila, idTratamiento) {
+            const inputs = fila.querySelectorAll('input[required]');
+            const btnEditar = fila.querySelector('.editar-signos');
+            const btnGuardar = fila.querySelector('.enviar-signos');
+            
+            // Habilitar edición de los campos
+            inputs.forEach(input => {
+                input.readOnly = false;
+                input.style.backgroundColor = '';
+                input.style.color = '';
+                input.style.fontWeight = '';
+            });
+            
+            // Ocultar botón editar y mostrar botón guardar
+            btnEditar.style.display = 'none';
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = '<i class="fas fa-save"></i> Actualizar';
+            btnGuardar.className = 'btn btn-primary btn-sm enviar-signos';
+            
+            // Remover estilos de fila guardada
+            fila.classList.remove('guardado');
         }
 
         function recopilarDatosFormulario(formulario) {

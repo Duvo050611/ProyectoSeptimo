@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Botón Eliminar</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h3>Test de Botón Eliminar</h3>
+        <table class="table">
+            <tr>
+                <td>Registro de prueba</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm eliminar-signos" 
+                            data-id="123" 
+                            data-fecha="25/07/2025 19:15:25"
+                            title="Eliminar registro">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </td>
+            </tr>
+        </table>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        console.log('jQuery loaded:', typeof $ !== 'undefined');
+        console.log('Botones encontrados:', $('.eliminar-signos').length);
+        
+        $(document).ready(function() {
+            console.log('Document ready');
+            
+            // Test con clic directo
+            $('.eliminar-signos').on('click', function() {
+                console.log('Clic directo funciona!');
+                $('#resultado').html('<div class="alert alert-success">Clic directo detectado!</div>');
+            });
+            
+            // Test con delegación
+            $(document).on('click', '.eliminar-signos', function(e) {
+                e.preventDefault();
+                console.log('Delegación funciona!');
+                const id = $(this).data('id');
+                const fecha = $(this).data('fecha');
+                console.log('ID:', id, 'Fecha:', fecha);
+                
+                if (confirm('¿Eliminar registro ' + id + ' del ' + fecha + '?')) {
+                    $('#resultado').html('<div class="alert alert-warning">¡Botón funciona! ID: ' + id + '</div>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

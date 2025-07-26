@@ -20,7 +20,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
@@ -264,6 +264,83 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
     .thead.bg-navy {
       background-color: #2b2d7f !important;
       color: white !important;
+    }
+
+    /* Estilos para botón de eliminar */
+    .eliminar-signos {
+      border: none;
+      background: #dc3545;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 32px;
+    }
+
+    .eliminar-signos:hover {
+      background: #c82333;
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .eliminar-signos:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    }
+
+    .eliminar-signos:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .eliminar-signos i {
+      font-size: 14px;
+    }
+
+    /* Animación para filas que se van a eliminar */
+    .fila-eliminando {
+      background-color: #f8d7da !important;
+      animation: fadeOutRow 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeOutRow {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    /* Estilos para alertas flotantes */
+    .alert.position-fixed {
+      max-width: 400px;
+      word-wrap: break-word;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border: none;
+    }
+
+    .alert.alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+
+    .alert.alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
     }
   </style>
 
@@ -534,7 +611,31 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
       <body>
         <div class="container"> <!--INICIO DE CONSULTA DE URGENCIAS-->
 
-          <form action="insertar_trans_grafico.php" method="POST">
+          <?php
+          // Incluir verificación de cirugía
+          include "verificar_cirugia.php";
+          
+          // Verificar si la cirugía ha terminado
+          $cirugiaTerminada = cirugiaTerminada($conexion, $id_atencion);
+          
+          if ($cirugiaTerminada) {
+              echo "<div class='alert alert-warning text-center' style='background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border: none; border-radius: 15px; padding: 25px; margin: 20px 0;'>";
+              echo "<h4 style='color: #2d3436; margin-bottom: 15px;'><i class='fas fa-lock'></i> 🚫 Cirugía Terminada</h4>";
+              echo "<p style='color: #2d3436; font-size: 16px; margin-bottom: 20px;'>Los signos vitales han sido <strong>bloqueados</strong> porque la cirugía ha sido marcada como terminada.</p>";
+              echo "<p style='color: #636e72; font-size: 14px;'>Solo se pueden visualizar los registros existentes. No se pueden agregar nuevos signos vitales.</p>";
+              echo "</div>";
+          }
+          ?>
+
+          <!-- Botón Ver Gráfica siempre visible -->
+          <div class="text-center mb-3">
+            <a href="ver_grafica.php" class="btn btn-warning btn-improved">
+              <i class="fas fa-chart-line"></i>
+              <span>Ver Gráfica</span>
+            </a>
+          </div>
+
+          <form action="insertar_trans_grafico.php" method="POST" <?php if ($cirugiaTerminada) echo 'style="display: none;"'; ?>>
             <div class="row">
               <div class="col-sm-12">
                 <?php
@@ -615,42 +716,16 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
             <!-- Botones de Acción Mejorados -->
             <div class="buttons-section">
-              <button type="submit" class="btn btn-success btn-improved">
+              <!-- Campo oculto para id_tratamiento -->
+              <input type="hidden" name="id_tratamiento" value="1">
+              <!-- Campo oculto para hora_signos con valor automático -->
+              <input type="hidden" name="hora_signos" id="hora_actual" value="<?php echo date('H:i'); ?>">
+              
+              <button type="submit" class="btn btn-success btn-improved" id="btn-agregar-signos">
                 <i class="fas fa-plus-circle"></i>
                 <span>Agregar</span>
               </button>
-
-              <a href="ver_grafica.php" class="btn btn-warning btn-improved">
-                <i class="fas fa-chart-line"></i>
-                <span>Ver Gráfica</span>
-              </a>
-
-              <button type="button" class="btn btn-danger btn-improved" data-toggle="modal" data-target="#exampleModal">
-                <i class="fas fa-stop-circle"></i>
-                <span>Término de Cirugía</span>
-              </button>
             </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Término de cirugia</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                ¿Estas seguro que quieres salir? ¿ha términado la cirugia?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal">No, Regresar!</button>
-                <a href="../hospitalizacion/vista_pac_hosp.php"><button type="button" class="btn btn-danger">Si, quiero salir!</button></a>
-              </div>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -717,7 +792,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
         <!-- Barra de herramientas -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div>
-            <h5 class="mb-0"><i class="fas fa-chart-line text-primary"></i> Registro Gráfico Trans-Anestésico</h5>
+            <h5 class="mb-0">
+              <i class="fas fa-chart-line text-primary"></i> Registro Gráfico Trans-Anestésico
+            </h5>
             <small class="text-muted">Total de registros: <?php echo $total_registros; ?></small>
           </div>
           <div class="input-group" style="width: 300px;">
@@ -740,6 +817,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                 <th scope="col">Frecuencia respiratoria</th>
                 <th scope="col">Temperatura</th>
                 <th scope="col">Sat. Oxígeno</th>
+                <th scope="col">Acciones</th>
 
               </tr>
             </thead>
@@ -761,6 +839,14 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                   <td><strong><?php echo $f['frespg']; ?></strong></td>
                   <td><strong><?php echo $f['tempg']; ?> °C</strong></td>
                   <td><strong><?php echo $f['satg']; ?> %</strong></td>
+                  <td>
+                    <button type="button" class="btn btn-danger btn-sm eliminar-signos" 
+                            data-id="<?php echo $f['id_trans_graf']; ?>" 
+                            data-fecha="<?php echo date_format($date, "d/m/Y H:i:s"); ?>"
+                            title="Eliminar registro">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
 
                   <?php $no++; ?>
                 </tr>
@@ -771,7 +857,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
               if (!$hay_registros && $total_registros == 0) {
               ?>
                 <tr>
-                  <td colspan="8" class="text-center text-muted py-4">
+                  <td colspan="9" class="text-center text-muted py-4">
                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
                     No hay registros gráficos disponibles para este paciente.
                   </td>
@@ -1879,9 +1965,194 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
     </script>
 
     <script type="text/javascript">
+      console.log('=== INICIANDO SCRIPT ELIMINAR ===');
+      console.log('jQuery version:', typeof $ !== 'undefined' ? $.fn.jquery : 'No jQuery detected');
+      
+      // TEST INMEDIATO AL CARGAR
+      setTimeout(function() {
+        console.log('=== TEST DESPUÉS DE 2 SEGUNDOS ===');
+        console.log('Botones .eliminar-signos encontrados:', $('.eliminar-signos').length);
+        console.log('¿$ existe?', typeof $ !== 'undefined');
+        console.log('¿ajax existe?', typeof $.ajax !== 'undefined');
+        
+        if ($('.eliminar-signos').length > 0) {
+          console.log('✅ Botones detectados, agregando evento de test...');
+          $('.eliminar-signos').first().off('click').on('click', function() {
+            console.log('🎯 ¡TEST EXITOSO! El botón responde');
+            alert('¡El botón funciona!');
+          });
+        }
+      }, 2000);
+      
+      // Función para inicializar los botones
+      function inicializarBotonesEliminar() {
+        console.log('Inicializando botones eliminar...');
+        
+        // Verificar que existan botones
+        const botones = $('.eliminar-signos');
+        console.log('Botones encontrados:', botones.length);
+        
+        if (botones.length === 0) {
+          console.warn('No se encontraron botones con clase .eliminar-signos');
+          // Intentar de nuevo en 1 segundo
+          setTimeout(inicializarBotonesEliminar, 1000);
+          return;
+        }
+        
+        // Mostrar información de cada botón
+        botones.each(function(index) {
+          const id = $(this).data('id');
+          const fecha = $(this).data('fecha');
+          console.log(`Botón ${index}: ID=${id}, Fecha=${fecha}`);
+        });
+        
+        // Remover eventos anteriores para evitar duplicados
+        $(document).off('click', '.eliminar-signos');
+        
+        // Agregar evento con delegación
+        $(document).on('click', '.eliminar-signos', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          console.log('=== BOTÓN ELIMINAR CLICKEADO ===');
+          
+          const idRegistro = $(this).data('id');
+          const fecha = $(this).data('fecha');
+          
+          console.log('ID del registro:', idRegistro);
+          console.log('Fecha:', fecha);
+          
+          if (!idRegistro) {
+            alert('Error: No se pudo obtener el ID del registro');
+            return;
+          }
+          
+          if (confirm(`¿Está seguro de eliminar el registro del ${fecha}?\n\nEsta acción no se puede deshacer.`)) {
+            console.log('Usuario confirmó eliminación');
+            eliminarRegistro(idRegistro, fecha, $(this));
+          } else {
+            console.log('Usuario canceló eliminación');
+          }
+        });
+        
+        console.log('Eventos de eliminación configurados correctamente');
+      }
+      
+      // Función para eliminar registro
+      function eliminarRegistro(idRegistro, fecha, botonElement) {
+        console.log('Iniciando eliminación del registro:', idRegistro);
+        
+        // Deshabilitar botón
+        botonElement.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+        
+        $.ajax({
+          url: 'eliminar_signos_vitales.php',
+          method: 'POST',
+          data: { 
+            id_registro: idRegistro,
+            action: 'eliminar',
+            ajax: true
+          },
+          dataType: 'json',
+          timeout: 10000, // 10 segundos de timeout
+          success: function(response) {
+            console.log('Respuesta del servidor:', response);
+            
+            if (response && response.success) {
+              alert('✅ Registro eliminado correctamente');
+              console.log('Recargando página...');
+              window.location.reload();
+            } else {
+              const mensaje = response ? response.message : 'Error desconocido';
+              alert('❌ Error al eliminar: ' + mensaje);
+              console.error('Error del servidor:', mensaje);
+              
+              // Restaurar botón
+              botonElement.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('=== ERROR AJAX ===');
+            console.error('Status:', status);
+            console.error('Error:', error);
+            console.error('Response text:', xhr.responseText);
+            console.error('Status code:', xhr.status);
+            
+            let mensajeError = 'Error de conexión';
+            if (xhr.status === 404) {
+              mensajeError = 'Archivo eliminar_signos_vitales.php no encontrado';
+            } else if (xhr.status === 500) {
+              mensajeError = 'Error interno del servidor';
+            } else if (status === 'timeout') {
+              mensajeError = 'Tiempo de espera agotado';
+            }
+            
+            alert('❌ ' + mensajeError + ': ' + error);
+            
+            // Restaurar botón
+            botonElement.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+          }
+        });
+      }
+      
+      // Ejecutar cuando el documento esté listo
       $(document).ready(function() {
+        console.log('Document ready ejecutado');
+        inicializarBotonesEliminar();
+        
         $('#mibuscador').select2();
+        
+        // Establecer hora actual automáticamente
+        function setHoraActual() {
+          const now = new Date();
+          const horas = String(now.getHours()).padStart(2, '0');
+          const minutos = String(now.getMinutes()).padStart(2, '0');
+          const horaActual = horas + ':' + minutos;
+          
+          // Actualizar el campo de hora
+          $('input[name="hora_signos"]').val(horaActual);
+          $('#hora_actual').val(horaActual);
+        }
+        
+        // Establecer hora al cargar la página
+        setHoraActual();
+        
+        // Actualizar hora cada minuto
+        setInterval(setHoraActual, 60000);
+        
+        // Validación del formulario
+        $('form').on('submit', function(e) {
+          // Asegurar que la hora esté actualizada
+          setHoraActual();
+          
+          const sistg = $('input[name="sistg"]').val();
+          const diastg = $('input[name="diastg"]').val();
+          const fcardg = $('input[name="fcardg"]').val();
+          const frespg = $('input[name="frespg"]').val();
+          const satg = $('input[name="satg"]').val();
+          const tempg = $('input[name="tempg"]').val();
+          const hora = $('input[name="hora_signos"]').val();
+          
+          if (!sistg || !diastg || !fcardg || !frespg || !satg || !tempg || !hora) {
+            alert('⚠️ Por favor complete todos los campos de signos vitales antes de continuar.');
+            e.preventDefault();
+            return false;
+          }
+          
+          const submitBtn = $('button[type="submit"]');
+          submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+          
+          return true;
+        });
       });
+      
+      $(window).on('load', function() {
+        console.log('Window load ejecutado');
+        setTimeout(function() {
+          inicializarBotonesEliminar();
+        }, 1000);
+      });
+
     </script>
 
 </body>

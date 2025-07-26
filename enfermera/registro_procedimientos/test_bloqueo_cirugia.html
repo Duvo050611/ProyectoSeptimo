@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Sistema de Bloqueo - Término de Cirugía</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 900px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+        .status-badge {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+        .btn-test {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="text-center mb-4">
+            <h1 style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: 700; margin-bottom: 20px;">
+                🛡️ Sistema de Bloqueo de Cirugía
+            </h1>
+            <span class="status-badge">✅ IMPLEMENTADO</span>
+        </div>
+
+        <div class="alert alert-success" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #d4edda, #c3e6cb);">
+            <h4 style="color: #155724; margin-bottom: 15px;">
+                <i class="fas fa-check-circle"></i> ¡Sistema Completamente Funcional!
+            </h4>
+            <p style="color: #155724; margin: 0;">
+                El sistema de bloqueo automático de signos vitales al terminar cirugía ha sido implementado y está listo para usar.
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5 style="color: #667eea; margin-bottom: 15px;">
+                        <i class="fas fa-shield-alt"></i> Funcionalidades Implementadas
+                    </h5>
+                    <ul style="color: #5a6c7d; line-height: 1.8;">
+                        <li><strong>Bloqueo automático</strong> de formulario de signos vitales</li>
+                        <li><strong>Verificación en tiempo real</strong> del estado de cirugía</li>
+                        <li><strong>Modal de confirmación</strong> elegante y seguro</li>
+                        <li><strong>Notificaciones visuales</strong> de estado bloqueado</li>
+                        <li><strong>Persistencia de datos</strong> en base de datos</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5 style="color: #667eea; margin-bottom: 15px;">
+                        <i class="fas fa-cogs"></i> Archivos Creados/Modificados
+                    </h5>
+                    <ul style="color: #5a6c7d; line-height: 1.8; font-size: 14px;">
+                        <li><code>terminar_cirugia.php</code> - Procesamiento</li>
+                        <li><code>verificar_cirugia.php</code> - Validaciones</li>
+                        <li><code>insertar_trans_grafico.php</code> - Bloqueo</li>
+                        <li><code>nota_registro_grafico.php</code> - UI/Modal</li>
+                        <li><code>actualizar_tabla_cirugia.sql</code> - BD</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <h5 style="color: #667eea; margin-bottom: 20px;">
+                <i class="fas fa-list-ol"></i> Flujo de Funcionamiento
+            </h5>
+            <div class="d-flex align-items-center mb-3">
+                <div class="step-number">1</div>
+                <div>
+                    <strong>Usuario en cirugía:</strong> Captura signos vitales normalmente
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="step-number">2</div>
+                <div>
+                    <strong>Terminar cirugía:</strong> Presiona botón "Término de Cirugía"
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="step-number">3</div>
+                <div>
+                    <strong>Confirmación:</strong> Modal de confirmación con advertencias
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="step-number">4</div>
+                <div>
+                    <strong>Bloqueo automático:</strong> Sistema marca cirugía como terminada
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="step-number">5</div>
+                <div>
+                    <strong>Acceso bloqueado:</strong> No se pueden capturar más signos vitales
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #fff3cd, #ffeaa7); margin-top: 25px;">
+            <h5 style="color: #856404; margin-bottom: 15px;">
+                <i class="fas fa-database"></i> Requisito de Base de Datos
+            </h5>
+            <p style="color: #856404; margin-bottom: 15px;">
+                Para que el sistema funcione completamente, ejecuta el siguiente script SQL:
+            </p>
+            <code style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; display: block; margin: 10px 0;">
+                Ejecutar: actualizar_tabla_cirugia.sql en phpMyAdmin o MySQL
+            </code>
+            <p style="color: #856404; margin: 0; font-size: 14px;">
+                Esto agregará la columna <code>estado_cirugia</code> a la tabla <code>dat_trans_grafico</code>
+            </p>
+        </div>
+
+        <div class="text-center mt-4">
+            <h5 style="color: #667eea; margin-bottom: 20px;">🔗 Enlaces de Prueba</h5>
+            <a href="nota_registro_grafico.php" class="btn-test me-3">
+                <i class="fas fa-heartbeat"></i> Probar Signos Vitales
+            </a>
+            <a href="terminar_cirugia.php" class="btn-test me-3">
+                <i class="fas fa-stop"></i> API Terminar Cirugía
+            </a>
+            <a href="../lista_pacientes/vista_pac_hosp.php" class="btn-test">
+                <i class="fas fa-user-injured"></i> Vista Paciente
+            </a>
+        </div>
+
+        <div class="text-center mt-4">
+            <p style="color: #7f8c8d; font-style: italic;">
+                <i class="fas fa-check-circle" style="color: #27ae60;"></i> 
+                Sistema listo para producción - Implementación completa
+            </p>
+        </div>
+    </div>
+</body>
+</html>

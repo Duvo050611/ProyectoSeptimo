@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Botón Eliminar - Sistema INEO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .test-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .test-table thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .test-table thead th {
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            border: none;
+        }
+        
+        .test-table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .btn-test-eliminar {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 15px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-test-eliminar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
+            color: white;
+        }
+        
+        /* Notificaciones elegantes mejoradas */
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: overlayFadeIn 0.5s ease-out;
+        }
+        
+        @keyframes overlayFadeIn {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(15px); }
+        }
+        
+        .notification-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,249,250,0.95));
+            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            box-shadow: 
+                0 35px 80px rgba(0,0,0,0.25),
+                0 20px 40px rgba(102, 126, 234, 0.15),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+            padding: 50px 40px 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: notificationEntry 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(102, 126, 234, 0.03), transparent);
+            animation: rotateGradient 6s linear infinite;
+        }
+        
+        .notification-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(102, 126, 234, 0.08), 
+                rgba(118, 75, 162, 0.06),
+                transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes rotateGradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes notificationEntry {
+            0% { 
+                transform: scale(0.3) translateY(-100px) rotate(-15deg); 
+                opacity: 0; 
+                filter: blur(10px);
+            }
+            30% { 
+                transform: scale(1.05) translateY(20px) rotate(3deg); 
+                opacity: 0.7; 
+                filter: blur(2px);
+            }
+            70% { 
+                transform: scale(0.98) translateY(-10px) rotate(-1deg); 
+                opacity: 0.9; 
+                filter: blur(1px);
+            }
+            100% { 
+                transform: scale(1) translateY(0) rotate(0deg); 
+                opacity: 1; 
+                filter: blur(0px);
+            }
+        }
+        
+        .notification-icon {
+            font-size: 85px;
+            margin-bottom: 25px;
+            animation: iconFloatPulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1));
+        }
+        
+        .notification-icon.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a67d8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .notification-icon.error {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 50%, #4c51bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .notification-icon.info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6b73ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes iconFloatPulse {
+            0%, 100% { 
+                transform: translateY(0px) scale(1); 
+                text-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            }
+            25% { 
+                transform: translateY(-8px) scale(1.02); 
+                text-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+            }
+            50% { 
+                transform: translateY(-5px) scale(1.05); 
+                text-shadow: 0 15px 30px rgba(102, 126, 234, 0.5);
+            }
+            75% { 
+                transform: translateY(-2px) scale(1.02); 
+                text-shadow: 0 10px 22px rgba(102, 126, 234, 0.35);
+            }
+        }
+        
+        .notification-title {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #4a5f7a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .notification-message {
+            color: #5a6c7d;
+            font-size: 17px;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .notification-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 35px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            box-shadow: 
+                0 12px 30px rgba(102, 126, 234, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .notification-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 18px 40px rgba(102, 126, 234, 0.6),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            background: linear-gradient(135deg, #5a67d8 0%, #667eea 100%);
+        }
+        
+        .notification-btn:active {
+            transform: translateY(-1px) scale(1.02);
+            transition: all 0.1s;
+        }
+        
+        .resultado-area {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 100px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+        }
+        
+        .log-entry {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #667eea;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .test-container { padding: 20px; margin: 10px; }
+            .test-header { font-size: 22px; }
+            .notification-card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay para notificaciones -->
+    <div class="notification-overlay" id="notificationOverlay">
+        <div class="notification-card" id="notificationCard">
+            <i class="notification-icon" id="notificationIcon"></i>
+            <div class="notification-title" id="notificationTitle"></div>
+            <div class="notification-message" id="notificationMessage"></div>
+            <button class="notification-btn" onclick="closeNotification()">
+                <i class="fas fa-check"></i> Entendido
+            </button>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h1 class="test-header">🧪 Test Botón Eliminar - Sistema INEO</h1>
+        
+        <div class="info-badge">
+            <i class="fas fa-info-circle"></i>
+            <strong>Información:</strong> Test independiente para verificar la funcionalidad de eliminación de signos vitales.
+        </div>
+        
+        <!-- Tabla de test -->
+        <table class="table test-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> ID</th>
+                    <th><i class="fas fa-calendar"></i> Fecha</th>
+                    <th><i class="fas fa-clock"></i> Hora</th>
+                    <th><i class="fas fa-cogs"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>123</strong></td>
+                    <td>2024-12-19</td>
+                    <td>15:30:00</td>
+                    <td>
+                        <button class="btn btn-test-eliminar btnEliminar" 
+                                data-id="123" 
+                                data-fecha="2024-12-19">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>456</strong></td>
+                    <td>2024-12-19</td>
+                    <td>16:00:00</td>
+                    <td>
+                        <button class="btn btn-test-eliminar btnEliminar" 
+                                data-id="456" 
+                                data-fecha="2024-12-19">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>789</strong></td>
+                    <td>2024-12-19</td>
+                    <td>17:15:00</td>
+                    <td>
+                        <button class="btn btn-test-eliminar btnEliminar" 
+                                data-id="789" 
+                                data-fecha="2024-12-19">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h5 style="color: #667eea; font-weight: 600; margin-bottom: 15px;">
+            <i class="fas fa-terminal"></i> Área de Resultados
+        </h5>
+        <div class="resultado-area" id="resultado">
+            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                <i class="fas fa-play-circle"></i> Haz clic en un botón "Eliminar" para probar la funcionalidad...
+            </p>
+        </div>
+    </div>
+
+    <script>
+    // Sistema de notificaciones elegantes mejorado
+    function showNotification(type, title, message) {
+        const overlay = $('#notificationOverlay');
+        const icon = $('#notificationIcon');
+        const titleEl = $('#notificationTitle');
+        const messageEl = $('#notificationMessage');
+        
+        // Configurar icono según el tipo - TODOS EN AZUL
+        if (type === 'success') {
+            icon.removeClass().addClass('notification-icon success fas fa-check-circle');
+        } else if (type === 'error') {
+            icon.removeClass().addClass('notification-icon error fas fa-exclamation-triangle');
+        } else if (type === 'info') {
+            icon.removeClass().addClass('notification-icon info fas fa-info-circle');
+        }
+        
+        titleEl.text(title);
+        messageEl.text(message);
+        
+        // Mostrar con efecto dramático
+        overlay.css('display', 'flex').hide().fadeIn(500);
+        
+        // Efectos de vibración mejorados
+        if ('vibrate' in navigator) {
+            if (type === 'success') {
+                navigator.vibrate([100, 50, 100, 50, 200]); // Patrón de éxito
+            } else if (type === 'error') {
+                navigator.vibrate([200, 100, 200, 100, 300]); // Patrón de error
+            } else {
+                navigator.vibrate([150, 75, 150]); // Patrón de info
+            }
+        }
+        
+        // Efecto de partículas flotantes (simulado)
+        createFloatingParticles(type);
+        
+        // Auto-cerrar después de 8 segundos para mejor UX
+        setTimeout(() => {
+            if (overlay.is(':visible')) {
+                closeNotification();
+            }
+        }, 8000);
+    }
+    
+    function createFloatingParticles(type) {
+        const colors = {
+            'success': ['#667eea', '#764ba2', '#5a67d8'],
+            'error': ['#667eea', '#5a67d8', '#4c51bf'], 
+            'info': ['#667eea', '#764ba2', '#6b73ff']
+        };
+        
+        const particleColors = colors[type] || colors['info'];
+        
+        for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+                const particle = $('<div>').css({
+                    position: 'fixed',
+                    width: Math.random() * 8 + 4 + 'px',
+                    height: Math.random() * 8 + 4 + 'px',
+                    background: particleColors[Math.floor(Math.random() * particleColors.length)],
+                    borderRadius: '50%',
+                    left: Math.random() * window.innerWidth + 'px',
+                    top: window.innerHeight + 'px',
+                    zIndex: 10000,
+                    pointerEvents: 'none',
+                    opacity: 0.7,
+                    boxShadow: '0 0 10px currentColor'
+                });
+                
+                $('body').append(particle);
+                
+                particle.animate({
+                    top: -50,
+                    left: '+=' + (Math.random() * 200 - 100),
+                    opacity: 0
+                }, {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'linear',
+                    complete: function() {
+                        particle.remove();
+                    }
+                });
+            }, i * 100);
+        }
+    }
+    
+    function closeNotification() {
+        const overlay = $('#notificationOverlay');
+        const card = $('.notification-card');
+        
+        // Animación de salida suave
+        card.css({
+            'animation': 'notificationExit 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards'
+        });
+        
+        // Agregar keyframe de salida dinámicamente
+        const style = $('<style>').text(`
+            @keyframes notificationExit {
+                0% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); }
+                100% { transform: scale(0.3) rotate(15deg); opacity: 0; filter: blur(5px); }
+            }
+        `);
+        $('head').append(style);
+        
+        setTimeout(() => {
+            overlay.fadeOut(300, () => {
+                card.css('animation', ''); // Reset animation
+                style.remove(); // Clean up
+            });
+        }, 400);
+    }
+    
+    function addLogEntry(message, type = 'info') {
+        const resultado = $('#resultado');
+        const timestamp = new Date().toLocaleTimeString();
+        const iconClass = type === 'success' ? 'fas fa-check-circle' : 
+                         type === 'error' ? 'fas fa-times-circle' : 'fas fa-info-circle';
+        
+        const logEntry = `
+            <div class="log-entry" style="animation: slideInLeft 0.5s ease-out;">
+                <i class="${iconClass}" style="color: ${type === 'success' ? '#667eea' : type === 'error' ? '#5a67d8' : '#764ba2'}"></i>
+                <strong>[${timestamp}]</strong> ${message}
+            </div>
+        `;
+        
+        if (resultado.find('p').length > 0) {
+            resultado.html(''); // Limpiar mensaje inicial
+        }
+        
+        resultado.append(logEntry);
+        resultado.scrollTop(resultado[0].scrollHeight);
+    }
+
+    $(document).ready(function() {
+        console.log("🧪 Test página cargada - jQuery funcional");
+        addLogEntry("Sistema de test inicializado correctamente", "success");
+        
+        // Test simple de click
+        $('.btnEliminar').on('click', function() {
+            console.log("🖱️ ¡CLICK DETECTADO!");
+            
+            const id = $(this).data('id');
+            const fecha = $(this).data('fecha');
+            const boton = $(this);
+            
+            console.log("📝 ID:", id);
+            console.log("📝 Fecha:", fecha);
+            
+            addLogEntry(`Click detectado en registro ID: ${id}, Fecha: ${fecha}`, "info");
+            
+            // Deshabilitar botón durante la prueba
+            boton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+            
+            // Mostrar notificación de confirmación mejorada
+            if (confirm(`🗑️ ¿Eliminar el registro ID: ${id} del ${fecha}?\n\n⚠️ Esta acción no se puede deshacer.\n🧪 Esto es una prueba del sistema de eliminación.`)) {
+                addLogEntry("Usuario confirmó la eliminación - Iniciando prueba AJAX", "info");
+                
+                // Test AJAX real
+                $.ajax({
+                    url: 'eliminar_signos_vitales.php',
+                    type: 'POST',
+                    data: {
+                        id_registro: id,
+                        action: 'eliminar',
+                        ajax: true
+                    },
+                    dataType: 'json',
+                    timeout: 10000,
+                    success: function(response) {
+                        console.log("📥 Respuesta AJAX:", response);
+                        addLogEntry("Respuesta del servidor recibida", "success");
+                        
+                        if (response && response.success) {
+                            showNotification('success', 
+                                '🎉 ¡Eliminación Completada!', 
+                                `El registro ID: ${id} ha sido eliminado exitosamente del sistema médico. La operación se completó sin errores.`);
+                            addLogEntry(`✅ Registro ID: ${id} eliminado exitosamente`, "success");
+                            
+                            // Remover fila con animación mejorada
+                            boton.closest('tr').css({
+                                'background': 'linear-gradient(135deg, #667eea, #764ba2)',
+                                'color': 'white',
+                                'transform': 'scale(1.02)'
+                            }).fadeOut(1000, function() {
+                                $(this).remove();
+                            });
+                        } else {
+                            const mensaje = response ? response.message : 'Error desconocido del servidor';
+                            showNotification('error', 
+                                '⚠️ Error en la Eliminación', 
+                                `No se pudo completar la eliminación del registro: ${mensaje}. Por favor, verifique la conexión e intente nuevamente.`);
+                            addLogEntry(`❌ Error: ${mensaje}`, "error");
+                            
+                            // Restaurar botón
+                            boton.prop('disabled', false).html('<i class="fas fa-trash"></i> Eliminar');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("💥 Error AJAX:", status, error);
+                        console.error("💥 Respuesta completa:", xhr.responseText);
+                        
+                        let mensajeError = 'Error de comunicación con el servidor';
+                        let descripcionDetallada = '';
+                        
+                        if (xhr.status === 404) {
+                            mensajeError = 'Archivo no encontrado';
+                            descripcionDetallada = 'El archivo eliminar_signos_vitales.php no se encuentra en el servidor.';
+                        } else if (xhr.status === 500) {
+                            mensajeError = 'Error interno del servidor';
+                            descripcionDetallada = 'Se produjo un error interno en el servidor. Contacte al administrador del sistema.';
+                        } else if (status === 'timeout') {
+                            mensajeError = 'Tiempo de espera agotado';
+                            descripcionDetallada = 'La operación tardó demasiado en completarse (más de 10 segundos).';
+                        } else if (xhr.status === 0) {
+                            mensajeError = 'Sin conexión al servidor';
+                            descripcionDetallada = 'No se pudo establecer conexión con el servidor. Verifique su conexión a internet.';
+                        } else {
+                            descripcionDetallada = `Estado HTTP: ${xhr.status} - ${error}`;
+                        }
+                        
+                        showNotification('error', 
+                            `🚨 ${mensajeError}`, 
+                            `${descripcionDetallada}\n\nPor favor, intente nuevamente o contacte al soporte técnico si el problema persiste.`);
+                        addLogEntry(`💥 Error AJAX: ${mensajeError}`, "error");
+                        
+                        // Restaurar botón
+                        boton.prop('disabled', false).html('<i class="fas fa-trash"></i> Eliminar');
+                    }
+                });
+            } else {
+                addLogEntry("Usuario canceló la eliminación", "info");
+                // Restaurar botón
+                boton.prop('disabled', false).html('<i class="fas fa-trash"></i> Eliminar');
+            }
+        });
+        
+        // Test adicional de diagnóstico
+        addLogEntry(`Botones encontrados: ${$('.btnEliminar').length}`, "info");
+        $('.btnEliminar').each(function(index) {
+            const id = $(this).data('id');
+            addLogEntry(`Botón ${index + 1} configurado - ID: ${id}`, "info");
+            console.log("🔧 Botón " + (index + 1) + " - ID:", id);
+        });
+        
+        // Verificar jQuery y AJAX
+        addLogEntry(`jQuery versión: ${$.fn.jquery}`, "success");
+        addLogEntry(`AJAX disponible: ${typeof $.ajax !== 'undefined' ? 'Sí' : 'No'}`, "success");
+        
+        // Mostrar notificación de bienvenida
+        setTimeout(() => {
+            showNotification('info', 
+                '🧪 Sistema de Pruebas Listo', 
+                'El entorno de testing está configurado correctamente. Puede proceder a probar la funcionalidad de eliminación de registros.');
+        }, 1000);
+    });
+    </script>
+</body>
+</html>
