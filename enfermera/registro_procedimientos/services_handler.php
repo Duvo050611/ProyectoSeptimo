@@ -52,11 +52,11 @@ switch ($action) {
         // Fetch registered services
         // MODIFICADO:
         // 1. Se eliminó la condición 'AND c.prod_serv = "S"'
-        // 2. Se añadió la condición 'AND s.grupo = "CEYE"' para filtrar por el grupo correcto de servicios.
+        // 2. Se añadió la condición 'AND s.tip_insumo = "CEYE"' para filtrar por el tip_insumo correcto de servicios.
         $sql = "SELECT c.id_ctapac, c.insumo, c.cta_tot, c.cta_fec, s.serv_desc 
                 FROM dat_ctapac c 
                 LEFT JOIN cat_servicios s ON c.insumo = s.id_serv 
-                WHERE c.id_usua = ? AND c.id_atencion = ? AND c.cta_activo = 'SI' AND s.grupo = 'CEYE'";
+                WHERE c.id_usua = ? AND c.id_atencion = ? AND c.cta_activo = 'SI' AND s.tip_insumo = 'CEYE'";
         $stmt = $conexion->prepare($sql);
         if (!$stmt) {
             logError("Prepare failed for get services: " . $conexion->error);
@@ -97,10 +97,10 @@ switch ($action) {
             ob_end_flush();
             exit();
         }
-        // Agregamos la verificación de grupo para asegurar que solo se eliminen los del grupo CEYE.
+        // Agregamos la verificación de tip_insumo para asegurar que solo se eliminen los del tip_insumo CEYE.
         $sql = "DELETE c FROM dat_ctapac c
                 INNER JOIN cat_servicios s ON c.insumo = s.id_serv
-                WHERE c.id_ctapac = ? AND c.id_usua = ? AND c.id_atencion = ? AND s.grupo = 'CEYE'";
+                WHERE c.id_ctapac = ? AND c.id_usua = ? AND c.id_atencion = ? AND s.tip_insumo = 'CEYE'";
         $stmt = $conexion->prepare($sql);
         if (!$stmt) {
             logError("Prepare failed for delete: " . $conexion->error);
@@ -136,12 +136,12 @@ switch ($action) {
             ob_end_flush();
             exit();
         }
-        // Agregamos el JOIN y la verificación de grupo para asegurar que solo se actualicen los del grupo CEYE.
+        // Agregamos el JOIN y la verificación de tip_insumo para asegurar que solo se actualicen los del tip_insumo CEYE.
         // También podemos actualizar prod_serv si es necesario, obteniendo la nueva descripción.
         $sql = "UPDATE dat_ctapac c
                 INNER JOIN cat_servicios s ON c.insumo = s.id_serv
                 SET c.cta_tot = ?, c.insumo = ?
-                WHERE c.id_ctapac = ? AND c.id_usua = ? AND c.id_atencion = ? AND s.grupo = 'CEYE'";
+                WHERE c.id_ctapac = ? AND c.id_usua = ? AND c.id_atencion = ? AND s.tip_insumo = 'CEYE'";
         $stmt = $conexion->prepare($sql);
         if (!$stmt) {
             logError("Prepare failed for update: " . $conexion->error);

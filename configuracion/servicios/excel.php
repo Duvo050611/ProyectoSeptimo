@@ -1,14 +1,16 @@
 <?php
-header("Content-Type: application/xls");
-header("Content-Disposition: attachment; filename= servicios.xls");
+header("Content-Type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=servicios_".date("Ymd_His").".xls");
+header("Pragma: no-cache");
+header("Expires: 0");
 ?>
 
 <head>
     <meta charset="UTF-8" />
 </head>
-<table class="table table-bordered table-striped" id="mytable">
+<table border="1" cellpadding="5" cellspacing="0">
 
-    <thead class="thead" style="background-color: #0c675e">
+    <thead style="background-color: #0c675e; color: white;">
         <tr>
             <th>Id</th>
             <th>Clave</th>

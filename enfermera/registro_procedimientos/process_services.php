@@ -124,8 +124,8 @@ foreach ($selected_services as $serv_id => $cost) {
     $serv_id = (int)$serv_id;
     $cost = (float)$cost;
     // Ya no necesitamos $service_description aquí si prod_serv es 'S' fijo.
-    // La validación del servicio se mantiene para asegurar que el ID es válido y el grupo es 'CEYE'.
-    $sql_serv = "SELECT serv_desc FROM cat_servicios WHERE id_serv = ? AND serv_activo = 'SI' AND grupo = 'CEYE'";
+    // La validación del servicio se mantiene para asegurar que el ID es válido y el tip_insumo es 'CEYE'.
+    $sql_serv = "SELECT serv_desc FROM cat_servicios WHERE id_serv = ? AND serv_activo = 'SI' AND tip_insumo = 'CEYE'";
     $stmt_serv = $conexion->prepare($sql_serv);
     if (!$stmt_serv) {
         logError("Prepare failed for cat_servicios: " . $conexion->error);
