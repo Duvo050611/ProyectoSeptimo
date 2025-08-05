@@ -74,7 +74,24 @@ while($row = mysqli_fetch_assoc($query))
 	$sub_array[] = $row['volumen'];
 	$sub_array[] = $row['id_usua'];
 	
-	$sub_array[] = '<a href="javascript:void();" data-id="'.$row['id'].'"  class="btn btn-warning btn-sm editbtnE" >Editar</a>  <a href="javascript:void();" data-id="'.$row['id'].'"  class="btn btn-danger btn-sm deleteBtnE" >Eliminar</a>';
+	$sub_array[] = '
+        <div class="action-buttons-container">
+            <a href="javascript:void(0);" 
+               data-id="'.$row['id'].'" 
+               class="btn btn-action btn-edit-modern editbtnE" 
+               title="Editar registro">
+                <i class="fas fa-edit"></i>
+                <span>Editar</span>
+            </a>
+            <a href="javascript:void(0);" 
+               data-id="'.$row['id'].'" 
+               class="btn btn-action btn-delete-modern deleteBtnE" 
+               title="Eliminar registro">
+                <i class="fas fa-trash-alt"></i>
+                <span>Eliminar</span>
+            </a>
+        </div>
+    ';
 	$data[] = $sub_array;
 
 }

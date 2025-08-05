@@ -884,28 +884,20 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                             $id_atencion = $_SESSION['pac'];
                             $resultado = $conexion->query("SELECT * from dat_trans_grafico WHERE id_atencion=$id_atencion ORDER BY id_trans_graf ASC limit 1") or die($conexion->error);
                             $usuario = $_SESSION['login'];
-                            function obtenerUltimoRegistro($conexion, $id_atencion, $campo, $id_tratamiento = null)
+                            function obtenerUltimoRegistro($conexion, $id_atencion, $campo)
                             {
-                                $where_tratamiento = "";
-                                if ($id_tratamiento) {
-                                    $where_tratamiento = " AND id_tratamiento = $id_tratamiento";
-                                }
-                                $sql = "SELECT $campo FROM dat_trans_grafico WHERE id_atencion=$id_atencion $where_tratamiento AND $campo > 0 ORDER BY fecha_g DESC, id_trans_graf DESC LIMIT 1";
+                                $sql = "SELECT $campo FROM dat_trans_grafico WHERE id_atencion=$id_atencion AND $campo > 0 ORDER BY fecha_g DESC, id_trans_graf DESC LIMIT 1";
                                 $result = $conexion->query($sql);
                                 if ($result && $row = $result->fetch_assoc()) {
                                     return $row[$campo] ? $row[$campo] : 0;
                                 }
                                 return 0;
                             }
-                            function obtenerDatosGrafico($conexion, $id_atencion, $campo, $id_tratamiento = null)
+                            function obtenerDatosGrafico($conexion, $id_atencion, $campo)
                             {
                                 $datos = array();
-                                $where_tratamiento = "";
-                                if ($id_tratamiento) {
-                                    $where_tratamiento = " AND id_tratamiento = $id_tratamiento";
-                                }
                                 for ($i = 1; $i <= 48; $i++) {
-                                    $sql = "SELECT $campo FROM dat_trans_grafico WHERE id_atencion=$id_atencion $where_tratamiento AND (cuenta=$i OR hora=$i) ORDER BY fecha_g DESC LIMIT 1";
+                                    $sql = "SELECT $campo FROM dat_trans_grafico WHERE id_atencion=$id_atencion AND (cuenta=$i OR hora=$i) ORDER BY fecha_g DESC LIMIT 1";
                                     $result = $conexion->query($sql);
                                     $valor = 0;
                                     if ($result && $row = $result->fetch_assoc()) {
@@ -915,41 +907,40 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                                 }
                                 return $datos;
                             }
-                            $id_tratamiento_filtro = isset($_GET['tratamiento_id']) ? (int) $_GET['tratamiento_id'] : null;
-                            $presion_sistolica = obtenerDatosGrafico($conexion, $id_atencion, 'sistg', $id_tratamiento_filtro);
-                            $presion_diastolica = obtenerDatosGrafico($conexion, $id_atencion, 'diastg', $id_tratamiento_filtro);
-                            $frecuencia_cardiaca = obtenerDatosGrafico($conexion, $id_atencion, 'fcardg', $id_tratamiento_filtro);
-                            $frecuencia_respiratoria = obtenerDatosGrafico($conexion, $id_atencion, 'frespg', $id_tratamiento_filtro);
-                            $saturacion = obtenerDatosGrafico($conexion, $id_atencion, 'satg', $id_tratamiento_filtro);
-                            $temperatura = obtenerDatosGrafico($conexion, $id_atencion, 'tempg', $id_tratamiento_filtro);
+                            $presion_sistolica = obtenerDatosGrafico($conexion, $id_atencion, 'sistg');
+                            $presion_diastolica = obtenerDatosGrafico($conexion, $id_atencion, 'diastg');
+                            $frecuencia_cardiaca = obtenerDatosGrafico($conexion, $id_atencion, 'fcardg');
+                            $frecuencia_respiratoria = obtenerDatosGrafico($conexion, $id_atencion, 'frespg');
+                            $saturacion = obtenerDatosGrafico($conexion, $id_atencion, 'satg');
+                            $temperatura = obtenerDatosGrafico($conexion, $id_atencion, 'tempg');
                             $stats = array(
                                 'presion_sistolica' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'sistg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'sistg'),
                                     'min' => min(array_filter($presion_sistolica)),
                                     'max' => max(array_filter($presion_sistolica))
                                 ),
                                 'presion_diastolica' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'diastg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'diastg'),
                                     'min' => min(array_filter($presion_diastolica)),
                                     'max' => max(array_filter($presion_diastolica))
                                 ),
                                 'frecuencia_cardiaca' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'fcardg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'fcardg'),
                                     'min' => min(array_filter($frecuencia_cardiaca)),
                                     'max' => max(array_filter($frecuencia_cardiaca))
                                 ),
                                 'frecuencia_respiratoria' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'frespg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'frespg'),
                                     'min' => min(array_filter($frecuencia_respiratoria)),
                                     'max' => max(array_filter($frecuencia_respiratoria))
                                 ),
                                 'saturacion' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'satg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'satg'),
                                     'min' => min(array_filter($saturacion)),
                                     'max' => max(array_filter($saturacion))
                                 ),
                                 'temperatura' => array(
-                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'tempg', $id_tratamiento_filtro),
+                                    'ultimo' => obtenerUltimoRegistro($conexion, $id_atencion, 'tempg'),
                                     'min' => min(array_filter($temperatura)),
                                     'max' => max(array_filter($temperatura))
                                 )
@@ -963,48 +954,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                                     <div class="chart-header">
                                         <i class="fas fa-chart-line"></i> GRÁFICO DE SIGNOS VITALES - REGISTRO
                                         TRANS-ANESTÉSICO
-                                        <?php if ($id_tratamiento_filtro): ?>
-                                            <?php
-                                            $sql_nombre_trat = "SELECT tipo FROM tratamientos WHERE id = $id_tratamiento_filtro";
-                                            $result_nombre_trat = $conexion->query($sql_nombre_trat);
-                                            if ($result_nombre_trat && $row_nombre_trat = $result_nombre_trat->fetch_assoc()) {
-                                                echo '<br><small style="color: #2b2d7f; font-weight: bold;">Tratamiento: ' . strtoupper($row_nombre_trat['tipo']) . '</small>';
-                                            }
-                                            ?>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="mb-3 no-print"
-                                        style="padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
-                                        <label for="filtro_tratamiento" style="font-weight: bold; color: #2b2d7f;">
-                                            <i class="fas fa-filter"></i> Filtrar por tratamiento:
-                                        </label>
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <select id="filtro_tratamiento" class="form-control"
-                                                    onchange="filtrarPorTratamiento()">
-                                                    <option value="">Todos los tratamientos</option>
-                                                    <?php
-                                                    $sql_tratamientos = "SELECT DISTINCT t.id, t.tipo FROM tratamientos t 
-                                       INNER JOIN dat_trans_grafico dtg ON t.id = dtg.id_tratamiento 
-                                       WHERE dtg.id_atencion = $id_atencion 
-                                       ORDER BY t.tipo";
-                                                    $result_tratamientos = $conexion->query($sql_tratamientos);
-                                                    if ($result_tratamientos) {
-                                                        while ($row_trat = $result_tratamientos->fetch_assoc()) {
-                                                            $selected = ($row_trat['id'] == $id_tratamiento_filtro) ? 'selected' : '';
-                                                            echo '<option value="' . $row_trat['id'] . '" ' . $selected . '>' . strtoupper($row_trat['tipo']) . '</option>';
-                                                        }
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <button type="button" class="btn btn-info"
-                                                    onclick="verTodosLosTratamientos()">
-                                                    <i class="fas fa-eye"></i> Ver Todos
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="chart-legend">
                                         <div class="legend-item" data-dataset="0">
@@ -1168,7 +1117,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                                                 <p class="text-muted mb-4">¿Desea continuar con el registro o regresar al
                                                     formulario anterior?</p>
                                                 <div class="btn-group-custom">
-                                                    <a href="nota_registro_grafico.php" class="btn btn-regresar">
+                                                    <a href="reg_pro.php" class="btn btn-regresar">
                                                         <i class="fas fa-arrow-left"></i>
                                                         <span>Regresar al Registro</span>
                                                     </a>
@@ -1431,18 +1380,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                     chart.update();
                 });
             });
-            function filtrarPorTratamiento() {
-                const select = document.getElementById('filtro_tratamiento');
-                const tratamientoId = select.value;
-                let url = 'ver_grafica.php';
-                if (tratamientoId) {
-                    url += '?tratamiento_id=' + tratamientoId;
-                }
-                window.location.href = url;
-            }
-            function verTodosLosTratamientos() {
-                window.location.href = 'ver_grafica.php';
-            }
         </script>
     </body>
 

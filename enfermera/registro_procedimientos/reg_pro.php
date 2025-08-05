@@ -102,6 +102,397 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             text-align: center;
         }
 
+        /* Estilos mejorados para signos vitales */
+        .signos-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e3e6f0;
+            box-shadow: 0 4px 20px rgba(43, 45, 127, 0.1);
+            margin: 20px 0;
+        }
+
+        .signos-header {
+            background: linear-gradient(135deg, #2b2d7f 0%, #4a4ed1 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(43, 45, 127, 0.3);
+        }
+
+        .signos-header i {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .signos-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Panel de acciones */
+        .signos-actions-panel {
+            margin-bottom: 25px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e3e6f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .action-content h6 {
+            color: #2b2d7f;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .action-content p {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        /* Resumen de últimos valores */
+        .signos-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e3e6f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .summary-title {
+            color: #2b2d7f;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .summary-title i {
+            margin-right: 8px;
+        }
+
+        .valor-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #e3e6f0;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .valor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .valor-icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+            color: #2b2d7f;
+        }
+
+        .valor-label {
+            display: block;
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .valor-number {
+            display: block;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2b2d7f;
+            margin: 5px 0;
+        }
+
+        .valor-unit {
+            font-size: 0.7em;
+            color: #6c757d;
+        }
+
+        /* Colores específicos para cada tipo de valor */
+        .valor-card.presion .valor-icon { color: #dc3545; }
+        .valor-card.frecuencia .valor-icon { color: #e74c3c; }
+        .valor-card.respiracion .valor-icon { color: #17a2b8; }
+        .valor-card.saturacion .valor-icon { color: #007bff; }
+        .valor-card.temperatura .valor-icon { color: #ffc107; }
+        .valor-card.tiempo .valor-icon { color: #6c757d; }
+
+        /* Tabla mejorada */
+        .signos-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e3e6f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e3e6f0;
+        }
+
+        .table-header h5 {
+            color: #2b2d7f;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .table-header i {
+            margin-right: 8px;
+        }
+
+        .table-controls .badge {
+            font-size: 0.9em;
+        }
+
+        .table-signos-vitales {
+            border: 2px solid #2b2d7f;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-signos-vitales thead th {
+            background: linear-gradient(135deg, #2b2d7f 0%, #4a4ed1 100%) !important;
+            color: white !important;
+            font-weight: bold;
+            border: none;
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .table-signos-vitales thead th i {
+            margin-right: 5px;
+        }
+
+        .table-signos-vitales tbody tr {
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .table-signos-vitales tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table-signos-vitales tbody tr:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.01);
+        }
+
+        .table-signos-vitales tbody td {
+            padding: 12px 10px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Modales mejorados */
+        .signos-modal .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .signos-modal-header {
+            background: linear-gradient(135deg, #2b2d7f 0%, #4a4ed1 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+        }
+
+        .signos-modal-header h5 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .signos-modal-header i {
+            margin-right: 10px;
+        }
+
+        .signos-modal-body {
+            padding: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+        }
+
+        /* Formularios mejorados */
+        .signos-form-group {
+            margin-bottom: 25px;
+        }
+
+        .signos-label {
+            display: block;
+            font-weight: 600;
+            color: #2b2d7f;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .signos-label i {
+            margin-right: 8px;
+        }
+
+        .form-control-signos {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e3e6f0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control-signos:focus {
+            border-color: #4a4ed1;
+            box-shadow: 0 0 0 0.2rem rgba(74, 78, 209, 0.25);
+            outline: none;
+            transform: scale(1.02);
+        }
+
+        /* Inputs de presión arterial */
+        .presion-inputs {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .presion-group {
+            flex: 1;
+            text-align: center;
+        }
+
+        .presion-input {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .presion-group label {
+            display: block;
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .presion-separator {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2b2d7f;
+        }
+
+        /* Botones mejorados */
+        .signos-form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-signos-primary {
+            background: linear-gradient(135deg, #2b2d7f 0%, #4a4ed1 100%);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(43, 45, 127, 0.3);
+        }
+
+        .btn-signos-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(43, 45, 127, 0.4);
+            background: linear-gradient(135deg, #1a1d5f 0%, #2b2d7f 100%);
+            color: white;
+        }
+
+        .btn-signos-secondary {
+            background: #6c757d;
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-signos-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Texto de ayuda */
+        .form-text {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: #6c757d;
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .valor-card.actualizado {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .signos-container {
+                padding: 15px;
+            }
+            
+            .presion-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .presion-separator {
+                display: none;
+            }
+            
+            .signos-form-actions {
+                flex-direction: column;
+            }
+        }
+
         .form-check-label {
             font-size: 16px;
             font-weight: 500;
@@ -241,6 +632,259 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         .reproducir-nota {
             background-color: #27ae60;
             border-color: #27ae60;
+        }
+
+        /* Estilos para alerta de hora original */
+        #horaOriginalAlert {
+            border-radius: 10px;
+            border: 1px solid #b3d7ff;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        #horaOriginalAlert .btn-outline-primary {
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            transition: all 0.3s ease;
+        }
+
+        #horaOriginalAlert .btn-outline-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos mejorados para botones de acción */
+        .action-buttons-container {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            min-width: 80px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Botón de editar mejorado */
+        .btn-edit-modern {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        .btn-edit-modern:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            color: white;
+            border-color: #4338ca;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-edit-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-edit-modern:hover::before {
+            left: 100%;
+        }
+
+        /* Botón de eliminar mejorado */
+        .btn-delete-modern {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .btn-delete-modern:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-delete-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-delete-modern:hover::before {
+            left: 100%;
+        }
+
+        /* Iconos de botones */
+        .btn-action i {
+            font-size: 0.85rem;
+        }
+
+        /* Responsividad para botones */
+        @media (max-width: 768px) {
+            .action-buttons-container {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .btn-action {
+                width: 100%;
+                min-width: auto;
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Estados de carga para botones */
+        .btn-action.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-action.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilos para confirmaciones mejoradas */
+        .alertify .ajs-dialog {
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .alertify .ajs-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .alertify .ajs-body {
+            padding: 25px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+
+        .alertify .ajs-footer {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .alertify .ajs-button {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .alertify .ajs-button.ajs-ok {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .alertify .ajs-button.ajs-ok:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-1px);
+        }
+
+        .alertify .ajs-button.ajs-cancel {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .alertify .ajs-button.ajs-cancel:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            transform: translateY(-1px);
+        }
+
+        /* Efectos para carga de tabla */
+        .dataTables_processing {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            border-radius: 8px !important;
+            border: none !important;
+            font-weight: 600 !important;
+        }
+
+        /* Tooltips mejorados */
+        [title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 5px;
         }
 
         /* Estilos adicionales para botones de voz */
@@ -699,50 +1343,362 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     </form>
                 </div>
                 <div class="tab-pane fade" id="signos" role="tabpanel">
-                    <div class="card mt-3">
-                        <div class="thead">Registro de Signos Vitales</div>
-                        <div class="card-body">
+                    <!-- Header con estadísticas -->
+                    <div class="signos-container">
+                        <div class="signos-header">
+                            <i class="fas fa-heartbeat"></i> Registro de Signos Vitales
+                            <div class="signos-subtitle">Monitoreo continuo del estado vital del paciente</div>
+                        </div>
+                        
+                        <!-- Panel de acciones rápidas -->
+                        <div class="signos-actions-panel">
+                            <div class="row g-3">
+                                <div class="col-lg-4">
+                                    <div class="action-card">
+                                        <div class="action-icon bg-success">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h6>Nuevo Registro</h6>
+                                            <p>Agregar signos vitales</p>
+                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModalS">
+                                                <i class="fas fa-plus-circle"></i> Registrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="action-card">
+                                        <div class="action-icon bg-primary">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h6>Gráficas</h6>
+                                            <p>Visualizar tendencias</p>
+                                            <a href="ver_grafica.php" target="_blank" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-external-link-alt"></i> Ver Gráficas
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="action-card">
+                                        <div class="action-icon bg-info">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h6>Buscar</h6>
+                                            <p>Filtrar registros</p>
+                                            <input type="text" class="form-control form-control-sm" id="search_nuevoS" placeholder="Buscar registros...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Últimos valores registrados -->
+                        <div class="signos-summary">
+                            <div class="summary-title">
+                                <i class="fas fa-clock"></i> Últimos Valores Registrados
+                            </div>
+                            <div class="row g-3" id="ultimosValoresSignos">
+                                <div class="col-md-2">
+                                    <div class="valor-card presion">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">Presión</span>
+                                            <span class="valor-number" id="ultimaPresion">--/--</span>
+                                            <span class="valor-unit">mmHg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="valor-card frecuencia">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-heartbeat"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">FC</span>
+                                            <span class="valor-number" id="ultimaFC">--</span>
+                                            <span class="valor-unit">lpm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="valor-card respiracion">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-lungs"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">FR</span>
+                                            <span class="valor-number" id="ultimaFR">--</span>
+                                            <span class="valor-unit">rpm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="valor-card saturacion">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-percentage"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">SpO₂</span>
+                                            <span class="valor-number" id="ultimaSat">--</span>
+                                            <span class="valor-unit">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="valor-card temperatura">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-thermometer-half"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">Temp</span>
+                                            <span class="valor-number" id="ultimaTemp">--</span>
+                                            <span class="valor-unit">°C</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="valor-card tiempo">
+                                        <div class="valor-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="valor-info">
+                                            <span class="valor-label">Último</span>
+                                            <span class="valor-number" id="ultimaHora">--:--</span>
+                                            <span class="valor-unit">hrs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de registros -->
+                        <div class="signos-table-container">
+                            <div class="table-header">
+                                <h5><i class="fas fa-table"></i> Historial de Registros</h5>
+                                <div class="table-controls">
+                                    <span class="badge bg-secondary" id="totalRegistros">0 registros</span>
+                                </div>
+                            </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-signos-vitales" id="tabla-signos-multiples">
-                                    <thead style="background-color: #2b2d7f; color: white;">
+                                <table id="exampleS" class="table table-signos-vitales" style="width: 100%;">
+                                    <thead>
                                         <tr>
-                                            <th style="width: 15%;">Momento</th>
-                                            <th style="width: 12%;">Presión Sistólica</th>
-                                            <th style="width: 12%;">Presión Diastólica</th>
-                                            <th style="width: 10%;">Frecuencia Cardiaca</th>
-                                            <th style="width: 10%;">Frecuencia Respiratoria</th>
-                                            <th style="width: 11%;">Saturación O2</th>
-                                            <th style="width: 12%;">Temperatura</th>
-                                            <th style="width: 8%;">Hora</th>
-                                            <th style="width: 10%;">Acción</th>
+                                            <th><i class="fas fa-hashtag"></i> ID</th>
+                                            <th><i class="fas fa-calendar"></i> Fecha</th>
+                                            <th><i class="fas fa-clock"></i> Hora</th>
+                                            <th><i class="fas fa-tachometer-alt"></i> Presión</th>
+                                            <th><i class="fas fa-heartbeat"></i> FC</th>
+                                            <th><i class="fas fa-lungs"></i> FR</th>
+                                            <th><i class="fas fa-percentage"></i> SpO₂</th>
+                                            <th><i class="fas fa-thermometer-half"></i> Temp</th>
+                                            <th><i class="fas fa-cogs"></i> Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="signos-vitales-tbody">
-                                        <tr class="fila-signos-vitales">
-                                            <td><strong>Signos Vitales</strong><br><small class="text-muted">registro actual</small></td>
-                                            <td><input type="text" class="form-control signos-input" name="sistg[]" placeholder="ej: 120" required></td>
-                                            <td><input type="text" class="form-control signos-input" name="diastg[]" placeholder="ej: 80" required></td>
-                                            <td><input type="text" class="form-control signos-input" name="fcardg[]" placeholder="ej: 75" required></td>
-                                            <td><input type="text" class="form-control signos-input" name="frespg[]" placeholder="ej: 20" required></td>
-                                            <td><input type="text" class="form-control signos-input" name="satg[]" placeholder="ej: 98%" required></td>
-                                            <td><input type="text" class="form-control signos-input" name="tempg[]" placeholder="ej: 36.5" required></td>
-                                            <td><input type="time" class="form-control signos-input" name="hora_signos[]" required></td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm guardar-signos" data-fila="0">
-                                                    <i class="fas fa-save"></i> Guardar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
-                            <div class="text-center mt-3">
-                                <button type="button" class="btn btn-info btn-lg me-3" id="agregar-signos-adicionales">
-                                    <i class="fas fa-plus"></i> Agregar signos vitales adicionales
-                                </button>
-                                <button type="button" class="btn btn-success btn-lg" id="guardar-todos-signos">
-                                    <i class="fas fa-save"></i> Guardar todos los signos vitales
-                                </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal para agregar signos vitales -->
+                    <div class="modal fade" id="addUserModalS" tabindex="-1" aria-labelledby="addUserModalLabelS" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content signos-modal">
+                                <div class="modal-header signos-modal-header">
+                                    <h5 class="modal-title" id="addUserModalLabelS">
+                                        <i class="fas fa-plus-circle"></i> Nuevo Registro de Signos Vitales
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body signos-modal-body">
+                                    <form id="addUserS">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <input type="hidden" name="id_usua" value="<?php echo $id_usuario; ?>">
+                                        <input type="hidden" name="id_atencion" value="<?php echo $id_atencion; ?>">
+                                        
+                                        <!-- Hora -->
+                                        <div class="signos-form-group">
+                                            <label for="addhoraField" class="signos-label">
+                                                <i class="fas fa-clock"></i> Hora del Registro
+                                            </label>
+                                            <input type="time" name="hora" id="addhoraField" class="form-control-signos" required>
+                                            <small class="form-text text-muted">Hora en que se tomaron los signos vitales</small>
+                                        </div>
+
+                                        <!-- Presión Arterial -->
+                                        <div class="signos-form-group">
+                                            <label class="signos-label">
+                                                <i class="fas fa-tachometer-alt"></i> Presión Arterial (mmHg)
+                                            </label>
+                                            <div class="presion-inputs">
+                                                <div class="presion-group">
+                                                    <input type="number" class="form-control-signos presion-input" id="addsistgField" name="sistg" placeholder="120" min="50" max="250" required>
+                                                    <label>Sistólica</label>
+                                                </div>
+                                                <div class="presion-separator">/</div>
+                                                <div class="presion-group">
+                                                    <input type="number" class="form-control-signos presion-input" id="adddiastgField" name="diastg" placeholder="80" min="30" max="150" required>
+                                                    <label>Diastólica</label>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Rango normal: 90/60 - 140/90 mmHg</small>
+                                        </div>
+
+                                        <!-- Frecuencias y Saturación -->
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="addfcardgField" class="signos-label">
+                                                        <i class="fas fa-heartbeat text-danger"></i> FC (lpm)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="addfcardgField" name="fcardg" placeholder="72" min="30" max="250" required>
+                                                    <small class="form-text text-muted">60-100 lpm</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="addfrespgField" class="signos-label">
+                                                        <i class="fas fa-lungs text-info"></i> FR (rpm)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="addfrespgField" name="frespg" placeholder="18" min="8" max="50" required>
+                                                    <small class="form-text text-muted">12-20 rpm</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="addsatgField" class="signos-label">
+                                                        <i class="fas fa-percentage text-primary"></i> SpO₂ (%)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="addsatgField" name="satg" placeholder="98" min="50" max="100" required>
+                                                    <small class="form-text text-muted">95-100%</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Temperatura -->
+                                        <div class="signos-form-group">
+                                            <label for="addtempgField" class="signos-label">
+                                                <i class="fas fa-thermometer-half text-warning"></i> Temperatura (°C)
+                                            </label>
+                                            <input type="number" step="0.1" class="form-control-signos" id="addtempgField" name="tempg" placeholder="36.5" min="34" max="44" required>
+                                            <small class="form-text text-muted">Rango normal: 36.1 - 37.2°C</small>
+                                        </div>
+
+                                        <div class="signos-form-actions">
+                                            <button type="submit" class="btn btn-signos-primary">
+                                                <i class="fas fa-save"></i> Guardar Registro
+                                            </button>
+                                            <button type="button" class="btn btn-signos-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para editar signos vitales -->
+                    <div class="modal fade" id="exampleModalS" tabindex="-1" aria-labelledby="exampleModalLabelS" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content signos-modal">
+                                <div class="modal-header signos-modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabelS">
+                                        <i class="fas fa-edit"></i> Editar Registro de Signos Vitales
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body signos-modal-body">
+                                    <form id="updateUserS">
+                                        <input type="hidden" name="id" id="id" value="">
+                                        <input type="hidden" name="trid" id="trid" value="">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <input type="hidden" name="fecha_g" id="fecha_gField">
+                                        
+                                        <!-- Hora -->
+                                        <div class="signos-form-group">
+                                            <label for="horaField" class="signos-label">
+                                                <i class="fas fa-clock"></i> Hora del Registro
+                                            </label>
+                                            <input type="time" name="hora" id="horaField" class="form-control-signos" required>
+                                            <small class="form-text text-muted">Hora en que se tomaron los signos vitales</small>
+                                        </div>
+
+                                        <!-- Presión Arterial -->
+                                        <div class="signos-form-group">
+                                            <label class="signos-label">
+                                                <i class="fas fa-tachometer-alt"></i> Presión Arterial (mmHg)
+                                            </label>
+                                            <div class="presion-inputs">
+                                                <div class="presion-group">
+                                                    <input type="number" class="form-control-signos presion-input" id="sistgField" name="sistg" placeholder="120" min="50" max="250" required>
+                                                    <label>Sistólica</label>
+                                                </div>
+                                                <div class="presion-separator">/</div>
+                                                <div class="presion-group">
+                                                    <input type="number" class="form-control-signos presion-input" id="diastgField" name="diastg" placeholder="80" min="30" max="150" required>
+                                                    <label>Diastólica</label>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Rango normal: 90/60 - 140/90 mmHg</small>
+                                        </div>
+
+                                        <!-- Frecuencias y Saturación -->
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="fcardgField" class="signos-label">
+                                                        <i class="fas fa-heartbeat text-danger"></i> FC (lpm)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="fcardgField" name="fcardg" placeholder="72" min="30" max="250" required>
+                                                    <small class="form-text text-muted">60-100 lpm</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="frespgField" class="signos-label">
+                                                        <i class="fas fa-lungs text-info"></i> FR (rpm)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="frespgField" name="frespg" placeholder="18" min="8" max="50" required>
+                                                    <small class="form-text text-muted">12-20 rpm</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="signos-form-group">
+                                                    <label for="satgField" class="signos-label">
+                                                        <i class="fas fa-percentage text-primary"></i> SpO₂ (%)
+                                                    </label>
+                                                    <input type="number" class="form-control-signos" id="satgField" name="satg" placeholder="98" min="50" max="100" required>
+                                                    <small class="form-text text-muted">95-100%</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Temperatura -->
+                                        <div class="signos-form-group">
+                                            <label for="tempgField" class="signos-label">
+                                                <i class="fas fa-thermometer-half text-warning"></i> Temperatura (°C)
+                                            </label>
+                                            <input type="number" step="0.1" class="form-control-signos" id="tempgField" name="tempg" placeholder="36.5" min="34" max="44" required>
+                                            <small class="form-text text-muted">Rango normal: 36.1 - 37.2°C</small>
+                                        </div>
+
+                                        <div class="signos-form-actions">
+                                            <button type="submit" class="btn btn-signos-primary">
+                                                <i class="fas fa-save"></i> Actualizar Registro
+                                            </button>
+                                            <button type="button" class="btn btn-signos-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -838,7 +1794,6 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                                     <option value="LOCAL">LOCAL</option>
                                                     <option value="SEDACIÓN">SEDACIÓN</option>
                                                     <option value="GENERAL">GENERAL</option>
-                                                    <option value="REGIONAL">REGIONAL</option>
                                                 </select>
                                             </div>
                                             <div class="row" id="campos_lasik_nota" style="display:none;">
@@ -1477,10 +2432,24 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                     const table = $('#exampleI').DataTable();
                                     const id = $('#id').val();
                                     const trid = $('#trid').val();
-                                    const button = `<td>
-                                        <a href="javascript:void(0);" data-id="${id}" class="btn btn-warning btn-sm editbtnI">Editar</a>
-                                        <a href="javascript:void(0);" data-id="${id}" class="btn btn-danger btn-sm deleteBtnI">Eliminar</a>
-                                    </td>`;
+                                    const button = `
+                                        <div class="action-buttons-container">
+                                            <a href="javascript:void(0);" 
+                                               data-id="${id}" 
+                                               class="btn btn-action btn-edit-modern editbtnI" 
+                                               title="Editar registro">
+                                                <i class="fas fa-edit"></i>
+                                                <span>Editar</span>
+                                            </a>
+                                            <a href="javascript:void(0);" 
+                                               data-id="${id}" 
+                                               class="btn btn-action btn-delete-modern deleteBtnI" 
+                                               title="Eliminar registro">
+                                                <i class="fas fa-trash-alt"></i>
+                                                <span>Eliminar</span>
+                                            </a>
+                                        </div>
+                                    `;
                                     const rowData = [
                                         id,
                                         $('#fecha_registroField').val(),
@@ -1524,10 +2493,24 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                     const table = $('#exampleE').DataTable();
                                     const id = $('#id').val();
                                     const trid = $('#trid').val();
-                                    const button = `<td>
-                                        <a href="javascript:void(0);" data-id="${id}" class="btn btn-warning btn-sm editbtnE">Editar</a>
-                                        <a href="javascript:void(0);" data-id="${id}" class="btn btn-danger btn-sm deleteBtnE">Eliminar</a>
-                                    </td>`;
+                                    const button = `
+                                        <div class="action-buttons-container">
+                                            <a href="javascript:void(0);" 
+                                               data-id="${id}" 
+                                               class="btn btn-action btn-edit-modern editbtnE" 
+                                               title="Editar registro">
+                                                <i class="fas fa-edit"></i>
+                                                <span>Editar</span>
+                                            </a>
+                                            <a href="javascript:void(0);" 
+                                               data-id="${id}" 
+                                               class="btn btn-action btn-delete-modern deleteBtnE" 
+                                               title="Eliminar registro">
+                                                <i class="fas fa-trash-alt"></i>
+                                                <span>Eliminar</span>
+                                            </a>
+                                        </div>
+                                    `;
                                     const rowData = [
                                         id,
                                         $('#fecha_registroeField').val(),
@@ -1625,6 +2608,698 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $('#btn_toggle_medico_responsable').on('click', function() {
                 $('#select_medico_responsable_wrap').toggle();
             });
+
+            // ========== FUNCIONALIDAD DE SIGNOS VITALES ==========
+            
+            /**
+             * Configuración del idioma para DataTables
+             */
+            const dataTableLanguage = {
+                decimal: "",
+                emptyTable: "No hay información",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                infoEmpty: "Mostrando 0 to 0 of 0 Entradas",
+                infoFiltered: "(Filtrado de _MAX_ total entradas)",
+                infoPostFix: "",
+                thousands: ",",
+                lengthMenu: "Mostrar _MENU_ Entradas",
+                loadingRecords: "Cargando...",
+                processing: "Procesando...",
+                search: "Buscar:",
+                zeroRecords: "Sin resultados encontrados",
+                paginate: {
+                    first: "Primero",
+                    last: "Ultimo",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                }
+            };
+
+            /**
+             * Rangos de validación para signos vitales
+             */
+            const rangoSignosVitales = {
+                sistolica: { min: 50, max: 250, unidad: 'mmHg' },
+                diastolica: { min: 30, max: 150, unidad: 'mmHg' },
+                frecuenciaCardiaca: { min: 30, max: 250, unidad: 'lpm' },
+                frecuenciaRespiratoria: { min: 8, max: 50, unidad: 'rpm' },
+                saturacion: { min: 50, max: 100, unidad: '%' },
+                temperatura: { min: 34, max: 44, unidad: '°C' }
+            };
+
+            /**
+             * Inicializar DataTable para Signos Vitales
+             */
+            $('#exampleS').DataTable({
+                language: dataTableLanguage,
+                fnCreatedRow: function(nRow, aData) {
+                    $(nRow).attr('id', aData[0]);
+                },
+                serverSide: true,
+                processing: true,
+                paging: true,
+                searching: false,
+                order: [],
+                ajax: {
+                    url: 'fetch_dataS.php',
+                    type: 'POST',
+                    data: {
+                        id_atencion: '<?php echo $id_atencion; ?>'
+                    }
+                },
+                columnDefs: [{
+                    targets: [8],
+                    orderable: false
+                }],
+                drawCallback: function(settings) {
+                    // Actualizar contador de registros
+                    const info = this.api().page.info();
+                    $('#totalRegistros').text(`${info.recordsTotal} registros`);
+                    
+                    // Cargar últimos valores
+                    cargarUltimosValoresSignos();
+                }
+            });
+
+            /**
+             * Función para cargar y mostrar los últimos valores de signos vitales
+             */
+            function cargarUltimosValoresSignos() {
+                $.ajax({
+                    url: 'get_ultimo_signos.php',
+                    type: 'POST',
+                    data: {
+                        id_atencion: '<?php echo $id_atencion; ?>'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data && !data.error) {
+                            // Actualizar valores con animación
+                            actualizarValorConAnimacion('#ultimaPresion', `${data.sistg}/${data.diastg}`);
+                            actualizarValorConAnimacion('#ultimaFC', data.fcardg);
+                            actualizarValorConAnimacion('#ultimaFR', data.frespg);
+                            actualizarValorConAnimacion('#ultimaSat', data.satg);
+                            actualizarValorConAnimacion('#ultimaTemp', data.tempg);
+                            actualizarValorConAnimacion('#ultimaHora', data.hora);
+                            
+                            // Aplicar códigos de color según valores
+                            aplicarCodigosColor(data);
+                        }
+                    },
+                    error: function() {
+                        console.log('No se pudieron cargar los últimos valores');
+                    }
+                });
+            }
+
+            /**
+             * Función para actualizar un valor con animación
+             */
+            function actualizarValorConAnimacion(selector, valor) {
+                const elemento = $(selector);
+                if (elemento.text() !== valor && valor !== '--') {
+                    elemento.closest('.valor-card').addClass('actualizado');
+                    elemento.text(valor);
+                    setTimeout(() => {
+                        elemento.closest('.valor-card').removeClass('actualizado');
+                    }, 600);
+                }
+            }
+
+            /**
+             * Función para aplicar códigos de color según rangos normales
+             */
+            function aplicarCodigosColor(data) {
+                // Resetear clases
+                $('.valor-number').removeClass('text-success text-warning text-danger');
+                
+                // Presión arterial
+                const sistolica = parseInt(data.sistg);
+                const diastolica = parseInt(data.diastg);
+                if (sistolica >= 90 && sistolica <= 140 && diastolica >= 60 && diastolica <= 90) {
+                    $('#ultimaPresion').addClass('text-success');
+                } else if (sistolica > 140 || diastolica > 90) {
+                    $('#ultimaPresion').addClass('text-danger');
+                } else {
+                    $('#ultimaPresion').addClass('text-warning');
+                }
+                
+                // Frecuencia cardíaca
+                const fc = parseInt(data.fcardg);
+                if (fc >= 60 && fc <= 100) {
+                    $('#ultimaFC').addClass('text-success');
+                } else {
+                    $('#ultimaFC').addClass('text-warning');
+                }
+                
+                // Frecuencia respiratoria
+                const fr = parseInt(data.frespg);
+                if (fr >= 12 && fr <= 20) {
+                    $('#ultimaFR').addClass('text-success');
+                } else {
+                    $('#ultimaFR').addClass('text-warning');
+                }
+                
+                // Saturación
+                const sat = parseInt(data.satg);
+                if (sat >= 95) {
+                    $('#ultimaSat').addClass('text-success');
+                } else if (sat >= 90) {
+                    $('#ultimaSat').addClass('text-warning');
+                } else {
+                    $('#ultimaSat').addClass('text-danger');
+                }
+                
+                // Temperatura
+                const temp = parseFloat(data.tempg);
+                if (temp >= 36.1 && temp <= 37.2) {
+                    $('#ultimaTemp').addClass('text-success');
+                } else {
+                    $('#ultimaTemp').addClass('text-warning');
+                }
+            }
+
+            /**
+             * Cargar últimos valores al abrir la pestaña
+             */
+            $('#signos-tab').on('shown.bs.tab', function() {
+                cargarUltimosValoresSignos();
+            });
+
+            /**
+             * Función para validar rangos de signos vitales
+             * @param {string} tipo - Tipo de signo vital a validar
+             * @param {string} valor - Valor a validar
+             * @returns {object} - {valido: boolean, mensaje: string}
+             */
+            function validarSignoVital(tipo, valor) {
+                if (!valor) return { valido: true, mensaje: '' };
+                
+                let valorNumerico;
+                let rango;
+                
+                switch (tipo) {
+                    case 'sistolica':
+                        valorNumerico = parseInt(valor);
+                        rango = rangoSignosVitales.sistolica;
+                        break;
+                    case 'diastolica':
+                        valorNumerico = parseInt(valor);
+                        rango = rangoSignosVitales.diastolica;
+                        break;
+                    case 'frecuenciaCardiaca':
+                        valorNumerico = parseInt(valor);
+                        rango = rangoSignosVitales.frecuenciaCardiaca;
+                        break;
+                    case 'frecuenciaRespiratoria':
+                        valorNumerico = parseInt(valor);
+                        rango = rangoSignosVitales.frecuenciaRespiratoria;
+                        break;
+                    case 'saturacion':
+                        valorNumerico = parseInt(valor.replace('%', ''));
+                        rango = rangoSignosVitales.saturacion;
+                        break;
+                    case 'temperatura':
+                        valorNumerico = parseFloat(valor);
+                        rango = rangoSignosVitales.temperatura;
+                        break;
+                    default:
+                        return { valido: false, mensaje: 'Tipo de signo vital no reconocido' };
+                }
+                
+                if (valorNumerico < rango.min || valorNumerico > rango.max) {
+                    return {
+                        valido: false,
+                        mensaje: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} debe estar entre ${rango.min} y ${rango.max} ${rango.unidad}`
+                    };
+                }
+                
+                return { valido: true, mensaje: '' };
+            }
+
+            /**
+             * Función para validar todos los campos de signos vitales
+             * @param {object} campos - Objeto con los valores de los campos
+             * @returns {object} - {valido: boolean, errores: array}
+             */
+            function validarTodosSignosVitales(campos) {
+                const errores = [];
+                
+                const validaciones = [
+                    { tipo: 'sistolica', valor: campos.sistg },
+                    { tipo: 'diastolica', valor: campos.diastg },
+                    { tipo: 'frecuenciaCardiaca', valor: campos.fcardg },
+                    { tipo: 'frecuenciaRespiratoria', valor: campos.frespg },
+                    { tipo: 'saturacion', valor: campos.satg },
+                    { tipo: 'temperatura', valor: campos.tempg }
+                ];
+                
+                validaciones.forEach(validacion => {
+                    const resultado = validarSignoVital(validacion.tipo, validacion.valor);
+                    if (!resultado.valido) {
+                        errores.push(resultado.mensaje);
+                    }
+                });
+                
+                return {
+                    valido: errores.length === 0,
+                    errores: errores
+                };
+            }
+
+            /**
+             * Función para mostrar errores de validación
+             * @param {array} errores - Array de mensajes de error
+             */
+            function mostrarErroresValidacion(errores) {
+                errores.forEach(error => {
+                    alertify.error(error);
+                });
+            }
+
+            /**
+             * Establecer hora actual al abrir modal de agregar
+             */
+            $('#addUserModalS').on('show.bs.modal', function() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                $('#addhoraField').val(`${hours}:${minutes}`);
+                
+                // Agregar efecto de entrada suave
+                $(this).find('.modal-content').css('transform', 'scale(0.7)');
+                setTimeout(() => {
+                    $(this).find('.modal-content').css({
+                        'transform': 'scale(1)',
+                        'transition': 'all 0.3s ease'
+                    });
+                }, 50);
+            });
+
+            /**
+             * Efecto para modal de edición
+             */
+            $('#exampleModalS').on('show.bs.modal', function() {
+                // Agregar efecto de entrada suave
+                $(this).find('.modal-content').css('transform', 'scale(0.7)');
+                setTimeout(() => {
+                    $(this).find('.modal-content').css({
+                        'transform': 'scale(1)',
+                        'transition': 'all 0.3s ease'
+                    });
+                }, 50);
+            });
+
+            /**
+             * Validación en tiempo real para inputs numéricos
+             */
+            $('.form-control-signos[type="number"]').on('input', function() {
+                const valor = $(this).val();
+                const min = parseInt($(this).attr('min'));
+                const max = parseInt($(this).attr('max'));
+                
+                // Remover clases previas
+                $(this).removeClass('border-success border-warning border-danger');
+                
+                if (valor) {
+                    const valorNum = parseFloat(valor);
+                    if (valorNum < min || valorNum > max) {
+                        $(this).addClass('border-danger');
+                    } else {
+                        $(this).addClass('border-success');
+                    }
+                }
+            });
+
+            /**
+             * Auto-refresh de últimos valores cada 30 segundos
+             */
+            setInterval(function() {
+                if ($('#signos').hasClass('active')) {
+                    cargarUltimosValoresSignos();
+                }
+            }, 30000);
+
+            /**
+             * Cargar valores iniciales cuando se carga la página
+             */
+            $(document).ready(function() {
+                // Cargar valores después de un breve delay
+                setTimeout(() => {
+                    cargarUltimosValoresSignos();
+                }, 1000);
+            });
+
+            /**
+             * Manejo del formulario para agregar Signos Vitales
+             */
+            $('#addUserS').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Recopilar datos del formulario
+                const datosFormulario = {
+                    hora: $('#addhoraField').val(),
+                    sistg: $('#addsistgField').val(),
+                    diastg: $('#adddiastgField').val(),
+                    fcardg: $('#addfcardgField').val(),
+                    frespg: $('#addfrespgField').val(),
+                    satg: $('#addsatgField').val(),
+                    tempg: $('#addtempgField').val()
+                };
+
+                // Validar campos obligatorios
+                const camposObligatorios = ['hora', 'sistg', 'diastg', 'fcardg', 'frespg', 'satg', 'tempg'];
+                const camposFaltantes = camposObligatorios.filter(campo => !datosFormulario[campo]);
+                
+                if (camposFaltantes.length > 0) {
+                    alertify.warning("Completa todos los campos requeridos por favor!");
+                    return;
+                }
+
+                // Validar rangos de valores
+                const validacion = validarTodosSignosVitales(datosFormulario);
+                if (!validacion.valido) {
+                    mostrarErroresValidacion(validacion.errores);
+                    return;
+                }
+
+                // Preparar datos para envío
+                const datosEnvio = {
+                    csrf_token: $('input[name="csrf_token"]').val(),
+                    id_usua: $('input[name="id_usua"]').val(),
+                    id_atencion: $('input[name="id_atencion"]').val(),
+                    ...datosFormulario
+                };
+                
+                console.log('📤 Enviando datos:', datosEnvio);
+                
+                // Envío AJAX
+                $.ajax({
+                    url: "add_userS.php",
+                    type: "POST",
+                    data: datosEnvio,
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('📥 Respuesta recibida:', data);
+                        
+                        if (data.status === 'true') {
+                            // Éxito: cerrar modal, limpiar formulario y recargar tabla
+                            $('#addUserModalS').modal('hide');
+                            $('#addUserS')[0].reset();
+                            $('#exampleS').DataTable().draw();
+                            
+                            // Actualizar últimos valores inmediatamente
+                            setTimeout(() => {
+                                cargarUltimosValoresSignos();
+                            }, 500);
+                            
+                            // Mostrar notificación de éxito mejorada
+                            alertify.success("✅ Registro de signos vitales agregado correctamente");
+                        } else {
+                            // Error del servidor
+                            console.error('❌ Error del servidor:', data);
+                            if (data.debug) {
+                                console.log('🔍 Información de debug:', data.debug);
+                            }
+                            alertify.error(data.message || "Error al agregar el registro");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ Error AJAX completo:', {
+                            xhr: xhr,
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText
+                        });
+                        alertify.error("Error de conexión al servidor: " + error);
+                    }
+                });
+            });
+
+            /**
+             * Manejo de edición de Signos Vitales
+             */
+            $('#exampleS').on('click', '.editbtnS', function() {
+                const id = $(this).data('id');
+                const trid = $(this).closest('tr').attr('id');
+                
+                console.log('📝 Abriendo modal de edición para ID:', id);
+                
+                $.ajax({
+                    url: "get_single_dataS.php",
+                    data: { id: id },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('📥 Datos cargados para edición:', data);
+                        
+                        if (data.error) {
+                            alertify.error("Error: " + data.error);
+                            return;
+                        }
+                        
+                        // Establecer hora actual automáticamente
+                        const now = new Date();
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        const horaActual = `${hours}:${minutes}`;
+                        
+                        // Llenar el formulario con los datos
+                        $('#horaField').val(horaActual); // Hora actual automática
+                        $('#sistgField').val(data.sistg);
+                        $('#diastgField').val(data.diastg);
+                        $('#fcardgField').val(data.fcardg);
+                        $('#frespgField').val(data.frespg);
+                        $('#satgField').val(data.satg);
+                        $('#tempgField').val(data.tempg);
+                        $('#fecha_gField').val(data.fecha_g);
+                        $('#id').val(id);
+                        $('#trid').val(trid);
+                        
+                        // Agregar información sobre la hora original
+                        if (data.hora && data.hora !== horaActual) {
+                            // Mostrar un pequeño indicador de la hora original
+                            const horaOriginalInfo = `
+                                <div class="alert alert-info alert-dismissible fade show mt-2" role="alert" id="horaOriginalAlert">
+                                    <i class="fas fa-info-circle"></i> 
+                                    <strong>Nota:</strong> La hora original era <strong>${data.hora}</strong>. 
+                                    Se ha establecido la hora actual <strong>${horaActual}</strong> automáticamente.
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="$('#horaField').val('${data.hora}'); $('#horaOriginalAlert').remove();">
+                                        <i class="fas fa-undo"></i> Usar hora original
+                                    </button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `;
+                            $('#horaField').parent().append(horaOriginalInfo);
+                        }
+                        
+                        // Mostrar el modal
+                        $('#exampleModalS').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ Error al cargar datos:', {
+                            xhr: xhr,
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText
+                        });
+                        alertify.error("Error al cargar los datos: " + error);
+                    }
+                });
+            });
+
+            /**
+             * Manejo de actualización de Signos Vitales
+             */
+            $('#updateUserS').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Recopilar datos del formulario
+                const datosFormulario = {
+                    hora: $('#horaField').val(),
+                    sistg: $('#sistgField').val(),
+                    diastg: $('#diastgField').val(),
+                    fcardg: $('#fcardgField').val(),
+                    frespg: $('#frespgField').val(),
+                    satg: $('#satgField').val(),
+                    tempg: $('#tempgField').val()
+                };
+
+                // Validar campos obligatorios
+                const camposObligatorios = ['hora', 'sistg', 'diastg', 'fcardg', 'frespg', 'satg', 'tempg'];
+                const camposFaltantes = camposObligatorios.filter(campo => !datosFormulario[campo]);
+                
+                if (camposFaltantes.length > 0) {
+                    alertify.warning("Completa todos los campos requeridos por favor!");
+                    return;
+                }
+
+                // Validar rangos de valores
+                const validacion = validarTodosSignosVitales(datosFormulario);
+                if (!validacion.valido) {
+                    mostrarErroresValidacion(validacion.errores);
+                    return;
+                }
+
+                console.log('📤 Enviando datos de actualización:', {
+                    id: $('#id').val(),
+                    ...datosFormulario
+                });
+                
+                // Envío AJAX para actualización
+                $.ajax({
+                    url: "update_userS.php",
+                    type: "POST",
+                    data: $(this).serialize(), // Mantener serialize para incluir todos los campos del form
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('📥 Respuesta de actualización:', data);
+                        
+                        if (data.status === 'true') {
+                            // Éxito: cerrar modal, limpiar formulario y recargar tabla
+                            $('#exampleModalS').modal('hide');
+                            $('#updateUserS')[0].reset();
+                            $('#exampleS').DataTable().draw();
+                            
+                            // Actualizar últimos valores inmediatamente
+                            setTimeout(() => {
+                                cargarUltimosValoresSignos();
+                            }, 500);
+                            
+                            // Mostrar notificación de éxito mejorada
+                            alertify.success("✅ Registro actualizado correctamente");
+                        } else {
+                            // Error del servidor
+                            console.error('❌ Error del servidor:', data);
+                            alertify.error(data.message || "Error al editar el registro");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ Error AJAX en actualización:', {
+                            xhr: xhr,
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText
+                        });
+                        alertify.error("Error de conexión al servidor: " + error);
+                    }
+                });
+            });
+
+            /**
+             * Manejo de eliminación de Signos Vitales con confirmación mejorada
+             */
+            $('#exampleS').on('click', '.deleteBtnS', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const $btn = $(this);
+                
+                // Mostrar confirmación moderna
+                alertify.confirm('Confirmar Eliminación', 
+                    '¿Estás seguro de eliminar este registro de signos vitales? Esta acción no se puede deshacer.',
+                    function() {
+                        // Usuario confirmó - proceder con eliminación
+                        console.log('🗑️ Eliminando registro ID:', id);
+                        
+                        // Agregar estado de carga al botón
+                        $btn.addClass('loading').prop('disabled', true);
+                        $btn.find('span').text('Eliminando...');
+                        
+                        $.ajax({
+                            url: "delete_userS.php",
+                            data: { 
+                                id: id,
+                                csrf_token: '<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>'
+                            },
+                            type: "POST",
+                            dataType: 'json',
+                            success: function(data) {
+                                console.log('📥 Respuesta de eliminación:', data);
+                                
+                                if (data.status === 'success' || data.status === 'true') {
+                                    // Recargar la tabla
+                                    $('#exampleS').DataTable().draw();
+                                    
+                                    // Actualizar últimos valores
+                                    setTimeout(() => {
+                                        cargarUltimosValoresSignos();
+                                    }, 500);
+                                    
+                                    alertify.success("✅ Registro eliminado correctamente");
+                                } else {
+                                    console.error('❌ Error al eliminar:', data);
+                                    alertify.error(data.message || "Error al eliminar el registro");
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('❌ Error AJAX en eliminación:', {
+                                    xhr: xhr,
+                                    status: status,
+                                    error: error,
+                                    responseText: xhr.responseText
+                                });
+                                
+                                // Intento de fallback parseando texto
+                                try {
+                                    const json = JSON.parse(xhr.responseText);
+                                    if (json.status === 'success') {
+                                        $('#exampleS').DataTable().draw();
+                                        setTimeout(() => {
+                                            cargarUltimosValoresSignos();
+                                        }, 500);
+                                        alertify.success("✅ Registro eliminado correctamente");
+                                    } else {
+                                        alertify.error("Error al eliminar el registro");
+                                    }
+                                } catch (e) {
+                                    alertify.error("Error de conexión al servidor: " + error);
+                                }
+                            },
+                            complete: function() {
+                                // Remover estado de carga
+                                $btn.removeClass('loading').prop('disabled', false);
+                                $btn.find('span').text('Eliminar');
+                            }
+                        });
+                    },
+                    function() {
+                        // Usuario canceló
+                        console.log('❌ Eliminación cancelada por el usuario');
+                    }
+                ).set({
+                    labels: {ok:'Eliminar', cancel:'Cancelar'},
+                    title: 'Confirmar Eliminación'
+                });
+            });
+
+            /**
+             * Funcionalidad de búsqueda para Signos Vitales
+             */
+            $('#search_nuevoS').on('keyup', function() {
+                $('#exampleS').DataTable().search(this.value).draw();
+            });
+
+            /**
+             * Limpieza automática de formularios al cerrar modales
+             */
+            // Limpiar formulario al cerrar modal de edición
+            $('#exampleModalS').on('hidden.bs.modal', function() {
+                $('#updateUserS')[0].reset();
+                $('#id').val('');
+                $('#trid').val('');
+                $('#fecha_gField').val('');
+                // Limpiar alertas de hora original
+                $('#horaOriginalAlert').remove();
+                console.log('🧹 Formulario de edición limpiado');
+            });
+
+            // Limpiar formulario al cerrar modal de agregar
+            $('#addUserModalS').on('hidden.bs.modal', function() {
+                $('#addUserS')[0].reset();
+                console.log('🧹 Formulario de agregar limpiado');
+            });
+
+            // ========== FIN FUNCIONALIDAD DE SIGNOS VITALES ==========
         });
     </script>
 
@@ -2024,28 +3699,28 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             const saturacion = parseInt(fila.find('input[name="satg[]"]').val().replace('%', ''));
             const temperatura = parseFloat(fila.find('input[name="tempg[]"]').val());
 
-            if (sistolica < 50 || sistolica > 200) {
-                alertify.error('La presión sistólica debe estar entre 50 y 200 mmHg');
+            if (sistolica < 50 || sistolica > 250) {
+                alertify.error('La presión sistólica debe estar entre 50 y 250 mmHg');
                 return;
             }
-            if (diastolica < 30 || diastolica > 120) {
-                alertify.error('La presión diastólica debe estar entre 30 y 120 mmHg');
+            if (diastolica < 30 || diastolica > 150) {
+                alertify.error('La presión diastólica debe estar entre 30 y 150 mmHg');
                 return;
             }
-            if (frecCardiaca < 30 || frecCardiaca > 200) {
-                alertify.error('La frecuencia cardíaca debe estar entre 30 y 200 bpm');
+            if (frecCardiaca < 30 || frecCardiaca > 250) {
+                alertify.error('La frecuencia cardíaca debe estar entre 30 y 250 lpm');
                 return;
             }
-            if (frecRespiratoria < 8 || frecRespiratoria > 40) {
-                alertify.error('La frecuencia respiratoria debe estar entre 8 y 40 rpm');
+            if (frecRespiratoria < 8 || frecRespiratoria > 50) {
+                alertify.error('La frecuencia respiratoria debe estar entre 8 y 50 rpm');
                 return;
             }
             if (saturacion < 50 || saturacion > 100) {
                 alertify.error('La saturación de oxígeno debe estar entre 50% y 100%');
                 return;
             }
-            if (temperatura < 34 || temperatura > 42) {
-                alertify.error('La temperatura debe estar entre 34°C y 42°C');
+            if (temperatura < 34 || temperatura > 44) {
+                alertify.error('La temperatura debe estar entre 34°C y 44°C');
                 return;
             }
 
@@ -2236,23 +3911,23 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         const saturacion = parseInt(satg.replace('%', ''));
                         const temperatura = parseFloat(tempg);
                         
-                        if (sistolica < 50 || sistolica > 200) {
-                            erroresValidacion.push(`Fila ${index + 1}: Presión sistólica debe estar entre 50 y 200 mmHg`);
+                        if (sistolica < 50 || sistolica > 250) {
+                            erroresValidacion.push(`Fila ${index + 1}: Presión sistólica debe estar entre 50 y 250 mmHg`);
                         }
-                        if (diastolica < 30 || diastolica > 120) {
-                            erroresValidacion.push(`Fila ${index + 1}: Presión diastólica debe estar entre 30 y 120 mmHg`);
+                        if (diastolica < 30 || diastolica > 150) {
+                            erroresValidacion.push(`Fila ${index + 1}: Presión diastólica debe estar entre 30 y 150 mmHg`);
                         }
-                        if (frecCardiaca < 30 || frecCardiaca > 200) {
-                            erroresValidacion.push(`Fila ${index + 1}: Frecuencia cardíaca debe estar entre 30 y 200 bpm`);
+                        if (frecCardiaca < 30 || frecCardiaca > 250) {
+                            erroresValidacion.push(`Fila ${index + 1}: Frecuencia cardíaca debe estar entre 30 y 250 lpm`);
                         }
-                        if (frecRespiratoria < 8 || frecRespiratoria > 40) {
-                            erroresValidacion.push(`Fila ${index + 1}: Frecuencia respiratoria debe estar entre 8 y 40 rpm`);
+                        if (frecRespiratoria < 8 || frecRespiratoria > 50) {
+                            erroresValidacion.push(`Fila ${index + 1}: Frecuencia respiratoria debe estar entre 8 y 50 rpm`);
                         }
                         if (saturacion < 50 || saturacion > 100) {
                             erroresValidacion.push(`Fila ${index + 1}: Saturación debe estar entre 50% y 100%`);
                         }
-                        if (temperatura < 34 || temperatura > 42) {
-                            erroresValidacion.push(`Fila ${index + 1}: Temperatura debe estar entre 34°C y 42°C`);
+                        if (temperatura < 34 || temperatura > 44) {
+                            erroresValidacion.push(`Fila ${index + 1}: Temperatura debe estar entre 34°C y 44°C`);
                         }
                         
                         if (erroresValidacion.length === 0 || !erroresValidacion.some(error => error.includes(`Fila ${index + 1}`))) {
