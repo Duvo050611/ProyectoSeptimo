@@ -73,13 +73,14 @@ $result = $conexion->query($query);
             width: 80%;
             margin: 20px auto;
             background-color: #fdfdfd;
+            color: #2b2d7f;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
+        
         h1 {
-            color: #0c675e;
+            color: #2b2d7f;
             text-align: center;
         }
 
@@ -104,7 +105,7 @@ $result = $conexion->query($query);
         }
 
         th {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
         }
 
@@ -124,7 +125,7 @@ $result = $conexion->query($query);
         }
 
         input[type="submit"]:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .scrollable-area {
@@ -150,14 +151,14 @@ $result = $conexion->query($query);
         .pagination a {
             padding: 8px 12px;
             text-decoration: none;
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
             border-radius: 5px;
             margin: 0 5px;
         }
 
         .pagination a:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .pagination .current {
@@ -184,7 +185,7 @@ $result = $conexion->query($query);
     <div class="form-container">
         <label for="id_compra">Buscar por ID Compra:</label>
         <input type="text" name="id_compra" id="id_compra" value="<?= $id_compra ?>" placeholder="ID Compra">
-        <input type="submit" value="Buscar">
+        <input type="submit" color="#2b2d7f" value="Buscar">
     </div>
 </form>
 

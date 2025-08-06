@@ -123,13 +123,41 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <meta charset="UTF-8">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" type="text/css" href="css/select2.css">
+
+    <!-- FontAwesome -->
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <!-- Bootstrap 4.5 CSS (usar sólo uno, aquí no incluiste el CSS pero lo ideal sería incluirlo) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+
+    <!-- jQuery (usar solo una versión) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="js/select2.js"></script>
+
+    <!-- Popper.js necesario para Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+
+    <!-- Bootstrap 4.5 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+
+    <!-- Tus scripts adicionales -->
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/main.js"></script>
   <script>
     $(document).ready(function() {
       // Verificar si hay parámetro page_cero en la URL o hash #cero para activar el tab correcto
@@ -244,7 +272,7 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
       <div class="tab-pane fade show active" id="normales" role="tabpanel" aria-labelledby="normales-tab">
         <div class="table-responsive">
           <table class="table table-bordered table-striped" id="mytable">
-            <thead class="thead" style="background-color: #0c675e; color: white;">
+            <thead class="thead" style="background-color: #2b2d7f; color: white;">
               <tr>
                 <th>
                   <font color="white">Código
@@ -400,7 +428,7 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
       <div class="tab-pane fade" id="cero" role="tabpanel" aria-labelledby="cero-tab">
         <div class="table-responsive">
           <table class="table table-bordered table-striped" id="mytable-cero">
-            <thead class="thead" style="background-color: #0c675e; color: white;">
+            <thead class="thead" style="background-color: #2b2d7f; color: white;">
               <tr>
                 <th>
                   <font color="white">Código
@@ -554,12 +582,12 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
   </div>
   <style>
     .total-row {
-      background-color: #0c675e;
+      background-color: #2b2d7f;
       color: white;
     }
 
     .ultima-existencia {
-      background-color: #0c675e;
+      background-color: #2b2d7f;
       color: white;
     }
 
@@ -603,14 +631,14 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
     .pagination a {
       padding: 8px 12px;
       text-decoration: none;
-      background-color: #0c675e;
+      background-color: #2b2d7f;
       color: white;
       border-radius: 5px;
       margin: 0 5px;
     }
 
     .pagination a:hover {
-      background-color: #084c47;
+      background-color: #2b2d7f;
     }
 
     .pagination .current {

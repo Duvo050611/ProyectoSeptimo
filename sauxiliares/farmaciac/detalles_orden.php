@@ -80,7 +80,7 @@ if (isset($_GET['id_compra'])) {
 
         h2,
         h3 {
-            color: #0c675e;
+            color: #2b2d7f;
             text-align: center;
         }
 
@@ -103,7 +103,7 @@ if (isset($_GET['id_compra'])) {
         }
 
         th {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
         }
 
@@ -116,7 +116,7 @@ if (isset($_GET['id_compra'])) {
         .btn-enviar,
         .btn-autorizar,
         .btn-cancelar {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -129,7 +129,7 @@ if (isset($_GET['id_compra'])) {
 
         .btn-calcular:hover,
         .btn-pdf:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .btn-pdf {
@@ -137,7 +137,7 @@ if (isset($_GET['id_compra'])) {
         }
 
         .btn-enviar {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .btn-autorizar {

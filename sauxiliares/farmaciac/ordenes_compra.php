@@ -82,7 +82,7 @@ $result = $conexion->query($sql);
         }
 
         h1 {
-            color: #0c675e;
+            color: #2b2d7f;
             text-align: center;
         }
 
@@ -107,7 +107,7 @@ $result = $conexion->query($sql);
         }
 
         th {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
         }
 
@@ -116,7 +116,7 @@ $result = $conexion->query($sql);
         }
 
         input[type="submit"] {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -127,7 +127,7 @@ $result = $conexion->query($sql);
         }
 
         input[type="submit"]:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .scrollable-area {
@@ -154,14 +154,14 @@ $result = $conexion->query($sql);
         .pagination a {
             padding: 8px 12px;
             text-decoration: none;
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
             border-radius: 5px;
             margin: 0 5px;
         }
 
         .pagination a:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .pagination .current {
@@ -187,7 +187,7 @@ $result = $conexion->query($sql);
     <!-- Filtro por estatus -->
     <div style="text-align: center; margin: 20px 0;">
         <form method="GET" action="">
-            <label for="estatus" style="font-weight: bold; color: #0c675e; margin-right: 10px;">Filtrar por estatus:</label>
+            <label for="estatus" style="font-weight: bold; color: #2b2d7f; margin-right: 10px;">Filtrar por estatus:</label>
             <select name="estatus" id="estatus" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px;">
                 <option value="">Todos (excepto ENTREGADO)</option>
                 <option value="PENDIENTE" <?php echo ($filtro_estatus == 'PENDIENTE') ? 'selected' : ''; ?>>PENDIENTE</option>
@@ -195,7 +195,7 @@ $result = $conexion->query($sql);
                 <option value="CANCELADO" <?php echo ($filtro_estatus == 'CANCELADO') ? 'selected' : ''; ?>>CANCELADO</option>
                 <option value="PARCIAL" <?php echo ($filtro_estatus == 'PARCIAL') ? 'selected' : ''; ?>>PARCIAL</option>
             </select>
-            <input type="submit" value="Filtrar" style="background-color: #0c675e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+            <input type="submit" value="Filtrar" style="background-color: #2b2d7f; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
         </form>
     </div>
 

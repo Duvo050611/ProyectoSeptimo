@@ -138,19 +138,20 @@ if ($item_id) {
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .total-row {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
         }
 
         .ultima-existencia {
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
         }
 
@@ -194,14 +195,14 @@ if ($item_id) {
         .pagination a {
             padding: 8px 12px;
             text-decoration: none;
-            background-color: #0c675e;
+            background-color: #2b2d7f;
             color: white;
             border-radius: 5px;
             margin: 0 5px;
         }
 
         .pagination a:hover {
-            background-color: #084c47;
+            background-color: #2b2d7f;
         }
 
         .pagination .current {
@@ -218,7 +219,7 @@ if ($item_id) {
 
         <div class="container box">
             <div class="content">
-                <div class="thead" style="background-color: #0c675e; margin: 5px auto; padding: 5px; color: white; width: fit-content; text-align: center; border-radius: 5px;">
+                <div class="thead" style="background-color: #2b2d7f; margin: 5px auto; padding: 5px; color: white; width: fit-content; text-align: center; border-radius: 5px;">
                     <h1 style="font-size: 26px; margin: 2;">KARDEX</h1>
                 </div>
                 <br><br>
@@ -277,7 +278,7 @@ if ($item_id) {
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-sm">
-                        <thead class="thead" style="background-color: #0c675e; color:white;">
+                        <thead class="thead" style="background-color: #2b2d7f; color:white;">
                             <tr>
                                 <th>FECHA</th>
                                 <th>ITEMID</th>

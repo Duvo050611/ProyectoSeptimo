@@ -313,11 +313,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>";
   exit();
 }
-
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -335,7 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <section class="content container-fluid">
 
     <hr>
-    <div class="thead" style="background-color: #0c675e; color: white; font-size: 20px;">
+    <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
       <strong>
         <center>SURTIR A LOS SUBALMACENES</center>
       </strong>
@@ -359,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <form method="post" id="formSurtir" action="">
         <table class="table table-bordered table-striped" id="mytable">
-          <thead class="thead" style="background-color: #0c675e">
+          <thead class="thead" style="background-color: #2b2d7f">
             <tr>
               <th class="col-itemid">
                 <font color="white">IDMedicamento</font>
@@ -419,11 +414,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Determinar el color de fondo según las condiciones
                 if ($solicita === $entrega) {
-                  $rowStyle = "style='background-color: #6d6552; color: white;'";
+                  $rowStyle = "style='background-color: #8eb5f0ff; color: black;'";
                 } elseif ($entrega > 0) {
-                  $rowStyle = "style='background-color: #dbd5b5; color: black;'";
+                  $rowStyle = "style='background-color: #b3cef7ff; color: black;'";
                 } else {
-                  $rowStyle = "style='background-color: #e6d690; color: black;'";
+                  $rowStyle = "style='background-color: #e6f0ff; color: black;'";
                 }
 
                 echo "<tr $rowStyle>";
@@ -585,7 +580,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     let table = '<table style="width: 40%; border-collapse: collapse; text-align: center; float: right; margin-right: 20px;">';
     table += `
         <thead>
-            <tr style="background-color: #0c675e; color: white;">
+            <tr style="background-color: #5a5cd8ff; color: white;">
                 <th style="border: 1px solid #ccc; padding: 8px; width: 1%;">ID</th>
                 <th style="border: 1px solid #ccc; padding: 8px; width: 1%;">Total</th>
                 <th style="border: 1px solid #ccc; padding: 8px; width: 2%;">Lotes</th>
@@ -773,7 +768,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <style>
   .borrar-btn {
-    background-color: #0c675e;
+    background-color: #2b2d7f;
     color: white;
     border: none;
     padding: 5px;
@@ -929,7 +924,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   button.enviar {
-    background-color: #0c675e;
+    background-color: #2b2d7f;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -937,7 +932,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   button.enviar:hover {
-    background-color: #094c42;
+    background-color: #2b2d7f;
     /* Un color ligeramente más oscuro para el hover */
   }
 
@@ -955,17 +950,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   .en-espera {
-    background-color: #6d6552;
-    color: white;
+    background-color: #8eb5f0ff;
+    color: black;
 
   }
 
   .entrega-parcial {
-    background-color: #dbd5b5;
+    background-color: #b3cef7ff;
   }
 
   .nuevo-surtimiento {
-    background-color: #e6d690;
+    background-color: #e6f0ff;
   }
 
   .texto {
