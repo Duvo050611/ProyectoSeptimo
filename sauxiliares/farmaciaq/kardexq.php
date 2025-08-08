@@ -106,155 +106,380 @@ if ($item_id) {
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kardex Farmacia Central</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
     <style>
-        .total-row {
-            background-color: #0c675e;
+        :root {
+            --primary-color: #2b2d7f;
+            --primary-dark: #1f2166;
+            --primary-light: #3f418a;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 5px;
+        }
+        
+        .btn-danger-custom {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            border: none;
             color: white;
         }
-
-        .ultima-existencia {
-            background-color: #0c675e;
+        
+        .btn-danger-custom:hover {
+            background: linear-gradient(45deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220,53,69,0.3);
             color: white;
         }
-
-        .table-responsive {
+        
+        .btn-success-custom {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+            border: none;
+            color: white;
+        }
+        
+        .btn-success-custom:hover {
+            background: linear-gradient(45deg, #1e7e34, #155724);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+            color: white;
+        }
+        
+        .btn-info-custom {
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            border: none;
+            color: white;
+        }
+        
+        .btn-info-custom:hover {
+            background: linear-gradient(45deg, #138496, #117a8b);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23,162,184,0.3);
+            color: white;
+        }
+        
+        .btn-warning-custom {
+            background: linear-gradient(45deg, #ffc107, #e0a800);
+            border: none;
+            color: #212529;
+        }
+        
+        .btn-warning-custom:hover {
+            background: linear-gradient(45deg, #e0a800, #d39e00);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,193,7,0.3);
+            color: #212529;
+        }
+        
+        .btn-purple-custom {
+            background: linear-gradient(45deg, #6f42c1, #5a35a0);
+            border: none;
+            color: white;
+        }
+        
+        .btn-purple-custom:hover {
+            background: linear-gradient(45deg, #5a35a0, #4c2a85);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111,66,193,0.3);
+            color: white;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(43,45,127,0.3);
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 10px 15px;
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(43,45,127,0.25);
+            border-color: var(--primary-light);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             max-height: 80vh;
             overflow-y: auto;
         }
-
-        .container.box {
-            max-width: 95%;
+        
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(43,45,127,0.1);
+        }
+        
+        .table tbody td {
+            padding: 12px 8px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+        
+        .total-row {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)) !important;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .select2-container--default .select2-selection--single {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            height: calc(1.5em + 0.75rem + 2px);
+        }
+        
+        .select2-container--default .select2-selection--single:focus {
+            border-color: var(--primary-light);
+        }
+        
+        .container-main {
+            max-width: 98%;
+            margin: 0 auto;
+        }
+        
+        .btn-group-custom {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .label-custom {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
         }
     </style>
 </head>
 
 <body>
-    <section class="content container-fluid">
-        <a href="../../template/menu_farmaciaq.php"
-
-            style='color: white; margin-left: 26px; margin-bottom: 1px; background-color: #d9534f; 
-      border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; display: inline-block;'>
-            Regresar
-        </a>
-        <div class="container box">
-            <div class="content">
-                <div class="thead" style="background-color: #0c675e; margin: 5px auto; padding: 5px; color: white; width: fit-content; text-align: center; border-radius: 5px;">
-                    <h1 style="font-size: 26px; margin: 2;">KARDEX</h1>
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-list"></i> KARDEX FARMACIA CENTRAL</h1>
+        </div>
+        
+        <!-- Botón de regreso -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <a href="../../template/menu_farmaciaq.php" class="btn btn-custom btn-danger-custom">
+                        <i class="fas fa-arrow-left"></i> Regresar
+                    </a>
                 </div>
-                <br><br>
-                <form method="POST" id="medicamentos" style="margin-bottom: 20px;">
+            </div>
+        </div>
+
+        <div class="container-main">
+            <!-- Formulario de filtros -->
+            <div class="form-container">
+                <form method="POST" id="medicamentos">
                     <div class="row align-items-end">
                         <div class="col-md-3">
-                            <label>Fecha Inicial:</label>
+                            <label class="label-custom"><i class="fas fa-calendar-alt"></i> Fecha Inicial:</label>
                             <input type="date" class="form-control" name="inicial" value="<?= $fecha_inicial ?>">
                         </div>
                         <div class="col-md-3">
-                            <label>Fecha Final:</label>
+                            <label class="label-custom"><i class="fas fa-calendar-check"></i> Fecha Final:</label>
                             <input type="date" class="form-control" name="final" value="<?= $fecha_final ?>">
                         </div>
-                        <div class="col-md-3">
-                            <label>Medicamento:</label>
-                            <select name="item_id" class="form-control" id="mibuscador" style="height: 0px; width: 200px;">
+                        <div class="col-md-4">
+                            <label class="label-custom"><i class="fas fa-pills"></i> Medicamento:</label>
+                            <select name="item_id" class="form-control" id="mibuscador">
                                 <option value="">Seleccione un medicamento</option>
                                 <?php
-                                $sql = "SELECT * FROM item_almacen";
+                                $sql = "SELECT * FROM item_almacen ORDER BY item_name";
                                 $result = $conexion->query($sql);
                                 while ($row_datos = $result->fetch_assoc()) {
-                                    echo "<option value=" . $row_datos['item_id'] . ">" . $row_datos['item_name'] . "</option>";
+                                    $selected = ($item_id == $row_datos['item_id']) ? 'selected' : '';
+                                    echo "<option value='" . $row_datos['item_id'] . "' $selected>" . 
+                                         $row_datos['item_name'] . " - " . $row_datos['item_grams'] . "</option>";
                                 }
                                 ?>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-success custom-btn">SELECCIONAR</button>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-custom btn-success-custom" style="width: 100%;">
+                                <i class="fas fa-search"></i> BUSCAR
+                            </button>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col text-center">
-                            <button type="submit" name="ult_registros" class="btn btn-success mr-2 custom-btn">ULT.REGISTROS</button>
-
-                            <a href="entradas_almacenq_historial.php" class="btn btn-success mr-2 custom-btn">RESURTIMIENTO</a>
-                            <a href="salidas_almacenq_historial.php" class="btn btn-success mr-2 custom-btn">SALIDAS</a>
-
-                            <a href="devoluciones_almacenq_historial.php" class="btn btn-success mr-2 custom-btn">DEVOLUCIONES</a>
-                            <a href="mermas_almacenq_historial.php" class="btn btn-success custom-btn">MERMAS</a>
-                        </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="btn-group-custom">
+                        <button type="submit" name="ult_registros" class="btn btn-custom btn-info-custom">
+                            <i class="fas fa-history"></i> ULT.REGISTROS
+                        </button>
+                        <a href="entradas_almacenq_historial.php" class="btn btn-custom btn-success-custom">
+                            <i class="fas fa-arrow-down"></i> RESURTIMIENTO
+                        </a>
+                        <a href="salidas_almacenq_historial.php" class="btn btn-custom btn-warning-custom">
+                            <i class="fas fa-arrow-up"></i> SALIDAS
+                        </a>
+                        <a href="devoluciones_almacenq_historial.php" class="btn btn-custom btn-info-custom">
+                            <i class="fas fa-undo"></i> DEVOLUCIONES
+                        </a>
+                        <a href="mermas_almacenq_historial.php" class="btn btn-custom btn-purple-custom">
+                            <i class="fas fa-exclamation-triangle"></i> MERMAS
+                        </a>
                     </div>
                 </form>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead" style="background-color: #0c675e; color:white;">
+            </div>
+            <!-- Tabla de resultados -->
+            <div class="table-container">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar"></i> FECHA</th>
+                            <th><i class="fas fa-pills"></i> MEDICAMENTO</th>
+                            <th><i class="fas fa-tag"></i> LOTE</th>
+                            <th><i class="fas fa-calendar-times"></i> CADUCIDAD</th>
+                            <th><i class="fas fa-sort-numeric-up"></i> INICIAL</th>
+                            <th><i class="fas fa-arrow-down text-success"></i> RESURTIMIENTO</th>
+                            <th><i class="fas fa-arrow-up text-warning"></i> SALIDA</th>
+                            <th><i class="fas fa-undo text-info"></i> DEV. STOCK</th>
+                            <th><i class="fas fa-exclamation-triangle text-danger"></i> DEV. MERMA</th>
+                            <th><i class="fas fa-exchange-alt"></i> MOVIMIENTO</th>
+                            <th><i class="fas fa-map-marker-alt"></i> UBICACIÓN</th>
+                            <th><i class="fas fa-shipping-fast"></i> DESTINO</th>
+                            <th><i class="fas fa-user"></i> U.RECIBE</th>
+                            <th><i class="fas fa-user-check"></i> U.SURTE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $resultado2->fetch_assoc()) { ?>
                             <tr>
-                                <th>FECHA</th>
-                                <th>MEDICAMENTO</th>
-                                <th>LOTE</th>
-                                <th>CADUCIDAD</th>
-                                <th>INICIAL</th>
-                                <th>RESURTIMIENTO</th>
-                                <th>SALIDA</th>
-                                <th>DEV. STOCK</th>
-                                <th>DEV. MERMA</th>
-                                <th>MOVIMIENTO</th>
-                                <th>UBICACIÓN</th>
-                                <th>DESTINO</th>
-                                <th>U.RECIBE</th>
-                                <th>U.SURTE</th>
+                                <td><?= date('d/m/Y', strtotime($row['fecha'])) ?></td>
+                                <td><?= $row['item_name'] ?></td>
+                                <td><?= $row['lote'] ?></td>
+                                <td><?= date('d/m/Y', strtotime($row['caducidad'])) ?></td>
+                                <td><?= $row['kardex_inicial'] ?></td>
+                                <td><?= $row['kardex_entradas'] ?></td>
+                                <td><?= $row['kardex_salidas'] ?></td>
+                                <td><?= $row['kardex_dev_stock'] ?></td>
+                                <td><?= $row['kardex_dev_merma'] ?></td>
+                                <td><?= $row['kardex_movimiento'] ?></td>
+                                <td><?= $row['kardex_ubicacion'] ?></td>
+                                <td><?= $row['kardex_destino'] ?></td>
+                                <td><?= $row['id_usua'] ?></td>
+                                <td><?= $row['id_surte'] ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = $resultado2->fetch_assoc()) { ?>
-                                <tr>
-                                    <td><?= date('d/m/Y', strtotime($row['fecha'])) ?></td>
-                                    <td><?= $row['item_name'] ?></td>
-                                    <td><?= $row['lote'] ?></td>
-                                    <td><?= date('d/m/Y', strtotime($row['caducidad'])) ?></td>
-                                    <td><?= $row['kardex_inicial'] ?></td>
-                                    <td><?= $row['kardex_entradas'] ?></td>
-                                    <td><?= $row['kardex_salidas'] ?></td>
-                                    <td><?= $row['kardex_dev_stock'] ?></td>
-                                    <td><?= $row['kardex_dev_merma'] ?></td>
-                                    <td><?= $row['kardex_movimiento'] ?></td>
-                                    <td><?= $row['kardex_ubicacion'] ?></td>
-                                    <td><?= $row['kardex_destino'] ?></td>
-                                    <td><?= $row['id_usua'] ?></td>
-                                    <td><?= $row['id_surte'] ?></td>
-                                </tr>
-                                <?php $totalExistencia += $row['kardex_qty']; ?>
-                            <?php } ?>
-                        </tbody>
-                        <?php if ($item_id) { ?>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="7" style="text-align: right;"><strong>Total Existencia:</strong></td>
-                                    <td><strong><?= $totalExistencia ?></strong></td>
-                                    <td colspan="7"></td>
-                                </tr>
-                            </tfoot>
+                            <?php $totalExistencia += $row['kardex_qty']; ?>
                         <?php } ?>
-                    </table>
-                </div>
+                    </tbody>
+                    <?php if ($item_id) { ?>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="7" style="text-align: right;"><strong><i class="fas fa-calculator"></i> Total Existencia:</strong></td>
+                                <td><strong><?= $totalExistencia ?></strong></td>
+                                <td colspan="7"></td>
+                            </tr>
+                        </tfoot>
+                    <?php } ?>
+                </table>
             </div>
         </div>
-    </section>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#mibuscador').select2({
-            placeholder: "Seleccione un medicamento",
-            allowClear: true
-        });
-    });
-</script>
+    </div>
+    
+    <footer class="main-footer mt-4">
+        <?php include("../../template/footer.php"); ?>
+    </footer>
 
+    <!-- Scripts -->
+    <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <!-- FastClick -->
+    <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+    <!-- AdminLTE App -->
+    <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
+    
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#mibuscador').select2({
+                placeholder: "🔍 Seleccione un medicamento...",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Efecto hover en las filas de la tabla
+            $('.table tbody tr').hover(
+                function() {
+                    $(this).css('background-color', 'rgba(43,45,127,0.1)');
+                },
+                function() {
+                    $(this).css('background-color', '');
+                }
+            );
+        });
+    </script>
+</body>
 </html>

@@ -379,154 +379,459 @@ if (isset($_POST['confirmar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registros de Carritos Entradas</title>
+    <title>Confirmar Recibido - Farmacia Quirófano</title>
+    
+    <!-- Bootstrap 4.0.0 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    
+    <!-- Font Awesome 6.0.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- jQuery y Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2b2d7f;
+            --primary-dark: #1e1f5a;
+            --primary-light: #4a4db8;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+        
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-danger-custom {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+        
+        .btn-danger-custom:hover {
+            background: linear-gradient(45deg, #c82333, #bd2130);
+            color: white;
+        }
+        
+        .btn-success-custom {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-success-custom:hover {
+            background: linear-gradient(45deg, #1e7e34, #155724);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(43,45,127,0.3);
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .stats-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(43,45,127,0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .table tbody td {
+            padding: 12px 8px;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            border: none;
+        }
+        
+        .container-main {
+            max-width: 98%;
+            margin: 0 auto;
+        }
+        
+        .no-data-message {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #6c757d;
+        }
+        
+        .form-select-custom {
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+            padding: 8px 15px;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .form-select-custom:focus {
+            box-shadow: 0 0 0 0.2rem rgba(43,45,127,0.25);
+            border-color: var(--primary-light);
+        }
+        
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: linear-gradient(45deg, #ffc107, #e0a800);
+            color: #333;
+        }
+        
+        .status-complete {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+            color: white;
+        }
+        
+        .status-partial {
+            background: linear-gradient(45deg, #fd7e14, #e55a00);
+            color: white;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .lote-badge {
+            background: linear-gradient(45deg, #17a2b8, #117a8b);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            margin: 2px;
+            display: inline-block;
+        }
+        
+        .caducidad-info {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .action-form {
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .quantity-match {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .quantity-mismatch {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
-    <a href="../../template/menu_farmaciaq.php"
-        style='color: white; margin-left: 30px; margin-bottom: 20px; background-color: #d9534f; 
-          border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; display: inline-block;'>
-        Regresar
-    </a>
+    <div class="container-fluid">
+        <div class="container-main">
+            <!-- Encabezado -->
+            <div class="page-header">
+                <h1><i class="fas fa-clipboard-check"></i> CONFIRMAR RECIBIDO</h1>
+                <p class="mb-0">Confirmación de productos enviados desde almacén principal</p>
+            </div>
 
-    <div class="container">
-        <div class="thead" style="background-color: #0c675e; color: white; font-size: 20px;">
-            <strong>
-                <center>CONFIRMAR RECIBIDO</center>
-            </strong>
-        </div> <br>
-        <table class="table table-bordered table-striped" id="mytable">
-            <thead class="thead" style="background-color: #0c675e">
+            <!-- Botón de regreso -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center mb-3">
+                        <a href="../../template/menu_farmaciaq.php" class="btn btn-custom btn-danger-custom">
+                            <i class="fas fa-arrow-left"></i> Regresar
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-                <tr>
-                    <th class="col-fecha">
-                        <font color="white">ID Recib</font>
-                    </th>
-                    <th>
-                        <font color="white">Fecha.Envio</font>
-                    </th>
-                    <th class="col-medicamentos">
-                        <font color="white">Medicamento</font>
-                    </th>
-                    <th>
-                        <font color="white">Solicitado</font>
-                    </th>
-                    <th>
-                        <font color="white">Entregado</font>
-                    </th>
-                    <th class="col-lote">
-                        <font color="white">Lote</font>
-                    </th>
-                    <th class="col-caducidad">
-                        <font color="white">Caducidad</font>
-                    </th>
-                    <th>
-                        <font color="white">Ubicación</font>
-                    </th>
-                    <th>
-                        <font color="white">Acciones</font>
-                    </th>
-                </tr>
-            </thead>
+            <!-- Estadísticas rápidas -->
+            <div class="stats-container">
+                <h5><i class="fas fa-chart-bar"></i> Resumen de Envíos</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)); color: white;">
+                            <h3 id="stat-total">0</h3>
+                            <small>Total Envíos</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(45deg, #28a745, #1e7e34); color: white;">
+                            <h3 id="stat-complete">0</h3>
+                            <small>Completos</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(45deg, #fd7e14, #e55a00); color: white;">
+                            <h3 id="stat-partial">0</h3>
+                            <small>Parciales</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(45deg, #ffc107, #e0a800); color: #333;">
+                            <h3 id="stat-pending">0</h3>
+                            <small>Pendientes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <?php
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>
-            <td>{$row['id_recib']}</td>
-            <td>{$row['fecha']}</td>
-            <td>{$row['item_name']}</td>
-            <td>{$row['solicita']}</td>
-            <td>{$row['total_entrega']}</td> 
-            <td>{$row['lotes']}</td> 
-            <td>{$row['caducidades']}</td>
-            <td>
-                <form action='' method='POST' style='display:inline;'>
-                    <input type='hidden' name='id_recib' value='{$row['id_recib']}'>
-                    <select name='ubicacion_id' required>
-                        <option value=''>ubicación</option>";
-                    foreach ($ubicaciones as $ubicacion) {
-                        echo "<option value='{$ubicacion['ubicacion_id']}'>{$ubicacion['nombre_ubicacion']}</option>";
-                    }
-                    echo "      </select>
-            </td>
-            <td>
-                    <button type='submit' name='confirmar' class='enviar'>Confirmar</button>
-                </form>
-            </td>
-        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='9'>No se encontraron registros</td></tr>"; // Actualizado con el nuevo número de columnas
-            }
-            ?>
-
-        </table>
+            <!-- Información importante -->
+            <div class="info-card">
+                <h6><i class="fas fa-info-circle"></i> Instrucciones</h6>
+                <ul class="mb-0">
+                    <li>Verifique que las cantidades solicitadas coincidan con las entregadas</li>
+                    <li>Seleccione la ubicación donde se almacenarán los productos</li>
+                    <li>Solo se pueden confirmar envíos completos (sin entregas parciales)</li>
+                </ul>
+            </div>
+            <!-- Tabla de envíos pendientes -->
+            <div class="table-container">
+                <table class="table table-striped table-hover" id="enviosTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID Recib</th>
+                            <th><i class="fas fa-calendar"></i> Fecha Envío</th>
+                            <th><i class="fas fa-pills"></i> Medicamento</th>
+                            <th><i class="fas fa-arrow-down"></i> Solicitado</th>
+                            <th><i class="fas fa-box"></i> Entregado</th>
+                            <th><i class="fas fa-flask"></i> Lotes</th>
+                            <th><i class="fas fa-calendar-times"></i> Caducidades</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Ubicación</th>
+                            <th><i class="fas fa-cogs"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                // Determinar el estado de la entrega
+                                $isComplete = ($row['solicita'] == $row['total_entrega']);
+                                $statusClass = $isComplete ? 'status-complete' : 'status-partial';
+                                $statusText = $isComplete ? 'Completo' : 'Parcial';
+                                $quantityClass = $isComplete ? 'quantity-match' : 'quantity-mismatch';
+                                
+                                echo "<tr>
+                        <td><strong>" . $row['id_recib'] . "</strong></td>
+                        <td>" . date('d/m/Y H:i', strtotime($row['fecha'])) . "</td>
+                        <td>
+                            <strong>" . $row['item_name'] . "</strong>
+                        </td>
+                        <td><span class='badge badge-info'>" . $row['solicita'] . "</span></td>
+                        <td>
+                            <span class='badge $statusClass'>" . $row['total_entrega'] . "</span>
+                            <div class='$quantityClass' style='font-size: 0.8rem;'>$statusText</div>
+                        </td>
+                        <td>";
+                                
+                                // Mostrar lotes como badges
+                                $lotes = explode(',', $row['lotes']);
+                                foreach ($lotes as $lote) {
+                                    if (trim($lote)) {
+                                        echo "<span class='lote-badge'>" . trim($lote) . "</span>";
+                                    }
+                                }
+                                
+                                echo "</td>
+                        <td>
+                            <div class='caducidad-info'>";
+                                
+                                // Mostrar caducidades formateadas
+                                $caducidades = explode(',', $row['caducidades']);
+                                foreach ($caducidades as $caducidad) {
+                                    if (trim($caducidad)) {
+                                        $parts = explode(':', trim($caducidad));
+                                        if (count($parts) == 2) {
+                                            $lote = trim($parts[0]);
+                                            $fecha = trim($parts[1]);
+                                            echo "<small><strong>$lote:</strong> " . date('d/m/Y', strtotime($fecha)) . "</small><br>";
+                                        }
+                                    }
+                                }
+                                
+                                echo "</div>
+                        </td>
+                        <td>
+                            <form action='' method='POST' class='action-form'>
+                                <input type='hidden' name='id_recib' value='" . $row['id_recib'] . "'>
+                                <select name='ubicacion_id' class='form-select-custom' required>
+                                    <option value=''>Seleccionar ubicación...</option>";
+                                
+                                foreach ($ubicaciones as $ubicacion) {
+                                    echo "<option value='" . $ubicacion['ubicacion_id'] . "'>" . $ubicacion['nombre_ubicacion'] . "</option>";
+                                }
+                                
+                                echo "</select>
+                        </td>
+                        <td>";
+                                
+                                if ($isComplete) {
+                                    echo "<button type='submit' name='confirmar' class='btn btn-success-custom' title='Confirmar recepción'>
+                                        <i class='fas fa-check'></i> Confirmar
+                                    </button>";
+                                } else {
+                                    echo "<button type='button' class='btn btn-secondary btn-sm' disabled title='No se puede confirmar envío parcial'>
+                                        <i class='fas fa-times'></i> Parcial
+                                    </button>";
+                                }
+                                
+                                echo "</form>
+                        </td>
+                    </tr>";
+                            }
+                        } else {
+                            echo "<tr>
+                    <td colspan='9'>
+                        <div class='no-data-message'>
+                            <i class='fas fa-inbox fa-3x mb-3' style='color: #6c757d;'></i>
+                            <h4>No hay envíos pendientes</h4>
+                            <p>Todos los envíos han sido procesados o no hay envíos por confirmar.</p>
+                        </div>
+                    </td>
+                </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-
+    <script>
+        $(document).ready(function() {
+            // Función para actualizar estadísticas
+            function updateStats() {
+                var totalRows = $("#enviosTable tbody tr").length;
+                var completeRows = 0;
+                var partialRows = 0;
+                var pendingRows = 0;
+                
+                $("#enviosTable tbody tr").each(function() {
+                    var row = $(this);
+                    if (row.find('.status-complete').length > 0) {
+                        completeRows++;
+                    } else if (row.find('.status-partial').length > 0) {
+                        partialRows++;
+                    }
+                    
+                    if (row.find('button[name="confirmar"]:not(:disabled)').length > 0) {
+                        pendingRows++;
+                    }
+                });
+                
+                $("#stat-total").text(totalRows);
+                $("#stat-complete").text(completeRows);
+                $("#stat-partial").text(partialRows);
+                $("#stat-pending").text(pendingRows);
+            }
+            
+            // Confirmación antes de enviar
+            $('form').on('submit', function(e) {
+                var ubicacion = $(this).find('select[name="ubicacion_id"]').val();
+                if (!ubicacion) {
+                    e.preventDefault();
+                    alert('Por favor seleccione una ubicación antes de confirmar.');
+                    return false;
+                }
+                
+                var confirmMsg = '¿Está seguro de confirmar la recepción de este envío?';
+                if (!confirm(confirmMsg)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Inicializar estadísticas
+            updateStats();
+        });
+    </script>
+</body>
 
 </html>
-
-
-
-
-<style>
-    .container {
-        width: 95%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2px;
-    }
-
-
-    .enviar {
-        padding: 5px 10px;
-        background-color: #0c675e;
-        color: white;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .enviar:hover {
-        background-color: #218838;
-    }
-
-    .col-medicamentos {
-        width: 100px;
-        text-align: center;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-
-    .col-fecha {
-        width: 100px;
-        text-align: center;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-
-    .col-lote {
-        width: 100px;
-        text-align: center;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-
-    .col-caducidad {
-        width: 125px;
-        text-align: center;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-</style>
