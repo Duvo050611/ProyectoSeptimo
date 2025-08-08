@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Start output buffering
 session_start();
 require_once '../../conexionbd.php';
 include '../header_enfermera.php';
@@ -12,20 +13,195 @@ if (!isset($_SESSION['login']) || !is_array($_SESSION['login']) || !isset($_SESS
     exit;
 }
 
-$usuario_actual = '';
-$rol_usuario = '';
-$id_usuario = '';
-if (isset($_SESSION['login'])) {
-    $usuario = $_SESSION['login'];
-    $id_usuario = $usuario['id_usua'];
-    $usuario_actual = trim($usuario['nombre'] . ' ' . $usuario['papell'] . ' ' . $usuario['sapell']);
-    $rol_usuario = $usuario['id_rol'];
+// Check session timeout
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    session_unset();
+    session_destroy();
+    header('Location: ../../../../index.php');
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
+// Generate CSRF token only if not already set
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Generate CSRF token
-$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
 date_default_timezone_set('America/Mexico_City');
+
+// Procesar medicamentos (moved to top to avoid headers already sent)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'])) {
+    // Validar CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        ob_end_clean(); // Clear any output
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Token CSRF inválido. Recargue la página e intente de nuevo.']);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - CSRF Error: Token recibido: ' . ($_POST['csrf_token'] ?? 'Ninguno') . ', Token esperado: ' . ($_SESSION['csrf_token'] ?? 'Ninguno') . "\n", FILE_APPEND);
+        exit;
+    }
+
+    $fechaActual = date('Y-m-d H:i:s');
+    ob_end_clean(); // Clear any output before sending JSON
+    header('Content-Type: application/json');
+
+    if (!isset($_SESSION['medicamento_seleccionado']) || empty($_SESSION['medicamento_seleccionado']) || !is_array($_SESSION['medicamento_seleccionado'])) {
+        echo json_encode(['success' => false, 'message' => 'No hay registros en la memoria para procesar.']);
+        exit;
+    }
+
+    $conexion->begin_transaction();
+
+    try {
+        foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
+            if (!isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['lote'], $medicamento['cantidad'], $medicamento['existe_id'], $medicamento['id_atencion'], $medicamento['item_id'], $medicamento['precio'])) {
+                throw new Exception("Datos incompletos en la sesión para el medicamento en el índice $index.");
+            }
+
+            $paciente = $medicamento['paciente'];
+            $nombreMedicamento = $medicamento['medicamento'];
+            $loteNombre = $medicamento['lote'];
+            $cantidadLote = intval($medicamento['cantidad']);
+            $existeId = intval($medicamento['existe_id']);
+            $Id_Atencion = intval($medicamento['id_atencion']);
+            $itemId = intval($medicamento['item_id']);
+            $salidaCostsu = floatval($medicamento['precio']);
+
+            $queryItemAlmacen = "SELECT item_name, item_price FROM item_almacen WHERE item_id = ?";
+            $stmt = $conexion->prepare($queryItemAlmacen);
+            if (!$stmt) {
+                throw new Exception("Error preparando consulta item_almacen: " . $conexion->error);
+            }
+            $stmt->bind_param("i", $itemId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows === 0) {
+                throw new Exception("No se encontró el ítem con ID $itemId.");
+            }
+            $itemData = $result->fetch_assoc();
+            $salidaCostsu = $itemData['item_price'];
+            $stmt->close();
+
+            $selectExistenciasQuery = "SELECT existe_qty, existe_caducidad, existe_salidas FROM existencias_almacenh WHERE existe_id = ?";
+            $stmtSelect = $conexion->prepare($selectExistenciasQuery);
+            if (!$stmtSelect) {
+                throw new Exception("Error preparando consulta existencias_almacenh: " . $conexion->error);
+            }
+            $stmtSelect->bind_param('i', $existeId);
+            $stmtSelect->execute();
+            $stmtSelect->bind_result($existeQty, $caducidad, $existeSalidas);
+            if (!$stmtSelect->fetch()) {
+                throw new Exception("No se encontró el lote con existe_id $existeId.");
+            }
+            $stmtSelect->close();
+
+            if ($existeQty < $cantidadLote) {
+                throw new Exception("El lote \"$loteNombre\" no tiene suficiente stock. Disponible: $existeQty, requerido: $cantidadLote.");
+            }
+
+            $nuevaExistenciaQty = $existeQty - $cantidadLote;
+            $nuevaExistenciaSalidas = $existeSalidas + $cantidadLote;
+
+            $insert_kardex = "
+                INSERT INTO kardex_almacenh (
+                    kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
+                    kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_destino, id_surte
+                ) 
+                VALUES (NOW(), ?, ?, ?, 0, 0, ?, 0, 0, 0, 'Salida', 'QUIROFANO', ?)
+            ";
+            $stmt_kardex = $conexion->prepare($insert_kardex);
+            if (!$stmt_kardex) {
+                throw new Exception("Error preparando consulta kardex_almacenh: " . $conexion->error);
+            }
+            $stmt_kardex->bind_param('issii', $itemId, $loteNombre, $caducidad, $cantidadLote, $id_usua);
+            if (!$stmt_kardex->execute()) {
+                throw new Exception("Error insertando en kardex_almacenh: " . $stmt_kardex->error);
+            }
+            $stmt_kardex->close();
+
+            $salio = "QUIROFANO";
+            $queryInsercion = "
+                INSERT INTO salidas_almacenh (
+                    item_id, item_name, salida_fecha, salida_lote, salida_caducidad, salida_qty, salida_costsu, id_usua, id_atencion, solicita, fecha_solicitud, salio
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ";
+            $stmtInsertSalida = $conexion->prepare($queryInsercion);
+            if (!$stmtInsertSalida) {
+                throw new Exception("Error preparando consulta salidas_almacenh: " . $conexion->error);
+            }
+            $solicita = 0;
+            $stmtInsertSalida->bind_param(
+                "issssdiisiss",
+                $itemId,
+                $nombreMedicamento,
+                $fechaActual,
+                $loteNombre,
+                $caducidad,
+                $cantidadLote,
+                $salidaCostsu,
+                $id_usua,
+                $Id_Atencion,
+                $solicita,
+                $fechaActual,
+                $salio
+            );
+            if (!$stmtInsertSalida->execute()) {
+                throw new Exception("Error insertando en salidas_almacenh: " . $stmtInsertSalida->error);
+            }
+            $stmtInsertSalida->close();
+
+            $insertDatCtapacQuery = "
+                INSERT INTO dat_ctapac (
+                    id_atencion, prod_serv, insumo, cta_fec, cta_cant, cta_tot, id_usua, cta_activo, existe_lote, existe_caducidad, centro_cto
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ";
+            $stmtInsertDatCtapac = $conexion->prepare($insertDatCtapacQuery);
+            if (!$stmtInsertDatCtapac) {
+                throw new Exception("Error preparando consulta dat_ctapac: " . $conexion->error);
+            }
+            $prodServ = 'PC';
+            $ctaActivo = 'SI';
+            $centroCto = 'QUIROFANO';
+            $stmtInsertDatCtapac->bind_param(
+                'isssddissss',
+                $Id_Atencion,
+                $prodServ,
+                $itemId,
+                $fechaActual,
+                $cantidadLote,
+                $salidaCostsu,
+                $id_usua,
+                $ctaActivo,
+                $loteNombre,
+                $caducidad,
+                $centroCto
+            );
+            if (!$stmtInsertDatCtapac->execute()) {
+                throw new Exception("Error insertando en dat_ctapac: " . $stmtInsertDatCtapac->error);
+            }
+            $stmtInsertDatCtapac->close();
+
+            $updateExistenciasQuery = "UPDATE existencias_almacenh SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? WHERE existe_id = ?";
+            $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
+            if (!$stmtUpdateExistencias) {
+                throw new Exception("Error preparando consulta existencias_almacenh: " . $conexion->error);
+            }
+            $stmtUpdateExistencias->bind_param('isii', $nuevaExistenciaQty, $fechaActual, $nuevaExistenciaSalidas, $existeId);
+            if (!$stmtUpdateExistencias->execute()) {
+                throw new Exception("Error actualizando existencias_almacenh: " . $stmtUpdateExistencias->error);
+            }
+            $stmtUpdateExistencias->close();
+        }
+
+        $conexion->commit();
+        unset($_SESSION['medicamento_seleccionado']);
+        echo json_encode(['success' => true, 'message' => 'Registro agregado correctamente']);
+    } catch (Exception $e) {
+        $conexion->rollback();
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Procesar medicamentos: ' . $e->getMessage() . "\n", FILE_APPEND);
+        echo json_encode(['success' => false, 'message' => 'Error al agregar el registro: ' . $e->getMessage()]);
+    }
+    exit;
+}
 
 // Obtener los pacientes
 $sqlPac = "
@@ -50,7 +226,7 @@ if ($resultPac && $resultPac->num_rows > 0) {
 }
 
 // Guardar el id_atencion en la sesión cuando se seleccione el paciente
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente']) && !isset($_POST['ajax'])) {
     $_SESSION['paciente_seleccionado'] = $_POST['paciente'];
 }
 
@@ -58,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente'])) {
 $queryMedicamentos = "SELECT DISTINCT 
     ea.item_id, 
     CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
-    FROM existencias_almacenq ea 
+    FROM existencias_almacenh ea 
     JOIN item_almacen ia ON ea.item_id = ia.item_id 
     ORDER BY ia.item_name
 ";
@@ -75,7 +251,7 @@ if ($resultMedicamentos && $resultMedicamentos->num_rows > 0) {
 // Obtener los lotes y la suma total de existencias para el medicamento seleccionado
 $lotesOptions = '';
 $totalExistencias = 0;
-if (isset($_POST['medicamento'])) {
+if (isset($_POST['medicamento']) && !isset($_POST['ajax'])) {
     $itemId = intval($_POST['medicamento']);
     $sqlTotalExistencias = "
         SELECT SUM(ea.existe_qty) AS total_existencias
@@ -116,191 +292,68 @@ if (isset($_POST['medicamento'])) {
     $stmt->close();
 }
 
-// Captura del formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente']) && isset($_POST['medicamento']) && isset($_POST['lote']) && isset($_POST['cantidad'])) {
-    list($existeId, $nombreLote, $itemId) = explode('|', $_POST['lote']);
-    $itemId = intval($itemId);
+// Fetch items surtidos from dat_ctapac
+$itemsSurtidos = '';
+if (isset($_SESSION['paciente_seleccionado']) && !empty($_SESSION['paciente_seleccionado'])) {
+    $idAtencion = intval($_SESSION['paciente_seleccionado']);
+    $sqlSurtidos = "
+        SELECT 
+            dc.id_ctapac,
+            CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
+            CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name,
+            dc.existe_lote,
+            dc.existe_caducidad,
+            dc.cta_cant,
+            dc.cta_tot
+        FROM 
+            dat_ctapac dc
+        INNER JOIN 
+            dat_ingreso di ON dc.id_atencion = di.id_atencion AND di.id_atencion = ?
+        INNER JOIN 
+            paciente p ON p.Id_exp = di.Id_exp
+        INNER JOIN 
+            item_almacen ia ON dc.insumo = ia.item_id
+        WHERE 
+            dc.cta_activo = 'SI'
+            AND dc.existe_lote IS NOT NULL AND dc.existe_lote != ''
+            AND dc.existe_caducidad IS NOT NULL AND dc.existe_caducidad != ''
+        ORDER BY 
+            dc.cta_fec DESC
+    ";
+    $stmtSurtidos = $conexion->prepare($sqlSurtidos);
+    $stmtSurtidos->bind_param('i', $idAtencion);
+    $stmtSurtidos->execute();
+    $resultSurtidos = $stmtSurtidos->get_result();
 
-    $sqlAtencion = "SELECT id_atencion FROM dat_ingreso WHERE Id_exp = (SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?)";
-    $stmtAtencion = $conexion->prepare($sqlAtencion);
-    $stmtAtencion->bind_param('i', $_POST['paciente']);
-    $stmtAtencion->execute();
-    $stmtAtencion->bind_result($idAtencion);
-    $stmtAtencion->fetch();
-    $stmtAtencion->close();
-
-    $_SESSION['id_atencion'] = $idAtencion;
-
-    $sqlPacienteNombre = "SELECT CONCAT(nom_pac, ' ', papell, ' ', sapell) AS nombre_paciente FROM paciente WHERE Id_exp = (SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?)";
-    $stmtPaciente = $conexion->prepare($sqlPacienteNombre);
-    $stmtPaciente->bind_param('i', $_POST['paciente']);
-    $stmtPaciente->execute();
-    $stmtPaciente->bind_result($nombrePaciente);
-    $stmtPaciente->fetch();
-    $stmtPaciente->close();
-
-    $sqlMedicamentoNombrePrecio = "SELECT CONCAT(item_name, ', ', item_grams) AS item_name, item_price FROM item_almacen WHERE item_id = ?";
-    $stmtMedicamento = $conexion->prepare($sqlMedicamentoNombrePrecio);
-    $stmtMedicamento->bind_param('i', $_POST['medicamento']);
-    $stmtMedicamento->execute();
-    $stmtMedicamento->bind_result($nombreMedicamento, $precioMedicamento);
-    $stmtMedicamento->fetch();
-    $stmtMedicamento->close();
-
-    if (isset($_POST['agregar'])) {
-        if (!isset($_SESSION['medicamento_seleccionado'])) {
-            $_SESSION['medicamento_seleccionado'] = [];
+    if ($resultSurtidos && $resultSurtidos->num_rows > 0) {
+        $itemsSurtidos .= "<table class='table table-bordered table-striped'>";
+        $itemsSurtidos .= "<thead class='thead-dark'>
+            <tr>
+                <th>Paciente</th>
+                <th>Medicamento</th>
+                <th>Lote</th>
+                <th>Caducidad</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+            </tr>
+        </thead><tbody>";
+        while ($row = $resultSurtidos->fetch_assoc()) {
+            $itemsSurtidos .= "<tr>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['nombre_paciente']) . "</td>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['item_name']) . "</td>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['existe_lote']) . "</td>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['existe_caducidad']) . "</td>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['cta_cant']) . "</td>";
+            $itemsSurtidos .= "<td>" . htmlspecialchars($row['cta_tot']) . "</td>";
+            $itemsSurtidos .= "</tr>";
         }
-        $_SESSION['medicamento_seleccionado'][] = [
-            'paciente' => $nombrePaciente,
-            'item_id' => $itemId,
-            'medicamento' => $nombreMedicamento,
-            'lote' => $nombreLote,
-            'cantidad' => $_POST['cantidad'],
-            'existe_id' => $existeId,
-            'id_atencion' => $idAtencion,
-            'precio' => $precioMedicamento
-        ];
-        echo "<script>window.location.href = 'surtir_pacienteq.php';</script>";
-        exit();
+        $itemsSurtidos .= "</tbody></table>";
+    } else {
+        $itemsSurtidos = "<p class='text-center'>No hay ítems surtidos para el paciente seleccionado.</p>";
     }
-}
-
-// Eliminar registro
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_index'])) {
-    $index = intval($_POST['eliminar_index']);
-    if (isset($_SESSION['medicamento_seleccionado'][$index])) {
-        unset($_SESSION['medicamento_seleccionado'][$index]);
-        $_SESSION['medicamento_seleccionado'] = array_values($_SESSION['medicamento_seleccionado']);
-    }
-}
-
-// Procesar medicamentos
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'])) {
-    $fechaActual = date('Y-m-d H:i:s');
-
-    if (!isset($_SESSION['medicamento_seleccionado']) || empty($_SESSION['medicamento_seleccionado'])) {
-        echo "<script>alert('No hay registros en la memoria para procesar.'); window.location.href = 'surtir_pacienteq.php';</script>";
-        exit();
-    }
-
-    $conexion->begin_transaction();
-
-    try {
-        foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
-            $paciente = $medicamento['paciente'];
-            $nombreMedicamento = $medicamento['medicamento'];
-            $loteNombre = $medicamento['lote'];
-            $cantidadLote = $medicamento['cantidad'];
-            $existeId = $medicamento['existe_id'];
-            $Id_Atencion = $medicamento['id_atencion'];
-            $itemId = $medicamento['item_id'];
-
-            $queryItemAlmacen = "SELECT item_name, item_price FROM item_almacen WHERE item_id = ?";
-            $stmt = $conexion->prepare($queryItemAlmacen);
-            $stmt->bind_param("i", $itemId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result->num_rows > 0) {
-                $itemData = $result->fetch_assoc();
-                $salidaCostsu = $itemData['item_price'];
-            } else {
-                throw new Exception("Error: No se encontró el ítem con ID $itemId.");
-            }
-            $stmt->close();
-
-            $selectExistenciasQuery = "SELECT existe_qty, existe_caducidad, existe_salidas FROM existencias_almacenh WHERE existe_id = ?";
-            $stmtSelect = $conexion->prepare($selectExistenciasQuery);
-            $stmtSelect->bind_param('i', $existeId);
-            $stmtSelect->execute();
-            $stmtSelect->bind_result($existeQty, $caducidad, $existeSalidas);
-            $stmtSelect->fetch();
-            $stmtSelect->close();
-
-            $nuevaExistenciaQty = $existeQty - $cantidadLote;
-            $nuevaExistenciaSalidas = $existeSalidas + $cantidadLote;
-
-            if ($existeQty < $cantidadLote) {
-                echo "<script>alert('Error: El lote \"$loteNombre\" no tiene suficiente stock. Disponible: $existeQty, requerido: $cantidadLote.'); window.location.href = 'surtir_pacienteq.php';</script>";
-                exit;
-            }
-
-            $insert_kardex = "
-                INSERT INTO kardex_almacenh (
-                    kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
-                    kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_destino, id_surte
-                ) 
-                VALUES (NOW(), ?, ?, ?, 0, 0, ?, 0, 0, 0, 'Salida', 'QUIROFANO', ?)
-            ";
-            $stmt_kardex = $conexion->prepare($insert_kardex);
-            $stmt_kardex->bind_param('issii', $itemId, $loteNombre, $caducidad, $cantidadLote, $id_usua);
-            $stmt_kardex->execute();
-            $stmt_kardex->close();
-
-            $salio = "QUIROFANO";
-            $queryInsercion = "
-                INSERT INTO salidas_almacenh (
-                    item_id, item_name, salida_fecha, salida_lote, salida_caducidad, salida_qty, salida_costsu, id_usua, id_atencion, solicita, fecha_solicitud, salio
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
-            ";
-            $stmtInsertSalida = $conexion->prepare($queryInsercion);
-            $stmtInsertSalida->bind_param(
-                "issssdiisss",
-                $itemId,
-                $nombreMedicamento,
-                $fechaActual,
-                $loteNombre,
-                $caducidad,
-                $cantidadLote,
-                $salidaCostsu,
-                $id_usua,
-                $Id_Atencion,
-                $fechaActual,
-                $salio
-            );
-            $stmtInsertSalida->execute();
-            $salidaId = $stmtInsertSalida->insert_id;
-            $stmtInsertSalida->close();
-
-            $insertDatCtapacQuery = "
-                INSERT INTO dat_ctapac (
-                    id_atencion, prod_serv, insumo, cta_fec, cta_cant, cta_tot, id_usua, cta_activo, salida_id, existe_lote, existe_caducidad
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ";
-            $stmtInsertDatCtapac = $conexion->prepare($insertDatCtapacQuery);
-            $prodServ = 'PC';
-            $ctaActivo = 'SI';
-            $stmtInsertDatCtapac->bind_param(
-                'isssddsssss',
-                $Id_Atencion,
-                $prodServ,
-                $itemId,
-                $fechaActual,
-                $cantidadLote,
-                $salidaCostsu,
-                $id_usua,
-                $ctaActivo,
-                $salidaId,
-                $loteNombre,
-                $caducidad
-            );
-            $stmtInsertDatCtapac->execute();
-            $stmtInsertDatCtapac->close();
-
-            $updateExistenciasQuery = "UPDATE existencias_almacenh SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? WHERE existe_id = ?";
-            $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
-            $stmtUpdateExistencias->bind_param('isii', $nuevaExistenciaQty, $fechaActual, $nuevaExistenciaSalidas, $existeId);
-            $stmtUpdateExistencias->execute();
-            $stmtUpdateExistencias->close();
-        }
-
-        $conexion->commit();
-        unset($_SESSION['medicamento_seleccionado']);
-        echo "<script>alert('Los medicamentos han sido registrados correctamente.'); window.location.href = 'surtir_pacienteq.php';</script>";
-    } catch (Exception $e) {
-        $conexion->rollback();
-        echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href = 'surtir_pacienteq.php';</script>";
-    }
+    $stmtSurtidos->close();
+} else {
+    $itemsSurtidos = "<p class='text-center'>Seleccione un paciente para ver los ítems surtidos.</p>";
 }
 ?>
 
@@ -424,14 +477,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             border-radius: 12px;
             padding: 20px;
             border: 1px solid #e3e6f0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             height: 100%;
         }
 
         .action-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .action-icon {
@@ -465,7 +518,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             padding: 20px;
             margin-bottom: 25px;
             border: 1px solid #e3e6f0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .summary-title {
@@ -491,7 +544,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
         .valor-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .valor-icon {
@@ -521,12 +574,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         }
 
         /* Colores específicos para cada tipo de valor */
-        .valor-card.presion .valor-icon { color: #dc3545; }
-        .valor-card.frecuencia .valor-icon { color: #e74c3c; }
-        .valor-card.respiracion .valor-icon { color: #17a2b8; }
-        .valor-card.saturacion .valor-icon { color: #007bff; }
-        .valor-card.temperatura .valor-icon { color: #ffc107; }
-        .valor-card.tiempo .valor-icon { color: #6c757d; }
+        .valor-card.presion .valor-icon {
+            color: #dc3545;
+        }
+
+        .valor-card.frecuencia .valor-icon {
+            color: #e74c3c;
+        }
+
+        .valor-card.respiracion .valor-icon {
+            color: #17a2b8;
+        }
+
+        .valor-card.saturacion .valor-icon {
+            color: #007bff;
+        }
+
+        .valor-card.temperatura .valor-icon {
+            color: #ffc107;
+        }
+
+        .valor-card.tiempo .valor-icon {
+            color: #6c757d;
+        }
 
         /* Tabla mejorada */
         .signos-table-container {
@@ -534,7 +604,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             border-radius: 12px;
             padding: 20px;
             border: 1px solid #e3e6f0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .table-header {
@@ -605,7 +675,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         .signos-modal .modal-content {
             border-radius: 15px;
             border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .signos-modal-header {
@@ -745,9 +815,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
         /* Animaciones */
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .valor-card.actualizado {
@@ -759,16 +837,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             .signos-container {
                 padding: 15px;
             }
-            
+
             .presion-inputs {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .presion-separator {
                 display: none;
             }
-            
+
             .signos-form-actions {
                 flex-direction: column;
             }
@@ -941,6 +1019,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1053,7 +1132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 flex-direction: column;
                 gap: 4px;
             }
-            
+
             .btn-action {
                 width: 100%;
                 min-width: auto;
@@ -1081,8 +1160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Estilos para confirmaciones mejoradas */
@@ -1337,10 +1421,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         $id_atencion = $_SESSION['pac'];
 
         // Fetch patient data
-        $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, 
-                           p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup 
-                    FROM paciente p 
-                    INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
+        $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel,
+                           p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup
+                    FROM paciente p
+                    INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp
                     WHERE di.id_atencion = ?";
 
         $stmt = $conexion->prepare($sql_pac);
@@ -1699,7 +1783,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             <i class="fas fa-heartbeat"></i> Registro de Signos Vitales
                             <div class="signos-subtitle">Monitoreo continuo del estado vital del paciente</div>
                         </div>
-                        
+
                         <!-- Panel de acciones rápidas -->
                         <div class="signos-actions-panel">
                             <div class="row g-3">
@@ -1871,7 +1955,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <input type="hidden" name="id_usua" value="<?php echo $id_usuario; ?>">
                                         <input type="hidden" name="id_atencion" value="<?php echo $id_atencion; ?>">
-                                        
+
                                         <!-- Hora -->
                                         <div class="signos-form-group">
                                             <label for="addhoraField" class="signos-label">
@@ -1970,7 +2054,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                                         <input type="hidden" name="trid" id="trid" value="">
                                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <input type="hidden" name="fecha_g" id="fecha_gField">
-                                        
+
                                         <!-- Hora -->
                                         <div class="signos-form-group">
                                             <label for="horaField" class="signos-label">
@@ -2168,7 +2252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Sección de Nota de Enfermería -->
                     <div class="card mt-3">
                         <div class="thead">Nota de Enfermería</div>
@@ -2469,57 +2553,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 </div>
                 <div class="tab-pane fade" id="insumos" role="tabpanel">
                     <div class="thead">
-                        <strong>
-                            SURTIR PACIENTE
-                        </strong>
-
+                        <strong>SURTIR PACIENTE</strong>
                     </div>
-                    <div class="insumos-container">
 
-                        <br><br>
+                    <br><br>
 
-                        <form action="" method="post">
-                            <div class="form-group">
-                                <label for="paciente">Paciente</label>
-                                <select class="form-control" name="paciente" id="paciente">
-                                    <option value="" disabled selected>Seleccionar Paciente</option>
-                                    <?= $pacientesOptions ?>
-                                </select>
-                            </div>
+                    <form id="insumos-form" method="post">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        <div class="form-group">
+                            <label for="paciente">Paciente</label>
+                            <select class="form-control" name="paciente" id="paciente">
+                                <option value="" disabled selected>Seleccionar Paciente</option>
+                                <?= $pacientesOptions ?>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="medicamento">Medicamento</label>
-                                <select class="form-control" name="medicamento" id="medicamento" onchange="this.form.submit()">
-                                    <option value="" disabled selected>Seleccionar Medicamento</option>
-                                    <?= $medicamentosOptions ?>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="medicamento">Medicamento</label>
+                            <select class="form-control" name="medicamento" id="medicamento">
+                                <option value="" disabled selected>Seleccionar Medicamento</option>
+                                <?= $medicamentosOptions ?>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="lote">Lote</label>
-                                <select class="form-control" name="lote" id="lote" onchange="actualizarLote()">
-                                    <option value="" disabled selected>Lote/Caducidad/Total</option>
-                                    <?= $lotesOptions ?>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="lote">Lote</label>
+                            <select class="form-control" name="lote" id="lote">
+                                <option value="" disabled selected>Lote/Caducidad/Total</option>
+                                <?= $lotesOptions ?>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="cantidad">Cantidad</label>
-                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="1">
-                            </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1">
+                        </div>
 
-                            <div id="existe_id_display" class="font-weight-bold mt-2"></div>
+                        <div id="existe_id_display" class="font-weight-bold mt-2"></div>
 
-                            <div class="d-flex justify-content-start">
-                                <button type="submit" name="agregar" value="2" class="btn btn-custom mr-2">Agregar</button>
-                                <button type="submit" name="enviar_medicamentos" value="1" class="btn btn-custom">Enviar</button>
-                            </div>
-                        </form>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" id="agregar-btn" class="btn btn-success mr-2">Agregar</button>
+                    <button type="button" id="enviar-btn" class="btn btn-primary">Enviar</button>
+                </div>
+                <input type="hidden" name="enviar_medicamentos" value="1">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                        <hr>
+                    </form>
 
-                        <h3>ITEMS A SURTIR</h3>
+                    <hr>
 
+                    <div class="thead">
+                        <strong>ITEMS A SURTIR</strong>
+                    </div>
+                    <div id="tabla-medicamentos">
                         <?php
                         if (isset($_SESSION['medicamento_seleccionado']) && is_array($_SESSION['medicamento_seleccionado'])) {
                             echo "<table class='table table-bordered table-striped'>";
@@ -2533,17 +2619,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             <th>Acciones</th>
                         </tr>
                     </thead><tbody>";
-
                             foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
                                 if (is_array($medicamento) && isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['lote'], $medicamento['cantidad'])) {
                                     echo "<tr>";
-                                    echo "<td>{$medicamento['paciente']}</td>";
-                                    echo "<td>{$medicamento['medicamento']}</td>";
-                                    echo "<td>{$medicamento['lote']}</td>";
-                                    echo "<td>{$medicamento['cantidad']}</td>";
-                                    echo "<td>{$medicamento['precio']}</td>";
+                                    echo "<td>" . htmlspecialchars($medicamento['paciente']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($medicamento['medicamento']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($medicamento['lote']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($medicamento['cantidad']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($medicamento['precio']) . "</td>";
                                     echo "<td>
-                                <form action='' method='post' style='display:inline;'>
+                                <form action='' method='post' class='eliminar-form' data-index='$index'>
                                     <input type='hidden' name='eliminar_index' value='$index'>
                                     <button type='submit' class='btn btn-danger'>Eliminar</button>
                                 </form>
@@ -2559,67 +2644,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                         }
                         ?>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="equipos" role="tabpanel">
-                    <div class="thead"><strong>REGISTRAR EQUIPOS</strong></div>
+
                     <hr>
-                    <!-- Dropdown Menu -->
-                    <div class="mb-3">
-                        <label for="serviceSelect" class="form-label">Seleccionar Equipo:</label>
-                        <select class="custom-select" id="serviceSelect" onchange="addService()">
-                            <option value="">Seleccione un equipo</option>
-                            <?php
-                            $sql = "SELECT id_serv, serv_desc, serv_costo FROM cat_servicios WHERE grupo = 'CEYE' AND serv_activo = 'SI'";
-                            $result = $conexion->query($sql);
-                            if ($result) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='{$row['id_serv']}' data-desc='" . htmlspecialchars($row['serv_desc'], ENT_QUOTES, 'UTF-8') . "' data-cost='{$row['serv_costo']}'>" . htmlspecialchars($row['serv_desc'], ENT_QUOTES, 'UTF-8') . "</option>";
-                                }
-                                $result->free();
-                            } else {
-                                echo "<option value=''>Error al cargar servicios</option>";
-                            }
-                            ?>
-                        </select>
+
+                    <div class="thead">
+                        <strong>ITEMS SURTIDOS</strong>
                     </div>
-
-                    <!-- Table for Selected Services -->
-                    <table class="table table-bordered table-hover" id="selectedServicesTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Costo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="selectedServicesBody"></tbody>
-                    </table>
-
-                    <!-- Submit Button -->
-                    <button class="btn btn-primary mt-3" onclick="submitServices()">Registrar Equipos</button>
-                    <BR></BR>
-                    <!-- Table for Registered Services -->
-                    <div class="thead"><strong>EQUIPOS REGISTRADOS</strong></div>
-                    <hr>
-                    <table class="table table-bordered table-hover" id="registeredServicesTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Costo</th>
-                                <th>Fecha</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="registeredServicesBody"></tbody>
-                    </table>
+                    <div id="tabla-surtidos">
+                        <?= $itemsSurtidos ?>
+                    </div>
                 </div>
+            </div>
+
+            <div class="tab-pane fade" id="equipos" role="tabpanel">
+                <div class="thead"><strong>REGISTRAR EQUIPOS</strong></div>
+                <hr>
+                <!-- Dropdown Menu -->
+                <div class="mb-3">
+                    <label for="serviceSelect" class="form-label">Seleccionar Equipo:</label>
+                    <select class="custom-select" id="serviceSelect" onchange="addService()">
+                        <option value="">Seleccione un equipo</option>
+                        <?php
+                        $sql = "SELECT id_serv, serv_desc, serv_costo FROM cat_servicios WHERE grupo = 'CEYE' AND serv_activo = 'SI'";
+                        $result = $conexion->query($sql);
+                        if ($result) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='{$row['id_serv']}' data-desc='" . htmlspecialchars($row['serv_desc'], ENT_QUOTES, 'UTF-8') . "' data-cost='{$row['serv_costo']}'>" . htmlspecialchars($row['serv_desc'], ENT_QUOTES, 'UTF-8') . "</option>";
+                            }
+                            $result->free();
+                        } else {
+                            echo "<option value=''>Error al cargar servicios</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <!-- Table for Selected Services -->
+                <table class="table table-bordered table-hover" id="selectedServicesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Costo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedServicesBody"></tbody>
+                </table>
+
+                <!-- Submit Button -->
+                <button class="btn btn-primary mt-3" onclick="submitServices()">Registrar Equipos</button>
+                <BR></BR>
+                <!-- Table for Registered Services -->
+                <div class="thead"><strong>EQUIPOS REGISTRADOS</strong></div>
+                <hr>
+                <table class="table table-bordered table-hover" id="registeredServicesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Costo</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registeredServicesBody"></tbody>
+                </table>
             </div>
         </div>
-        <footer class="main-footer mt-4">
-            <div class="fs-6">
-                <?php include '../../template/footer.php'; ?>
-            </div>
-        </footer>
+    </div>
+    <footer class="main-footer mt-4">
+        <div class="fs-6">
+            <?php include '../../template/footer.php'; ?>
+        </div>
+    </footer>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -2873,16 +2969,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                                     const trid = $('#trid').val();
                                     const button = `
                                         <div class="action-buttons-container">
-                                            <a href="javascript:void(0);" 
-                                               data-id="${id}" 
-                                               class="btn btn-action btn-edit-modern editbtnI" 
+                                            <a href="javascript:void(0);"
+                                               data-id="${id}"
+                                               class="btn btn-action btn-edit-modern editbtnI"
                                                title="Editar registro">
                                                 <i class="fas fa-edit"></i>
                                                 <span>Editar</span>
                                             </a>
-                                            <a href="javascript:void(0);" 
-                                               data-id="${id}" 
-                                               class="btn btn-action btn-delete-modern deleteBtnI" 
+                                            <a href="javascript:void(0);"
+                                               data-id="${id}"
+                                               class="btn btn-action btn-delete-modern deleteBtnI"
                                                title="Eliminar registro">
                                                 <i class="fas fa-trash-alt"></i>
                                                 <span>Eliminar</span>
@@ -2934,16 +3030,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                                     const trid = $('#trid').val();
                                     const button = `
                                         <div class="action-buttons-container">
-                                            <a href="javascript:void(0);" 
-                                               data-id="${id}" 
-                                               class="btn btn-action btn-edit-modern editbtnE" 
+                                            <a href="javascript:void(0);"
+                                               data-id="${id}"
+                                               class="btn btn-action btn-edit-modern editbtnE"
                                                title="Editar registro">
                                                 <i class="fas fa-edit"></i>
                                                 <span>Editar</span>
                                             </a>
-                                            <a href="javascript:void(0);" 
-                                               data-id="${id}" 
-                                               class="btn btn-action btn-delete-modern deleteBtnE" 
+                                            <a href="javascript:void(0);"
+                                               data-id="${id}"
+                                               class="btn btn-action btn-delete-modern deleteBtnE"
                                                title="Eliminar registro">
                                                 <i class="fas fa-trash-alt"></i>
                                                 <span>Eliminar</span>
@@ -3049,7 +3145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             });
 
             // ========== FUNCIONALIDAD DE SIGNOS VITALES ==========
-            
+
             /**
              * Configuración del idioma para DataTables
              */
@@ -3078,12 +3174,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
              * Rangos de validación para signos vitales
              */
             const rangoSignosVitales = {
-                sistolica: { min: 50, max: 250, unidad: 'mmHg' },
-                diastolica: { min: 30, max: 150, unidad: 'mmHg' },
-                frecuenciaCardiaca: { min: 30, max: 250, unidad: 'lpm' },
-                frecuenciaRespiratoria: { min: 8, max: 50, unidad: 'rpm' },
-                saturacion: { min: 50, max: 100, unidad: '%' },
-                temperatura: { min: 34, max: 44, unidad: '°C' }
+                sistolica: {
+                    min: 50,
+                    max: 250,
+                    unidad: 'mmHg'
+                },
+                diastolica: {
+                    min: 30,
+                    max: 150,
+                    unidad: 'mmHg'
+                },
+                frecuenciaCardiaca: {
+                    min: 30,
+                    max: 250,
+                    unidad: 'lpm'
+                },
+                frecuenciaRespiratoria: {
+                    min: 8,
+                    max: 50,
+                    unidad: 'rpm'
+                },
+                saturacion: {
+                    min: 50,
+                    max: 100,
+                    unidad: '%'
+                },
+                temperatura: {
+                    min: 34,
+                    max: 44,
+                    unidad: '°C'
+                }
             };
 
             /**
@@ -3114,7 +3234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     // Actualizar contador de registros
                     const info = this.api().page.info();
                     $('#totalRegistros').text(`${info.recordsTotal} registros`);
-                    
+
                     // Cargar últimos valores
                     cargarUltimosValoresSignos();
                 }
@@ -3140,7 +3260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             actualizarValorConAnimacion('#ultimaSat', data.satg);
                             actualizarValorConAnimacion('#ultimaTemp', data.tempg);
                             actualizarValorConAnimacion('#ultimaHora', data.hora);
-                            
+
                             // Aplicar códigos de color según valores
                             aplicarCodigosColor(data);
                         }
@@ -3171,7 +3291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             function aplicarCodigosColor(data) {
                 // Resetear clases
                 $('.valor-number').removeClass('text-success text-warning text-danger');
-                
+
                 // Presión arterial
                 const sistolica = parseInt(data.sistg);
                 const diastolica = parseInt(data.diastg);
@@ -3182,7 +3302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 } else {
                     $('#ultimaPresion').addClass('text-warning');
                 }
-                
+
                 // Frecuencia cardíaca
                 const fc = parseInt(data.fcardg);
                 if (fc >= 60 && fc <= 100) {
@@ -3190,7 +3310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 } else {
                     $('#ultimaFC').addClass('text-warning');
                 }
-                
+
                 // Frecuencia respiratoria
                 const fr = parseInt(data.frespg);
                 if (fr >= 12 && fr <= 20) {
@@ -3198,7 +3318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 } else {
                     $('#ultimaFR').addClass('text-warning');
                 }
-                
+
                 // Saturación
                 const sat = parseInt(data.satg);
                 if (sat >= 95) {
@@ -3208,7 +3328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 } else {
                     $('#ultimaSat').addClass('text-danger');
                 }
-                
+
                 // Temperatura
                 const temp = parseFloat(data.tempg);
                 if (temp >= 36.1 && temp <= 37.2) {
@@ -3232,11 +3352,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
              * @returns {object} - {valido: boolean, mensaje: string}
              */
             function validarSignoVital(tipo, valor) {
-                if (!valor) return { valido: true, mensaje: '' };
-                
+                if (!valor) return {
+                    valido: true,
+                    mensaje: ''
+                };
+
                 let valorNumerico;
                 let rango;
-                
+
                 switch (tipo) {
                     case 'sistolica':
                         valorNumerico = parseInt(valor);
@@ -3263,17 +3386,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                         rango = rangoSignosVitales.temperatura;
                         break;
                     default:
-                        return { valido: false, mensaje: 'Tipo de signo vital no reconocido' };
+                        return {
+                            valido: false, mensaje: 'Tipo de signo vital no reconocido'
+                        };
                 }
-                
+
                 if (valorNumerico < rango.min || valorNumerico > rango.max) {
                     return {
                         valido: false,
                         mensaje: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} debe estar entre ${rango.min} y ${rango.max} ${rango.unidad}`
                     };
                 }
-                
-                return { valido: true, mensaje: '' };
+
+                return {
+                    valido: true,
+                    mensaje: ''
+                };
             }
 
             /**
@@ -3283,23 +3411,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
              */
             function validarTodosSignosVitales(campos) {
                 const errores = [];
-                
-                const validaciones = [
-                    { tipo: 'sistolica', valor: campos.sistg },
-                    { tipo: 'diastolica', valor: campos.diastg },
-                    { tipo: 'frecuenciaCardiaca', valor: campos.fcardg },
-                    { tipo: 'frecuenciaRespiratoria', valor: campos.frespg },
-                    { tipo: 'saturacion', valor: campos.satg },
-                    { tipo: 'temperatura', valor: campos.tempg }
+
+                const validaciones = [{
+                        tipo: 'sistolica',
+                        valor: campos.sistg
+                    },
+                    {
+                        tipo: 'diastolica',
+                        valor: campos.diastg
+                    },
+                    {
+                        tipo: 'frecuenciaCardiaca',
+                        valor: campos.fcardg
+                    },
+                    {
+                        tipo: 'frecuenciaRespiratoria',
+                        valor: campos.frespg
+                    },
+                    {
+                        tipo: 'saturacion',
+                        valor: campos.satg
+                    },
+                    {
+                        tipo: 'temperatura',
+                        valor: campos.tempg
+                    }
                 ];
-                
+
                 validaciones.forEach(validacion => {
                     const resultado = validarSignoVital(validacion.tipo, validacion.valor);
                     if (!resultado.valido) {
                         errores.push(resultado.mensaje);
                     }
                 });
-                
+
                 return {
                     valido: errores.length === 0,
                     errores: errores
@@ -3324,7 +3469,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 $('#addhoraField').val(`${hours}:${minutes}`);
-                
+
                 // Agregar efecto de entrada suave
                 $(this).find('.modal-content').css('transform', 'scale(0.7)');
                 setTimeout(() => {
@@ -3356,10 +3501,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 const valor = $(this).val();
                 const min = parseInt($(this).attr('min'));
                 const max = parseInt($(this).attr('max'));
-                
+
                 // Remover clases previas
                 $(this).removeClass('border-success border-warning border-danger');
-                
+
                 if (valor) {
                     const valorNum = parseFloat(valor);
                     if (valorNum < min || valorNum > max) {
@@ -3394,7 +3539,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
              */
             $('#addUserS').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Recopilar datos del formulario
                 const datosFormulario = {
                     hora: $('#addhoraField').val(),
@@ -3409,7 +3554,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 // Validar campos obligatorios
                 const camposObligatorios = ['hora', 'sistg', 'diastg', 'fcardg', 'frespg', 'satg', 'tempg'];
                 const camposFaltantes = camposObligatorios.filter(campo => !datosFormulario[campo]);
-                
+
                 if (camposFaltantes.length > 0) {
                     alertify.warning("Completa todos los campos requeridos por favor!");
                     return;
@@ -3429,9 +3574,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     id_atencion: $('input[name="id_atencion"]').val(),
                     ...datosFormulario
                 };
-                
+
                 console.log('📤 Enviando datos:', datosEnvio);
-                
+
                 // Envío AJAX
                 $.ajax({
                     url: "add_userS.php",
@@ -3440,18 +3585,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     dataType: 'json',
                     success: function(data) {
                         console.log('📥 Respuesta recibida:', data);
-                        
+
                         if (data.status === 'true') {
                             // Éxito: cerrar modal, limpiar formulario y recargar tabla
                             $('#addUserModalS').modal('hide');
                             $('#addUserS')[0].reset();
                             $('#exampleS').DataTable().draw();
-                            
+
                             // Actualizar últimos valores inmediatamente
                             setTimeout(() => {
                                 cargarUltimosValoresSignos();
                             }, 500);
-                            
+
                             // Mostrar notificación de éxito mejorada
                             alertify.success("✅ Registro de signos vitales agregado correctamente");
                         } else {
@@ -3481,28 +3626,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             $('#exampleS').on('click', '.editbtnS', function() {
                 const id = $(this).data('id');
                 const trid = $(this).closest('tr').attr('id');
-                
+
                 console.log('📝 Abriendo modal de edición para ID:', id);
-                
+
                 $.ajax({
                     url: "get_single_dataS.php",
-                    data: { id: id },
+                    data: {
+                        id: id
+                    },
                     type: 'POST',
                     dataType: 'json',
                     success: function(data) {
                         console.log('📥 Datos cargados para edición:', data);
-                        
+
                         if (data.error) {
                             alertify.error("Error: " + data.error);
                             return;
                         }
-                        
+
                         // Establecer hora actual automáticamente
                         const now = new Date();
                         const hours = String(now.getHours()).padStart(2, '0');
                         const minutes = String(now.getMinutes()).padStart(2, '0');
                         const horaActual = `${hours}:${minutes}`;
-                        
+
                         // Llenar el formulario con los datos
                         $('#horaField').val(horaActual); // Hora actual automática
                         $('#sistgField').val(data.sistg);
@@ -3514,14 +3661,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                         $('#fecha_gField').val(data.fecha_g);
                         $('#id').val(id);
                         $('#trid').val(trid);
-                        
+
                         // Agregar información sobre la hora original
                         if (data.hora && data.hora !== horaActual) {
                             // Mostrar un pequeño indicador de la hora original
                             const horaOriginalInfo = `
                                 <div class="alert alert-info alert-dismissible fade show mt-2" role="alert" id="horaOriginalAlert">
-                                    <i class="fas fa-info-circle"></i> 
-                                    <strong>Nota:</strong> La hora original era <strong>${data.hora}</strong>. 
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Nota:</strong> La hora original era <strong>${data.hora}</strong>.
                                     Se ha establecido la hora actual <strong>${horaActual}</strong> automáticamente.
                                     <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="$('#horaField').val('${data.hora}'); $('#horaOriginalAlert').remove();">
                                         <i class="fas fa-undo"></i> Usar hora original
@@ -3531,7 +3678,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             `;
                             $('#horaField').parent().append(horaOriginalInfo);
                         }
-                        
+
                         // Mostrar el modal
                         $('#exampleModalS').modal('show');
                     },
@@ -3552,7 +3699,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
              */
             $('#updateUserS').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Recopilar datos del formulario
                 const datosFormulario = {
                     hora: $('#horaField').val(),
@@ -3567,7 +3714,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 // Validar campos obligatorios
                 const camposObligatorios = ['hora', 'sistg', 'diastg', 'fcardg', 'frespg', 'satg', 'tempg'];
                 const camposFaltantes = camposObligatorios.filter(campo => !datosFormulario[campo]);
-                
+
                 if (camposFaltantes.length > 0) {
                     alertify.warning("Completa todos los campos requeridos por favor!");
                     return;
@@ -3584,7 +3731,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     id: $('#id').val(),
                     ...datosFormulario
                 });
-                
+
                 // Envío AJAX para actualización
                 $.ajax({
                     url: "update_userS.php",
@@ -3593,18 +3740,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     dataType: 'json',
                     success: function(data) {
                         console.log('📥 Respuesta de actualización:', data);
-                        
+
                         if (data.status === 'true') {
                             // Éxito: cerrar modal, limpiar formulario y recargar tabla
                             $('#exampleModalS').modal('hide');
                             $('#updateUserS')[0].reset();
                             $('#exampleS').DataTable().draw();
-                            
+
                             // Actualizar últimos valores inmediatamente
                             setTimeout(() => {
                                 cargarUltimosValoresSignos();
                             }, 500);
-                            
+
                             // Mostrar notificación de éxito mejorada
                             alertify.success("✅ Registro actualizado correctamente");
                         } else {
@@ -3632,21 +3779,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 e.preventDefault();
                 const id = $(this).data('id');
                 const $btn = $(this);
-                
+
                 // Mostrar confirmación moderna
-                alertify.confirm('Confirmar Eliminación', 
+                alertify.confirm('Confirmar Eliminación',
                     '¿Estás seguro de eliminar este registro de signos vitales? Esta acción no se puede deshacer.',
                     function() {
                         // Usuario confirmó - proceder con eliminación
                         console.log('🗑️ Eliminando registro ID:', id);
-                        
+
                         // Agregar estado de carga al botón
                         $btn.addClass('loading').prop('disabled', true);
                         $btn.find('span').text('Eliminando...');
-                        
+
                         $.ajax({
                             url: "delete_userS.php",
-                            data: { 
+                            data: {
                                 id: id,
                                 csrf_token: '<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>'
                             },
@@ -3654,16 +3801,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                             dataType: 'json',
                             success: function(data) {
                                 console.log('📥 Respuesta de eliminación:', data);
-                                
+
                                 if (data.status === 'success' || data.status === 'true') {
                                     // Recargar la tabla
                                     $('#exampleS').DataTable().draw();
-                                    
+
                                     // Actualizar últimos valores
                                     setTimeout(() => {
                                         cargarUltimosValoresSignos();
                                     }, 500);
-                                    
+
                                     alertify.success("✅ Registro eliminado correctamente");
                                 } else {
                                     console.error('❌ Error al eliminar:', data);
@@ -3677,7 +3824,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                                     error: error,
                                     responseText: xhr.responseText
                                 });
-                                
+
                                 // Intento de fallback parseando texto
                                 try {
                                     const json = JSON.parse(xhr.responseText);
@@ -3706,7 +3853,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                         console.log('❌ Eliminación cancelada por el usuario');
                     }
                 ).set({
-                    labels: {ok:'Eliminar', cancel:'Cancelar'},
+                    labels: {
+                        ok: 'Eliminar',
+                        cancel: 'Cancelar'
+                    },
                     title: 'Confirmar Eliminación'
                 });
             });
@@ -4349,7 +4499,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                         const frecRespiratoria = parseInt(frespg);
                         const saturacion = parseInt(satg.replace('%', ''));
                         const temperatura = parseFloat(tempg);
-                        
+
                         if (sistolica < 50 || sistolica > 250) {
                             erroresValidacion.push(`Fila ${index + 1}: Presión sistólica debe estar entre 50 y 250 mmHg`);
                         }
@@ -5287,20 +5437,256 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         console.log('   • Botón rojo: Iniciar/Detener dictado');
         console.log('   • Botón azul: Detener dictado manualmente');
         console.log('   • Botón verde: Reproducir texto escrito');
+    </script>
 
-        function actualizarLote() {
+    <script>
+        //insumos
+        document.addEventListener('DOMContentLoaded', function () {
+            const medicamentoSelect = document.getElementById('medicamento');
             const loteSelect = document.getElementById('lote');
-            const selectedOption = loteSelect.options[loteSelect.selectedIndex];
+            const agregarBtn = document.getElementById('agregar-btn');
+            const enviarBtn = document.getElementById('enviar-btn');
+            const insumosForm = document.getElementById('insumos-form');
+            const tablaMedicamentos = document.getElementById('tabla-medicamentos');
+            const tablaSurtidos = document.getElementById('tabla-surtidos');
+            const pacienteSelect = document.getElementById('paciente');
 
-            if (selectedOption) {
-                const caducidad = selectedOption.getAttribute('data-caducidad');
-                const cantidad = selectedOption.getAttribute('data-cantidad');
-                const existeId = selectedOption.value;
+            // Initialize Alertify
+            alertify.set('notifier', 'position', 'top-right');
 
-                document.getElementById('existe_id_display').textContent = "Existe ID del lote seleccionado: " + existeId;
-                console.log("existe_id del lote seleccionado: " + existeId);
+            // Validate form fields before sending
+            function validateForm() {
+                const paciente = pacienteSelect.value;
+                const medicamento = medicamentoSelect.value;
+                const lote = loteSelect.value;
+                const cantidad = document.getElementById('cantidad').value;
+                if (!paciente || !medicamento || !lote || !cantidad) {
+                    alertify.warning('Completa todos los campos por favor!');
+                    return false;
+                }
+                return true;
             }
-        }
+
+            // Validate medicamentos before enviar
+            function validateMedicamentos() {
+                if (!tablaMedicamentos.querySelector('tbody') || tablaMedicamentos.querySelector('tbody').children.length === 0) {
+                    alertify.warning('No hay medicamentos para enviar');
+                    return false;
+                }
+                return true;
+            }
+
+            // Actualizar lotes al seleccionar un medicamento
+            medicamentoSelect.addEventListener('change', function () {
+                const medicamentoId = this.value;
+                if (medicamentoId) {
+                    fetch('ajax_insumos.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `action=select_medicamento&medicamento=${medicamentoId}&csrf_token=<?= $_SESSION['csrf_token'] ?>`
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                loteSelect.innerHTML = '<option value="" disabled selected>Lote/Caducidad/Total</option>' + data.data.lotesOptions;
+                                document.getElementById('existe_id_display').textContent = '';
+                            } else {
+                                console.error('Error:', data.message);
+                                alertify.error('Error al cargar los lotes: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alertify.error('Error en la comunicación con el servidor');
+                        });
+                }
+            });
+
+            // Actualizar información del lote seleccionado
+            loteSelect.addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption) {
+                    const existeId = selectedOption.value.split('|')[0];
+                    document.getElementById('existe_id_display').textContent = `Existe ID del lote seleccionado: ${existeId}`;
+                }
+            });
+
+            // Agregar medicamento
+            agregarBtn.addEventListener('click', function () {
+                if (!validateForm()) return;
+
+                const formData = new FormData(insumosForm);
+                formData.append('action', 'agregar_medicamento');
+                console.log('FormData being sent:', [...formData.entries()]);
+
+                fetch('ajax_insumos.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            tablaMedicamentos.innerHTML = data.data.tabla;
+                            asignarEventosEliminar();
+                            insumosForm.reset();
+                            loteSelect.innerHTML = '<option value="" disabled selected>Lote/Caducidad/Total</option>';
+                            document.getElementById('existe_id_display').textContent = '';
+                            alertify.success('Medicamento agregado a la lista');
+                        } else {
+                            alertify.error('Error al agregar el medicamento: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        alertify.error('Error en la comunicación con el servidor');
+                    });
+            });
+
+            // Enviar medicamentos
+            enviarBtn.addEventListener('click', function () {
+                if (!validateMedicamentos()) return;
+
+                const formData = new FormData(insumosForm);
+                formData.append('enviar_medicamentos', '1');
+
+                fetch('reg_pro.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            tablaMedicamentos.innerHTML = '<p class="text-center">No hay medicamentos seleccionados.</p>';
+                            tablaSurtidos.innerHTML = ''; // Clear surtidos table, will be updated by select_paciente
+                            pacienteSelect.dispatchEvent(new Event('change')); // Refresh surtidos
+                            alertify.success('Registro agregado correctamente');
+                        } else {
+                            alertify.error('Error al agregar el registro: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        alertify.error('Error en la comunicación con el servidor');
+                    });
+            });
+
+            // Actualizar ítems surtidos al seleccionar un paciente
+            pacienteSelect.addEventListener('change', function () {
+                const pacienteId = this.value;
+                if (pacienteId) {
+                    fetch('ajax_insumos.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `action=select_paciente&paciente=${pacienteId}&csrf_token=<?= $_SESSION['csrf_token'] ?>`
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la respuesta del servidor');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                tablaSurtidos.innerHTML = data.data.tablaSurtidos;
+                                asignarEventosEliminarSurtidos();
+                            } else {
+                                alertify.error('Error al cargar los ítems surtidos: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alertify.error('Error en la comunicación con el servidor');
+                        });
+                    }
+            });
+
+            // Manejar eliminación de medicamentos (pendientes)
+            function asignarEventosEliminar() {
+                const eliminarForms = document.querySelectorAll('.eliminar-form');
+                eliminarForms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const index = this.getAttribute('data-index');
+                        const formData = new FormData(this);
+                        formData.append('action', 'eliminar_medicamento');
+
+                        fetch('ajax_insumos.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error en la respuesta del servidor');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    tablaMedicamentos.innerHTML = data.data.tabla;
+                                    asignarEventosEliminar();
+                                    alertify.success('Medicamento eliminado de la lista');
+                                } else {
+                                    alertify.error('Error al eliminar el medicamento: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alertify.error('Error en la comunicación con el servidor');
+                            });
+                    });
+                });
+            }
+
+            // Manejar eliminación de ítems surtidos
+            function asignarEventosEliminarSurtidos() {
+                const eliminarSurtidoForms = document.querySelectorAll('.eliminar-surtido-form');
+                eliminarSurtidoForms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const idCtapac = this.getAttribute('data-id-ctapac');
+                        const formData = new FormData(this);
+                        formData.append('action', 'eliminar_surtido');
+
+                        fetch('ajax_insumos.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error en la respuesta del servidor');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    tablaSurtidos.innerHTML = data.data.tablaSurtidos;
+                                    asignarEventosEliminarSurtidos();
+                                    alertify.success('Ítem surtido eliminado correctamente');
+                                } else {
+                                    alertify.error('Error al eliminar el ítem surtido: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error:', error);
+                                alertify.error('Error en la comunicación con el servidor');
+                            });
+                    });
+                });
+            }
+
+            // Asignar eventos a los botones de eliminar al cargar la página
+            asignarEventosEliminar();
+            asignarEventosEliminarSurtidos();
+        });
     </script>
 </body>
 
