@@ -193,9 +193,9 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
 
         <a href="../../template/menu_administrativo.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
         </a>
       <?php
       } else if ($usuario['id_rol'] == 5) {
@@ -203,9 +203,9 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_gerencia.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
         </a>
         <?php
       } else if ($usuario['id_rol'] == 12) {
@@ -213,9 +213,9 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_residente.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
         </a>
           <?php
       } else if ($usuario['id_rol'] == 9) {
@@ -223,9 +223,9 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_imagenologia.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+          <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
         </a>
       <?php
       } else

@@ -226,7 +226,7 @@ left:9px;
 
             <a href="menu_administrativo.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
              <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -245,7 +245,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_gerencia.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
               <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -264,7 +264,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_configuracion.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
               <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);

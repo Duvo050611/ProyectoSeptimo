@@ -194,7 +194,7 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
 
         <a href="../../template/menu_administrativo.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="45" width="115"></b></span>
         </a>
@@ -204,7 +204,7 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_gerencia.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="45" width="115"></b></span>
         </a>
@@ -214,7 +214,7 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_residente.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="45" width="115"></b> SIMA</span>
         </a>
@@ -224,7 +224,7 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
       ?>
         <a href="../../template/menu_imagenologia.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="45" width="115"></b> SIMA</span>
         </a>

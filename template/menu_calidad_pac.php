@@ -174,7 +174,7 @@ $usuario = $_SESSION['login'];
       ?>
         <a href="menu_calidad_pac.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
          <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -189,7 +189,7 @@ while($f = mysqli_fetch_array($resultado)){
       <?php //}elseif($usuario['id_rol'] == 17) { ?>
          <a href="menu_calidad_pac.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);

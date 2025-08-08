@@ -158,7 +158,7 @@ if (!($usuario['id_rol'] == 9 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
 
             <a href="menu_imagenologia.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
               <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -176,7 +176,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_gerencia.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -194,7 +194,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_medico.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -212,7 +212,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_residente.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                 <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -230,7 +230,7 @@ while($f = mysqli_fetch_array($resultado)){
             ?>
             <a href="menu_laboratorio.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);

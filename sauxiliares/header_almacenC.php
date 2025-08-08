@@ -196,9 +196,9 @@ if (!($usuario1['id_rol'] == 11 || $usuario1['id_rol'] == 5 || $usuario1['id_rol
 
             <a href="../../template/menu_almacencentral.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
             </a>
             <?php
         } else if ($usuario1['id_rol'] == 4) {
@@ -206,9 +206,9 @@ if (!($usuario1['id_rol'] == 11 || $usuario1['id_rol'] == 5 || $usuario1['id_rol
             ?>
             <a href="../../template/menu_sauxiliares.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
             </a>
             <?php
         } else if ($usuario1['id_rol'] == 5) {
@@ -216,9 +216,9 @@ if (!($usuario1['id_rol'] == 11 || $usuario1['id_rol'] == 5 || $usuario1['id_rol
             ?>
             <a href="../../template/menu_gerencia.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> SIMA</span>
+                <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
             </a>
             <?php
         } else

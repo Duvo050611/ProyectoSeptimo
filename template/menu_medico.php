@@ -73,11 +73,11 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
     }
 
     .ancholi2 {
-
         width: 170px;
         height: 97px;
         display: inline-block;
         box-shadow: 3px 5px 8px #2a6675;
+    }
 
     .dropdwn {
         float: left;
@@ -252,7 +252,7 @@ if (!($usuario['id_rol'] == 2 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
             <?php } elseif ($usuario['id_rol'] == 12) { ?>
             <a href="menu_residente.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                 <?php
           $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);

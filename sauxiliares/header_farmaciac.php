@@ -191,7 +191,7 @@ if (!($usuario1['id_rol'] == 4 || $usuario1['id_rol'] == 5 || $usuario1['id_rol'
 
             <a href="../../template/menu_farmaciacentral.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b><img src="../../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
             </a>
@@ -201,7 +201,7 @@ if (!($usuario1['id_rol'] == 4 || $usuario1['id_rol'] == 5 || $usuario1['id_rol'
             ?>
             <a href="../../template/menu_gerencia.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>SI</b>MA</span>
+                
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
             </a>

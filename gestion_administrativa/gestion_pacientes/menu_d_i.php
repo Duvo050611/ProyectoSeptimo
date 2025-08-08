@@ -65,7 +65,7 @@ $resultado=$conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='".$usuari
 
       <a href="../../template/menu_administrativo.php" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>SI</b>MA</span>
+        
         <!-- logo for regular state and mobile devices -->
         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
       </a>

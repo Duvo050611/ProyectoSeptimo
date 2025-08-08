@@ -177,7 +177,7 @@ if (!($usuario['id_usua'] == 1 || $usuario['id_usua'] == 200 || $usuario['id_usu
       ?>
         <a href="menu_gerencia.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
          <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -196,7 +196,7 @@ while($f = mysqli_fetch_array($resultado)){
       ?>
         <a href="menu_ejecutivo.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
          <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
@@ -213,7 +213,7 @@ while($f = mysqli_fetch_array($resultado)){
       elseif($usuario['id_rol'] == 17) { ?>
          <a href="menu_calidad.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
+          
           <!-- logo for regular state and mobile devices -->
           <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);

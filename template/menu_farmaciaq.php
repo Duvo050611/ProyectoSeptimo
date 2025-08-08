@@ -223,7 +223,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
 
                 <a href="menu_farmaciacentral.php" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>SI</b>MA</span>
+                    
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b><img src="../imagenes/SI.PNG" height="30" width="120"></b></span>
                 </a>
@@ -233,7 +233,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
             ?>
                 <a href="menu_gerencia.php" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>SI</b>MA</span>
+                    
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b><img src="../imagenes/SI.PNG" height="30" width="120"></b></span>
                 </a>

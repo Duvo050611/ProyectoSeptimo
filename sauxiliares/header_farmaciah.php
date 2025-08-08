@@ -191,7 +191,7 @@
 
                     <a href="../../template/menu_farmaciahosp.php" class="logo">
                         <!-- mini logo for sidebar mini 50x50 pixels -->
-                        <span class="logo-mini"><b>SI</b>MA</span>
+                        
                         <!-- logo for regular state and mobile devices -->
                         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
                     </a>
@@ -201,7 +201,7 @@
                 ?>
                     <a href="../../template/menu_gerencia.php" class="logo">
                         <!-- mini logo for sidebar mini 50x50 pixels -->
-                        <span class="logo-mini"><b>SI</b>MA</span>
+                        
                         <!-- logo for regular state and mobile devices -->
                         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
                     </a>
@@ -211,7 +211,7 @@
                 ?>
                     <a href="../../template/menu_administrativo.php" class="logo">
                         <!-- mini logo for sidebar mini 50x50 pixels -->
-                        <span class="logo-mini"><b>SI</b>MA</span>
+                        
                         <!-- logo for regular state and mobile devices -->
                         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
                     </a>
@@ -221,14 +221,14 @@
                 ?>
                     <a href="../../template/menu_enfermera.php" class="logo">
                         <!-- mini logo for sidebar mini 50x50 pixels -->
-                        <span class="logo-mini"><b>SI</b>MA</span>
+                        
                         <!-- logo for regular state and mobile devices -->
                         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
                     </a>
                 <?php } elseif ($usuario1['id_rol'] == 9) { ?>
                     <a href="../../template/menu_imagenologia.php" class="logo">
                         <!-- mini logo for sidebar mini 50x50 pixels -->
-                        <span class="logo-mini"><b>SI</b>MA</span>
+                        
                         <!-- logo for regular state and mobile devices -->
                         <span class="logo-lg"><b><img src="../../imagenes/logo.jpg" height="30" width="120"></b> SIMA</span>
                     </a>

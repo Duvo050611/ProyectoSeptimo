@@ -194,9 +194,9 @@ if (!($usuario['id_rol'] == 4)) {
 
         <a href="../../template/menu_gerencia.php" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>SI</b>MA</span>
+            
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b><img src="../../imagenes/SI.png" height="30" width="120"></b> SIMA</span>
+            <span class="logo-lg"><b><img src="../../imagenes/SI.PNG" height="30" width="120"></b> </span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
 
