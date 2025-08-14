@@ -9,6 +9,102 @@ include("../header_configuracion.php");
 ?>
 
 <head>
+  <style>
+    .elimina-cama-box {
+      /* ...existing code... */
+    }
+    .elimina-cama-box .form-group {
+      margin-bottom: 22px;
+    }
+    .elimina-cama-box .botones-row {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .elimina-cama-box .btn-warning {
+      /* ...existing code... */
+      min-width: 160px;
+      margin-bottom: 0;
+    }
+    .elimina-cama-box .btn-danger {
+      /* ...existing code... */
+      min-width: 160px;
+      margin-bottom: 0;
+    }
+  </style>
+  <style>
+    body {
+      background: #f4f6fb;
+    }
+    .elimina-cama-box {
+      background: #fff;
+      border: 2px solid #e3e6f3;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(43,45,127,0.10);
+      padding: 48px 38px 36px 38px;
+      margin-top: 60px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .elimina-cama-box h1 {
+      color: #2b2d7f;
+      font-weight: 800;
+      margin-bottom: 36px;
+      text-align: center;
+      letter-spacing: 1.5px;
+      font-size: 2.2rem;
+    }
+    .elimina-cama-box .form-control[disabled] {
+      background: #f4f6fb;
+      color: #2b2d7f;
+      font-weight: 700;
+      border: 1.5px solid #bfc8e6;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      box-shadow: none;
+    }
+    .elimina-cama-box .form-group label {
+      color: #2b2d7f;
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+    .elimina-cama-box .btn-warning {
+      background: #2b2d7f;
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 12px 28px;
+      box-shadow: 0 2px 8px rgba(43,45,127,0.10);
+      transition: background 0.2s;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    .elimina-cama-box .btn-warning:hover {
+      background: #1a1c4c;
+    }
+    .elimina-cama-box .btn-danger {
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    #mensaje {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      background: #2b2d7f;
+      border-radius: 10px;
+      padding: 14px 22px;
+      margin-top: 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(43,45,127,0.10);
+    }
+  </style>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -36,14 +132,9 @@ include("../header_configuracion.php");
 </head>
 
 <body>
-
   <section class="content container-fluid">
-    <div class="container box">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-2"></div>
-          <div class="col-md-8">
-            <h1>¿Estás seguro de que deseas eliminar la cama?</h1>
+    <div class="elimina-cama-box">
+      <h1>¿Estás seguro de que deseas eliminar la cama?</h1>
             <?php
             $id = $_GET['id'];
 
@@ -53,35 +144,26 @@ include("../header_configuracion.php");
             ?>
               <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Número de cama: </label>
-                  <div class="col-md-6">
-                    <input type="text" name="num_cama" class="form-control" value="<?php echo $row_datos['num_cama'] ?>" disabled>
-                  </div>
+                  <label>Número de cama:</label>
+                  <input type="text" name="num_cama" class="form-control" value="<?php echo $row_datos['num_cama'] ?>" disabled>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Estatus: </label>
-                  <div class="col-md-6">
-                    <input type="text" name="estatus" class="form-control" value="<?php echo $row_datos['estatus'] ?>" disabled>
-                  </div>
+                  <label>Estatus:</label>
+                  <input type="text" name="estatus" class="form-control" value="<?php echo $row_datos['estatus'] ?>" disabled>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Tipo: </label>
-                  <div class="col-md-6">
-                    <input type="text" name="tipo" class="form-control" value="<?php echo $row_datos['tipo'] ?>" disabled>
-                  </div>
+                  <label>Tipo:</label>
+                  <input type="text" name="tipo" class="form-control" value="<?php echo $row_datos['tipo'] ?>" disabled>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Habitación: </label>
-                  <div class="col-md-6">
-                    <input type="text" name="tipo" class="form-control" value="<?php echo $row_datos['habitacion'] ?>" disabled>
-                  </div>
+                  <label>Habitación:</label>
+                  <input type="text" name="tipo" class="form-control" value="<?php echo $row_datos['habitacion'] ?>" disabled>
                 </div>
               <?php
             }
               ?>
               <div class="form-group">
-                <label class="col-sm-3 control-label">&nbsp;</label>
-                <div class="col-sm-4">
+                <div class="botones-row">
                   <input type="submit" name="del" class="btn btn-warning" value="Eliminar Datos">
                   <a href="../../template/menu_configuracion.php" class="btn btn-danger">Cancelar</a>
                 </div>

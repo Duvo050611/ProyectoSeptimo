@@ -31,7 +31,6 @@ include("../header_configuracion.php");
   <!-- AdminLTE App -->
   <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script>
     // Write on keyup event of keyword input element
@@ -49,111 +48,357 @@ include("../header_configuracion.php");
     });
   </script>
 
+  <style>
+    /* Estilos modernos para gestión de camas */
+    body {
+      background: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Contenedor principal moderno */
+    .camas-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(43, 45, 127, 0.1);
+      margin: 20px auto;
+      overflow: hidden;
+      max-width: 1400px;
+      padding: 0;
+    }
+
+    /* Botón agregar moderno */
+    .btn-add-modern {
+      background: linear-gradient(135deg, #2b2d7f 0%, #1a1d5f 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);
+      transition: all 0.3s ease;
+      margin-bottom: 25px;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn-add-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(43, 45, 127, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Buscador moderno */
+    .search-container {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .search-input {
+      border: 2px solid #e9ecef;
+      border-radius: 25px;
+      padding: 12px 20px 12px 45px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .search-input:focus {
+      border-color: #2b2d7f;
+      box-shadow: 0 4px 15px rgba(43, 45, 127, 0.2);
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    /* Tabla moderna */
+    .table-modern {
+      margin-bottom: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+    }
+
+    .table-modern thead th {
+      background: #2b2d7f;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 18px 15px;
+      text-align: center;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .table-modern tbody td {
+      padding: 15px;
+      vertical-align: middle;
+      border-bottom: 1px solid #e9ecef;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .table-modern tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .table-modern tbody tr:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Estados de las camas */
+    .status-libre {
+      background: #d4edda !important;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+
+    .status-ocupada {
+      background: #f8d7da !important;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+
+    .status-mantenimiento {
+      background: #fff3cd !important;
+      color: #856404;
+      border-left: 4px solid #ffc107;
+    }
+
+    .status-por-liberar {
+      background: #ffeaa7 !important;
+      color: #8b4513;
+      border-left: 4px solid #fd79a8;
+    }
+
+    /* Badges para estatus */
+    .badge-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 15px;
+      text-transform: uppercase;
+    }
+
+    .badge-libre {
+      background: #28a745;
+      color: white;
+    }
+
+    .badge-ocupada {
+      background: #dc3545;
+      color: white;
+    }
+
+    .badge-mantenimiento {
+      background: #ffc107;
+      color: #212529;
+    }
+
+    .badge-por-liberar {
+      background: #fd7e14;
+      color: white;
+    }
+
+    /* Botones de acción modernos */
+    .btn-action {
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .btn-edit-modern {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-edit-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+      color: white;
+    }
+
+    .btn-delete-modern {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-delete-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+      color: white;
+    }
+
+    .status-text {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .text-ocupada {
+      color: #dc3545;
+    }
+
+    .text-no-disponible {
+      color: #ffc107;
+    }
+
+    .text-por-liberar {
+      color: #fd7e14;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .camas-container {
+        margin: 10px;
+        border-radius: 10px;
+      }
+      
+      .table-modern thead th {
+        padding: 12px 8px;
+        font-size: 12px;
+      }
+      
+      .table-modern tbody td {
+        padding: 10px 5px;
+        font-size: 12px;
+      }
+      
+      .btn-action {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+      }
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .table-modern tbody tr {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+  </style>
+
 </head>
 
 <body>
   <section class="content container-fluid">
-
-    <!--------------------------
-    | Your Page Content Here |
-    -------------------------->
-
-
-    <div class="container box">
-      <div class="container-fluid">
+    <div class="camas-container">
+      <div class="container-fluid p-4">
         <div class="row">
-          <div class="col-md-2"></div>
-          <div class="col-md-10">
-            <br />
+          <div class="col-12">
+            <!-- Botón agregar moderno -->
+            <a href="alta_cama.php" class="btn btn-add-modern">
+              <i class="fas fa-plus mr-2"></i>Agregar habitación
+            </a>
 
-            
-            <a href="alta_cama.php" class="btn btn-md btn-md btn-block btn-primary">Agregar habitación</a>
-
-            <div class="form-group"> <br>
-              <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Buscar...">
+            <!-- Buscador moderno -->
+            <div class="search-container">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" class="form-control search-input" id="search" placeholder="Buscar habitación, estatus, área...">
             </div>
+
+            <!-- Tabla moderna -->
             <div class="table-responsive">
-              <table class="table table-bordered table-striped" id="mytable">
-               
-                  <thead class="thead" style="background-color: #2b2d7f;color:white;">
+              <table class="table table-modern" id="mytable">
+                <thead>
                   <tr>
-                    <center>
-                      <th scope="col">Habitación</th>
-                    </center>
-                    <th scope="col">
-                      <center>Estatus</center>
-                    </th>
-                    <th scope="col">
-                      <center>Área</center>
-                    </th>
-                    <th scope="col">
-                      <center>Piso</center>
-                    </th>
-                    <th scope="col">
-                      <center>Sección</center>
-                    </th>
-                    <th scope="col">
-                      <center>Editar</center>
-                    </th>
-                     <th scope="col">
-                      <center>Eliminar</center>
-                    </th>
+                    <th scope="col"><i class="fas fa-bed mr-2"></i>Habitación</th>
+                    <th scope="col"><i class="fas fa-info-circle mr-2"></i>Estatus</th>
+                    <th scope="col"><i class="fas fa-hospital mr-2"></i>Área</th>
+                    <th scope="col"><i class="fas fa-layer-group mr-2"></i>Piso</th>
+                    <th scope="col"><i class="fas fa-th-large mr-2"></i>Sección</th>
+                    <th scope="col"><i class="fas fa-edit mr-2"></i>Editar</th>
+                    <th scope="col"><i class="fas fa-trash mr-2"></i>Eliminar</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <?php
+                  <?php
                     $sql = "SELECT id,estatus,tipo, num_cama,id_atencion,piso,seccion from cat_camas ORDER BY num_cama ASC ";
                     $result = $conexion->query($sql);
                     while ($row = $result->fetch_assoc()) {
                       if($row['id_atencion'] == 0 && $row['estatus'] == 'LIBRE'){
                         $estatus = $row['estatus'];
-                      echo '<td>' . $row['num_cama'] . '</td><td>' . $estatus . '</td>';
-                      echo '<td>' . $row['tipo'] . '</td>';
-                      echo '<td>' . $row['piso'] . '</td>';
-                      echo '<td>' . $row['seccion'] . '</td>';
-                      echo '<td> <a type="submit" class="btn btn-success btn-sm" href="edita_cama.php?id=' . $row['id'] . '"><span class = "fa fa-edit"></span></a></td>';
-                      echo '<td> <a type="submit" class="btn btn-danger btn-sm" href="elimina_cama.php?id=' . $row['id'] . '"><span class = "fa fa-trash-alt"></span></a></td></tr>';
+                        echo '<tr class="status-libre">';
+                        echo '<td><strong>' . $row['num_cama'] . '</strong></td>';
+                        echo '<td><span class="badge badge-status badge-libre">' . $estatus . '</span></td>';
+                        echo '<td>' . $row['tipo'] . '</td>';
+                        echo '<td>' . $row['piso'] . '</td>';
+                        echo '<td>' . $row['seccion'] . '</td>';
+                        echo '<td><a class="btn btn-action btn-edit-modern" href="edita_cama.php?id=' . $row['id'] . '" title="Editar habitación"><i class="fa fa-edit"></i></a></td>';
+                        echo '<td><a class="btn btn-action btn-delete-modern" href="elimina_cama.php?id=' . $row['id'] . '" title="Eliminar habitación"><i class="fa fa-trash-alt"></i></a></td>';
+                        echo '</tr>';
                       }elseif($row['id_atencion'] != 0 && $row['estatus'] == 'OCUPADA'){
                         $estatus = $row['estatus'];
-                      echo '<td>' . $row['num_cama'] . '</td><td>' . $estatus . '</td>';
-                      echo '<td>' . $row['tipo'] . '</td>';
-                      echo '<td>' . $row['piso'] . '</td>';
-                      echo '<td>' . $row['seccion'] . '</td>';
-                      echo '<td><font color="red">OCUPADA</font></td>';
-                      echo '<td></td></tr>';
+                        echo '<tr class="status-ocupada">';
+                        echo '<td><strong>' . $row['num_cama'] . '</strong></td>';
+                        echo '<td><span class="badge badge-status badge-ocupada">' . $estatus . '</span></td>';
+                        echo '<td>' . $row['tipo'] . '</td>';
+                        echo '<td>' . $row['piso'] . '</td>';
+                        echo '<td>' . $row['seccion'] . '</td>';
+                        echo '<td><span class="status-text text-ocupada"><i class="fas fa-user-injured mr-1"></i>OCUPADA</span></td>';
+                        echo '<td></td>';
+                        echo '</tr>';
                       }elseif($row['estatus'] == 'MANTENIMIENTO'){
                         $estatus = "NO DISPONIBLE";
-                      echo '<td bgcolor="yellow">' . $row['num_cama'] . '</td><td bgcolor="yellow">' . $estatus . '</td>';
-                      echo '<td bgcolor="yellow">' . $row['tipo'] . '</td>';
-                      echo '<td bgcolor="yellow">' . $row['piso'] . '</td>';
-                      echo '<td bgcolor="yellow">' . $row['seccion'] . '</td>';
-                      echo '<td bgcolor="yellow"> <a type="submit" class="btn btn-success btn-sm" href="edita_cama.php?id=' . $row['id'] . '"><span class = "fa fa-edit"></span></a></td>';
-                      echo '<td bgcolor="yellow" ><font color="red"><strong>NO DISPONIBLE </strong></font></td>';
-                      echo '<td bgcolor="yellow"></td></tr>';
+                        echo '<tr class="status-mantenimiento">';
+                        echo '<td><strong>' . $row['num_cama'] . '</strong></td>';
+                        echo '<td><span class="badge badge-status badge-mantenimiento">' . $estatus . '</span></td>';
+                        echo '<td>' . $row['tipo'] . '</td>';
+                        echo '<td>' . $row['piso'] . '</td>';
+                        echo '<td>' . $row['seccion'] . '</td>';
+                        echo '<td><a class="btn btn-action btn-edit-modern" href="edita_cama.php?id=' . $row['id'] . '" title="Editar habitación"><i class="fa fa-edit"></i></a></td>';
+                        echo '<td><span class="status-text text-no-disponible"><i class="fas fa-tools mr-1"></i>NO DISPONIBLE</span></td>';
+                        echo '</tr>';
                       }else{
                         $estatus = "POR LIBERAR";
-                      echo '<td bgcolor="orange">' . $row['num_cama'] . '</td><td bgcolor="orange">' . $estatus . '</td>';
-                      echo '<td bgcolor="orange">' . $row['tipo'] . '</td>';
-                      echo '<td bgcolor="orange">' . $row['piso'] . '</td>';
-                      echo '<td bgcolor="orange">' . $row['seccion'] . '</td>';
-                      echo '<td bgcolor="orange"> <a type="submit" class="btn btn-success btn-sm" href="edita_cama.php?id=' . $row['id'] . '"><span class = "fa fa-edit"></span></a></td>';
-                      echo '<td bgcolor="orange" ><font color="brown"><strong>POR LIBERAR </strong></font></td>';
-                      echo '<td bgcolor="orange"></td></tr>';
+                        echo '<tr class="status-por-liberar">';
+                        echo '<td><strong>' . $row['num_cama'] . '</strong></td>';
+                        echo '<td><span class="badge badge-status badge-por-liberar">' . $estatus . '</span></td>';
+                        echo '<td>' . $row['tipo'] . '</td>';
+                        echo '<td>' . $row['piso'] . '</td>';
+                        echo '<td>' . $row['seccion'] . '</td>';
+                        echo '<td><a class="btn btn-action btn-edit-modern" href="edita_cama.php?id=' . $row['id'] . '" title="Editar habitación"><i class="fa fa-edit"></i></a></td>';
+                        echo '<td><span class="status-text text-por-liberar"><i class="fas fa-clock mr-1"></i>POR LIBERAR</span></td>';
+                        echo '</tr>';
                       }
                     }
                     ?>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
-          <div class="col-md-2"></div>
         </div>
       </div>
     </div>
   </section>
-  </div>
+
   <footer class="main-footer">
     <?php
     include("../../template/footer.php");
