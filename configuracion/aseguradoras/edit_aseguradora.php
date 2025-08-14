@@ -42,37 +42,132 @@ include("../header_configuracion.php");
           <div class="col-md-2"></div>
           <div class="col-md-8">
             <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
-            <tr><strong><center>EDITAR ASEGURADORA</center></strong>
-       </div>
-       <br>
-            <?php
-            $id = $_GET['id'];
-
-            $sql = "SELECT * from cat_aseg where id_aseg = $id";
-            $result = $conexion->query($sql);
-            while ($row_datos = $result->fetch_assoc()) {
-            ?>
+              <tr><strong><center>EDITAR ASEGURADORA</center></strong>
+            </div>
+            <style>
+              .modern-card {
+                background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+                border-radius: 18px;
+                box-shadow: 0 8px 25px rgba(43,45,127,0.12);
+                padding: 30px 30px 10px 30px;
+                margin-top: 30px;
+                border: none;
+              }
+              .form-section {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                margin: 20px 0;
+                box-shadow: 0 4px 15px rgba(43, 45, 127, 0.1);
+                border-left: 5px solid #2b2d7f;
+              }
+              .form-section h5 {
+                color: #2b2d7f;
+                font-weight: bold;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #e9ecef;
+                padding-bottom: 10px;
+              }
+              .modern-form-group {
+                margin-bottom: 25px;
+                position: relative;
+              }
+              .modern-form-group label {
+                color: #2b2d7f;
+                font-weight: 600;
+                margin-bottom: 8px;
+                display: block;
+                font-size: 14px;
+              }
+              .modern-form-control {
+                border: 4px solid #e9ecef;
+                border-radius: 10px;
+                padding: 15px;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                background-color: #ffffff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+              }
+              .modern-form-control:focus {
+                border-color: #2b2d7f;
+                box-shadow: 0 0 0 0.2rem rgba(43, 45, 127, 0.25);
+                outline: none;
+                background-color: #f8f9ff;
+              }
+              .modern-form-control:hover {
+                border-color: #2b2d7f;
+                background-color: #f8f9ff;
+              }
+              .button-container {
+                text-align: center;
+                margin-top: 30px;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 10px;
+              }
+              .modern-btn {
+                padding: 12px 30px;
+                border-radius: 25px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+                border: none;
+                margin: 0 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+              }
+              .modern-btn-success {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+              }
+              .modern-btn-success:hover {
+                background: linear-gradient(135deg, #218838 0%, #1e9f8a 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+                color: white;
+              }
+              .modern-btn-danger {
+                background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+                color: white;
+                text-decoration: none;
+                display: inline-block;
+              }
+              .modern-btn-danger:hover {
+                background: linear-gradient(135deg, #c82333 0%, #d63384 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+                color: white;
+                text-decoration: none;
+              }
+            </style>
+            <div class="modern-card">
+              <?php
+              $id = $_GET['id'];
+              $sql = "SELECT * from cat_aseg where id_aseg = $id";
+              $result = $conexion->query($sql);
+              while ($row_datos = $result->fetch_assoc()) {
+              ?>
               <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-
-                <div class="form-group">
-                  <label for="clave">Aseguradora:</label>
-                  <input type="text" size="30" name="aseg" placeholder="Aseguradora" id="aseg" 
-                   value="<?php echo $row_datos['aseg']; ?>" required>
+                <div class="form-section">
+                  <h5><i class="fas fa-building"></i> Información de la aseguradora</h5>
+                  <div class="modern-form-group">
+                    <label for="aseg"><i class="fas fa-building"></i> Aseguradora:</label>
+                    <input type="text" size="30" name="aseg" placeholder="Aseguradora" id="aseg" class="form-control modern-form-control" value="<?php echo $row_datos['aseg']; ?>" required>
+                  </div>
+                  <div class="modern-form-group">
+                    <label for="tip_precio"><i class="fas fa-dollar-sign"></i> Tipo de precio:</label>
+                    <input type="text" size="30" name="tip_precio" placeholder="Tipo de precio" id="tip_precio" class="form-control modern-form-control" value="<?php echo $row_datos['tip_precio']; ?>" required>
+                  </div>
+                  <div class="button-container">
+                    <input type="submit" name="edit" class="btn modern-btn modern-btn-success" value="GUARDAR">
+                    <a href="../aseguradoras/aseguradora.php" class="btn modern-btn modern-btn-danger">CANCELAR</a>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="tip_precio">Tipo de precio:</label>
-                  <input type="text" size="30" name="tip_precio" placeholder="Tipo de precio" id="tip_precio" 
-                   value="<?php echo $row_datos['tip_precio']; ?>" required>
-                </div>
-                
-                   <center><input type="submit" name="edit" class="btn btn-success" value="Guardar">
-                    <a href="../aseguradoras/aseguradora.php" class="btn btn-danger">Cancelar</a></center> 
-                 
+              </form>
+              <?php } ?>
+            </div>
           </div>
-        <?php } ?>
-        </form> 
-        </div>
-        <div class="col-md-2"></div>
+          <div class="col-md-2"></div>
       </div>
       <?php
 
