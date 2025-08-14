@@ -24,7 +24,8 @@ if(isset($_POST['usuario']) && isset($_POST['pass'])) {
             'cedp' => $cedp,
             'id_rol' => $id_rol,
             'img_perfil' => $img_perfil,
-            'firma' => $firma
+            'firma' => $firma,
+            'usuario' => $usuario
 
         );
 $_SESSION['id_usua'] = $id_usua;

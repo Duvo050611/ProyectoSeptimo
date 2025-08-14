@@ -374,6 +374,10 @@ if (isset($_POST['confirmar'])) {
 ?>
 
 <!DOCTYPE html>
+ <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <html lang="es">
 
 <head>
@@ -381,16 +385,7 @@ if (isset($_POST['confirmar'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmar Recibido - Farmacia Quirófano</title>
     
-    <!-- Bootstrap 4.0.0 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    
-    <!-- Font Awesome 6.0.0 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- jQuery y Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+ 
     <style>
         :root {
             --primary-color: #2b2d7f;
@@ -489,42 +484,71 @@ if (isset($_POST['confirmar'])) {
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             max-height: 70vh;
             overflow-y: auto;
+            overflow-x: auto;
+            width: 100%;
+            min-width: 100%;
         }
         
         .table thead th {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            padding: 15px 8px;
-            font-weight: 600;
+            padding: 18px 15px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
+            letter-spacing: 0.8px;
+            font-size: 14px;
             position: sticky;
             top: 0;
             z-index: 10;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .table thead th i {
+            margin-right: 8px;
+            font-size: 16px;
         }
         
         .table tbody tr {
             transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
         }
         
         .table tbody tr:hover {
-            background-color: rgba(43,45,127,0.1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: inherit;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
         .table tbody td {
-            padding: 12px 8px;
+            padding: 16px 15px;
             vertical-align: middle;
-            font-size: 0.9rem;
+            font-size: 15px;
+            font-weight: 500;
             border: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .table tbody td:first-child {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .table tbody td:nth-child(2) {
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            max-width: 300px;
+            word-wrap: break-word;
         }
         
         .container-main {
-            max-width: 98%;
+            max-width: 100%;
             margin: 0 auto;
+            padding: 0 15px;
         }
         
         .no-data-message {
@@ -609,29 +633,101 @@ if (isset($_POST['confirmar'])) {
             color: #dc3545;
             font-weight: bold;
         }
+
+        /* Estilos específicos para columnas de Lotes y Caducidades */
+        .table thead th:nth-child(5), 
+        .table thead th:nth-child(6) {
+            min-width: 180px;
+            width: 180px;
+            font-size: 16px !important;
+            padding: 20px 18px !important;
+        }
+
+        .table tbody td:nth-child(5), 
+        .table tbody td:nth-child(6) {
+            min-width: 180px;
+            width: 180px;
+            font-size: 16px !important;
+            padding: 18px !important;
+            line-height: 1.6;
+        }
+
+        /* Mejoras para badges de lotes */
+        .lote-badge {
+            background: linear-gradient(45deg, #17a2b8, #117a8b);
+            color: white;
+            padding: 6px 12px !important;
+            border-radius: 15px;
+            font-size: 14px !important;
+            margin: 3px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        /* Mejoras para información de caducidades */
+        .caducidad-info {
+            font-size: 14px !important;
+            color: #495057;
+            margin-top: 5px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* Asegurar que la tabla sea completamente visible */
+        .table {
+            min-width: 1200px;
+            width: 100%;
+            table-layout: auto;
+        }
+
+        /* Ajustes responsive para scroll horizontal */
+        @media (max-width: 1400px) {
+            .table-container {
+                overflow-x: scroll;
+            }
+            
+            .table-container::-webkit-scrollbar {
+                height: 8px;
+            }
+            
+            .table-container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+            
+            .table-container::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+                border-radius: 10px;
+            }
+            
+            .table-container::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container-fluid">
         <div class="container-main">
+
+           <div class="d-flex">
+                <!-- Botón Regresar -->
+                <a href="../../template/menu_farmaciaq.php"
+                    style="color: white; background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
+                    border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; display: inline-block; 
+                    text-decoration: none; box-shadow: 0 2px 8px rgba(43, 45, 127, 0.3); 
+                    transition: all 0.3s ease; margin-right: 10px;">
+                            ← Regresar
+                </a>
+            </div>
             <!-- Encabezado -->
             <div class="page-header">
                 <h1><i class="fas fa-clipboard-check"></i> CONFIRMAR RECIBIDO</h1>
                 <p class="mb-0">Confirmación de productos enviados desde almacén principal</p>
             </div>
 
-            <!-- Botón de regreso -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-center mb-3">
-                        <a href="../../template/menu_farmaciaq.php" class="btn btn-custom btn-danger-custom">
-                            <i class="fas fa-arrow-left"></i> Regresar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
+          
             <!-- Estadísticas rápidas -->
             <div class="stats-container">
                 <h5><i class="fas fa-chart-bar"></i> Resumen de Envíos</h5>
@@ -677,7 +773,6 @@ if (isset($_POST['confirmar'])) {
                 <table class="table table-striped table-hover" id="enviosTable">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-hashtag"></i> ID Recib</th>
                             <th><i class="fas fa-calendar"></i> Fecha Envío</th>
                             <th><i class="fas fa-pills"></i> Medicamento</th>
                             <th><i class="fas fa-arrow-down"></i> Solicitado</th>
@@ -699,7 +794,6 @@ if (isset($_POST['confirmar'])) {
                                 $quantityClass = $isComplete ? 'quantity-match' : 'quantity-mismatch';
                                 
                                 echo "<tr>
-                        <td><strong>" . $row['id_recib'] . "</strong></td>
                         <td>" . date('d/m/Y H:i', strtotime($row['fecha'])) . "</td>
                         <td>
                             <strong>" . $row['item_name'] . "</strong>

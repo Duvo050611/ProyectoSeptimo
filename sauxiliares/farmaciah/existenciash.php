@@ -139,14 +139,15 @@ if (isset($_GET['ajax']) && isset($_GET['search'])) {
     echo '<td>' . $ubicacion . '</td></tr>';
   }
 
-  exit;
+  exit; // Importante: terminar la ejecución aquí para no enviar HTML adicional
 }
 
+// Manejar peticiones AJAX para filtro por medicamento
 if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
   $item_id = intval($_GET['item_id']);
   $tab = isset($_GET['tab']) ? $_GET['tab'] : 'normales';
 
-  ob_clean();
+  // Limpiar cualquier salida previa
   ob_clean();
 
   if ($tab === 'cero') {
@@ -271,23 +272,15 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-  
-  <!-- Select2 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-  
-  <!-- jQuery y Scripts -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
   <script>
     $(document).ready(function() {
@@ -303,25 +296,34 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
       // Función para realizar búsqueda
       function realizarBusqueda() {
         var searchTerm = $("#search").val();
+        var itemId = $('#mibuscador').val();
 
-        if (searchTerm.length === 0) {
-          alert('Por favor, ingrese un término de búsqueda.');
+        // Verificar que al menos uno de los campos tenga valor
+        if (searchTerm.length === 0 && !itemId) {
+          alert('Por favor, ingrese un término de búsqueda o seleccione un medicamento.');
           return;
         }
 
+        // Determinar qué tab está activo
         var activeTab = $('.nav-link.active').attr('id');
         var isZeroTab = (activeTab === 'cero-tab');
 
+        // Preparar datos para AJAX
         var ajaxData = {
           'ajax': 1,
           'tab': isZeroTab ? 'cero' : 'normales'
         };
 
-        if (searchTerm.length < 3) {
-          alert('El término de búsqueda debe tener al menos 3 caracteres.');
-          return;
+        // Priorizar búsqueda por medicamento si está seleccionado
+        if (itemId) {
+          ajaxData['item_id'] = itemId;
+        } else if (searchTerm.length > 0) {
+          if (searchTerm.length < 3) {
+            alert('El término de búsqueda debe tener al menos 3 caracteres.');
+            return;
+          }
+          ajaxData['search'] = searchTerm;
         }
-        ajaxData['search'] = searchTerm;
 
         // Realizar búsqueda AJAX
         $.ajax({
@@ -342,11 +344,11 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
             if (isZeroTab) {
               $('#mytable-cero tbody').empty().html(cleanResponse);
               // Ocultar paginación durante búsqueda
-              $('#cero .contenedor-paginacion').hide();
+              $('#cero .pagination').hide();
             } else {
               $('#mytable tbody').empty().html(cleanResponse);
               // Ocultar paginación durante búsqueda
-              $('#normales .contenedor-paginacion').hide();
+              $('#normales .pagination').hide();
             }
           },
           error: function(xhr, status, error) {
@@ -364,18 +366,33 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
       // Evento del botón limpiar
       $('#btnLimpiar').on('click', function() {
         $('#search').val('');
+        $('#mibuscador').val('').trigger('change');
         window.location.reload();
       });
 
+      // Permitir búsqueda con Enter en el campo de texto
       $("#search").keypress(function(e) {
-        if (e.which === 13) {
+        if (e.which === 13) { // Enter key
           realizarBusqueda();
+        }
+      });
+
+      // Limpiar el otro campo cuando se usa uno
+      $("#search").on('input', function() {
+        if ($(this).val().length > 0) {
+          $('#mibuscador').val('').trigger('change');
+        }
+      });
+
+      $('#mibuscador').on('change', function() {
+        if ($(this).val()) {
+          $('#search').val('');
         }
       });
 
       // Mostrar paginación cuando se cambie de tab
       $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-        $('.contenedor-paginacion').show();
+        $('.pagination').show();
       });
     });
   </script>
@@ -384,110 +401,142 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
 <body>
   <div class="container-fluid">
 
-    <!-- Botones modernizados -->
-    <div class="container-fluid botones-superiores">
+    <!-- Botones -->
+    <div class="container botones-superiores">
       <div class="row">
-        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap">
-          <div class="d-flex">
-            <a href="../../template/menu_farmaciahosp.php" class="btn-moderno btn-regresar">
-              <i class="fas fa-arrow-left"></i> Regresar
-            </a>
+        <div class="col-12 d-flex justify-content-between">
+          <div class="row mt-3 mb-3">
+            <div class="col-sm-5">
+              <a class="btn btn-danger" href="../../template/menu_farmaciahosp.php" style="margin-left: 0px;">Regresar</a>
+            </div>
           </div>
           <!-- Botones alineados a la derecha -->
-          <div class="d-flex gap-3">
-            <a href="existencias_globalh.php" class="btn-moderno btn-warning">
-              <i class="fas fa-globe"></i> Existencias Globales
-            </a>
-            <a href="excelexistenciash.php" class="btn-moderno btn-success">
-              <i class="fas fa-file-excel"></i> Exportar a Excel
-            </a>
+          <div class="d-flex">
+            <a type="submit" class="btn btn-warning mx-2 my-3" href="existencias_globalh.php">Existencias Globales</a>
+            <a href="excelexistenciash.php" class="btn btn-success mx-2 my-3">Exportar a Excel</a>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="container-moderno">
-      <div class="contenido-principal">
-        <!-- Título modernizado -->
-        <div class="header-principal">
-          <div class="titulo-contenedor">
-            <div class="icono-titulo">
-              <i class="fas fa-pills"></i>
-            </div>
-            <h1>EXISTENCIAS DE FARMACIA HOSPITALARIA</h1>
+    <div class="container box">
+      <div class="content">
+        <div class="thead" style="background-color: white;margin-top: 10px; color: black; font-size: 20px;">
+
+          <div class="thead" style="background-color: #0c675e; margin: 5px auto; padding: 5px; color: white; width: fit-content; text-align: center; border-radius: 5px;">
+            <h1 style="font-size: 26px; margin: 2;">EXISTENCIAS DE FARMACIA HOSPITALARIA</h1>
           </div>
         </div>
+        <br> <br>
 
-        <div class="contenedor-busqueda">
-          <div class="fila-busqueda">
-            <div class="campo-busqueda">
-              <div class="input-con-icono">
-                <i class="fas fa-search icono-input"></i>
-                <input type="text" class="form-control input-moderno" id="search" placeholder="Buscar por código o lote...">
+        <!-- Formulario de búsqueda -->
+        <div class="container form-search-container">
+          <div class="row justify-content-center">
+            <!-- Campo de búsqueda (Input) -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <input type="text" class="form-control" id="search" placeholder="Buscar por código o lote..." style="width: 100%; margin-bottom: 20px;">
               </div>
             </div>
 
-            <div class="botones-busqueda">
-              <button type="button" class="btn-moderno btn-primary" id="btnBuscar">
-                <i class="fas fa-search"></i> Buscar
-              </button>
-              <button type="button" class="btn-moderno btn-secondary" id="btnLimpiar">
-                <i class="fas fa-eraser"></i> Limpiar
-              </button>
+            <!-- Selector de medicamentos/insumos -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <select name="item_id" class="form-control" id="mibuscador" style="width: 100%; margin-bottom: 20px;">
+                  <option value="">Seleccione un medicamento o insumo</option>
+                  <?php
+                  $sql = "SELECT * FROM item_almacen ORDER BY item_name";
+                  $result = $conexion->query($sql);
+                  while ($row_datos = $result->fetch_assoc()) {
+                    $selected = ($item_id == $row_datos['item_id']) ? 'selected' : '';
+                    echo "<option value='" . $row_datos['item_id'] . "' $selected>" . $row_datos['item_name'] . ', ' . $row_datos['item_grams'] . "</option>";
+                  }
+                  ?>
+                </select>
+              </div>
             </div>
-          </div>
-        </div>
+            <!-- Botón de búsqueda -->
+            <div class="col-md-2">
+              <div class="form-group">
+                <button type="button" class="btn btn-primary" id="btnBuscar" style="width: 100%; margin-bottom: 10px;">
+                  Buscar
+                </button>
+              </div>
+            </div>
 
-          <div class="contenedor-tabs">
-            <ul class="nav nav-tabs tabs-modernos" id="existenciaTabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="normales-tab" data-toggle="tab" href="#normales" role="tab" aria-controls="normales" aria-selected="true">
-                  <i class="fas fa-box"></i> Existencias Normales
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="cero-tab" data-toggle="tab" href="#cero" role="tab" aria-controls="cero" aria-selected="false">
-                  <i class="fas fa-exclamation-triangle"></i> Existencias en 0
-                </a>
-              </li>
-            </ul>
-          </div>
+            <!-- Botón para limpiar -->
+            <div class="col-md-2">
+              <div class="form-group">
+                <button type="button" class="btn btn-secondary" id="btnLimpiar" style="width: 100%; margin-bottom: 10px;">
+                  Limpiar
+                </button>
+              </div>
+            </div>
 
-          <div class="leyenda-contenedor">
-            <div class="leyenda-titulo">
-              <i class="fas fa-info-circle"></i> Leyenda de Caducidad:
-            </div>
-            <div class="leyenda-items">
-              <span class="leyenda-item peligro">
-                <i class="fas fa-clock"></i> ≤ 3 meses
-              </span>
-              <span class="leyenda-item advertencia">
-                <i class="fas fa-exclamation"></i> 4-6 meses
-              </span>
-              <span class="leyenda-item exitoso">
-                <i class="fas fa-check"></i> > 6 meses
-              </span>
-            </div>
+          </div> <!-- Cierre de la fila -->
+
+          <!-- Tabs para separar existencias normales y existencias en 0 -->
+          <ul class="nav nav-tabs" id="existenciaTabs" role="tablist" style="margin-top: 10px;">
+            <li class="nav-item">
+              <a class="nav-link active" id="normales-tab" data-toggle="tab" href="#normales" role="tab" aria-controls="normales" aria-selected="true">
+                Existencias Normales
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="cero-tab" data-toggle="tab" href="#cero" role="tab" aria-controls="cero" aria-selected="false">
+                Existencias en 0
+              </a>
+            </li>
+          </ul>
+
+          <!-- Leyenda de colores de caducidad -->
+          <div style="margin-top: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: white;">
+            <span style="background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">≤ 3 meses</span>
+            <span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">4-6 meses</span>
+            <span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">> 6 meses</span>
           </div>
 
 
           <div class="tab-content" id="existenciaTabContent">
+            <!-- Tab para existencias normales -->
             <div class="tab-pane fade show active" id="normales" role="tabpanel" aria-labelledby="normales-tab">
-              <div class="tabla-contenedor">
-                <table class="table tabla-moderna" id="mytable">
-                  <thead>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="mytable">
+                  <thead class="thead" style="background-color: #0c675e; color: white;">
                     <tr>
-                      <th><i class="fas fa-barcode"></i> Código</th>
-                      <th><i class="fas fa-pills"></i> Medicamento / Insumo</th>
-                      <th><i class="fas fa-tag"></i> Lote</th>
-                      <th><i class="fas fa-calendar-alt"></i> Caducidad</th>
-                      <th><i class="fas fa-arrow-up"></i> Máximo</th>
-                      <th><i class="fas fa-repeat"></i> P.reorden</th>
-                      <th><i class="fas fa-arrow-down"></i> Mínimo</th>
-                      <th><i class="fas fa-plus-circle"></i> Entradas</th>
-                      <th><i class="fas fa-minus-circle"></i> Salidas</th>
-                      <th><i class="fas fa-box"></i> Existencias</th>
-                      <th><i class="fas fa-map-marker-alt"></i> Ubicación</th>
+                      <th>
+                        <font color="white">Código
+                      </th>
+                      <th>
+                        <font color="white">Medicamento / Insumo
+                      </th>
+                      <th>
+                        <font color="white">Lote
+                      </th>
+                      <th>
+                        <font color="white">Caducidad
+                      </th>
+                      <th>
+                        <font color="white">Máximo
+                      </th>
+                      <th>
+                        <font color="white">P.reorden
+                      </th>
+                      <th>
+                        <font color="white">Mínimo
+                      </th>
+                      <th>
+                        <font color="white">Entradas
+                      </th>
+                      <th>
+                        <font color="white">Salidas
+                      </th>
+                      <th>
+                        <font color="white">Existencias
+                      </th>
+                      <th>
+                        <font color="white">Ubicación
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -591,35 +640,34 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
                 </table>
               </div>
 
-              <!-- Paginación modernizada para existencias normales -->
-              <div class="contenedor-paginacion">
-                <div class="paginacion-moderna">
-                  <?php
-                  // Establecer el rango de páginas a mostrar
-                  $rango = 5;
+              <!-- Paginación para existencias normales -->
+              <div class="pagination">
+                <?php
+                // Establecer el rango de páginas a mostrar
+                $rango = 5;
 
-                  // Determinar el inicio y fin del rango de páginas a mostrar
-                  $inicio = max(1, $page - $rango);
-                  $fin = min($total_pages, $page + $rango);
+                // Determinar el inicio y fin del rango de páginas a mostrar
+                $inicio = max(1, $page - $rango);
+                $fin = min($total_pages, $page + $rango);
 
-                  // Mostrar el enlace a la primera página
-                  if ($page > 1) {
-                    echo '<a href="?page=1" class="btn-paginacion"><i class="fas fa-angle-double-left"></i> Primero</a>';
-                    echo '<a href="?page=' . ($page - 1) . '" class="btn-paginacion"><i class="fas fa-angle-left"></i> Anterior</a>';
-                  }
+                // Mostrar el enlace a la primera página
+                if ($page > 1) {
+                  echo '<a href="?page=1">&laquo; Primero</a>';
+                  echo '<a href="?page=' . ($page - 1) . '">&lt; Anterior</a>';
+                }
 
-                  // Mostrar las páginas dentro del rango
-                  for ($i = $inicio; $i <= $fin; $i++) {
-                    echo '<a href="?page=' . $i . '" class="btn-paginacion ' . ($i == $page ? 'activo' : '') . '">' . $i . '</a>';
-                  }
+                // Mostrar las páginas dentro del rango
+                for ($i = $inicio; $i <= $fin; $i++) {
+                  echo '<a href="?page=' . $i . '" class="' . ($i == $page ? 'current' : '') . '">' . $i . '</a>';
+                }
 
-                  // Mostrar el enlace a la siguiente página
-                  if ($page < $total_pages) {
-                    echo '<a href="?page=' . ($page + 1) . '" class="btn-paginacion">Siguiente <i class="fas fa-angle-right"></i></a>';
-                    echo '<a href="?page=' . $total_pages . '" class="btn-paginacion">Último <i class="fas fa-angle-double-right"></i></a>';
-                  }
-                  ?>
-                </div>
+                // Mostrar el enlace a la siguiente página
+                if ($page < $total_pages) {
+                  echo '<a href="?page=' . ($page + 1) . '">Siguiente &gt;</a>';
+                  echo '<a href="?page=' . $total_pages . '">Último &raquo;</a>';
+                }
+
+                ?>
               </div>
 
             </div>
@@ -628,21 +676,45 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
 
             <!-- Tab para existencias en 0 -->
             <div class="tab-pane fade" id="cero" role="tabpanel" aria-labelledby="cero-tab">
-              <div class="tabla-contenedor">
-                <table class="table tabla-moderna" id="mytable-cero">
-                  <thead>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="mytable-cero">
+                  <thead class="thead" style="background-color: #0c675e; color: white;">
                     <tr>
-                      <th><i class="fas fa-barcode"></i> Código</th>
-                      <th><i class="fas fa-pills"></i> Medicamento</th>
-                      <th><i class="fas fa-tag"></i> Lote</th>
-                      <th><i class="fas fa-calendar-alt"></i> Caducidad</th>
-                      <th><i class="fas fa-arrow-down"></i> Mínimo</th>
-                      <th><i class="fas fa-arrow-up"></i> Máximo</th>
-                      <th><i class="fas fa-repeat"></i> P.reorden</th>
-                      <th><i class="fas fa-plus-circle"></i> Entradas</th>
-                      <th><i class="fas fa-minus-circle"></i> Salidas</th>
-                      <th><i class="fas fa-box"></i> Existencias</th>
-                      <th><i class="fas fa-map-marker-alt"></i> Ubicación</th>
+                      <th>
+                        <font color="white">Código
+                      </th>
+                      <th>
+                        <font color="white">Medicamento
+                      </th>
+                      <th>
+                        <font color="white">Lote
+                      </th>
+                      <th>
+                        <font color="white">Caducidad
+                      </th>
+
+                      <th>
+                        <font color="white">Mínimo
+                      </th>
+                      <th>
+                        <font color="white">Máximo
+                      </th>
+
+                      <th>
+                        <font color="white">P.reorden
+                      </th>
+                      <th>
+                        <font color="white">Entradas
+                      </th>
+                      <th>
+                        <font color="white">Salidas
+                      </th>
+                      <th>
+                        <font color="white">Existencias
+                      </th>
+                      <th>
+                        <font color="white">Ubicación
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -744,565 +816,324 @@ if (isset($_GET['ajax']) && isset($_GET['item_id'])) {
               </div>
 
 
-              <!-- Paginación modernizada para existencias en 0 -->
-              <div class="contenedor-paginacion">
-                <div class="paginacion-moderna">
-                  <?php
-                  // Establecer el rango de páginas a mostrar
-                  $rango = 5;
+              <!-- Paginación para existencias en 0 -->
+              <div class="pagination">
+                <?php
+                // Establecer el rango de páginas a mostrar
+                $rango = 5;
 
-                  // Determinar el inicio y fin del rango de páginas a mostrar
-                  $inicio_cero = max(1, $page_cero - $rango);
-                  $fin_cero = min($total_pages_cero, $page_cero + $rango);
+                // Determinar el inicio y fin del rango de páginas a mostrar
+                $inicio_cero = max(1, $page_cero - $rango);
+                $fin_cero = min($total_pages_cero, $page_cero + $rango);
 
-                  // Mostrar el enlace a la primera página
-                  if ($page_cero > 1) {
-                    echo '<a href="?page_cero=1#cero" class="btn-paginacion"><i class="fas fa-angle-double-left"></i> Primero</a>';
-                    echo '<a href="?page_cero=' . ($page_cero - 1) . '#cero" class="btn-paginacion"><i class="fas fa-angle-left"></i> Anterior</a>';
-                  }
+                // Mostrar el enlace a la primera página
+                if ($page_cero > 1) {
+                  echo '<a href="?page_cero=1#cero">&laquo; Primero</a>';
+                  echo '<a href="?page_cero=' . ($page_cero - 1) . '#cero">&lt; Anterior</a>';
+                }
 
-                  // Mostrar las páginas dentro del rango
-                  for ($i = $inicio_cero; $i <= $fin_cero; $i++) {
-                    echo '<a href="?page_cero=' . $i . '#cero" class="btn-paginacion ' . ($i == $page_cero ? 'activo' : '') . '">' . $i . '</a>';
-                  }
+                // Mostrar las páginas dentro del rango
+                for ($i = $inicio_cero; $i <= $fin_cero; $i++) {
+                  echo '<a href="?page_cero=' . $i . '#cero" class="' . ($i == $page_cero ? 'current' : '') . '">' . $i . '</a>';
+                }
 
-                  // Mostrar el enlace a la siguiente página
-                  if ($page_cero < $total_pages_cero) {
-                    echo '<a href="?page_cero=' . ($page_cero + 1) . '#cero" class="btn-paginacion">Siguiente <i class="fas fa-angle-right"></i></a>';
-                    echo '<a href="?page_cero=' . $total_pages_cero . '#cero" class="btn-paginacion">Último <i class="fas fa-angle-double-right"></i></a>';
-                  }
-                  ?>
-                </div>
+                // Mostrar el enlace a la siguiente página
+                if ($page_cero < $total_pages_cero) {
+                  echo '<a href="?page_cero=' . ($page_cero + 1) . '#cero">Siguiente &gt;</a>';
+                  echo '<a href="?page_cero=' . $total_pages_cero . '#cero">Último &raquo;</a>';
+                }
+                ?>
               </div>
             </div>
           </div>
         </div>
         <style>
-          /* ===== ESTILOS MODERNOS CON COLOR PREDETERMINADO #2b2d7f ===== */
-          
-          body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          .total-row {
+            background-color: #0c675e;
+            color: white;
+          }
+
+          .ultima-existencia {
+            background-color: #0c675e;
+            color: white;
+          }
+
+          /* Hacer la tabla completamente responsive y más ancha */
+          .table-responsive {
+            max-height: 80vh;
+            overflow-x: auto;
+            overflow-y: auto;
+            width: 100%;
             margin: 0;
             padding: 0;
-            min-height: 100vh;
           }
 
-          /* ===== CONTENEDORES PRINCIPALES ===== */
-          .container-fluid {
+          /* Contenedor principal más ancho */
+          .container.box {
             max-width: 100%;
+            width: 100%;
             margin: 0;
-            padding: 20px;
+            padding: 0 10px;
           }
 
-          .container-moderno {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(43, 45, 127, 0.15);
-            overflow: hidden;
-            margin: 20px auto;
-            max-width: 98%;
-          }
-
-          .contenido-principal {
-            padding: 30px;
-          }
-
-          /* ===== BOTONES MODERNOS ===== */
-          .botones-superiores {
-            margin-bottom: 30px;
-          }
-
-          .btn-moderno {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-          }
-
-          .btn-regresar {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white !important;
-          }
-
-          .btn-primary {
-            background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
-            color: white !important;
-          }
-
-          .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-            color: white !important;
-          }
-
-          .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-            color: white !important;
-          }
-
-          .btn-warning {
-            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-            color: #000 !important;
-          }
-
-          .btn-moderno:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-          }
-
-          .gap-3 {
-            gap: 1rem !important;
-          }
-
-          /* ===== HEADER SECTION ===== */
-          .header-principal {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-            background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
-            margin: -30px -30px 40px -30px;
-            color: white;
-          }
-
-          .titulo-contenedor {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-          }
-
-          .icono-titulo {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-          }
-
-          .header-principal h1 {
+          /* Contenedor fluid para usar todo el ancho */
+          .container-fluid {
+            padding: 0;
             margin: 0;
-            font-size: 32px;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-          }
-
-          /* ===== BÚSQUEDA MODERNIZADA ===== */
-          .contenedor-busqueda {
-            background: #f8f9ff;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #e8ebff;
-          }
-
-          .fila-busqueda {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 20px;
-            align-items: end;
-          }
-
-          .campo-busqueda {
-            position: relative;
-            display: flex;
-            align-items: stretch;
-          }
-
-          .input-con-icono {
-            position: relative;
             width: 100%;
-            display: flex;
-            align-items: stretch;
+            max-width: 100%;
           }
 
-          .icono-input {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #2b2d7f;
-            z-index: 2;
-          }
-
-          .input-moderno, .select-moderno {
+          /* Tabla más ancha y responsive */
+          .table {
+            font-size: 11px;
             width: 100%;
-            height: 56px; /* Altura fija para todos los elementos */
-            padding: 15px 15px 15px 45px;
-            border: 2px solid #e8ebff;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-          }
-
-          .input-moderno:focus, .select-moderno:focus {
-            outline: none;
-            border-color: #2b2d7f;
-            box-shadow: 0 0 0 3px rgba(43, 45, 127, 0.1);
-            transform: translateY(-1px);
-          }
-
-          .botones-busqueda {
-            display: flex;
-            gap: 10px;
-            align-items: stretch;
-          }
-
-          .botones-busqueda .btn-moderno {
-            height: 56px; /* Misma altura que los inputs */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 120px;
-          }
-
-          /* ===== TABS MODERNIZADOS ===== */
-          .contenedor-tabs {
-            margin: 30px 0;
-          }
-
-          .tabs-modernos {
-            border: none;
-            background: #f8f9ff;
-            border-radius: 12px;
-            padding: 8px;
-            margin-bottom: 0;
-          }
-
-          .tabs-modernos .nav-link {
-            border: none;
-            border-radius: 8px;
-            padding: 15px 25px;
-            color: #2b2d7f;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0 4px;
-          }
-
-          .tabs-modernos .nav-link:hover {
-            background: rgba(43, 45, 127, 0.1);
-            color: #2b2d7f;
-          }
-
-          .tabs-modernos .nav-link.active {
-            background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);
-          }
-
-          /* ===== LEYENDA MODERNIZADA ===== */
-          .leyenda-contenedor {
-            background: white;
-            border: 2px solid #e8ebff;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-          }
-
-          .leyenda-titulo {
-            font-weight: 600;
-            color: #2b2d7f;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-
-          .leyenda-items {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-          }
-
-          .leyenda-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-          }
-
-          .leyenda-item.peligro {
-            background: #dc3545;
-            color: white;
-          }
-
-          .leyenda-item.advertencia {
-            background: #ffc107;
-            color: #000;
-          }
-
-          .leyenda-item.exitoso {
-            background: #28a745;
-            color: white;
-          }
-
-          /* ===== TABLA MODERNIZADA ===== */
-          .tabla-contenedor {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin: 20px 0;
-            max-height: 70vh;
-            overflow-y: auto;
-          }
-
-          .tabla-moderna {
-            width: 100%;
+            min-width: 1200px;
+            /* Ancho mínimo para evitar compresión excesiva */
             margin: 0;
             border-collapse: collapse;
-            font-size: 14px;
           }
 
-          .tabla-moderna thead tr {
-            background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
-            color: white;
-          }
-
-          .tabla-moderna th {
-            padding: 18px 12px;
+          .table th,
+          .table td {
+            padding: 6px 8px;
             text-align: center;
-            font-weight: 600;
-            font-size: 13px;
-            border: none;
+            vertical-align: middle;
             white-space: nowrap;
+            border: 1px solid #dee2e6;
+          }
+
+          .table th {
+            font-size: 10px;
+            font-weight: bold;
+            background-color: #0c675e !important;
+            color: white !important;
             position: sticky;
             top: 0;
             z-index: 10;
           }
 
-          .tabla-moderna th i {
-            margin-right: 6px;
-            opacity: 0.9;
+          /* Columnas específicas con anchos ajustados */
+          .table th:nth-child(1),
+          /* Código */
+          .table td:nth-child(1) {
+            min-width: 80px;
+            max-width: 100px;
           }
 
-          .tabla-moderna td {
-            padding: 14px 12px;
-            text-align: center;
-            border-bottom: 1px solid #e8ebff;
-            vertical-align: middle;
-          }
-
-          .tabla-moderna tbody tr {
-            transition: all 0.3s ease;
-          }
-
-          .tabla-moderna tbody tr:hover {
-            background: #f8f9ff;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(43, 45, 127, 0.1);
-          }
-
-          .tabla-moderna tbody tr:nth-child(even) {
-            background: #fafbff;
-          }
-
-          .tabla-moderna tbody tr:nth-child(even):hover {
-            background: #f0f2ff;
-          }
-
-          /* Columnas específicas */
-          .tabla-moderna td:nth-child(2) {
-            text-align: left;
-            max-width: 300px;
+          .table th:nth-child(2),
+          /* Medicamento */
+          .table td:nth-child(2) {
+            min-width: 250px;
+            max-width: 350px;
+            white-space: normal;
             word-wrap: break-word;
+            text-align: left;
           }
 
-          .tabla-moderna td:nth-child(11) {
-            text-align: left;
+          .table th:nth-child(3),
+          /* Lote */
+          .table td:nth-child(3) {
+            min-width: 80px;
+            max-width: 120px;
+          }
+
+          .table th:nth-child(4),
+          /* Caducidad */
+          .table td:nth-child(4) {
+            min-width: 90px;
+            max-width: 110px;
+          }
+
+          .table th:nth-child(n+5),
+          /* Otras columnas */
+          .table td:nth-child(n+5) {
+            min-width: 70px;
+            max-width: 100px;
+          }
+
+          .table th:nth-child(11),
+          /* Ubicación */
+          .table td:nth-child(11) {
+            min-width: 120px;
             max-width: 150px;
+            white-space: normal;
             word-wrap: break-word;
+            text-align: left;
           }
 
-          /* ===== PAGINACIÓN MODERNIZADA ===== */
-          .contenedor-paginacion {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-          }
-
-          .paginacion-moderna {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-          }
-
-          .btn-paginacion {
-            padding: 12px 16px;
-            background: white;
-            border: 2px solid #e8ebff;
-            border-radius: 10px;
-            color: #2b2d7f;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-width: 44px;
-            justify-content: center;
-            font-size: 14px;
-          }
-
-          .btn-paginacion:hover {
-            background: #2b2d7f;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);
-            text-decoration: none;
-          }
-
-          .btn-paginacion.activo {
-            background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);
-          }
-
-          .btn-paginacion i {
-            font-size: 12px;
-          }
-
-          /* Ocultar paginación legacy */
-          .pagination {
-            display: none !important;
-          }
-
-          /* Mostrar paginación moderna */
-          .contenedor-paginacion {
-            display: flex !important;
-          }
-
-          /* ===== RESPONSIVE DESIGN ===== */
-          @media (max-width: 1200px) {
-            .fila-busqueda {
-              grid-template-columns: 1fr;
-              gap: 15px;
-            }
-
-            .botones-busqueda {
-              justify-content: center;
-            }
-          }
-
+          /* Responsive para dispositivos móviles */
           @media (max-width: 768px) {
-            .container-fluid {
-              padding: 10px;
+            .table {
+              font-size: 9px;
+              min-width: 900px;
             }
 
-            .contenido-principal {
-              padding: 20px;
+            .table th,
+            .table td {
+              padding: 4px 6px;
             }
 
-            .header-principal {
-              margin: -20px -20px 30px -20px;
-              padding: 20px;
-            }
-
-            .titulo-contenedor {
-              flex-direction: column;
-              gap: 15px;
-            }
-
-            .header-principal h1 {
-              font-size: 24px;
-            }
-
-            .tabla-moderna {
-              font-size: 12px;
-            }
-
-            .tabla-moderna th,
-            .tabla-moderna td {
-              padding: 10px 8px;
-            }
-
-            .leyenda-items {
-              justify-content: center;
-            }
-
-            .botones-superiores .d-flex {
-              flex-direction: column;
-              gap: 10px;
-            }
-
-            .btn-moderno {
-              width: 100%;
-              justify-content: center;
+            .container.box {
+              padding: 0 5px;
             }
           }
 
           @media (max-width: 576px) {
-            .contenedor-busqueda {
-              padding: 20px;
+            .table {
+              font-size: 8px;
+              min-width: 800px;
             }
 
-            .tabla-moderna {
-              font-size: 11px;
-            }
-
-            .tabla-moderna th,
-            .tabla-moderna td {
-              padding: 8px 6px;
-            }
-
-            .icono-titulo {
-              width: 50px;
-              height: 50px;
-              font-size: 20px;
+            .table th,
+            .table td {
+              padding: 3px 4px;
             }
           }
 
-          /* ===== COMPATIBILIDAD LEGACY ===== */
-          .total-row,
-          .ultima-existencia {
-            background-color: #2b2d7f !important;
-            color: white !important;
+          .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
           }
 
-          /* ===== ANIMACIONES ===== */
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
+          .pagination a {
+            padding: 8px 12px;
+            text-decoration: none;
+            background-color: #0c675e;
+            color: white;
+            border-radius: 5px;
+            margin: 2px 3px;
+            font-size: 12px;
+          }
+
+          .pagination a:hover {
+            background-color: #084c47;
+          }
+
+          .pagination .current {
+            background-color: #ff7f50;
+            color: white;
+            font-weight: bold;
+          }
+
+          /* Estilos para los botones de búsqueda */
+          #btnBuscar {
+            background-color: #0c675e;
+            border-color: #0c675e;
+            font-weight: bold;
+          }
+
+          #btnBuscar:hover {
+            background-color: #084c47;
+            border-color: #084c47;
+          }
+
+          #btnLimpiar {
+            background-color: #6c757d;
+            border-color: #6c757d;
+          }
+
+          #btnLimpiar:hover {
+            background-color: #545b62;
+            border-color: #545b62;
+          }
+
+          /* Asegurar que los campos de búsqueda tengan el mismo alto que los botones */
+          #search,
+          #mibuscador,
+          #btnBuscar,
+          #btnLimpiar {
+            height: 38px;
+          }
+
+          /* Contenedor de formulario más responsive */
+          .form-search-container {
+            margin-bottom: 20px;
+          }
+
+          @media (max-width: 768px) {
+
+            .form-search-container .col-md-4,
+            .form-search-container .col-md-2 {
+              margin-bottom: 10px;
             }
-            to {
-              opacity: 1;
-              transform: translateY(0);
+          }
+
+          /* Tabs responsivos */
+          .nav-tabs {
+            margin-top: 10px;
+            border-bottom: 2px solid #0c675e;
+          }
+
+          .nav-tabs .nav-link {
+            color: #0c675e;
+            font-weight: bold;
+          }
+
+          .nav-tabs .nav-link.active {
+            background-color: #0c675e;
+            color: white;
+            border-color: #0c675e;
+          }
+
+          /* Título responsive */
+          .titulo-principal {
+            background-color: #0c675e;
+            margin: 5px auto;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            width: 100%;
+          }
+
+          .titulo-principal h1 {
+            font-size: 24px;
+            margin: 0;
+            color: white;
+          }
+
+          @media (max-width: 768px) {
+            .titulo-principal h1 {
+              font-size: 18px;
             }
           }
 
-          .container-moderno {
-            animation: fadeInUp 0.6s ease-out;
+          @media (max-width: 576px) {
+            .titulo-principal h1 {
+              font-size: 16px;
+            }
           }
 
-          .contenedor-busqueda,
-          .tabla-contenedor {
-            animation: fadeInUp 0.6s ease-out 0.1s both;
+          /* Botones superiores responsivos */
+          .botones-superiores {
+            margin: 10px 0;
+          }
+
+          @media (max-width: 768px) {
+            .botones-superiores .d-flex {
+              flex-direction: column;
+              align-items: stretch;
+            }
+
+            .botones-superiores .btn {
+              margin: 5px 0 !important;
+              width: 100%;
+            }
           }
         </style>
+
+        <script>
+          $(document).ready(function() {
+            $('#mibuscador').select2({
+              placeholder: "Seleccione un medicamento",
+              allowClear: true,
+              width: '100%'
+            });
+          });
+        </script>
 </body>
 
 </html>

@@ -14,7 +14,7 @@ if (!$conexion) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-$filename = 'existencias_farmacia_central_' . date('Ymd_His') . '.xls';
+$filename = 'existencias_quirofano_' . date('Ymd_His') . '.xls';
 
 // Headers para forzar descarga del archivo Excel
 header("Content-Type: application/vnd.ms-excel; charset=utf-8");
@@ -27,7 +27,7 @@ echo "\xEF\xBB\xBF"; // BOM para UTF-8
 
 echo "<table>";
 echo "<tr>";
-echo "<td colspan='9' style='text-align: center; font-size: 20px; font-weight: bold;'>EXISTENCIAS DE FARMACIA CENTRAL</td>";
+echo "<td colspan='9' style='text-align: center; font-size: 20px; font-weight: bold;'>EXISTENCIAS DE QUIROFANO</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td colspan='9' style='text-align: center; font-size: 14px;'>Fecha de exportación: " . date('d/m/Y H:i:s') . "</td>";
@@ -52,7 +52,7 @@ echo "</tr>";
 // Consulta corregida usando la misma lógica que existenciasq.php
 $query = "SELECT ia.*, ea.*, it.item_type_desc 
           FROM item_almacen ia 
-          LEFT JOIN existencias_almacenh ea ON ia.item_id = ea.item_id 
+          LEFT JOIN existencias_almacenq ea ON ia.item_id = ea.item_id 
           LEFT JOIN item_type it ON it.item_type_id = ia.item_type_id 
           WHERE ea.existe_qty IS NOT NULL AND ea.existe_qty > 0
           ORDER BY ia.item_id";
@@ -126,7 +126,7 @@ echo "<tr>";
 echo "<td style='font-size: 12px; color: #666;'>Total de medicamentos: " . ($result ? $result->num_rows : 0) . "</td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td style='font-size: 12px; color: #666;'>Sistema: INEO - Farmacia Central</td>";
+echo "<td style='font-size: 12px; color: #666;'>Sistema: INEO - Quirofano</td>";
 echo "</tr>";
 echo "</table>";
 

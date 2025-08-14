@@ -60,7 +60,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
             border-radius: 15px;
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
             text-decoration: none;
             color: white;
@@ -77,7 +77,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
 
         .menu-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
             text-decoration: none;
             color: white;
         }
@@ -90,15 +90,15 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .menu-icon i {
             font-size: 2.8rem;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .menu-title {
@@ -109,19 +109,45 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
             text-transform: uppercase;
             letter-spacing: 0.3px;
             line-height: 1.2;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         /* Colores específicos para cada módulo */
-        .card-surtir { --card-color: linear-gradient(135deg, #28a745, #20c997); }
-        .card-existencias { --card-color: linear-gradient(135deg, #17a2b8, #6610f2); }
-        .card-kardex { --card-color: linear-gradient(135deg, #6f42c1, #e83e8c); }
-        .card-caducados { --card-color: linear-gradient(135deg, #ffc107, #fd7e14); }
-        .card-devoluciones { --card-color: linear-gradient(135deg, #dc3545, #fd7e14); }
-        .card-confirmar { --card-color: linear-gradient(135deg, #007bff, #6610f2); }
-        .card-pedir { --card-color: linear-gradient(135deg, #fd7e14, #ffc107); }
-        .card-salidas { --card-color: linear-gradient(135deg, #e83e8c, #dc3545); }
-        .card-inventario { --card-color: linear-gradient(135deg, #6c757d, #495057); }
+        .card-surtir {
+            --card-color: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .card-existencias {
+            --card-color: linear-gradient(135deg, #17a2b8, #6610f2);
+        }
+
+        .card-kardex {
+            --card-color: linear-gradient(135deg, #6f42c1, #e83e8c);
+        }
+
+        .card-caducados {
+            --card-color: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .card-devoluciones {
+            --card-color: linear-gradient(135deg, #dc3545, #fd7e14);
+        }
+
+        .card-confirmar {
+            --card-color: linear-gradient(135deg, #007bff, #6610f2);
+        }
+
+        .card-pedir {
+            --card-color: linear-gradient(135deg, #fd7e14, #ffc107);
+        }
+
+        .card-salidas {
+            --card-color: linear-gradient(135deg, #e83e8c, #dc3545);
+        }
+
+        .card-inventario {
+            --card-color: linear-gradient(135deg, #6c757d, #495057);
+        }
 
         /* Mantener estilos originales del AdminLTE */
         .dropdwn {
@@ -223,7 +249,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
 
                 <a href="menu_farmaciacentral.php" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    
+
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b><img src="../imagenes/SI.PNG" height="30" width="120"></b></span>
                 </a>
@@ -233,7 +259,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
             ?>
                 <a href="menu_gerencia.php" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    
+
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b><img src="../imagenes/SI.PNG" height="30" width="120"></b></span>
                 </a>
@@ -280,7 +306,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="../gestion_administrativa/editar_perfil/editar_perfil.php?id_usua=<?php echo $usuario['id_usua']; ?>" class="btn btn-default btn-flat">Perfil</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="../cerrar_sesion.php" class="btn btn-default btn-flat">Cerrar sesión</a>

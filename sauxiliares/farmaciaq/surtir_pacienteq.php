@@ -8,110 +8,157 @@ $id_usua = $usuario['id_usua'];
 
 date_default_timezone_set('America/Guatemala');
 
-// Debug: Mostrar el estado actual de la sesión
-echo "<script>console.log('Estado inicial de sesión medicamentos: " . json_encode($_SESSION['medicamento_seleccionado'] ?? []) . "');</script>";
-
-if (isset($usuario['id_rol'])) {
-    if ($usuario['id_rol'] == 11 || $usuario['id_rol'] == 4 || $usuario['id_rol'] == 5 || $usuario['id_rol'] == 1 || $usuario['id_rol'] == 9) {
-        include "../header_farmaciah.php";
-    } else {
-        session_unset();
-        session_destroy();
-        echo "<script>window.location='../../index.php';</script>";
-        exit();
-    }
+// Incluye el encabezado correspondiente según el rol del usuario
+if ($usuario['id_rol'] == 7) {
+    include "../header_farmaciaq.php";
+} else if ($usuario['id_rol'] == 3) {
+    include "../../enfermera/header_enfermera.php";
+} else if ($usuario['id_rol'] == 4 || $usuario['id_rol'] == 5) {
+    include "../header_farmaciaq.php";
+} else {
+    echo "<script>window.Location='../../index.php';</script>";
+    exit;
 }
 
-// Obtener los pacientes
+// Obtener los pacientes con su atención más reciente
+// Consulta optimizada para tus datos específicos
 $sqlPac = "
     SELECT 
         di.id_atencion, 
-        CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente
+        CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
+        p.Id_exp,
+        di.fecha
     FROM 
         dat_ingreso di
     JOIN 
         paciente p ON di.Id_exp = p.Id_exp
     WHERE 
         di.activo = 'SI'
+        AND di.fecha != '0000-00-00 00:00:00'
+        AND di.fecha IS NOT NULL
+        AND di.fecha = (
+            SELECT MAX(di2.fecha) 
+            FROM dat_ingreso di2 
+            WHERE di2.Id_exp = di.Id_exp 
+            AND di2.activo = 'SI'
+            AND di2.fecha != '0000-00-00 00:00:00'
+            AND di2.fecha IS NOT NULL
+        )
+        AND di.id_atencion = (
+            SELECT MAX(di3.id_atencion)
+            FROM dat_ingreso di3
+            WHERE di3.Id_exp = di.Id_exp 
+            AND di3.activo = 'SI'
+            AND di3.fecha = di.fecha
+        )
+    ORDER BY p.nom_pac, p.papell, p.sapell
 ";
 $resultPac = $conexion->query($sqlPac);
 
+// Agregar manejo de errores para la consulta de pacientes
+if (!$resultPac) {
+    error_log("Error en consulta de pacientes: " . $conexion->error);
+    echo "<div style='color: red; padding: 10px; background: #ffebee; border-radius: 5px; margin: 10px;'>";
+    echo "<strong>Error en consulta de pacientes:</strong> " . htmlspecialchars($conexion->error);
+    echo "</div>";
+}
 
 $pacientesOptions = '';
 if ($resultPac && $resultPac->num_rows > 0) {
     while ($paciente = $resultPac->fetch_assoc()) {
-        // Verificar si el paciente está seleccionado
-        $selected = (isset($_SESSION['paciente_seleccionado']) && $_SESSION['paciente_seleccionado'] == $paciente['id_atencion']) ? 'selected' : '';
-        $pacientesOptions .= "<option value='{$paciente['id_atencion']}' $selected>{$paciente['nombre_paciente']}</option>";
+        // Verificar si el paciente está seleccionado (por POST, GET, o sesión)
+        $selectedPaciente = '';
+        if (isset($_POST['paciente']) && $_POST['paciente'] == $paciente['id_atencion']) {
+            $selectedPaciente = 'selected';
+        } elseif (isset($_GET['paciente']) && $_GET['paciente'] == $paciente['id_atencion']) {
+            $selectedPaciente = 'selected';
+        } elseif (isset($_SESSION['paciente_seleccionado']) && $_SESSION['paciente_seleccionado'] == $paciente['id_atencion']) {
+            $selectedPaciente = 'selected';
+        }
+        $pacientesOptions .= "<option value='{$paciente['id_atencion']}' $selectedPaciente>{$paciente['nombre_paciente']}</option>";
     }
+} else {
+    error_log("No se encontraron pacientes en la consulta");
 }
 
 // Guardar el id_atencion en la sesión cuando se seleccione el paciente
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente'])) {
     $_SESSION['paciente_seleccionado'] = $_POST['paciente'];
+} elseif (isset($_GET['paciente'])) {
+    $_SESSION['paciente_seleccionado'] = $_GET['paciente'];
 }
 
 
 
 $queryMedicamentos = "SELECT DISTINCT 
-    ea.item_id, 
+    ia.item_id, 
     CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
-    FROM existencias_almacenh ea 
-    JOIN item_almacen ia ON ea.item_id = ia.item_id 
-    WHERE ea.existe_qty > 0 AND ia.activo = 'SI'
+    FROM item_almacen ia 
+    WHERE EXISTS (
+        SELECT 1 FROM existencias_almacenq ea 
+        WHERE ea.item_id = ia.item_id AND ea.existe_qty > 0
+    )
     ORDER BY ia.item_name
 ";
 
 $resultMedicamentos = $conexion->query($queryMedicamentos);
 
-// Debug para ver si hay medicamentos
-if (!$resultMedicamentos) {
-    echo "<script>console.log('Error en consulta medicamentos: " . addslashes($conexion->error) . "');</script>";
-} else {
-    echo "<script>console.log('Medicamentos encontrados: " . $resultMedicamentos->num_rows . "');</script>";
+$medicamentosOptions = '';
+$medicamentoSeleccionado = '';
+
+// Determinar qué medicamento está seleccionado
+if (isset($_POST['medicamento']) && !empty($_POST['medicamento'])) {
+    $medicamentoSeleccionado = $_POST['medicamento'];
+} elseif (isset($_GET['medicamento']) && !empty($_GET['medicamento'])) {
+    $medicamentoSeleccionado = $_GET['medicamento'];
 }
 
-$medicamentosOptions = '';
 if ($resultMedicamentos && $resultMedicamentos->num_rows > 0) {
     while ($medicamento = $resultMedicamentos->fetch_assoc()) {
-        $selected = (isset($_POST['medicamento']) && $_POST['medicamento'] == $medicamento['item_id']) ? 'selected' : '';
-        $medicamentosOptions .= "<option value='{$medicamento['item_id']}' $selected>{$medicamento['item_name']}</option>";
+        // Verificar si este medicamento es el seleccionado
+        $selectedMedicamento = '';
+        if ($medicamentoSeleccionado == $medicamento['item_id']) {
+            $selectedMedicamento = 'selected';
+        }
+        $medicamentosOptions .= "<option value='{$medicamento['item_id']}' $selectedMedicamento>{$medicamento['item_name']}</option>";
     }
 }
 
 // Obtener los lotes y la suma total de existencias para el medicamento seleccionado
 $lotesOptions = '';
 $totalExistencias = 0; // Variable para el total de existencias
+$itemIdSeleccionado = null;
+
+// Determinar qué medicamento está seleccionado
 if (isset($_POST['medicamento']) && !empty($_POST['medicamento'])) {
-    $itemId = intval($_POST['medicamento']);
+    $itemIdSeleccionado = intval($_POST['medicamento']);
+} elseif (isset($_GET['medicamento']) && !empty($_GET['medicamento'])) {
+    $itemIdSeleccionado = intval($_GET['medicamento']);
+}
 
-    // Debug
-    echo "<script>console.log('Medicamento seleccionado ID: $itemId');</script>";
-
+if ($itemIdSeleccionado) {
     // Primero, obtener el total de existencias de este medicamento
     $sqlTotalExistencias = "
         SELECT SUM(ea.existe_qty) AS total_existencias
-        FROM existencias_almacenh ea
+        FROM existencias_almacenq ea
         WHERE ea.item_id = ? AND ea.existe_qty > 0
     ";
     $stmtTotal = $conexion->prepare($sqlTotalExistencias);
-    $stmtTotal->bind_param('i', $itemId);
+    $stmtTotal->bind_param('i', $itemIdSeleccionado);
     $stmtTotal->execute();
     $resultTotalExistencias = $stmtTotal->get_result();
     if ($resultTotalExistencias && $resultTotalExistencias->num_rows > 0) {
         $row = $resultTotalExistencias->fetch_assoc();
-        $totalExistencias = $row['total_existencias'] ?? 0;
+        $totalExistencias = $row['total_existencias'] ? $row['total_existencias'] : 0;
     }
     $stmtTotal->close();
-
-    echo "<script>console.log('Total existencias: $totalExistencias');</script>";
 
     // Ahora obtenemos los lotes disponibles para este medicamento
     $sqlLotes = "
     SELECT 
         ea.existe_lote, ea.existe_caducidad, ea.existe_qty, ea.existe_id
     FROM 
-        existencias_almacenh ea
+        existencias_almacenq ea
     WHERE 
         ea.item_id = ? AND ea.existe_qty > 0
     ORDER BY 
@@ -119,55 +166,91 @@ if (isset($_POST['medicamento']) && !empty($_POST['medicamento'])) {
     ";
 
     $stmt = $conexion->prepare($sqlLotes);
-    if (!$stmt) {
-        echo "<script>console.log('Error preparando consulta lotes: " . $conexion->error . "');</script>";
-    } else {
-        $stmt->bind_param('i', $itemId);
-        $stmt->execute();
-        $resultLotes = $stmt->get_result();
+    $stmt->bind_param('i', $itemIdSeleccionado);
+    $stmt->execute();
+    $resultLotes = $stmt->get_result();
 
-        echo "<script>console.log('Lotes encontrados: " . $resultLotes->num_rows . "');</script>";
-
-        // Comprobar si hay resultados
-        $lotesOptions = '';
-        if ($resultLotes && $resultLotes->num_rows > 0) {
-            while ($lote = $resultLotes->fetch_assoc()) {
-                $lotesOptions .= "<option value='{$lote['existe_id']}|{$lote['existe_lote']}|$itemId' data-caducidad='{$lote['existe_caducidad']}' data-cantidad='{$lote['existe_qty']}'>
-        {$lote['existe_lote']} / {$lote['existe_caducidad']} / {$lote['existe_qty']}
-        </option>";
-            }
-        } else {
-            $lotesOptions .= "<option value='' disabled>No hay lotes disponibles para este medicamento</option>";
+    // Comprobar si hay resultados
+    if ($resultLotes && $resultLotes->num_rows > 0) {
+        while ($lote = $resultLotes->fetch_assoc()) {
+            $lotesOptions .= "<option value='{$lote['existe_id']}|{$lote['existe_lote']}|$itemIdSeleccionado' data-caducidad='{$lote['existe_caducidad']}' data-cantidad='{$lote['existe_qty']}' data-stock='{$lote['existe_qty']}'>
+    {$lote['existe_lote']} / {$lote['existe_caducidad']} / Stock: {$lote['existe_qty']}
+    </option>";
         }
-
-        // Cerrar la declaración
-        $stmt->close();
+    } else {
+        $lotesOptions .= "<option value='' disabled>No hay lotes disponibles</option>";
     }
+
+    // Cerrar la declaración
+    $stmt->close();
 }
 
 // Captura del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente']) && isset($_POST['medicamento']) && isset($_POST['lote']) && isset($_POST['cantidad'])) {
     list($existeId, $nombreLote, $itemId) = explode('|', $_POST['lote']);
     $itemId = intval($itemId);
-    // Consulta para obtener el id_atencion
-    $sqlAtencion = "SELECT id_atencion FROM dat_ingreso WHERE Id_exp = (SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?)";
-    $stmtAtencion = $conexion->prepare($sqlAtencion);
-    $stmtAtencion->bind_param('i', $_POST['paciente']);
-    $stmtAtencion->execute();
-    $stmtAtencion->bind_result($idAtencion);
-    $stmtAtencion->fetch();
-    $stmtAtencion->close();
+    
+    // Usar directamente el id_atencion del formulario (ya viene de la consulta principal filtrada)
+    $idAtencion = intval($_POST['paciente']);
+    
+    // Validar que el id_atencion es mayor que 0
+    if ($idAtencion <= 0) {
+        error_log("ID de atención inválido recibido: " . $_POST['paciente']);
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("ID de atención inválido: " . $_POST['paciente']));
+        exit();
+    }
+    
+    // Validar que el id_atencion existe en la base de datos
+    $sqlValidarAtencion = "SELECT id_atencion, Id_exp, fecha FROM dat_ingreso 
+                          WHERE id_atencion = ? AND activo = 'SI'";
+    $stmtValidar = $conexion->prepare($sqlValidarAtencion);
+    if (!$stmtValidar) {
+        error_log("Error al preparar validación de id_atencion: " . $conexion->error);
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("Error al validar atención"));
+        exit();
+    }
+    $stmtValidar->bind_param('i', $idAtencion);
+    if (!$stmtValidar->execute()) {
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("Error al validar atención"));
+        exit();
+    }
+    
+    $resultValidar = $stmtValidar->get_result();
+    if ($resultValidar->num_rows == 0) {
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("ID de atención no encontrado: " . $idAtencion));
+        exit();
+    }
+    
+    // Obtener datos de la atención
+    $datosAtencion = $resultValidar->fetch_assoc();
+    error_log("Datos de atención encontrados: " . print_r($datosAtencion, true));
+    $stmtValidar->close();
 
     // Guardar el id_atencion en la sesión
     $_SESSION['id_atencion'] = $idAtencion;
 
 
-    $sqlPacienteNombre = "SELECT CONCAT(nom_pac, ' ', papell, ' ', sapell) AS nombre_paciente FROM paciente WHERE Id_exp = (SELECT Id_exp FROM dat_ingreso WHERE id_atencion = ?)";
+    $sqlPacienteNombre = "SELECT CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente 
+                          FROM paciente p 
+                          JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
+                          WHERE di.id_atencion = ?";
     $stmtPaciente = $conexion->prepare($sqlPacienteNombre);
+    if (!$stmtPaciente) {
+        error_log("Error al preparar consulta de nombre del paciente: " . $conexion->error);
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("Error al preparar consulta del paciente"));
+        exit();
+    }
     $stmtPaciente->bind_param('i', $_POST['paciente']);
-    $stmtPaciente->execute();
+    if (!$stmtPaciente->execute()) {
+        error_log("Error al ejecutar consulta de nombre del paciente: " . $stmtPaciente->error);
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . urlencode("Error al ejecutar consulta del paciente"));
+        exit();
+    }
     $stmtPaciente->bind_result($nombrePaciente);
-    $stmtPaciente->fetch();
+    if (!$stmtPaciente->fetch()) {
+        $nombrePaciente = ""; // No se encontró el paciente
+        error_log("No se encontró nombre del paciente para id_atencion: " . $_POST['paciente']);
+    }
     $stmtPaciente->close();
 
     // Obtener el nombre y precio del medicamento
@@ -183,139 +266,195 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente']) && isset(
     // Verificar si el botón "Agregar" ha sido presionado
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar'])) {
         // Captura del formulario
+        $cantidadAgregar = intval($_POST['cantidad']);
+
+        // Validar que la cantidad sea mayor a 0
+        if ($cantidadAgregar <= 0) {
+            header("Location: surtir_pacienteq.php?paciente=" . $_POST['paciente'] . "&medicamento=" . $_POST['medicamento'] . "&error=cantidad_invalida");
+            exit();
+        }
 
         // Si la variable de sesión no está inicializada, la creamos como un array vacío
         if (!isset($_SESSION['medicamento_seleccionado'])) {
             $_SESSION['medicamento_seleccionado'] = [];
         }
 
-        // Agregar el nuevo registro al array de la sesión
-        $nuevoMedicamento = [
+        // Verificar stock disponible del lote
+        $sqlStockLote = "SELECT existe_qty FROM existencias_almacenq WHERE existe_id = ?";
+        $stmtStock = $conexion->prepare($sqlStockLote);
+        $stmtStock->bind_param('i', $existeId);
+        $stmtStock->execute();
+        $stmtStock->bind_result($stockDisponible);
+        $stmtStock->fetch();
+        $stmtStock->close();
+
+        // Calcular la cantidad ya agregada de este lote específico en el carrito
+        $cantidadEnCarrito = 0;
+        foreach ($_SESSION['medicamento_seleccionado'] as $item) {
+            if ($item['existe_id'] == $existeId) {
+                $cantidadEnCarrito += intval($item['cantidad']);
+            }
+        }
+
+        // Calcular la cantidad total que se tendría después de agregar
+        $cantidadTotal = $cantidadEnCarrito + $cantidadAgregar;
+
+        // Validar si hay suficiente stock
+        if ($cantidadTotal > $stockDisponible) {
+            $cantidadPermitida = $stockDisponible - $cantidadEnCarrito;
+            // Redirección con mensaje de error
+            header("Location: surtir_pacienteq.php?paciente=" . $_POST['paciente'] . "&medicamento=" . $_POST['medicamento'] . "&error=stock&stock_disponible=$stockDisponible&en_carrito=$cantidadEnCarrito&cantidad_permitida=$cantidadPermitida&cantidad_solicitada=$cantidadAgregar");
+            exit();
+        }
+
+        // Si la validación pasa, agregar el nuevo registro al array de la sesión
+        $nuevoRegistro = [
             'paciente' => $nombrePaciente,
             'item_id' => $itemId,
             'medicamento' => $nombreMedicamento,
             'lote' => $nombreLote,
-            'cantidad' => $_POST['cantidad'],
+            'cantidad' => $cantidadAgregar,
             'existe_id' => $existeId,
             'id_atencion' => $idAtencion,
             'precio' => $precioMedicamento
         ];
         
-        $_SESSION['medicamento_seleccionado'][] = $nuevoMedicamento;
+        $_SESSION['medicamento_seleccionado'][] = $nuevoRegistro;
 
-        // Debug para verificar que se guardó correctamente
-        echo "<script>console.log('Medicamento agregado: " . addslashes(json_encode($nuevoMedicamento)) . "');</script>";
-        echo "<script>console.log('Total medicamentos en sesión: " . count($_SESSION['medicamento_seleccionado']) . "');</script>";
-
-        echo "<script>
-      alert('Medicamento agregado correctamente a la lista.');
-      window.location.href = 'surtir_pacienteq.php';
-    </script>";
+        // Redirección directa con PHP
+        header("Location: surtir_pacienteq.php?paciente=" . $_POST['paciente'] . "&medicamento=" . $_POST['medicamento'] . "&success=1");
         exit();
     }
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_index']) && !isset($_POST['enviar_medicamentos'])) {
+
+// Manejar eliminación de items del carrito
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_index'])) {
     $index = intval($_POST['eliminar_index']); // Asegurarse de que sea un número entero
     if (isset($_SESSION['medicamento_seleccionado'][$index])) {
         unset($_SESSION['medicamento_seleccionado'][$index]); // Eliminar el registro
         $_SESSION['medicamento_seleccionado'] = array_values($_SESSION['medicamento_seleccionado']); // Reindexar array
-        echo "<script>alert('Medicamento eliminado de la lista.');</script>";
+        
+        // Redireccionar con mensaje de eliminación
+        header("Location: surtir_pacienteq.php?eliminated=1");
+        exit();
     }
 }
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'])) {
     $fechaActual = date('Y-m-d H:i:s');
 
-    // Debug para verificar el contenido de la sesión
-    echo "<script>console.log('Enviando medicamentos...');</script>";
-    echo "<script>console.log('Sesión medicamento_seleccionado: " . json_encode($_SESSION['medicamento_seleccionado'] ?? []) . "');</script>";
-
     if (!isset($_SESSION['medicamento_seleccionado']) || empty($_SESSION['medicamento_seleccionado'])) {
-        echo "<script>alert('No hay registros en la memoria para procesar.\\nAsegúrate de agregar medicamentos a la lista antes de enviar.'); 
-            window.location.href = 'surtir_pacienteq.php';</script>";
+        header("Location: surtir_pacienteq.php?envio=empty");
         exit();
     }
+
     // Iniciar transacción
-    $conexion->begin_transaction();
+    $conexion->autocommit(FALSE);
 
     try {
         foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
-            $paciente = $medicamento['paciente'];
-            $nombreMedicamento = $medicamento['medicamento'];
-            $loteNombre = $medicamento['lote'];
-            $cantidadLote = $medicamento['cantidad'];
-            $existeId = $medicamento['existe_id'];
-            $Id_Atencion = $medicamento['id_atencion'];
-            $itemId = $medicamento['item_id'];
-            $sqlMedicamentoNombre = "SELECT  CONCAT(item_name, ', ', item_grams) AS item_name FROM item_almacen WHERE item_id = ?";
+            $paciente = isset($medicamento['paciente']) ? $medicamento['paciente'] : '';
+            $nombreMedicamento = isset($medicamento['medicamento']) ? $medicamento['medicamento'] : '';
+            $loteNombre = isset($medicamento['lote']) ? $medicamento['lote'] : '';
+            $cantidadLote = isset($medicamento['cantidad']) ? intval($medicamento['cantidad']) : 0;
+            $existeId = isset($medicamento['existe_id']) ? intval($medicamento['existe_id']) : 0;
+            $Id_Atencion = isset($medicamento['id_atencion']) ? intval($medicamento['id_atencion']) : 0;
+            $itemId = isset($medicamento['item_id']) ? intval($medicamento['item_id']) : 0;
+
+            // Validación inicial: verificar que todos los datos estén presentes
+            $erroresDetallados = [];
+            if (empty($paciente)) $erroresDetallados[] = "nombre del paciente vacío";
+            if (empty($nombreMedicamento)) $erroresDetallados[] = "nombre del medicamento vacío";
+            if (empty($loteNombre)) $erroresDetallados[] = "nombre del lote vacío";
+            if ($cantidadLote <= 0) $erroresDetallados[] = "cantidad inválida ($cantidadLote)";
+            if ($existeId <= 0) $erroresDetallados[] = "ID de existencia inválido ($existeId)";
+            if ($Id_Atencion <= 0) $erroresDetallados[] = "ID de atención inválido ($Id_Atencion)";
+            if ($itemId <= 0) $erroresDetallados[] = "ID de item inválido ($itemId)";
+            
+            if (!empty($erroresDetallados)) {
+                $detalleError = "Datos incompletos en el registro $index: " . implode(", ", $erroresDetallados);
+                error_log("Error de validación: " . $detalleError);
+                throw new Exception($detalleError);
+            }
+
+            $sqlMedicamentoNombre = "SELECT CONCAT(item_name, ', ', item_grams) AS item_name FROM item_almacen WHERE item_id = ?";
             $stmtMedicamento = $conexion->prepare($sqlMedicamentoNombre);
+            if (!$stmtMedicamento) {
+                throw new Exception("Error al preparar consulta en tabla ITEM_ALMACEN: " . $conexion->error);
+            }
             $stmtMedicamento->bind_param('i', $itemId);
-            $stmtMedicamento->execute();
+            if (!$stmtMedicamento->execute()) {
+                throw new Exception("Error al ejecutar consulta en tabla ITEM_ALMACEN: " . $stmtMedicamento->error);
+            }
             $stmtMedicamento->bind_result($nombreMedicamento);
-            $stmtMedicamento->fetch();
+            if (!$stmtMedicamento->fetch()) {
+                throw new Exception("No se encontró el medicamento con ID: $itemId en tabla ITEM_ALMACEN");
+            }
             $stmtMedicamento->close();
-
-
-
 
             $queryItemAlmacenn = "
             SELECT 
                 item_name, 
-                item_grams,
                 item_price 
             FROM 
                 item_almacen 
            WHERE item_id = ?";
 
             $stmt = $conexion->prepare($queryItemAlmacenn);
+            if (!$stmt) {
+                throw new Exception("Error al preparar consulta de precios en tabla ITEM_ALMACEN: " . $conexion->error);
+            }
             $stmt->bind_param("i", $itemId);
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                throw new Exception("Error al ejecutar consulta de precios en tabla ITEM_ALMACEN: " . $stmt->error);
+            }
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 $itemData = $result->fetch_assoc();
-                $itemName = $itemData['item_name'].', '.$itemData['item_grams'];
+                $itemName = $itemData['item_name'];
                 $salidaCostsu = $itemData['item_price'];
             } else {
-                exit("Error: No se encontró el ítem con ID $itemId.");
+                throw new Exception("No se encontró el ítem con ID $itemId en tabla ITEM_ALMACEN");
             }
+            $stmt->close();
 
-
-            // *** 2. Obtener existencias actuales del lote desde existencias_almacenh ***
-            $selectExistenciasQuery = "SELECT existe_qty, existe_caducidad, existe_salidas FROM existencias_almacenh 
+            // *** 2. Obtener existencias actuales del lote desde existencias_almacenq ***
+            $selectExistenciasQuery = "SELECT existe_qty, existe_caducidad, existe_salidas FROM existencias_almacenq 
             WHERE existe_id = ?";
             $stmtSelect = $conexion->prepare($selectExistenciasQuery);
-            $stmtSelect->bind_param('i', $existeId);
-            $stmtSelect->execute();
             if (!$stmtSelect) {
-                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
+                throw new Exception("Error al preparar consulta en tabla EXISTENCIAS_ALMACENQ: " . $conexion->error);
+            }
+            $stmtSelect->bind_param('i', $existeId);
+            if (!$stmtSelect->execute()) {
+                throw new Exception("Error al ejecutar consulta en tabla EXISTENCIAS_ALMACENQ: " . $stmtSelect->error);
             }
             $stmtSelect->bind_result($existeQty, $caducidad, $existeSalidas);
-            $stmtSelect->fetch();
+            if (!$stmtSelect->fetch()) {
+                throw new Exception("No se encontraron existencias para existe_id: $existeId en tabla EXISTENCIAS_ALMACENQ");
+            }
             $stmtSelect->close();
-
 
             // *** 4. Calcular nuevos valores para existencias ***
             $nuevaExistenciaQty = $existeQty - $cantidadLote;
             $nuevaExistenciaSalidas = $existeSalidas + $cantidadLote;
 
-
             // Validar si hay suficiente stock
             if ($existeQty < $cantidadLote) {
-                echo "<script>
-                alert('Error: El lote \"$loteNombre\" no tiene suficiente stock. Disponible: $existeQty, requerido: $cantidadLote.');
-                window.location.href = 'surtir_pacienteq.php';
-                </script>";
-                exit;
+                throw new Exception("STOCK INSUFICIENTE en tabla EXISTENCIAS_ALMACENQ - El lote \"$loteNombre\" no tiene suficiente stock. Disponible: $existeQty, requerido: $cantidadLote");
+            }
+
+            // Validar que la nueva cantidad no sea negativa
+            if ($nuevaExistenciaQty < 0) {
+                throw new Exception("ERROR DE VALIDACIÓN en tabla EXISTENCIAS_ALMACENQ - La cantidad resultante sería negativa para el lote \"$loteNombre\"");
             }
 
 
 
-            // *** 6. Insertar en kardex_almacenh ***
+            // *** 6. Insertar en kardex_almacenq ***
             $insert_kardex = "
-               INSERT INTO kardex_almacenh (
+               INSERT INTO kardex_almacenq (
                    kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
                    kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_destino, id_surte
                ) 
@@ -323,21 +462,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
            ";
             $stmt_kardex = $conexion->prepare($insert_kardex);
             if (!$stmt_kardex) {
-                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
+                throw new Exception("Error en la preparación de consulta INSERT en tabla KARDEX_ALMACENQ: " . $conexion->error);
             }
             $stmt_kardex->bind_param('issii', $itemId, $loteNombre, $caducidad, $cantidadLote, $id_usua);
             if (!$stmt_kardex->execute()) {
-                throw new Exception("Error al insertar en kardex_almacenh: " . $stmt_kardex->error);
+                throw new Exception("Error al insertar registro en tabla KARDEX_ALMACENQ: " . $stmt_kardex->error);
             }
             $stmt_kardex->close();
 
-                
-            // *** 7. Insertar en salidas_almacenh ***
-            
-             $salio = "QUIROFANO";
-                
+
+            // *** 7. Insertar en salidas_almacenq ***
             $queryInsercion = "
-                INSERT INTO salidas_almacenh (
+                INSERT INTO salidas_almacenq (
                     item_id, 
                     item_name, 
                     salida_fecha, 
@@ -347,17 +483,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     salida_costsu, 
                     id_usua, 
                     id_atencion, 
-                    solicita, 
-                    fecha_solicitud,
-                    salio
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+                    solicita
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
              ";
             $stmtInsertSalida = $conexion->prepare($queryInsercion);
             if (!$stmtInsertSalida) {
-                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
+                throw new Exception("Error en la preparación de consulta INSERT en tabla SALIDAS_ALMACENQ: " . $conexion->error);
             }
             $stmtInsertSalida->bind_param(
-                "issssdiisss",
+                "issssdiii",
                 $itemId,
                 $nombreMedicamento,
                 $fechaActual,
@@ -366,13 +500,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 $cantidadLote,
                 $salidaCostsu,
                 $id_usua,
-                $Id_Atencion,
-                $fechaActual,
-                $salio
+                $Id_Atencion
             );
 
             if (!$stmtInsertSalida->execute()) {
-                throw new Exception("Error al insertar en salidas_almacenh: " . $stmtInsertSalida->error);
+                throw new Exception("Error al insertar registro en tabla SALIDAS_ALMACENQ: " . $stmtInsertSalida->error);
             }
             $salidaId = $stmtInsertSalida->insert_id; // Obtener el ID generado automáticamente
             $stmtInsertSalida->close();
@@ -396,7 +528,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
             $stmtInsertDatCtapac = $conexion->prepare($insertDatCtapacQuery);
             if (!$stmtInsertDatCtapac) {
-                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
+                throw new Exception("Error en la preparación de consulta INSERT en tabla DAT_CTAPAC: " . $conexion->error);
             }
             $prodServ = 'PC';
             $ctaActivo = 'SI';
@@ -417,7 +549,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             );
 
             if (!$stmtInsertDatCtapac->execute()) {
-                throw new Exception("Error al insertar en dat_ctapac: " . $stmtInsertDatCtapac->error);
+                throw new Exception("Error al insertar registro en tabla DAT_CTAPAC: " . $stmtInsertDatCtapac->error);
             }
             $stmtInsertDatCtapac->close();
 
@@ -429,31 +561,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
 
 
-            // *** 5. Actualizar existencias en la tabla existencias_almacenh ***
-            $updateExistenciasQuery = "UPDATE existencias_almacenh SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? WHERE existe_id = ?";
+            // *** 5. Actualizar existencias en la tabla existencias_almacenq ***
+            $updateExistenciasQuery = "UPDATE existencias_almacenq SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? WHERE existe_id = ?";
             $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
             if (!$stmtUpdateExistencias) {
-                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
+                throw new Exception("Error en la preparación de consulta UPDATE en tabla EXISTENCIAS_ALMACENQ: " . $conexion->error);
             }
             $stmtUpdateExistencias->bind_param('isii', $nuevaExistenciaQty, $fechaActual, $nuevaExistenciaSalidas, $existeId);
             if (!$stmtUpdateExistencias->execute()) {
-                throw new Exception("Error al actualizar las existencias: " . $stmtUpdateExistencias->error);
+                throw new Exception("Error al actualizar registro en tabla EXISTENCIAS_ALMACENQ: " . $stmtUpdateExistencias->error);
             }
             $stmtUpdateExistencias->close();
         }
 
-        // Confirmar la transacción
+        // Si llegamos hasta aquí, todas las operaciones fueron exitosas
         $conexion->commit();
 
-
-        // Limpiar la sesión (opcional)
+        // Limpiar la memoria
         unset($_SESSION['medicamento_seleccionado']);
 
-
-        echo "<script>alert('Los medicamentos han sido registrados correctamente.'); window.location.href = 'surtir_pacienteq.php';</script>";
+        // Redirección directa con PHP
+        header("Location: surtir_pacienteq.php?envio=success");
+        exit();
     } catch (Exception $e) {
-        $conexion->rollback(); // Revertir cambios
-        echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href = 'surtir_pacienteq.php';</script>";
+        // Si hay algún error, hacer rollback
+        $conexion->rollback();
+
+        // Redirección con mensaje de error
+        $errorMessage = urlencode($e->getMessage());
+        header("Location: surtir_pacienteq.php?envio=error&mensaje=" . $errorMessage);
+        exit();
+    } finally {
+        // Restaurar autocommit
+        $conexion->autocommit(TRUE);
     }
 }
 
@@ -469,21 +609,190 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
-    <a href="../../template/menu_farmaciahosp.php"
-        style='color: white; margin-left: 30px; margin-bottom: 20px; background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%); 
-          border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; display: inline-block; text-decoration: none;
-          box-shadow: 0 2px 8px rgba(43, 45, 127, 0.3); transition: all 0.3s ease;'>
-        ← Regresar
-    </a>
+    <!-- Botón superior con mismo margen arriba y abajo -->
+    <div class="d-flex justify-content-start" style="margin: 20px 0; margin-left: 20px;">
+        <div class="d-flex">
+            <!-- Botón Regresar -->
+            <a href="../../template/menu_farmaciaq.php"
+                style="color: white; background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
+            border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; display: inline-block; 
+            text-decoration: none; box-shadow: 0 2px 8px rgba(43, 45, 127, 0.3); 
+            transition: all 0.3s ease; margin-right: 10px;">
+                ← Regresar
+            </a>
+        </div>
+    </div>
+
+
     <div class="form-container">
         <div class="thead" style="background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%); margin: 5px auto; padding: 15px 25px; color: white; width: fit-content; text-align: center; border-radius: 15px; box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);">
             <h1 style="font-size: 28px; margin: 0; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"><i class="fas fa-pills"></i> SURTIR PACIENTE</h1>
         </div>
         <br>
+
+        <?php if (isset($_GET['success']) && $_GET['success'] == '1'): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '<i class="fas fa-check-circle" style="color: #28a745;"></i> Agregado correctamente',
+                        html: '<div style="text-align: center; font-size: 16px;">' +
+                            '<i class="fas fa-pills" style="color: #2b2d7f; font-size: 24px; margin-bottom: 10px;"></i><br>' +
+                            'El medicamento se ha agregado al carrito exitosamente.' +
+                            '</div>',
+                        icon: 'success',
+                        timer: 7000,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    });
+                });
+            </script>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['eliminated']) && $_GET['eliminated'] == '1'): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '<i class="fas fa-trash-alt" style="color: #dc3545;"></i> Eliminado correctamente',
+                        html: '<div style="text-align: center; font-size: 16px;">' +
+                            '<i class="fas fa-trash" style="color: #dc3545; font-size: 24px; margin-bottom: 10px;"></i><br>' +
+                            'El medicamento se ha eliminado del carrito exitosamente.' +
+                            '</div>',
+                        icon: 'success',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    });
+                });
+            </script>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error']) && $_GET['error'] == 'stock'): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '⚠️ Stock insuficiente',
+                        html: '<div style="text-align: left; font-size: 16px;">' +
+                            '<p style="margin-bottom: 15px;">No puedes agregar <strong><?= htmlspecialchars($_GET['cantidad_solicitada'] ?? '0') ?></strong> unidades.</p>' +
+                            '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">' +
+                            '<p style="margin: 5px 0;"><i class="fas fa-boxes" style="color: #28a745; margin-right: 8px;"></i><strong>Stock disponible:</strong> <?= htmlspecialchars($_GET['stock_disponible'] ?? '0') ?></p>' +
+                            '<p style="margin: 5px 0;"><i class="fas fa-shopping-cart" style="color: #ffc107; margin-right: 8px;"></i><strong>Ya en carrito:</strong> <?= htmlspecialchars($_GET['en_carrito'] ?? '0') ?></p>' +
+                            '<p style="margin: 5px 0;"><i class="fas fa-check-circle" style="color: #17a2b8; margin-right: 8px;"></i><strong>Cantidad máxima permitida:</strong> <?= htmlspecialchars($_GET['cantidad_permitida'] ?? '0') ?></p>' +
+                            '</div>' +
+                            '</div>',
+                        icon: 'error',
+                        timer: 7000,
+                        showConfirmButton: true,
+                        confirmButtonText: '<i class="fas fa-check"></i> Entendido',
+                        timerProgressBar: true,
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                });
+            </script>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error']) && $_GET['error'] == 'cantidad_invalida'): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '<i class="fas fa-exclamation-triangle" style="color: #ffc107;"></i> Cantidad inválida',
+                        html: '<div style="text-align: center; font-size: 16px;">' +
+                            '<i class="fas fa-calculator" style="color: #dc3545; font-size: 24px; margin-bottom: 10px;"></i><br>' +
+                            'La cantidad debe ser mayor a <strong>0</strong>.<br>' +
+                            '<small style="color: #6c757d;">Por favor, ingresa una cantidad válida.</small>' +
+                            '</div>',
+                        icon: 'warning',
+                        timer: 5000,
+                        showConfirmButton: true,
+                        confirmButtonText: '<i class="fas fa-check"></i> Entendido',
+                        timerProgressBar: true,
+                        customClass: {
+                            confirmButton: 'btn btn-warning'
+                        }
+                    });
+                });
+            </script>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['envio'])): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    <?php if ($_GET['envio'] == 'success'): ?>
+                        Swal.fire({
+                            title: '<i class="fas fa-rocket" style="color: #28a745;"></i> ¡Éxito!',
+                            html: '<div style="text-align: center; font-size: 16px;">' +
+                                '<i class="fas fa-check-double" style="color: #28a745; font-size: 24px; margin-bottom: 10px;"></i><br>' +
+                                'Todos los medicamentos se han registrado correctamente.' +
+                                '</div>',
+                            icon: 'success',
+                            timer: 7000,
+                            showConfirmButton: true,
+                            confirmButtonText: '<i class="fas fa-thumbs-up"></i> Perfecto',
+                            timerProgressBar: true,
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                    <?php elseif ($_GET['envio'] == 'error'): ?>
+                        <?php 
+                            $mensajeError = isset($_GET['mensaje']) ? htmlspecialchars(urldecode($_GET['mensaje'])) : 'Error desconocido';
+                            // Detectar y resaltar el nombre de la tabla
+                            $tablas = ['ITEM_ALMACEN', 'EXISTENCIAS_ALMACENQ', 'KARDEX_ALMACENQ', 'SALIDAS_ALMACENQ', 'DAT_CTAPAC'];
+                            $mensajeFormateado = $mensajeError;
+                            foreach ($tablas as $tabla) {
+                                $mensajeFormateado = str_replace($tabla, '<span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace;">' . $tabla . '</span>', $mensajeFormateado);
+                            }
+                        ?>
+                        Swal.fire({
+                            title: '<i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i> Error en Base de Datos',
+                            html: '<div style="text-align: left; font-size: 15px; background: #fff5f5; padding: 20px; border-radius: 8px; border: 1px solid #fed7d7;">' +
+                                '<div style="margin-bottom: 15px; text-align: center;">' +
+                                '<i class="fas fa-database" style="color: #dc3545; font-size: 32px; margin-bottom: 10px;"></i>' +
+                                '</div>' +
+                                '<?= addslashes($mensajeFormateado) ?>' +
+                                '<div style="margin-top: 15px; padding: 10px; background: #f7fafc; border-radius: 6px; border-left: 4px solid #4299e1;">' +
+                                '<p style="margin: 0; font-size: 13px; color: #2d3748;"><i class="fas fa-info-circle" style="color: #4299e1; margin-right: 5px;"></i><strong>Recomendación:</strong> Verifica la integridad de los datos y contacta al administrador si el problema persiste.</p>' +
+                                '</div>' +
+                                '</div>',
+                            icon: 'error',
+                            timer: 10000,
+                            showConfirmButton: true,
+                            confirmButtonText: '<i class="fas fa-redo"></i> Reintentar',
+                            timerProgressBar: true,
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                    <?php elseif ($_GET['envio'] == 'empty'): ?>
+                        Swal.fire({
+                            title: '<i class="fas fa-shopping-cart" style="color: #ffc107;"></i> Carrito vacío',
+                            html: '<div style="text-align: center; font-size: 16px;">' +
+                                '<i class="fas fa-inbox" style="color: #ffc107; font-size: 24px; margin-bottom: 10px;"></i><br>' +
+                                'No hay registros en la memoria para procesar.' +
+                                '</div>',
+                            icon: 'warning',
+                            timer: 7000,
+                            showConfirmButton: true,
+                            confirmButtonText: '<i class="fas fa-plus"></i> Agregar medicamentos',
+                            timerProgressBar: true,
+                            customClass: {
+                                confirmButton: 'btn btn-warning'
+                            }
+                        });
+                    <?php endif; ?>
+                });
+            </script>
+        <?php endif; ?>
 
         <form action="" method="post">
 
@@ -495,22 +804,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             </select>
 
             <label for="medicamento">Medicamento</label>
-            <select name="medicamento" id="medicamento" onchange="this.form.submit()" required>
+            <select name="medicamento" id="medicamento">
                 <option value="" disabled selected>Seleccionar Medicamento</option>
                 <?= $medicamentosOptions ?>
             </select>
-            
-            <!-- Mostrar información del medicamento seleccionado -->
-            <?php if (isset($_POST['medicamento'])): ?>
-                <div style="background: linear-gradient(135deg, #e8ebff 0%, #f0f2ff 100%); padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #2b2d7f; box-shadow: 0 2px 8px rgba(43, 45, 127, 0.1);">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="background: #2b2d7f; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="fas fa-check"></i></div>
-                        <div>
-                            <strong style="color: #2b2d7f;">Medicamento seleccionado:</strong> ID <?= $_POST['medicamento'] ?><br>
-                            <strong style="color: #2b2d7f;"><i class="fas fa-boxes"></i> Total existencias disponibles:</strong> <span style="color: #16a085; font-weight: bold;"><?= $totalExistencias ?> unidades</span>
-                        </div>
-                    </div>
-                </div>
+
+            <?php if (isset($_GET['medicamento'])): ?>
+                <!-- El medicamento ya está seleccionado correctamente desde el servidor -->
             <?php endif; ?>
 
 
@@ -523,8 +823,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
             <label for="cantidad">Cantidad</label>
             <input type="number" id="cantidad" name="cantidad" min="1">
-            <!-- Mostrar el existe_id del lote seleccionado -->
-            <div id="existe_id_display" style="margin-top: 10px; font-weight: bold;"></div>
 
             <!-- Contenedor de los botones -->
             <div class="button-container">
@@ -548,49 +846,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         </div>
 
         <?php
-
-
-
-        // Eliminar el registro si se envió el índice por POST
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_index'])) {
-            $index = intval($_POST['eliminar_index']); // Asegurar que el índice sea un entero
-            if (isset($_SESSION['medicamento_seleccionado'][$index])) {
-                unset($_SESSION['medicamento_seleccionado'][$index]); // Eliminar el registro
-                $_SESSION['medicamento_seleccionado'] = array_values($_SESSION['medicamento_seleccionado']); // Reindexar el array
-            }
-        }
-
         if (isset($_SESSION['medicamento_seleccionado']) && is_array($_SESSION['medicamento_seleccionado'])) {
-            echo "<div style='background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(43, 45, 127, 0.1); overflow: hidden; margin: 20px auto; max-width: 95%;'>";
-            echo "<table style='width: 100%; border-collapse: collapse; font-size: 16px;'>";
+            echo "<table>";
             echo "<thead>";
-            echo "<tr style='background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%); color: white;'>";
-            echo "<th style='padding: 15px; text-align: left; font-weight: 600;'><i class='fas fa-user'></i> Paciente</th>";
-            echo "<th style='padding: 15px; text-align: left; font-weight: 600;'><i class='fas fa-pills'></i> Medicamento</th>";
-            echo "<th style='padding: 15px; text-align: left; font-weight: 600;'><i class='fas fa-tag'></i> Lote</th>";
-            echo "<th style='padding: 15px; text-align: center; font-weight: 600;'><i class='fas fa-boxes'></i> Cantidad</th>";
-            echo "<th style='padding: 15px; text-align: right; font-weight: 600;'><i class='fas fa-dollar-sign'></i> Precio</th>";
-            echo "<th style='padding: 15px; text-align: center; font-weight: 600;'><i class='fas fa-cog'></i> Acciones</th>";
+            echo "<tr>";
+            echo "<th><i class='fas fa-user'></i> Paciente</th>";
+            echo "<th><i class='fas fa-pills'></i> Medicamento</th>";
+            echo "<th><i class='fas fa-tag'></i> Lote</th>";
+            echo "<th style='text-align: center;'><i class='fas fa-boxes'></i> Cantidad</th>";
+            echo "<th style='text-align: right;'><i class='fas fa-dollar-sign'></i> Precio</th>";
+            echo "<th style='text-align: center;'><i class='fas fa-cog'></i> Acciones</th>";
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
 
             // Iterar sobre los medicamentos
-            foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
-                $rowClass = $index % 2 == 0 ? "background: #f8f9ff;" : "background: white;";
-                
-                if (is_array($medicamento) && isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['lote'], $medicamento['cantidad'])) {
-                    echo "<tr style='$rowClass border-bottom: 1px solid #e8ebff; transition: all 0.3s ease;' onmouseover='this.style.background=\"#f0f2ff\"' onmouseout='this.style.background=\"" . ($index % 2 == 0 ? "#f8f9ff" : "white") . "\"'>";
-                    echo "<td style='padding: 15px; color: #2b2d7f; font-weight: 500;'>{$medicamento['paciente']}</td>";
-                    echo "<td style='padding: 15px; color: #333;'>{$medicamento['medicamento']}</td>";
-                    echo "<td style='padding: 15px; color: #666; font-family: monospace;'>{$medicamento['lote']}</td>";
-                    echo "<td style='padding: 15px; text-align: center; color: #16a085; font-weight: bold;'>{$medicamento['cantidad']}</td>";
-                    echo "<td style='padding: 15px; text-align: right; color: #e74c3c; font-weight: bold;'>$" . number_format($medicamento['precio'], 2) . "</td>";
+            foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) { // Usar $index para identificar el registro
 
-                    echo "<td style='padding: 15px; text-align: center;'>
+                // Verificamos si el elemento actual es un array con las claves esperadas
+                if (is_array($medicamento) && isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['lote'], $medicamento['cantidad'])) {
+                    echo "<tr>";
+                    echo "<td>{$medicamento['paciente']}</td>";
+                    echo "<td>{$medicamento['medicamento']}</td>";
+                    echo "<td style='font-family: monospace;'>{$medicamento['lote']}</td>";
+                    echo "<td style='text-align: center; color: #16a085; font-weight: bold;'>{$medicamento['cantidad']}</td>";
+                    echo "<td style='text-align: right; color: #e74c3c; font-weight: bold;'>$" . number_format($medicamento['precio'], 2) . "</td>";
+
+                    // Botón para eliminar este registro (envía el índice $index por POST)
+                    echo "<td style='text-align: center;'>
                     <form action='' method='post' style='display:inline;'>
                         <input type='hidden' name='eliminar_index' value='$index'>
-                        <button type='submit' style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);' onmouseover='this.style.transform=\"translateY(-1px)\"; this.style.boxShadow=\"0 4px 8px rgba(231, 76, 60, 0.4)\"' onmouseout='this.style.transform=\"none\"; this.style.boxShadow=\"0 2px 6px rgba(231, 76, 60, 0.3)\"'>
+                        <button type='submit' class='btn-sm' style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none;'>
                             <i class='fas fa-trash'></i> Eliminar
                         </button>
                     </form>
@@ -598,13 +884,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 
                     echo "</tr>";
                 } else {
-                    echo "<tr style='$rowClass'><td colspan='6' style='padding: 15px; text-align: center; color: #e74c3c;'>⚠️ Datos incompletos para el medicamento.</td></tr>";
+                    echo "<tr><td colspan='6' style='text-align: center; color: #e74c3c;'>⚠️ Datos incompletos para el medicamento.</td></tr>";
                 }
             }
 
             echo "</tbody>";
             echo "</table>";
-            echo "</div>";
         } else {
             echo "<div style='text-align: center; padding: 40px; background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%); border-radius: 12px; margin: 20px auto; max-width: 600px; border: 2px dashed #2b2d7f;'>";
             echo "<div style='font-size: 48px; margin-bottom: 15px; color: #2b2d7f;'><i class='fas fa-clipboard-list'></i></div>";
@@ -630,34 +915,167 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
     function actualizarLote() {
         const loteSelect = document.getElementById('lote');
         const selectedOption = loteSelect.options[loteSelect.selectedIndex];
+        const cantidadInput = document.getElementById('cantidad');
 
         if (selectedOption) {
             // Obtener la fecha de caducidad, la cantidad y el existe_id del lote seleccionado
             const caducidad = selectedOption.getAttribute('data-caducidad');
             const cantidad = selectedOption.getAttribute('data-cantidad');
-            const existeId = selectedOption.value; // El existe_id del lote seleccionado
+            const stock = selectedOption.getAttribute('data-stock');
+            const existeId = selectedOption.value.split('|')[0]; // Extraer solo el existe_id
 
-            // Mostrar estos valores en los inputs correspondientes
-            document.getElementById('caducidad').value = caducidad;
-            document.getElementById('cantidad-lote').value = cantidad;
+            // Calcular cantidad ya en carrito para este lote específico
+            const cantidadEnCarrito = calcularCantidadEnCarrito(existeId);
+            const stockDisponible = parseInt(stock) - cantidadEnCarrito;
 
-            // Mostrar el existe_id en un lugar visible del formulario
-            document.getElementById('existe_id_display').textContent = "Existe ID del lote seleccionado: " + existeId;
+            // Actualizar el máximo del input cantidad basado en el stock disponible menos lo ya agregado
+            cantidadInput.max = stockDisponible;
+            cantidadInput.setAttribute('data-max-stock', stockDisponible);
+            cantidadInput.setAttribute('data-existe-id', existeId);
 
-            // Imprimir el existe_id en la consola
-            console.log("existe_id del lote seleccionado: " + existeId);
+
+            // Limpiar el valor de cantidad al cambiar de lote
+            cantidadInput.value = '';
         }
     }
-</script>
-<style>
-    body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 20px;
-        min-height: 100vh;
+
+    function calcularCantidadEnCarrito(existeId) {
+        // Esta función calcula cuánto ya está agregado al carrito para este lote específico
+        let cantidadTotal = 0;
+
+        // Obtener todas las filas de la tabla del carrito
+        const filas = document.querySelectorAll('table tr');
+
+        <?php
+        // Generar JavaScript con los datos del carrito desde PHP
+        if (isset($_SESSION['medicamento_seleccionado']) && is_array($_SESSION['medicamento_seleccionado'])) {
+            echo "const carritoData = [";
+            foreach ($_SESSION['medicamento_seleccionado'] as $item) {
+                echo "{existe_id: '" . $item['existe_id'] . "', cantidad: " . intval($item['cantidad']) . "},";
+            }
+            echo "];";
+        } else {
+            echo "const carritoData = [];";
+        }
+        ?>
+
+        // Sumar las cantidades del mismo lote
+        carritoData.forEach(function(item) {
+            if (item.existe_id == existeId) {
+                cantidadTotal += item.cantidad;
+            }
+        });
+
+        return cantidadTotal;
     }
 
+    function validarCantidad() {
+        const cantidadInput = document.getElementById('cantidad');
+        const loteSelect = document.getElementById('lote');
+        const maxStock = parseInt(cantidadInput.getAttribute('data-max-stock') || 0);
+        const cantidadIngresada = parseInt(cantidadInput.value || 0);
+        const existeId = cantidadInput.getAttribute('data-existe-id');
+
+        if (loteSelect.value === '') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Primero debes seleccionar un lote.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            cantidadInput.value = '';
+            return false;
+        }
+
+        if (cantidadIngresada > maxStock) {
+            const cantidadEnCarrito = calcularCantidadEnCarrito(existeId);
+            const stockOriginal = parseInt(loteSelect.options[loteSelect.selectedIndex].getAttribute('data-stock'));
+
+            Swal.fire({
+                title: 'Cantidad excede el stock disponible',
+                html: `La cantidad ingresada (${cantidadIngresada}) no puede ser mayor al stock disponible.<br><br>` +
+                    `<strong>Stock total:</strong> ${stockOriginal}<br>` +
+                    `<strong>Ya en carrito:</strong> ${cantidadEnCarrito}<br>` +
+                    `<strong>Disponible para agregar:</strong> ${maxStock}`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            cantidadInput.value = maxStock > 0 ? maxStock : '';
+            return false;
+        }
+
+        if (cantidadIngresada <= 0) {
+            Swal.fire({
+                title: 'Cantidad inválida',
+                text: 'La cantidad debe ser mayor a 0.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            cantidadInput.value = '';
+            return false;
+        }
+
+        return true;
+    }
+
+    // Validar cuando el usuario cambie el valor del campo cantidad
+    document.addEventListener('DOMContentLoaded', function() {
+        const cantidadInput = document.getElementById('cantidad');
+        const loteSelect = document.getElementById('lote');
+        const medicamentoSelect = document.getElementById('medicamento');
+        const pacienteSelect = document.getElementById('paciente');
+
+        // Manejar el cambio de medicamento
+        medicamentoSelect.addEventListener('change', function() {
+            const pacienteSeleccionado = pacienteSelect.value;
+            const medicamentoSeleccionado = this.value;
+
+            if (pacienteSeleccionado && medicamentoSeleccionado) {
+                // Enviar el formulario con los valores actuales
+                window.location.href = `surtir_pacienteq.php?paciente=${pacienteSeleccionado}&medicamento=${medicamentoSeleccionado}`;
+            }
+        });
+
+        // Actualizar información de stock cuando cambie el lote
+        loteSelect.addEventListener('change', function() {
+            actualizarLote();
+        });
+
+        // Validar antes de enviar el formulario
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // Solo validar si es el botón "Agregar"
+            const submitButton = document.activeElement;
+            if (submitButton && submitButton.name === 'agregar') {
+                if (!validarCantidad()) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+
+        // Si hay un lote ya seleccionado al cargar la página, actualizar la información
+        if (loteSelect.value) {
+            actualizarLote();
+        }
+
+        // También actualizar si hay medicamento seleccionado al cargar la página
+        if (medicamentoSelect.value) {
+            // Esperar un poco para que se carguen los lotes
+            setTimeout(function() {
+                if (loteSelect.options.length > 1) { // Más de una opción (la default)
+                    // Seleccionar el primer lote disponible si no hay uno seleccionado
+                    if (!loteSelect.value) {
+                        loteSelect.selectedIndex = 1; // Seleccionar el primer lote real
+                        actualizarLote();
+                    }
+                }
+            }, 100);
+        }
+    });
+</script>
+
+<style>
     .form-container {
         max-width: 800px;
         margin: 0 auto;
@@ -697,7 +1115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         font-size: 18px;
     }
 
-    select, input {
+    select,
+    input {
         width: 100%;
         padding: 12px 16px;
         margin-bottom: 20px;
@@ -709,14 +1128,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         box-sizing: border-box;
     }
 
-    select:focus, input:focus {
+    select:focus,
+    input:focus {
         outline: none;
         border-color: #2b2d7f;
         box-shadow: 0 0 0 3px rgba(43, 45, 127, 0.1);
         transform: translateY(-1px);
     }
 
-    select:hover, input:hover {
+    select:hover,
+    input:hover {
         border-color: #4a4eb7;
     }
 
@@ -800,7 +1221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         margin-right: 8px;
     }
 
-    .btn-primary .fas, .btn-secondary .fas {
+    .btn-primary .fas,
+    .btn-secondary .fas {
         margin-right: 8px;
         font-size: 14px;
     }
@@ -811,6 +1233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             opacity: 0;
             transform: translateY(20px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -821,26 +1244,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
         animation: fadeInUp 0.6s ease-out;
     }
 
+    /* Estilos de tabla mejorados - Exactamente iguales a pedir_almacenq.php */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(43, 45, 127, 0.15);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    table thead {
+        background: linear-gradient(135deg, #2b2d7f 0%, #1a1c5a 100%);
+        color: white;
+    }
+
+    table thead th {
+        padding: 16px 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        border-bottom: none;
+        position: relative;
+    }
+
+    table thead th:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e8ebff;
+    }
+
+    table tbody tr:nth-child(odd) {
+        background: #f8f9ff;
+    }
+
+    table tbody tr:hover {
+        background: #e8ebff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(43, 45, 127, 0.1);
+    }
+
+    table tbody td {
+        padding: 16px 15px;
+        font-size: 15px;
+        color: #333;
+        vertical-align: middle;
+        border-bottom: 1px solid #e8ebff;
+    }
+
+    table tbody td:first-child {
+        font-weight: 600;
+        color: #2b2d7f;
+    }
+
+    /* Botones dentro de tabla */
+    .btn-sm {
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        min-width: 100px !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        transition: all 0.3s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        margin: 2px !important;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .form-container {
             margin: 10px;
             padding: 20px;
         }
-        
+
         .button-container {
             flex-direction: column;
             align-items: center;
         }
-        
-        .btn-primary, .btn-secondary {
+
+        .btn-primary,
+        .btn-secondary {
             width: 100%;
             max-width: none;
             margin-bottom: 10px;
         }
-        
+
         .btn-secondary {
             margin-bottom: 0;
+        }
+
+        table thead th,
+        table tbody td {
+            padding: 12px 10px;
+            font-size: 14px;
+        }
+
+        .btn-sm {
+            padding: 8px 12px !important;
+            font-size: 12px !important;
+            min-width: 80px !important;
         }
     }
 </style>
