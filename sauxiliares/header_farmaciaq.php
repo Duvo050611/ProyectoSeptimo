@@ -62,7 +62,8 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>SIMA Venecia Metepec</title>
+        <title>INEO METEPEC</title>
+        <link rel="icon" href="../../imagenes/SIF.PNG">
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- Bootstrap 3.3.2 -->
         <link href="../../template/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -388,29 +389,35 @@
 
                             <li class=" treeview">
                                 <a href="../farmaciaq/surtir_pacienteq.php">
-                                    <i class="fa fa-folder"></i> <span>SURTIR MÉDICAMENTOS</span>
+                                    <i class="fas fa-hand-holding-medical"></i> <span>SURTIR MÉDICAMENTOS</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
                             </li>
                             <li class=" treeview">
                                 <a href="../farmaciaq/existenciasq.php">
-                                    <i class="fa fa-folder"></i> <span>EXISTENCIAS</span>
+                                    <i class="fas fa-boxes"></i> <span>EXISTENCIAS</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
                             </li>
                             <li class=" treeview">
                                 <a href="../farmaciaq/kardexq.php">
-                                    <i class="fa fa-folder"></i> <span>KARDEX</span>
+                                                            <i class="fas fa-chart-line"></i><span>KARDEX</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
                             </li>
-                           
+                            <li class=" treeview">
+                                <a href="../farmaciaq/caducadoq.php">
+                                    <i class="fas fa-calendar-times"></i> <span>CONTROL DE <br> CADUCIDADES</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+
+                            </li>
                             <li class=" treeview">
                                 <a href="../farmaciaq/devolucionesq.php">
-                                    <i class="fa fa-folder"></i> <span>DEVOLUCIONES</span>
+                                    <i class="fas fa-undo"></i> <span>DEVOLUCIONES</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
@@ -418,21 +425,21 @@
 
                             <li class="treeview">
                                 <a href="../farmaciaq/confirmar_envioq.php">
-                                    <i class="fa fa-folder"></i> <span>CONFIRMAR DE <br> RECIBIDO</span>
+                                    <i class="fas fa-check-circle"></i> <span>CONFIRMAR DE <br> RECIBIDO</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
                             </li>
                             <li class="treeview">
                                 <a href="../farmaciaq/pedir_almacenq.php">
-                                    <i class="fa fa-folder"></i> <span>PEDIR A ALMACEN</span>
+                                    <i class="fas fa-shopping-cart"></i> <span>PEDIR A ALMACEN</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
                             </li>
                             <li class="treeview">
                                 <a href="../farmaciaq/salidasq.php">
-                                    <i class="fa fa-folder"></i> <span>SALIDAS MEDICAMENTO</span>
+                                    <i class="fas fa-file-export"></i><span>SALIDAS MEDICAMENTO</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
 
