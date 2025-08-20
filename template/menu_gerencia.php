@@ -216,9 +216,7 @@ left:9px;
 }
     </style>
 
-    <!-- Estilos modernos para el menú -->
     <style>
-        /* Estilos modernos para el menú de gerencia */
         .content {
             padding: 20px;
         }
@@ -227,6 +225,7 @@ left:9px;
             transition: all 0.3s ease !important;
             border: none !important;
             overflow: hidden;
+        margin-bottom: 30px !important; 
         }
 
         .card:hover {

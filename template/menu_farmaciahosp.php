@@ -25,6 +25,7 @@ if (!($usuario['id_rol'] == 11 || $usuario['id_rol'] == 5 || $usuario['id_rol'] 
 <head>
     <meta charset="UTF-8">
     <title>INEO Metepec</title>
+        <link rel="icon" href="../imagenes/SIF.PNG">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
