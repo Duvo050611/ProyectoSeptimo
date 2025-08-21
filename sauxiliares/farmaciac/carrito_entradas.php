@@ -868,7 +868,7 @@ echo "<a href='entradas.php'  style='color: white;  margin-left: 20px;background
 if ($result_ordenes->num_rows > 0) {
     echo "<div style='background-color: white; padding: 50px; border-radius: 30px;margin-top: 15px;'>";
 
-    echo "<h2 style='margin-top: 40px;color: #0c675e;text-align: center;'>Carrito de Compras</h2>";
+    echo "<h2 style='margin-top: 40px;color: #2b2d7f;text-align: center;'>Carrito de Compras</h2>";
     echo "<div style='display: flex; flex-direction: column;'>"; // Cambié a flexbox para un mejor alineamiento vertical
 
     while ($row_orden = $result_ordenes->fetch_assoc()) {
@@ -1048,12 +1048,12 @@ if ($result_ordenes->num_rows > 0) {
             echo "</select>
     </td>
     <td><input type='number' id='iva_{$unique_id}' name='iva[]' value='{$Ivas}' data-original='{$Ivas}' style='width: 80px;' step='0.01'></td>
-    <td id='iva_calculado_{$unique_id}' style='font-weight: bold; color: #0c675e;'>\$" . number_format($iva_calculado, 2) . "</td>
+    <td id='iva_calculado_{$unique_id}' style='font-weight: bold; color: #2b2d7f;'>\$" . number_format($iva_calculado, 2) . "</td>
     <td><input type='number' id='descuento_{$unique_id}' name='descuento[]' value='{$Descuentos}' data-original='{$Descuentos}' style='width: 80px;'></td> 
     <td><input type='number' id='costo_total_{$unique_id}' name='costo_total[]' value='{$Totales}' style='width: 95px;'></td> 
     <td>
-        <button type='button' id='btnCalcular_{$unique_id}' style='color: white; background-color: #0c675e; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;' onclick='calcularTotales(\"{$unique_id}\", \"{$item_row['item_id']}\")' disabled>Calcular</button>
-        <button type='button' id='btnActualizar_{$unique_id}' style='color: white; background-color: #0c675e; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;' onclick='updateItemWithAlert(\"{$unique_id}\", \"{$item_row['item_id']}\", \"formActualizar_{$id_compra}\")' disabled>Actualizar</button>
+        <button type='button' id='btnCalcular_{$unique_id}' style='color: white; background-color: #2b2d7f; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;' onclick='calcularTotales(\"{$unique_id}\", \"{$item_row['item_id']}\")' disabled>Calcular</button>
+        <button type='button' id='btnActualizar_{$unique_id}' style='color: white; background-color: #2b2d7f; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;' onclick='updateItemWithAlert(\"{$unique_id}\", \"{$item_row['item_id']}\", \"formActualizar_{$id_compra}\")' disabled>Actualizar</button>
     </td>
 </tr>";
             }
@@ -1063,7 +1063,7 @@ if ($result_ordenes->num_rows > 0) {
             <td colspan='10'></td> <!-- Espacios hasta la columna de IVA Calculado -->
             <td colspan='3' style='text-align: right; padding-top: 15px;'>
          <input type='hidden' name='id_compra' value='{$id_compra}'> 
-        <button type='submit' name='enviar_datos' style='color: white; background-color: #0c675e; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;'>Enviar a Entradas</button>
+        <button type='submit' name='enviar_datos' style='color: white; background-color: #2b2d7f; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;'>Enviar a Entradas</button>
                       </td>
                         </tr>
                     </tfoot>
@@ -1108,7 +1108,7 @@ if ($result_ordenes->num_rows > 0) {
 } else {
     // Mensaje cuando no hay registros
     echo "<div style='display: flex; justify-content: center; align-items: center; height: 100vh;'>
-    <p style='color: #0c675e; font-size: 50px; text-align: center;'>No hay registros en el carrito de compras.</p>
+    <p style='color: #2b2d7f; font-size: 50px; text-align: center;'>No hay registros en el carrito de compras.</p>
           </div>";
     echo "</div>"; // Cerrar el contenedor
 
@@ -1274,7 +1274,7 @@ Este enfoque permite al usuario:
                     // Resetear botones a estado inicial
                     btnCalcular.disabled = true;
                     btnCalcular.textContent = "Calcular";
-                    btnCalcular.style.backgroundColor = "#0c675e";
+                    btnCalcular.style.backgroundColor = "#2b2d7f";
                     
                     btnActualizar.disabled = true;
                     btnActualizar.style.backgroundColor = "#ccc";
@@ -1361,7 +1361,7 @@ Este enfoque permite al usuario:
             
             // Habilitar el botón actualizar
             btnActualizar.disabled = false;
-            btnActualizar.style.backgroundColor = "#0c675e";
+            btnActualizar.style.backgroundColor = "#2b2d7f";
             
             console.log(`Cálculo LOCAL para registro ${uniqueId}:`, {
                 cantidad,
@@ -1482,7 +1482,7 @@ Este enfoque permite al usuario:
         if (cambiosNumericos && !itemCompleto) {
             // Si hay cambios numéricos y el item NO está completo, habilitar CALCULAR
             btnCalcular.disabled = false;
-            btnCalcular.style.backgroundColor = "#0c675e";
+            btnCalcular.style.backgroundColor = "#2b2d7f";
             btnCalcular.textContent = "Calcular";
             btnCalcular.title = "";
             
@@ -1492,7 +1492,7 @@ Este enfoque permite al usuario:
         } else if (cambiosSimples) {
             // Si solo hay cambios simples (o reducción de cantidad en item completo), habilitar ACTUALIZAR directamente
             btnActualizar.disabled = false;
-            btnActualizar.style.backgroundColor = "#0c675e";
+            btnActualizar.style.backgroundColor = "#2b2d7f";
             btnActualizar.title = "";
             
             // No tocar el botón calcular si ya está calculado
@@ -1536,7 +1536,7 @@ Este enfoque permite al usuario:
             // Resetear el texto y estilo de los botones de calcular
             if (button.id.startsWith('btnCalcular_')) {
                 button.textContent = "Calcular";
-                button.style.backgroundColor = "#0c675e";
+                button.style.backgroundColor = "#2b2d7f";
                 button.style.color = "white";
             }
         });
@@ -1588,10 +1588,14 @@ Este enfoque permite al usuario:
     });
 </script>
 
-
-
-
-
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
 <style>
@@ -1641,10 +1645,10 @@ Este enfoque permite al usuario:
     }
 
     .carrito-table th {
-        background-color: #0c675e;
+        background-color: #2b2d7f;
         color: #ffffff;
         padding: 10px;
-        border: 1px solid #0c675e;
+        border: 1px solid #2b2d7f;
     }
 
     .carrito-table td {
@@ -1660,7 +1664,7 @@ Este enfoque permite al usuario:
 
     /* Añadir el estilo para la paginación */
     a {
-        color: #0c675e;
+        color: #2b2d7f;
         text-decoration: none;
         /* Elimina el subrayado */
     }
@@ -1671,7 +1675,7 @@ Este enfoque permite al usuario:
     }
 
     strong {
-        color: #0c675e;
+        color: #2b2d7f;
         /* Color para el número de página actual */
     }
 

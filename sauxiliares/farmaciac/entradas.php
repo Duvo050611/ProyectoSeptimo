@@ -344,8 +344,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <html lang="es">
 
     <head>
-
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+              integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="icon" href="../imagenes/SIF.PNG">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Formulario de Orden</title>
 
@@ -394,7 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             td {
-                background-color: #e8f6f4;
+                background-color: rgba(179, 206, 247, 0.77);
             }
 
             input[type="text"],

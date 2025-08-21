@@ -67,48 +67,328 @@ $start_page = max(1, $end_page - $max_links + 1); // Ajustar si llegamos al lím
     <script src="../../js/aos.js"></script>
     <script src="../../js/main.js"></script>
     <style>
+        :root {
+            --color-primario: #2b2d7f;
+            --color-secundario: #1a1c5a;
+            --color-fondo: #f8f9ff;
+            --color-borde: #e8ebff;
+            --sombra: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== ESTILOS GENERALES ===== */
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        .header {
-            background-color: #2b2d7f;
-            color: white;
-            padding: 15px;
+        .container-moderno {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 98%;
+            box-shadow: var(--sombra);
+            border: 2px solid var(--color-borde);
+        }
+
+        /* ===== BOTONES MODERNOS ===== */
+        .btn-moderno {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--sombra);
+        }
+
+        .btn-regresar {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white !important;
+        }
+
+        .btn-filtrar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white !important;
+        }
+
+        .btn-borrar {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white !important;
+        }
+
+        .btn-especial {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white !important;
+        }
+
+        .btn-moderno:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        /* ===== HEADER SECTION ===== */
+        .header-principal {
             text-align: center;
-            font-size: 24px;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            border-radius: 20px;
+            color: white;
+            box-shadow: var(--sombra);
+            position: relative;
         }
 
-        .btn-danger {
-            margin: 10px 0;
+        .header-principal .icono-principal {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
         }
 
-        .table th,
-        .table td {
+        .header-principal h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-ajuste {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+        }
+
+        /* ===== FORMULARIO DE FILTROS ===== */
+        .contenedor-filtros {
+            background: white;
+            border: 2px solid var(--color-borde);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: var(--sombra);
+        }
+
+        .form-control {
+            border: 2px solid var(--color-borde);
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--color-primario);
+            box-shadow: 0 0 0 3px rgba(43, 45, 127, 0.1);
+            outline: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--color-primario);
+            margin-bottom: 8px;
+        }
+
+        /* ===== TABLA MODERNIZADA ===== */
+        /* ===== TABLA MODERNIZADA ===== */
+        .tabla-contenedor {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            border: 2px solid var(--color-borde);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Ajuste de tabla */
+        .table-moderna {
+            margin: 0;
+            font-size: 12px;
+            width: 100%;
+            table-layout: auto; /* evita que las columnas se expandan de más */
+            border-collapse: collapse;
+        }
+
+        /* Encabezados */
+        .table-moderna thead th {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            font-weight: 600;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* Filas */
+        .table-moderna tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .table-moderna tbody tr:hover {
+            background-color: var(--color-fondo);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Celdas */
+        .table-moderna tbody td {
+            padding: 8px 6px;
             vertical-align: middle;
+            border: none;
+            text-align: center;
+            font-size: 12px;
+            white-space: normal;
+            word-wrap: break-word;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .table thead th {
-            background-color: #2b2d7f;
-            color: white;
+        /* ===== MENSAJE SIN RESULTADOS ===== */
+        .mensaje-sin-resultados {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--color-primario);
+            font-size: 18px;
+            font-weight: 600;
         }
 
-        .table tbody tr {
-            background-color: #ffffff;
+        .mensaje-sin-resultados i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
 
-        .table tbody tr:hover {
-            background-color: #e9ecef;
-        }
-
-        .modal-header {
-            background-color: #2b2d7f;
-            color: white;
-        }
-
-        .modal-footer {
+        /* ===== PAGINACIÓN MODERNA ===== */
+        .contenedor-paginacion {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            margin: 20px 0 10px 0;
+            padding-bottom: 0;
+        }
+
+        .paginacion-moderna {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-paginacion {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 45px;
+            height: 45px;
+            border: 2px solid var(--color-borde);
+            background: white;
+            color: var(--color-primario);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+        }
+
+        .btn-paginacion:hover {
+            background: var(--color-primario);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 45, 127, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-paginacion.active {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.4);
+        }
+
+        /* ===== SELECT2 CUSTOM ===== */
+        .select2-container--default .select2-selection--single {
+            border: 2px solid var(--color-borde) !important;
+            border-radius: 10px !important;
+            height: 48px !important;
+            line-height: 48px !important;
+        }
+
+        .select2-container--default .select2-selection--single:focus {
+            border-color: var(--color-primario) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 15px !important;
+            padding-top: 8px !important;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .container-moderno {
+                margin: 10px;
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .header-principal h1 {
+                font-size: 24px;
+            }
+
+            .btn-moderno {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .table-moderna {
+                font-size: 10px;
+            }
+
+            .table-moderna thead th,
+            .table-moderna tbody td {
+                padding: 8px 6px;
+            }
+
+            .btn-ajuste {
+                position: relative;
+                top: auto;
+                right: auto;
+                transform: none;
+                margin-top: 15px;
+            }
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container-moderno {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .contenedor-filtros,
+        .tabla-contenedor {
+            animation: fadeInUp 0.6s ease-out 0.1s both;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
@@ -126,109 +406,118 @@ $start_page = max(1, $end_page - $max_links + 1); // Ajustar si llegamos al lím
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="header">PRODUCTOS DE FARMACIA CENTRAL</div>
-        <div class="responsive">
-            <div class="row mt-3 mb-3">
-                <div class="col-sm-4">
-                    <a class="btn btn-danger" href="../../template/menu_farmaciacentral.php">Regresar</a>
-                </div>
+<div class="container-fluid">
+    <div class="header-principal">
+        <div class="contenido-header">
+            <div class="icono-header">
+                <i class="fas fa-arrow-up icono-principal"></i>
+            </div>
+            <h1>PRODUCTOS - FARMACIA CENTRAL</h1>
+        </div>
+    </div>
+            <div class="d-flex justify-content-start mb-4">
+                <a href="cat_maestro.php" class="btn-moderno btn-regresar">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </a>
             </div>
             <div class="form-group">
                 <input type="text" class="form-control" id="search" placeholder="Buscar..." style="width: 300px;">
             </div>
             <div class="form-group mb-3">
-                <a href="excel_item_almacen.php" class="btn btn-warning btn-lg btn-custom-size">
+                <a href="excel_item_almacen.php" class="btn btn-regresar">
                     <img src="https://img.icons8.com/color/48/000000/ms-excel.png" width="30" /> Exportar a Excel
                 </a>
-                <button type="button" class="btn btn-primary btn-lg btn-custom-size" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-especial" data-toggle="modal" data-target="#exampleModal">
                     <i class="fa fa-plus"></i> Nuevo Producto
                 </button>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="mytable">
-                    <thead>
-                        <tr>
-                            <th>Editar</th>
-                            <th>Id</th>
-                            <th>Código</th>
-                            <th>Descripción</th>
-                            <th>Presentación</th>
-                            <th>Contenido</th>
-                            <th>Proveedor</th>
-                            <th>Factor</th>
-                            <th>Surte</th>
-                            <th>Máximo</th>
-                            <th>Reorden</th>
-                            <th>Mínimo</th>
-                            <th>Costo</th>
-                            <th>Costo <br>Unitario</th>
-                            <th>Precio</th>
-                            <th>Subfamilia</th>
-                            <th>Grupo</th>
-                            <th>Tipo</th>
-                            <th>Tempertura</th>
-                            <th>Alerta</th>
-                            <th>Activo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        while ($row = $resultado2->fetch_assoc()) {
-                            $eid = $row['item_id'];
-                            echo '<tr>'
-                                . '<td><a href="edit_items.php?id=' . $eid . '" class="btn btn-warning btn-sm"><span class="fa fa-edit"></span></a></td>'
-                                . '<td>' . $row['item_id'] . '</td>'
-                                . '<td>' . $row['item_code'] . '</td>'
-                                . '<td>' . $row['item_name'] . '</td>'
-                                . '<td>' . $row['item_grams'] . '</td>'
-                                . '<td>' . $row['contenido'] . '</td>'
-                                . '<td>' . $row['id_prov'] . '</td>'
-                                . '<td>' . $row['factor'] . '</td>'
-                                . '<td>' . $row['item_type_desc'] . '</td>'
-                                . '<td>' . $row['item_max'] . '</td>'
-                                . '<td>' . $row['reorden'] . '</td>'
-                                . '<td>' . $row['item_min'] . '</td>'
-                                . '<td>$' . number_format($row['item_costs'], 2) . '</td>'
-                                . '<td>$' . number_format($row['cost_unit'], 2) . '</td>'
-                                . '<td>$' . number_format($row['item_price'], 2) . '</td>'
-                                . '<td>' . $row['subfamilia'] . '</td>'
-                                . '<td>' . $row['grupo'] . '</td>'
-                                . '<td>' . $row['tipo'] . '</td>'
-                                . '<td>' . $row['temperatura'] . '</td>'
-                                . '<td>' . $row['alerta'] . '</td>'
-                                . '<td>' . $row['activo'] . '</td>'
-                                . '</tr>';
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Paginación -->
-            <nav>
-                <ul class="pagination justify-content-center">
-                    <?php if ($current_page > 1): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?= $current_page - 1 ?>">Anterior</a>
-                        </li>
-                    <?php endif; ?>
-
-                    <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
-                        <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <?php if ($current_page < $total_pages): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?= $current_page + 1 ?>">Siguiente</a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
+    <div class="tabla-contenedor">
+        <div class="table-responsive">
+            <table class="table table-moderna">
+                <thead>
+                <tr>
+                    <th><i class="fa fa-edit"></i> Editar</th>
+                    <th><i class="fa fa-hashtag"></i> Id</th>
+                    <th><i class="fa fa-barcode"></i> Código</th>
+                    <th><i class="fa fa-file-text"></i> Descripción</th>
+                    <th><i class="fa fa-cubes"></i> Presentación</th>
+                    <th><i class="fa fa-box"></i> Contenido</th>
+                    <th><i class="fa fa-truck"></i> Proveedor</th>
+                    <th><i class="fa fa-balance-scale"></i> Factor</th>
+                    <th><i class="fa fa-user-md"></i> Surte</th>
+                    <th><i class="fa fa-arrow-up"></i> Máximo</th>
+                    <th><i class="fa fa-exclamation-circle"></i> Reorden</th>
+                    <th><i class="fa fa-arrow-down"></i> Mínimo</th>
+                    <th><i class="fa fa-dollar-sign"></i> Costo</th>
+                    <th><i class="fa fa-money-bill"></i> Costo <br>Unitario</th>
+                    <th><i class="fa fa-tags"></i> Precio</th>
+                    <th><i class="fa fa-sitemap"></i> Subfamilia</th>
+                    <th><i class="fa fa-layer-group"></i> Grupo</th>
+                    <th><i class="fa fa-list"></i> Tipo</th>
+                    <th><i class="fa fa-thermometer-half"></i> Temperatura</th>
+                    <th><i class="fa fa-bell"></i> Alerta</th>
+                    <th><i class="fa fa-check-circle"></i> Activo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                while ($row = $resultado2->fetch_assoc()) {
+                    $eid = $row['item_id'];
+                    echo '<tr>'
+                            . '<td><a href="edit_items.php?id=' . $eid . '" class="btn btn-warning btn-sm"><span class="fa fa-edit"></span></a></td>'
+                            . '<td>' . $row['item_id'] . '</td>'
+                            . '<td>' . $row['item_code'] . '</td>'
+                            . '<td>' . $row['item_name'] . '</td>'
+                            . '<td>' . $row['item_grams'] . '</td>'
+                            . '<td>' . $row['contenido'] . '</td>'
+                            . '<td>' . $row['id_prov'] . '</td>'
+                            . '<td>' . $row['factor'] . '</td>'
+                            . '<td>' . $row['item_type_desc'] . '</td>'
+                            . '<td>' . $row['item_max'] . '</td>'
+                            . '<td>' . $row['reorden'] . '</td>'
+                            . '<td>' . $row['item_min'] . '</td>'
+                            . '<td>$' . number_format($row['item_costs'], 2) . '</td>'
+                            . '<td>$' . number_format($row['cost_unit'], 2) . '</td>'
+                            . '<td>$' . number_format($row['item_price'], 2) . '</td>'
+                            . '<td>' . $row['subfamilia'] . '</td>'
+                            . '<td>' . $row['grupo'] . '</td>'
+                            . '<td>' . $row['tipo'] . '</td>'
+                            . '<td>' . $row['temperatura'] . '</td>'
+                            . '<td>' . $row['alerta'] . '</td>'
+                            . '<td>' . $row['activo'] . '</td>'
+                            . '</tr>';
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
+    </div>
+    <!-- Paginación -->
+    <div class="contenedor-paginacion">
+        <div class="paginacion-moderna">
+            <?php if ($current_page > 1): ?>
+                <a class="btn-paginacion" href="?page=<?= $current_page - 1 ?>">
+                    <i class="fa fa-chevron-left"></i> Anterior
+                </a>
+            <?php endif; ?>
 
-        <!-- Modal Insertar -->
+            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                <a class="btn-paginacion <?= $i == $current_page ? 'active' : '' ?>" href="?page=<?= $i ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($current_page < $total_pages): ?>
+                <a class="btn-paginacion" href="?page=<?= $current_page + 1 ?>">
+                    Siguiente <i class="fa fa-chevron-right"></i>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Insertar -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
