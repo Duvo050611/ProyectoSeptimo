@@ -643,195 +643,195 @@ switch ($action) {
         break;
 
     case 'enviar_medicamentosMed':
-        // Log the start of the process
-        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Iniciar enviar_medicamentosMed' . "\n", FILE_APPEND);
+    // Log the start of the process
+    file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Iniciar enviar_medicamentosMed' . "\n", FILE_APPEND);
 
-        // Validate CSRF token
-        if (!validateCSRF($_POST['csrf_token'] ?? '')) {
-            ob_end_clean();
-            echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
-            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: Token CSRF inválido' . "\n", FILE_APPEND);
-            exit;
-        }
+    // Validate CSRF token
+    if (!validateCSRF($_POST['csrf_token'] ?? '')) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: Token CSRF inválido' . "\n", FILE_APPEND);
+        exit;
+    }
 
-        // Log CSRF validation passed
-        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - CSRF válido' . "\n", FILE_APPEND);
+    // Log CSRF validation passed
+    file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - CSRF válido' . "\n", FILE_APPEND);
 
-        // Check session data
-        if (!isset($_SESSION['medicamento_seleccionadoMed']) || empty($_SESSION['medicamento_seleccionadoMed']) || !is_array($_SESSION['medicamento_seleccionadoMed'])) {
-            ob_end_clean();
-            echo json_encode(['success' => false, 'message' => 'No hay medicamentos en la memoria para procesar.']);
-            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: No hay medicamentos seleccionados. Session data: ' . print_r($_SESSION['medicamento_seleccionadoMed'], true) . "\n", FILE_APPEND);
-            exit;
-        }
+    // Check session data
+    if (!isset($_SESSION['medicamento_seleccionadoMed']) || empty($_SESSION['medicamento_seleccionadoMed']) || !is_array($_SESSION['medicamento_seleccionadoMed'])) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'No hay medicamentos en la memoria para procesar.']);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: No hay medicamentos seleccionados. Session data: ' . print_r($_SESSION['medicamento_seleccionadoMed'], true) . "\n", FILE_APPEND);
+        exit;
+    }
 
-        // Log session data
-        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Medicamentos en sesión: ' . print_r($_SESSION['medicamento_seleccionadoMed'], true) . "\n", FILE_APPEND);
+    // Log session data
+    file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Medicamentos en sesión: ' . print_r($_SESSION['medicamento_seleccionadoMed'], true) . "\n", FILE_APPEND);
 
-        // Ensure $area and $id_usua are defined
-        $usuario = $_SESSION['login'] ?? null;
-        $id_usua = $usuario['id_usua'] ?? null;
-        $area = 'QUIROFANO'; // Adjust based on your logic or POST data
-        if (!$id_usua) {
-            ob_end_clean();
-            echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
-            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: id_usua no definido' . "\n", FILE_APPEND);
-            exit;
-        }
+    // Ensure $area and $id_usua are defined
+    $usuario = $_SESSION['login'] ?? null;
+    $id_usua = $usuario['id_usua'] ?? null;
+    $area = 'QUIROFANO'; // Adjust based on your logic or POST data
+    if (!$id_usua) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: id_usua no definido' . "\n", FILE_APPEND);
+        exit;
+    }
 
-        $fechaActualMed = date('Y-m-d H:i:s');
-        $conexion->begin_transaction();
+    $fechaActualMed = date('Y-m-d H:i:s');
+    $conexion->begin_transaction();
 
-        try {
-            foreach ($_SESSION['medicamento_seleccionadoMed'] as $index => $medicamento) {
-                // Validate required fields
-                if (!isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['cantidad'], $medicamento['id_atencion'], $medicamento['item_id'], $medicamento['precio'], $medicamento['fecha'], $medicamento['hora'])) {
-                    throw new Exception("Datos incompletos en la sesión para el medicamento en el índice $index: " . print_r($medicamento, true));
-                }
+    try {
+        foreach ($_SESSION['medicamento_seleccionadoMed'] as $index => $medicamento) {
+            // Validate required fields
+            if (!isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['cantidad'], $medicamento['id_atencion'], $medicamento['item_id'], $medicamento['precio'], $medicamento['fecha'], $medicamento['hora'])) {
+                throw new Exception("Datos incompletos en la sesión para el medicamento en el índice $index: " . print_r($medicamento, true));
+            }
 
-                // Assign variables
-                $pacienteMed = $medicamento['paciente'];
-                $nombreMedicamentoMed = $medicamento['medicamento'];
-                $cantidadLoteMed = intval($medicamento['cantidad']);
-                $Id_AtencionMed = intval($medicamento['id_atencion']);
-                $itemIdMed = intval($medicamento['item_id']);
-                $salidaCostsuMed = floatval($medicamento['precio']);
-                $fechaMed = $medicamento['fecha'];
-                $horaMed = $medicamento['hora'];
-                $dosisMed = $medicamento['dosis'] ?? '';
-                $unidadMed = $medicamento['unidad'] ?? '';
-                $viaMed = $medicamento['via'] ?? '';
-                $otroMed = $medicamento['otro'] ?? '';
+            // Assign variables
+            $pacienteMed = $medicamento['paciente'];
+            $nombreMedicamentoMed = $medicamento['medicamento'];
+            $cantidadLoteMed = intval($medicamento['cantidad']);
+            $Id_AtencionMed = intval($medicamento['id_atencion']);
+            $itemIdMed = intval($medicamento['item_id']);
+            $salidaCostsuMed = floatval($medicamento['precio']);
+            $fechaMed = $medicamento['fecha'];
+            $horaMed = $medicamento['hora'];
+            $dosisMed = $medicamento['dosis'] ?? '';
+            $unidadMed = $medicamento['unidad'] ?? '';
+            $viaMed = $medicamento['via'] ?? '';
+            $otroMed = $medicamento['otro'] ?? '';
 
-                // Log medication data
-                file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Procesando medicamento index $index: item_id=$itemIdMed, cantidad=$cantidadLoteMed, id_atencion=$Id_AtencionMed\n", FILE_APPEND);
+            // Log medication data
+            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Procesando medicamento index $index: item_id=$itemIdMed, cantidad=$cantidadLoteMed, id_atencion=$Id_AtencionMed\n", FILE_APPEND);
 
-                // Verify item_almacen
-                $queryItemAlmacenMed = "SELECT item_name, item_price FROM item_almacen WHERE item_id = ?";
-                $stmtMed = $conexion->prepare($queryItemAlmacenMed);
-                if (!$stmtMed) {
-                    throw new Exception("Error preparando consulta item_almacen: " . $conexion->error);
-                }
-                $stmtMed->bind_param("i", $itemIdMed);
-                $stmtMed->execute();
-                $resultMed = $stmtMed->get_result();
-                if ($resultMed->num_rows === 0) {
-                    throw new Exception("No se encontró el ítem con ID $itemIdMed.");
-                }
-                $itemDataMed = $resultMed->fetch_assoc();
-                $salidaCostsuMed = $itemDataMed['item_price'];
-                $stmtMed->close();
+            // Verify item_almacen
+            $queryItemAlmacenMed = "SELECT item_name, item_price FROM item_almacen WHERE item_id = ?";
+            $stmtMed = $conexion->prepare($queryItemAlmacenMed);
+            if (!$stmtMed) {
+                throw new Exception("Error preparando consulta item_almacen: " . $conexion->error);
+            }
+            $stmtMed->bind_param("i", $itemIdMed);
+            $stmtMed->execute();
+            $resultMed = $stmtMed->get_result();
+            if ($resultMed->num_rows === 0) {
+                throw new Exception("No se encontró el ítem con ID $itemIdMed.");
+            }
+            $itemDataMed = $resultMed->fetch_assoc();
+            $salidaCostsuMed = $itemDataMed['item_price'];
+            $stmtMed->close();
 
-                // Verify stock
-                $selectExistenciasQueryMed = "SELECT SUM(existe_qty) AS total_qty FROM existencias_almacen WHERE item_id = ?";
-                $stmtSelectMed = $conexion->prepare($selectExistenciasQueryMed);
-                if (!$stmtSelectMed) {
-                    throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
-                }
-                $stmtSelectMed->bind_param('i', $itemIdMed);
-                $stmtSelectMed->execute();
-                $resultStockMed = $stmtSelectMed->get_result();
-                $stockDataMed = $resultStockMed->fetch_assoc();
-                $stmtSelectMed->close();
+            // Verify stock
+            $selectExistenciasQueryMed = "SELECT SUM(existe_qty) AS total_qty FROM existencias_almacen WHERE item_id = ?";
+            $stmtSelectMed = $conexion->prepare($selectExistenciasQueryMed);
+            if (!$stmtSelectMed) {
+                throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
+            }
+            $stmtSelectMed->bind_param('i', $itemIdMed);
+            $stmtSelectMed->execute();
+            $resultStockMed = $stmtSelectMed->get_result();
+            $stockDataMed = $resultStockMed->fetch_assoc();
+            $stmtSelectMed->close();
 
-                if (!$stockDataMed || $stockDataMed['total_qty'] < $cantidadLoteMed) {
-                    throw new Exception("Stock insuficiente para el medicamento ID $itemIdMed. Disponible: " . ($stockDataMed['total_qty'] ?? 0) . ", requerido: $cantidadLoteMed.");
-                }
+            if (!$stockDataMed || $stockDataMed['total_qty'] < $cantidadLoteMed) {
+                throw new Exception("Stock insuficiente para el medicamento ID $itemIdMed. Disponible: " . ($stockDataMed['total_qty'] ?? 0) . ", requerido: $cantidadLoteMed.");
+            }
 
-                // Insert into kardex_almacen
-                $insertKardex = "
+            // Insert into kardex_almacen
+            $insertKardex = "
                 INSERT INTO kardex_almacen (
                     kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
                     kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_ubicacion, kardex_destino, id_usua, id_compra, factura
                 ) 
                 VALUES (NOW(), ?, '', '0000-00-00', 0, 0, ?, 0, 0, 0, 'Salida', 'ALMACEN', ?, ?, NULL, NULL)
             ";
-                $stmtKardex = $conexion->prepare($insertKardex);
-                if (!$stmtKardex) {
-                    throw new Exception("Error preparando consulta kardex_almacen: " . $conexion->error);
-                }
-                $kardexDestino = $area;
-                $stmtKardex->bind_param('iisi', $itemIdMed, $cantidadLoteMed, $kardexDestino, $id_usua);
-                if (!$stmtKardex->execute()) {
-                    throw new Exception("Error insertando en kardex_almacen: " . $stmtKardex->error);
-                }
-                $stmtKardex->close();
+            $stmtKardex = $conexion->prepare($insertKardex);
+            if (!$stmtKardex) {
+                throw new Exception("Error preparando consulta kardex_almacen: " . $conexion->error);
+            }
+            $kardexDestino = $area;
+            $stmtKardex->bind_param('iisi', $itemIdMed, $cantidadLoteMed, $kardexDestino, $id_usua);
+            if (!$stmtKardex->execute()) {
+                throw new Exception("Error insertando en kardex_almacen: " . $stmtKardex->error);
+            }
+            $stmtKardex->close();
+            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Insertado en kardex_almacen para item_id=$itemIdMed\n", FILE_APPEND);
 
-                // Insert into salidas_almacen
-                $queryInsercionMed = "
+            // Insert into salidas_almacen (removed solicita)
+            $queryInsercionMed = "
                 INSERT INTO salidas_almacen (
-                    item_id, item_name, salida_fecha, salida_qty, salida_costsu, id_usua, id_atencion, solicita, fecha_solicitud, salio
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    item_id, salida_fecha, salida_qty, salida_costsu, id_usua, fecha_solicitud, salio
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
             ";
-                $stmtInsertSalidaMed = $conexion->prepare($queryInsercionMed);
-                if (!$stmtInsertSalidaMed) {
-                    throw new Exception("Error preparando consulta salidas_almacen: " . $conexion->error);
-                }
-                $solicitaMed = 0;
-                $salioMed = $area;
-                $stmtInsertSalidaMed->bind_param(
-                    'issdiisiss',
-                    $itemIdMed,
-                    $nombreMedicamentoMed,
-                    $fechaActualMed,
-                    $cantidadLoteMed,
-                    $salidaCostsuMed,
-                    $id_usua,
-                    $Id_AtencionMed,
-                    $solicitaMed,
-                    $fechaActualMed,
-                    $salioMed
-                );
-                if (!$stmtInsertSalidaMed->execute()) {
-                    throw new Exception("Error insertando en salidas_almacen: " . $stmtInsertSalidaMed->error);
-                }
-                $stmtInsertSalidaMed->close();
+            $stmtInsertSalidaMed = $conexion->prepare($queryInsercionMed);
+            if (!$stmtInsertSalidaMed) {
+                throw new Exception("Error preparando consulta salidas_almacen: " . $conexion->error);
+            }
+            $salioMed = $area;
+            $stmtInsertSalidaMed->bind_param(
+                'isdiss',
+                $itemIdMed,
+                $fechaActualMed,
+                $cantidadLoteMed,
+                $salidaCostsuMed,
+                $id_usua,
+                $fechaActualMed,
+                $salioMed
+            );
+            if (!$stmtInsertSalidaMed->execute()) {
+                throw new Exception("Error insertando en salidas_almacen: " . $stmtInsertSalidaMed->error);
+            }
+            $stmtInsertSalidaMed->close();
+            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Insertado en salidas_almacen para item_id=$itemIdMed\n", FILE_APPEND);
 
-                // Insert into dat_ctapac
-                $insertDatCtapacQueryMed = "
+            // Insert into dat_ctapac
+            $insertDatCtapacQueryMed = "
                 INSERT INTO dat_ctapac (
                     id_atencion, prod_serv, insumo, cta_fec, cta_cant, cta_tot, id_usua, cta_activo, centro_cto
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ";
-                $stmtInsertDatCtapacMed = $conexion->prepare($insertDatCtapacQueryMed);
-                if (!$stmtInsertDatCtapacMed) {
-                    throw new Exception("Error preparando consulta dat_ctapac: " . $conexion->error);
-                }
-                $prodServMed = 'M';
-                $ctaActivoMed = 'SI';
-                $ctaTotMed = $salidaCostsuMed * $cantidadLoteMed;
-                $stmtInsertDatCtapacMed->bind_param(
-                    'isssddiss',
-                    $Id_AtencionMed,
-                    $prodServMed,
-                    $itemIdMed,
-                    $fechaActualMed,
-                    $cantidadLoteMed,
-                    $ctaTotMed,
-                    $id_usua,
-                    $ctaActivoMed,
-                    $area
-                );
-                if (!$stmtInsertDatCtapacMed->execute()) {
-                    throw new Exception("Error insertando en dat_ctapac: " . $stmtInsertDatCtapacMed->error);
-                }
-                $stmtInsertDatCtapacMed->close();
-
-                // Update existencias_almacen
-                $updateExistenciasQueryMed = "UPDATE existencias_almacen SET existe_qty = existe_qty - ?, existe_fecha = ?, existe_salidas = existe_salidas + ? WHERE item_id = ?";
-                $stmtUpdateExistenciasMed = $conexion->prepare($updateExistenciasQueryMed);
-                if (!$stmtUpdateExistenciasMed) {
-                    throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
-                }
-                $stmtUpdateExistenciasMed->bind_param('isii', $cantidadLoteMed, $fechaActualMed, $cantidadLoteMed, $itemIdMed);
-                if (!$stmtUpdateExistenciasMed->execute()) {
-                    throw new Exception("Error actualizando existencias_almacen: " . $stmtUpdateExistenciasMed->error);
-                }
-                $stmtUpdateExistenciasMed->close();
+            $stmtInsertDatCtapacMed = $conexion->prepare($insertDatCtapacQueryMed);
+            if (!$stmtInsertDatCtapacMed) {
+                throw new Exception("Error preparando consulta dat_ctapac: " . $conexion->error);
             }
+            $prodServMed = 'M';
+            $ctaActivoMed = 'SI';
+            $ctaTotMed = $salidaCostsuMed * $cantidadLoteMed;
+            $stmtInsertDatCtapacMed->bind_param(
+                'isssddiss',
+                $Id_AtencionMed,
+                $prodServMed,
+                $itemIdMed,
+                $fechaActualMed,
+                $cantidadLoteMed,
+                $ctaTotMed,
+                $id_usua,
+                $ctaActivoMed,
+                $area
+            );
+            if (!$stmtInsertDatCtapacMed->execute()) {
+                throw new Exception("Error insertando en dat_ctapac: " . $stmtInsertDatCtapacMed->error);
+            }
+            $stmtInsertDatCtapacMed->close();
+            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Insertado en dat_ctapac para item_id=$itemIdMed\n", FILE_APPEND);
 
-            // Fetch updated items surtidos (medicamentos)
-            $sqlSurtidosMed = "
+            // Update existencias_almacen
+            $updateExistenciasQueryMed = "UPDATE existencias_almacen SET existe_qty = existe_qty - ?, existe_fecha = ?, existe_salidas = existe_salidas + ? WHERE item_id = ?";
+            $stmtUpdateExistenciasMed = $conexion->prepare($updateExistenciasQueryMed);
+            if (!$stmtUpdateExistenciasMed) {
+                throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
+            }
+            $stmtUpdateExistenciasMed->bind_param('isii', $cantidadLoteMed, $fechaActualMed, $cantidadLoteMed, $itemIdMed);
+            if (!$stmtUpdateExistenciasMed->execute()) {
+                throw new Exception("Error actualizando existencias_almacen: " . $stmtUpdateExistenciasMed->error);
+            }
+            $stmtUpdateExistenciasMed->close();
+            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Actualizado existencias_almacen para item_id=$itemIdMed\n", FILE_APPEND);
+        }
+
+        // Fetch updated items surtidos (medicamentos)
+        $sqlSurtidosMed = "
             SELECT
                 dc.id_ctapac,
                 CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
@@ -852,37 +852,37 @@ switch ($action) {
             ORDER BY
                 dc.cta_fec DESC
         ";
-            $stmtSurtidosMed = $conexion->prepare($sqlSurtidosMed);
-            if (!$stmtSurtidosMed) {
-                throw new Exception("Error preparando consulta dat_ctapac: " . $conexion->error);
-            }
-            $stmtSurtidosMed->bind_param('i', $Id_AtencionMed);
-            $stmtSurtidosMed->execute();
-            $resultSurtidosMed = $stmtSurtidosMed->get_result();
-
-            $tablaSurtidosMed = '<p class="text-center">No hay medicamentos surtidos para el paciente seleccionado.</p>';
-            if ($resultSurtidosMed && $resultSurtidosMed->num_rows > 0) {
-                $tablaSurtidosMed = '<table class="table table-bordered table-striped"><thead class="thead-dark"><tr><th>Paciente</th><th>Medicamento</th><th>Cantidad</th><th>Total</th><th>Acciones</th></tr></thead><tbody>';
-                while ($row = $resultSurtidosMed->fetch_assoc()) {
-                    $tablaSurtidosMed .= "<tr><td>" . htmlspecialchars($row['nombre_paciente']) . "</td><td>" . htmlspecialchars($row['item_name']) . "</td><td>" . htmlspecialchars($row['cta_cant']) . "</td><td>" . htmlspecialchars($row['cta_tot']) . "</td><td><form class='eliminar-surtido-form' data-id-ctapac='{$row['id_ctapac']}'><input type='hidden' name='id_ctapac' value='{$row['id_ctapac']}'><input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'><button type='submit' class='btn btn-danger'>Eliminar</button></form></td></tr>";
-                }
-                $tablaSurtidosMed .= '</tbody></table>';
-            }
-            $stmtSurtidosMed->close();
-
-            // Commit transaction and clear session
-            $conexion->commit();
-            unset($_SESSION['medicamento_seleccionadoMed']);
-            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Medicamentos procesados correctamente' . "\n", FILE_APPEND);
-            ob_end_clean();
-            echo json_encode(['success' => true, 'message' => 'Medicamentos agregados correctamente', 'data' => ['tablaSurtidosMed' => $tablaSurtidosMed]]);
-        } catch (Exception $e) {
-            $conexion->rollback();
-            ob_end_clean();
-            echo json_encode(['success' => false, 'message' => 'Error al agregar los medicamentos: ' . $e->getMessage()]);
-            file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: ' . $e->getMessage() . "\n", FILE_APPEND);
+        $stmtSurtidosMed = $conexion->prepare($sqlSurtidosMed);
+        if (!$stmtSurtidosMed) {
+            throw new Exception("Error preparando consulta dat_ctapac: " . $conexion->error);
         }
-        break;
+        $stmtSurtidosMed->bind_param('i', $Id_AtencionMed);
+        $stmtSurtidosMed->execute();
+        $resultSurtidosMed = $stmtSurtidosMed->get_result();
+
+        $tablaSurtidosMed = '<p class="text-center">No hay medicamentos surtidos para el paciente seleccionado.</p>';
+        if ($resultSurtidosMed && $resultSurtidosMed->num_rows > 0) {
+            $tablaSurtidosMed = '<table class="table table-bordered table-striped"><thead class="thead-dark"><tr><th>Paciente</th><th>Medicamento</th><th>Cantidad</th><th>Total</th><th>Acciones</th></tr></thead><tbody>';
+            while ($row = $resultSurtidosMed->fetch_assoc()) {
+                $tablaSurtidosMed .= "<tr><td>" . htmlspecialchars($row['nombre_paciente']) . "</td><td>" . htmlspecialchars($row['item_name']) . "</td><td>" . htmlspecialchars($row['cta_cant']) . "</td><td>" . htmlspecialchars($row['cta_tot']) . "</td><td><form class='eliminar-surtido-form' data-id-ctapac='{$row['id_ctapac']}'><input type='hidden' name='id_ctapac' value='{$row['id_ctapac']}'><input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'><button type='submit' class='btn btn-danger'>Eliminar</button></form></td></tr>";
+            }
+            $tablaSurtidosMed .= '</tbody></table>';
+        }
+        $stmtSurtidosMed->close();
+
+        // Commit transaction and clear session
+        $conexion->commit();
+        unset($_SESSION['medicamento_seleccionadoMed']);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - Medicamentos procesados correctamente' . "\n", FILE_APPEND);
+        ob_end_clean();
+        echo json_encode(['success' => true, 'message' => 'Medicamentos agregados correctamente', 'data' => ['tablaSurtidosMed' => $tablaSurtidosMed]]);
+    } catch (Exception $e) {
+        $conexion->rollback();
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'Error al agregar los medicamentos: ' . $e->getMessage()]);
+        file_put_contents('error_log.txt', date('Y-m-d H:i:s') . ' - enviar_medicamentosMed: ' . $e->getMessage() . "\n", FILE_APPEND);
+    }
+    break;
 
     default:
         ob_end_clean();
