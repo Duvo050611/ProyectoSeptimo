@@ -24,7 +24,7 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
     exit;
 }
 
-// Fetch patient data for consistency
+// Fetch patient data
 $sql_pac = "SELECT p.Id_exp, CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente 
             FROM paciente p 
             INNER JOIN dat_ingreso di ON p.Id_exp = di.Id_exp 
@@ -49,7 +49,22 @@ if (!$pac_data) {
 $nombre_paciente = $pac_data['nombre_paciente'];
 $id_exp = $pac_data['Id_exp'];
 
-// Manejar selección de medicamento
+// Fetch medication options for dropdown
+$sql_medicamentos = "SELECT item_id, CONCAT(item_name, ', ', item_comercial, ', ', item_grams, ', ', contenido) AS item_name, contenido 
+                     FROM item_almacen 
+                     WHERE activo = 'SI' 
+                     ORDER BY item_name";
+$result_medicamentos = $conexion->query($sql_medicamentos);
+$medicamentosOptions = '';
+if ($result_medicamentos && $result_medicamentos->num_rows > 0) {
+    while ($row = $result_medicamentos->fetch_assoc()) {
+        $medicamentosOptions .= "<option value='{$row['item_id']}' data-unidad='{$row['contenido']}'>" . htmlspecialchars($row['item_name']) . "</option>";
+    }
+} else {
+    $medicamentosOptions = "<option value='' disabled>No hay medicamentos disponibles</option>";
+}
+
+// Handle medication selection
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'select_medicamento') {
     if (!isset($_POST['medicamento']) || !is_numeric($_POST['medicamento'])) {
         $response['message'] = 'ID de medicamento inválido';
@@ -60,9 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $itemId = intval($_POST['medicamento']);
     $sqlLotes = "
         SELECT 
-            ea.existe_lote, ea.existe_caducidad, ea.existe_qty, ea.existe_id
+            ea.existe_id, ea.existe_lote, ea.existe_caducidad, ea.existe_qty
         FROM 
-            existencias_almacenq ea
+            existencias_almacen ea
         WHERE 
             ea.item_id = ? AND ea.existe_qty > 0
         ORDER BY 
@@ -98,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     $sqlTotalExistencias = "
         SELECT SUM(ea.existe_qty) AS total_existencias
-        FROM existencias_almacenq ea
+        FROM existencias_almacen ea
         WHERE ea.item_id = ?
     ";
     $stmt = $conexion->prepare($sqlTotalExistencias);
@@ -118,26 +133,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
     $stmt->close();
 
+    // Fetch unit for the selected medication
+    $sqlUnidad = "SELECT contenido FROM item_almacen WHERE item_id = ?";
+    $stmtUnidad = $conexion->prepare($sqlUnidad);
+    if (!$stmtUnidad) {
+        $response['message'] = 'Error en la preparación de la consulta de unidad: ' . $conexion->error;
+        echo json_encode($response);
+        exit;
+    }
+    $stmtUnidad->bind_param('i', $itemId);
+    $stmtUnidad->execute();
+    $resultUnidad = $stmtUnidad->get_result();
+    $unidad = $resultUnidad->fetch_assoc()['contenido'] ?? 'Unidad';
+    $stmtUnidad->close();
+
     $response['success'] = true;
     $response['data'] = [
         'lotesOptions' => $lotesOptions,
-        'totalExistencias' => $totalExistencias
+        'totalExistencias' => $totalExistencias,
+        'unidad' => $unidad
     ];
     echo json_encode($response);
     exit;
 }
 
-// Manejar selección de paciente (para ítems surtidos)
+// Handle patient selection for dispensed medications
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'select_paciente') {
     $sqlSurtidos = "
         SELECT 
             dc.id_ctapac,
             CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
-            CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name,
+            CONCAT(ia.item_name, ', ', ia.item_comercial, ', ', ia.item_grams, ', ', ia.contenido) AS item_name,
             dc.existe_lote,
             dc.existe_caducidad,
             dc.cta_cant,
-            dc.cta_tot
+            dc.cta_tot,
+            ia.contenido
         FROM 
             dat_ctapac dc
         INNER JOIN 
@@ -173,7 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 <th>Lote</th>
                 <th>Caducidad</th>
                 <th>Cantidad</th>
+                <th>Unidad</th>
                 <th>Total</th>
+                <th>Acciones</th>
             </tr>
         </thead><tbody>";
         while ($row = $resultSurtidos->fetch_assoc()) {
@@ -183,12 +216,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_lote']) . "</td>";
             $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_caducidad']) . "</td>";
             $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_cant']) . "</td>";
+            $tablaSurtidos .= "<td>" . htmlspecialchars($row['contenido']) . "</td>";
             $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_tot']) . "</td>";
+            $tablaSurtidos .= "<td>
+                <form action='' method='post' class='eliminar-surtido-form' data-id-ctapac='{$row['id_ctapac']}'>
+                    <input type='hidden' name='action' value='eliminar_surtido'>
+                    <input type='hidden' name='id_ctapac' value='{$row['id_ctapac']}'>
+                    <input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'>
+                    <button type='submit' class='btn btn-danger'>Eliminar</button>
+                </form>
+            </td>";
             $tablaSurtidos .= "</tr>";
         }
         $tablaSurtidos .= "</tbody></table>";
     } else {
-        $tablaSurtidos = "<p class='text-center'>No hay ítems surtidos para el paciente seleccionado.</p>";
+        $tablaSurtidos = "<p class='text-center'>No hay medicamentos surtidos para el paciente seleccionado.</p>";
     }
     $stmtSurtidos->close();
 
@@ -198,9 +240,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
-// Manejar agregado de medicamento
+// Handle adding a medication
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'agregar_medicamento') {
-    if (!isset($_POST['medicamento']) || !isset($_POST['lote']) || !isset($_POST['cantidad'])) {
+    if (!isset($_POST['medicamento']) || !isset($_POST['lote']) || !isset($_POST['cantidad']) || !isset($_POST['unidad'])) {
         $response['message'] = 'Datos incompletos';
         echo json_encode($response);
         exit;
@@ -209,8 +251,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     list($existeId, $nombreLote, $itemId) = explode('|', $_POST['lote']);
     $itemId = intval($itemId);
     $cantidad = intval($_POST['cantidad']);
+    $unidad = $_POST['unidad'];
 
-    $sqlMedicamentoNombrePrecio = "SELECT CONCAT(item_name, ', ', item_grams) AS item_name, item_price FROM item_almacen WHERE item_id = ?";
+    $sqlMedicamentoNombrePrecio = "SELECT CONCAT(item_name, ', ', item_comercial, ', ', item_grams, ', ', contenido) AS item_name, item_price, contenido 
+                                  FROM item_almacen 
+                                  WHERE item_id = ?";
     $stmtMedicamento = $conexion->prepare($sqlMedicamentoNombrePrecio);
     if (!$stmtMedicamento) {
         $response['message'] = 'Error en la preparación de la consulta de medicamento: ' . $conexion->error;
@@ -219,12 +264,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
     $stmtMedicamento->bind_param('i', $itemId);
     $stmtMedicamento->execute();
-    $stmtMedicamento->bind_result($nombreMedicamento, $precioMedicamento);
+    $stmtMedicamento->bind_result($nombreMedicamento, $precioMedicamento, $contenido);
     $stmtMedicamento->fetch();
     $stmtMedicamento->close();
 
     if (!$nombreMedicamento) {
         $response['message'] = 'Medicamento no encontrado';
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($unidad !== $contenido) {
+        $response['message'] = 'Unidad inválida para el medicamento seleccionado';
         echo json_encode($response);
         exit;
     }
@@ -240,7 +291,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         'cantidad' => $cantidad,
         'existe_id' => $existeId,
         'id_atencion' => $id_atencion,
-        'precio' => $precioMedicamento
+        'precio' => $precioMedicamento,
+        'unidad' => $unidad
     ];
 
     $tabla = '';
@@ -252,6 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <th>Medicamento</th>
                         <th>Lote</th>
                         <th>Cantidad</th>
+                        <th>Unidad</th>
                         <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
@@ -262,9 +315,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $tabla .= "<td>" . htmlspecialchars($medicamento['medicamento']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['lote']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['cantidad']) . "</td>";
+            $tabla .= "<td>" . htmlspecialchars($medicamento['unidad']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['precio']) . "</td>";
             $tabla .= "<td>
                         <form action='' method='post' class='eliminar-form' data-index='$index'>
+                            <input type='hidden' name='action' value='eliminar_medicamento'>
                             <input type='hidden' name='eliminar_index' value='$index'>
                             <input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'>
                             <button type='submit' class='btn btn-danger'>Eliminar</button>
@@ -283,16 +338,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
-// Manejar eliminación de medicamento (pendiente)
+// Handle deletion of a selected medication
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'eliminar_medicamento') {
-    // Validar CSRF token
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $response['message'] = 'Token CSRF inválido';
         echo json_encode($response);
         exit;
     }
 
-    // Validar índice
     if (!isset($_POST['eliminar_index']) || !is_numeric($_POST['eliminar_index'])) {
         $response['message'] = 'Índice inválido';
         echo json_encode($response);
@@ -309,7 +362,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         exit;
     }
 
-    // Generar tabla actualizada
     $tabla = '';
     if (!empty($_SESSION['medicamento_seleccionado'])) {
         $tabla .= "<table class='table table-bordered table-striped'>";
@@ -319,6 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <th>Medicamento</th>
                         <th>Lote</th>
                         <th>Cantidad</th>
+                        <th>Unidad</th>
                         <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
@@ -329,6 +382,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $tabla .= "<td>" . htmlspecialchars($medicamento['medicamento']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['lote']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['cantidad']) . "</td>";
+            $tabla .= "<td>" . htmlspecialchars($medicamento['unidad']) . "</td>";
             $tabla .= "<td>" . htmlspecialchars($medicamento['precio']) . "</td>";
             $tabla .= "<td>
                         <form action='' method='post' class='eliminar-form' data-index='$index'>
@@ -352,7 +406,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
-// Manejar eliminación de ítem surtido
+// Handle deletion of a dispensed medication
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'eliminar_surtido') {
     if (!isset($_POST['id_ctapac']) || !is_numeric($_POST['id_ctapac'])) {
         $response['message'] = 'ID de cuenta inválido';
@@ -365,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $conexion->begin_transaction();
 
     try {
-        // Fetch the dat_ctapac record to get details for stock and kardex updates
+        // Fetch dat_ctapac record
         $sqlCtapac = "
             SELECT 
                 dc.insumo, dc.existe_lote, dc.existe_caducidad, dc.cta_cant, dc.id_atencion
@@ -392,63 +446,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $caducidad = $ctapacData['existe_caducidad'];
         $cantidadLote = $ctapacData['cta_cant'];
 
-        // Find the corresponding existe_id in existencias_almacenq
+        // Find existe_id in existencias_almacen
         $sqlExistencias = "
             SELECT existe_id, existe_qty, existe_salidas
-            FROM existencias_almacenq
+            FROM existencias_almacen
             WHERE item_id = ? AND existe_lote = ? AND existe_caducidad = ?
         ";
         $stmtExistencias = $conexion->prepare($sqlExistencias);
         if (!$stmtExistencias) {
-            throw new Exception("Error preparando consulta existencias_almacenq: " . $conexion->error);
+            throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
         }
         $stmtExistencias->bind_param('iss', $itemId, $loteNombre, $caducidad);
         $stmtExistencias->execute();
         $stmtExistencias->bind_result($existeId, $existeQty, $existeSalidas);
         if (!$stmtExistencias->fetch()) {
-            throw new Exception("No se encontró el lote en existencias_almacenq.");
+            throw new Exception("No se encontró el lote en existencias_almacen.");
         }
         $stmtExistencias->close();
 
-        // Update stock in existencias_almacenq
+        // Update stock
         $nuevaExistenciaQty = $existeQty + $cantidadLote;
         $nuevaExistenciaSalidas = max(0, $existeSalidas - $cantidadLote);
         $fechaActual = date('Y-m-d H:i:s');
 
         $updateExistenciasQuery = "
-            UPDATE existencias_almacenq 
+            UPDATE existencias_almacen 
             SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? 
             WHERE existe_id = ?
         ";
         $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
         if (!$stmtUpdateExistencias) {
-            throw new Exception("Error preparando consulta existencias_almacenq: " . $conexion->error);
+            throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
         }
         $stmtUpdateExistencias->bind_param('isii', $nuevaExistenciaQty, $fechaActual, $nuevaExistenciaSalidas, $existeId);
         if (!$stmtUpdateExistencias->execute()) {
-            throw new Exception("Error actualizando existencias_almacenq: " . $stmtUpdateExistencias->error);
+            throw new Exception("Error actualizando existencias_almacen: " . $stmtUpdateExistencias->error);
         }
         $stmtUpdateExistencias->close();
 
-        // Log deletion in kardex_almacenq
+        // Log deletion in kardex_almacen
         $insertKardex = "
-            INSERT INTO kardex_almacenq (
+            INSERT INTO kardex_almacen (
                 kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
                 kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_destino, id_surte, motivo
             ) 
-            VALUES (NOW(), ?, ?, ?, 0, ?, 0, 0, 0, 0, 'Devolución', 'QUIROFANO', ?, 'Eliminación de ítem surtido')
+            VALUES (NOW(), ?, ?, ?, 0, ?, 0, 0, 0, 0, 'Devolución', 'QUIROFANO', ?, 'Eliminación de medicamento surtido')
         ";
         $stmtKardex = $conexion->prepare($insertKardex);
         if (!$stmtKardex) {
-            throw new Exception("Error preparando consulta kardex_almacenq: " . $conexion->error);
+            throw new Exception("Error preparando consulta kardex_almacen: " . $conexion->error);
         }
         $stmtKardex->bind_param('issii', $itemId, $loteNombre, $caducidad, $cantidadLote, $id_usua);
         if (!$stmtKardex->execute()) {
-            throw new Exception("Error insertando en kardex_almacenq: " . $stmtKardex->error);
+            throw new Exception("Error insertando en kardex_almacen: " . $stmtKardex->error);
         }
         $stmtKardex->close();
 
-        // Soft delete the dat_ctapac record
+        // Soft delete dat_ctapac record
         $updateCtapacQuery = "UPDATE dat_ctapac SET cta_activo = 'NO' WHERE id_ctapac = ?";
         $stmtUpdateCtapac = $conexion->prepare($updateCtapacQuery);
         if (!$stmtUpdateCtapac) {
@@ -460,16 +514,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         $stmtUpdateCtapac->close();
 
-        // Fetch updated items surtidos
+        // Fetch updated dispensed items
         $sqlSurtidos = "
             SELECT 
                 dc.id_ctapac,
                 CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
-                CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name,
+                CONCAT(ia.item_name, ', ', ia.item_comercial, ', ', ia.item_grams, ', ', ia.contenido) AS item_name,
                 dc.existe_lote,
                 dc.existe_caducidad,
                 dc.cta_cant,
-                dc.cta_tot
+                dc.cta_tot,
+                ia.contenido
             FROM 
                 dat_ctapac dc
             INNER JOIN 
@@ -503,7 +558,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <th>Lote</th>
                     <th>Caducidad</th>
                     <th>Cantidad</th>
+                    <th>Unidad</th>
                     <th>Total</th>
+                    <th>Acciones</th>
                 </tr>
             </thead><tbody>";
             while ($row = $resultSurtidos->fetch_assoc()) {
@@ -513,19 +570,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_lote']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_caducidad']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_cant']) . "</td>";
+                $tablaSurtidos .= "<td>" . htmlspecialchars($row['contenido']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_tot']) . "</td>";
-                
+                $tablaSurtidos .= "<td>
+                    <form action='' method='post' class='eliminar-surtido-form' data-id-ctapac='{$row['id_ctapac']}'>
+                        <input type='hidden' name='action' value='eliminar_surtido'>
+                        <input type='hidden' name='id_ctapac' value='{$row['id_ctapac']}'>
+                        <input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'>
+                        <button type='submit' class='btn btn-danger'>Eliminar</button>
+                    </form>
+                </td>";
                 $tablaSurtidos .= "</tr>";
             }
             $tablaSurtidos .= "</tbody></table>";
         } else {
-            $tablaSurtidos = "<p class='text-center'>No hay ítems surtidos para el paciente seleccionado.</p>";
+            $tablaSurtidos = "<p class='text-center'>No hay medicamentos surtidos para el paciente seleccionado.</p>";
         }
         $stmtSurtidos->close();
 
         $conexion->commit();
         $response['success'] = true;
         $response['data'] = ['tablaSurtidos' => $tablaSurtidos];
+        $response['message'] = 'Medicamento surtido eliminado con éxito';
         echo json_encode($response);
     } catch (Exception $e) {
         $conexion->rollback();
@@ -536,7 +602,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
-// Manejar envío de medicamentos
+// Handle submission of medications
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']) && $_POST['enviar_medicamentos'] === '1') {
     if (!isset($_SESSION['medicamento_seleccionado']) || empty($_SESSION['medicamento_seleccionado'])) {
         $response['message'] = 'No hay medicamentos seleccionados para enviar';
@@ -567,13 +633,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
             $existeId = $medicamento['existe_id'];
             $nombreLote = $medicamento['lote'];
             $precio = $medicamento['precio'];
+            $unidad = $medicamento['unidad'];
             $total = $precio * $cantidad;
 
-            // Verify stock availability
-            $sql_existencias = "SELECT existe_qty, existe_caducidad, existe_salidas FROM existencias_almacenq WHERE existe_id = ?";
+            // Verify stock
+            $sql_existencias = "SELECT existe_qty, existe_caducidad, existe_salidas 
+                               FROM existencias_almacen 
+                               WHERE existe_id = ?";
             $stmt_existencias = $conexion->prepare($sql_existencias);
             if (!$stmt_existencias) {
-                throw new Exception("Error preparando consulta existencias_almacenq: " . $conexion->error);
+                throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
             }
             $stmt_existencias->bind_param('i', $existeId);
             $stmt_existencias->execute();
@@ -595,17 +664,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
 
             // Update stock
             $updateExistenciasQuery = "
-                UPDATE existencias_almacenq 
+                UPDATE existencias_almacen 
                 SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? 
                 WHERE existe_id = ?
             ";
             $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
             if (!$stmtUpdateExistencias) {
-                throw new Exception("Error preparando consulta existencias_almacenq: " . $conexion->error);
+                throw new Exception("Error preparando consulta existencias_almacen: " . $conexion->error);
             }
             $stmtUpdateExistencias->bind_param('isii', $nuevaExistenciaQty, $fechaActual, $nuevaExistenciaSalidas, $existeId);
             if (!$stmtUpdateExistencias->execute()) {
-                throw new Exception("Error actualizando existencias_almacenq: " . $stmtUpdateExistencias->error);
+                throw new Exception("Error actualizando existencias_almacen: " . $stmtUpdateExistencias->error);
             }
             $stmtUpdateExistencias->close();
 
@@ -625,21 +694,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
             }
             $stmtCtapac->close();
 
-            // Log in kardex_almacenq
+            // Log in kardex_almacen
             $insertKardex = "
-                INSERT INTO kardex_almacenq (
+                INSERT INTO kardex_almacen (
                     kardex_fecha, item_id, kardex_lote, kardex_caducidad, kardex_inicial, kardex_entradas, kardex_salidas, kardex_qty, 
                     kardex_dev_stock, kardex_dev_merma, kardex_movimiento, kardex_destino, id_surte, motivo
                 ) 
-                VALUES (NOW(), ?, ?, ?, 0, 0, ?, 0, 0, 0, 'Salida', 'QUIROFANO', ?, 'Surtido a paciente')
+                VALUES (NOW(), ?, ?, ?, 0, 0, ?, 0, 0, 0, 'Salida', 'QUIROFANO', ?, 'Surtido a paciente ($unidad)')
             ";
             $stmtKardex = $conexion->prepare($insertKardex);
             if (!$stmtKardex) {
-                throw new Exception("Error preparando consulta kardex_almacenq: " . $conexion->error);
+                throw new Exception("Error preparando consulta kardex_almacen: " . $conexion->error);
             }
             $stmtKardex->bind_param('issii', $itemId, $nombreLote, $caducidad, $cantidad, $id_usua);
             if (!$stmtKardex->execute()) {
-                throw new Exception("Error insertando en kardex_almacenq: " . $stmtKardex->error);
+                throw new Exception("Error insertando en kardex_almacen: " . $stmtKardex->error);
             }
             $stmtKardex->close();
         }
@@ -647,16 +716,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
         // Clear selected medications
         $_SESSION['medicamento_seleccionado'] = [];
 
-        // Fetch updated items surtidos
+        // Fetch updated dispensed items
         $sqlSurtidos = "
             SELECT 
                 dc.id_ctapac,
                 CONCAT(p.nom_pac, ' ', p.papell, ' ', p.sapell) AS nombre_paciente,
-                CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name,
+                CONCAT(ia.item_name, ', ', ia.item_comercial, ', ', ia.item_grams, ', ', ia.contenido) AS item_name,
                 dc.existe_lote,
                 dc.existe_caducidad,
                 dc.cta_cant,
-                dc.cta_tot
+                dc.cta_tot,
+                ia.contenido
             FROM 
                 dat_ctapac dc
             INNER JOIN 
@@ -690,7 +760,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
                     <th>Lote</th>
                     <th>Caducidad</th>
                     <th>Cantidad</th>
+                    <th>Unidad</th>
                     <th>Total</th>
+                    <th>Acciones</th>
                 </tr>
             </thead><tbody>";
             while ($row = $resultSurtidos->fetch_assoc()) {
@@ -700,12 +772,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_medicamentos']
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_lote']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['existe_caducidad']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_cant']) . "</td>";
+                $tablaSurtidos .= "<td>" . htmlspecialchars($row['contenido']) . "</td>";
                 $tablaSurtidos .= "<td>" . htmlspecialchars($row['cta_tot']) . "</td>";
+                $tablaSurtidos .= "<td>
+                    <form action='' method='post' class='eliminar-surtido-form' data-id-ctapac='{$row['id_ctapac']}'>
+                        <input type='hidden' name='action' value='eliminar_surtido'>
+                        <input type='hidden' name='id_ctapac' value='{$row['id_ctapac']}'>
+                        <input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'>
+                        <button type='submit' class='btn btn-danger'>Eliminar</button>
+                    </form>
+                </td>";
                 $tablaSurtidos .= "</tr>";
             }
             $tablaSurtidos .= "</tbody></table>";
         } else {
-            $tablaSurtidos = "<p class='text-center'>No hay ítems surtidos para el paciente seleccionado.</p>";
+            $tablaSurtidos = "<p class='text-center'>No hay medicamentos surtidos para el paciente seleccionado.</p>";
         }
         $stmtSurtidos->close();
 
