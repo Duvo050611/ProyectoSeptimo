@@ -48,7 +48,7 @@ $start_page = max(1, $end_page - $max_links + 1); // Ajustar si llegamos al lím
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMA Venecia Metepec</title>
+    <title>INEO Metepec</title>
 <link rel="stylesheet" type="text/css" href="css/select2.css">
     <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">

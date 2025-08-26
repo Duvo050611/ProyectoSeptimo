@@ -5,213 +5,219 @@ include "../header_farmaciah.php";
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INEO Metepec</title>
+    <link rel="stylesheet" type="text/css" href="css/select2.css">
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/select2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Estilos modernos -->
+    <style>
+        :root {
+            --color-primario: #2b2d7f;
+            --color-secundario: #1a1c5a;
+            --color-fondo: #f8f9ff;
+            --color-borde: #e8ebff;
+            --sombra: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-  <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
+        body {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
 
+        .container-moderno {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 98%;
+            box-shadow: var(--sombra);
+            border: 2px solid var(--color-borde);
+        }
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        .btn-moderno {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--sombra);
+        }
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        .btn-regresar {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white !important;
+        }
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+        .btn-filtrar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white !important;
+        }
 
+        .btn-moderno:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script>
-    // Write on keyup event of keyword input element
-    $(document).ready(function() {
-      $("#search").keyup(function() {
-        _this = this;
-        // Show only matching TR, hide rest of them
-        $.each($("#mytable tbody tr"), function() {
-          if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-            $(this).hide();
-          else
-            $(this).show();
-        });
-      });
-    });
-  </script>
+        .form-control {
+            border: 2px solid var(--color-borde);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
 
-<style>
-     @media screen and (min-width: 320px) and (max-width: 980px){
-   
-h4{
-    font-size:13px;
-}
-label{
-    font-size:12px;
-}
-}
-</style>
+        .form-control:focus {
+            border-color: var(--color-primario);
+            box-shadow: 0 0 0 3px rgba(43, 45, 127, 0.1);
+            outline: none;
+        }
 
+        .form-label {
+            font-weight: 600;
+            color: var(--color-primario);
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container-moderno {
+                margin: 10px;
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .btn-moderno {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<section class="content container-fluid">
+    <div class="container-moderno">
+        <div class="text-center mb-4">
+            <a class="btn-moderno btn-regresar" href="../../template/menu_farmaciahosp.php">
+                ⬅ Regresar
+            </a>
+        </div>
 
+        <div class="header-principal">
+            <span class="icono-principal">💊</span>
+            <h1>CONSULTAR INDICACIONES MÉDICAS</h1>
+        </div>
 
-  <section class="content container-fluid">
-
-    <div class="container box">
-      <div class="content">
-
-
-          <div class="row">
-              <div class="col-sm-4"></div>
-              
-              <div class="col-sm-4"><a type="submit" class="btn btn-danger btn-block btn-sm"
-                                       href="../../template/menu_farmaciahosp.php">Regresar...</a>
-              </div>
-          </div>
-          <br>
-        <center>
-          <h4>CONSULTAR INDICACIONES MÉDICAS</h4>
-        </center>
         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label class="col-sm-6 control-label">SELECCIONAR PACIENTE: </label>
-           
-                <!--  <select name="serv" class="selectpicker" data-live-search="true"> -->
-                <select class="form-control col-sm-3"  data-live-search="true" name="paciente" required>
+                <label class="form-label">Seleccionar Paciente:</label>
+                <select class="form-control col-sm-4" data-live-search="true" name="paciente" required>
                     <option value="">SELECCIONAR</option>
                     <?php
-
-                    $query = "SELECT * from paciente p, dat_ingreso di, cat_camas ca where p.Id_exp = di.Id_exp and di.activo='SI' and ca.id_atencion = di.id_atencion";
+                    $query = "SELECT * from paciente p, dat_ingreso di, cat_camas ca 
+                        where p.Id_exp = di.Id_exp and di.activo='SI' and ca.id_atencion = di.id_atencion";
                     $result = $conexion->query($query);
-
                     while ($row = $result->fetch_assoc()) {
-                    echo "<option value='" . $row['id_atencion'] . "'> " . $row['num_cama'] . " - " . $row['papell'] . " " . $row['sapell'] . " " . $row['nom_pac'] ." </option>";
-                    $cama = $row['num_cama'];
+                        echo "<option value='" . $row['id_atencion'] . "'> " . $row['num_cama'] . " - " . $row['papell'] . " " . $row['sapell'] . " " . $row['nom_pac'] ." </option>";
+                        $cama = $row['num_cama'];
                     }
                     ?>
                 </select>
-
             </div>
-                 <input type="submit" name="btnpaciente" class="btn btn-block btn-success col-sm-2 btn-sm" value="SELECCIONAR">
-                
+            <button type="submit" name="btnpaciente" class="btn-moderno btn-filtrar">Seleccionar</button>
         </form>
-      </div>
     </div>
+
     <?php
-
-    include "../../conexionbd.php";
-    //    $resultado2 = $conexion->query("SELECT id_serv, serv_cve, serv_costo, serv_umed,serv_activo FROM cat_servicios") or die($conexion->error);
-
     if (isset($_POST['btnpaciente'])) {
-      $paciente = mysqli_real_escape_string($conexion, (strip_tags($_POST["paciente"], ENT_QUOTES))); //Escanpando caracteres
-
-      echo '<script type="text/javascript"> window.location.href="order_indica.php?paciente=' . $paciente . '";</script>';
+        $paciente = mysqli_real_escape_string($conexion, (strip_tags($_POST["paciente"], ENT_QUOTES)));
+        echo '<script type="text/javascript"> window.location.href="order_indica.php?paciente=' . $paciente . '";</script>';
     }
 
     if ((isset($_GET['paciente']))) {
         $paciente1 = $_GET['paciente'];
         $usuario = $_SESSION['login'];
         $usuario2 = $usuario['id_usua'];
-        
-        $sql_paciente = "SELECT p.nom_pac, p.papell, p.sapell FROM paciente p, dat_ingreso di WHERE p.Id_exp = di.Id_exp and di.id_atencion = $paciente1";
 
+        $sql_paciente = "SELECT p.nom_pac, p.papell, p.sapell 
+                       FROM paciente p, dat_ingreso di 
+                       WHERE p.Id_exp = di.Id_exp and di.id_atencion = $paciente1";
         $result_pac = $conexion->query($sql_paciente);
         while ($row_pac = $result_pac->fetch_assoc()) {
-            $pac = $row_pac['papell'] . ' ' . $row_pac['sapell'] . ' ' . $row_pac['nom_pac'] ;
+            $pac = $row_pac['papell'] . ' ' . $row_pac['sapell'] . ' ' . $row_pac['nom_pac'];
         }
         ?>
-        <center>
-                <h3>Habitación:  <?php echo $cama .' -  Paciente: '.  $pac ?></h3>
-        </center>
+        <div class="container-moderno">
+            <h3 class="text-center">Habitación: <?php echo $cama .' -  Paciente: '.  $pac ?></h3>
+        </div>
         <?php
-        
         $resultado5=$conexion->query("select * from dat_ordenes_med WHERE id_atencion=" . $paciente1." ORDER BY id_ord_med DESC") or die($conexion->error);
 
         while ($f5 = mysqli_fetch_array($resultado5)) {
-        ?>
-
-        <div class="container box"><br>
-            <div class="container">
-
-            
-            <br>
-
-         
-          <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                <div class="container">
-                    <div class="row">
-                        <div class=" col">
-                            Tipo: <strong><?php echo $f5['tipo']; ?></strong>
-                        </div>
-                        <div class="col-sm-3">
-                            <?php $fech=date_create($f5['fecha_ord']) ?>
-                            Fecha: <strong><?php echo date_format($fech, 'd-m-Y'); ?></strong> 
-                        </div>
-                        <div class="col-sm-3">
-                            Hora: <strong><?php echo $f5['hora_ord']; ?></strong>
-                        </div>
+            ?>
+            <div class="container-moderno">
+                <div class="row mb-3">
+                    <div class="col">
+                        Tipo: <strong><?php echo $f5['tipo']; ?></strong>
                     </div>
-                    <hr>
+                    <div class="col-sm-3">
+                        Fecha: <strong><?php echo date('d-m-Y', strtotime($f5['fecha_ord'])); ?></strong>
+                    </div>
+                    <div class="col-sm-3">
+                        Hora: <strong><?php echo $f5['hora_ord']; ?></strong>
+                    </div>
                 </div>
-          
-            <div class="row">
-                <div class="col-2">
-                    <center><strong><label for="exampleFormControlTextarea1"><br><font size="3" color="#2b2d7f ">Medicamentos:</font></label></strong></center>
-                </div>
-                <div class=" col-10">
-                    <div class="form-group"><br>
+                <hr>
+                <div class="row">
+                    <div class="col-2">
+                        <label class="form-label">Medicamentos:</label>
+                    </div>
+                    <div class="col-10">
                         <textarea class="form-control" rows="10" disabled><?php echo $f5['med_med']; ?></textarea>
-                        
                     </div>
                 </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-2">
-                    <center><strong><label for="exampleFormControlTextarea1"><br><font size="3" color="#2b2d7f ">Soluciones:</font></label></strong></center>
-                </div>
-                <div class=" col-10">
-                    <div class="form-group"><br>
+                <div class="row mt-3">
+                    <div class="col-2">
+                        <label class="form-label">Soluciones:</label>
+                    </div>
+                    <div class="col-10">
                         <textarea class="form-control" rows="5" disabled><?php echo $f5['soluciones']; ?></textarea>
                     </div>
                 </div>
-
             </div>
-
-        
-           </div>
-          </form>
-          <br>
-          <br>
-          <br>
-
-        </div>
-     
-    <?php
-    }}
+            <?php
+        }}
     ?>
-  </section>
- 
+</section>
 
-  <footer class="main-footer">
-    <?php
-    include("../../template/footer.php");
-    ?>
-  </footer>
-
-  <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-  <!-- FastClick -->
-  <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
-  <!-- AdminLTE App -->
-  <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
-
+<footer class="main-footer">
+    <?php include("../../template/footer.php"); ?>
+</footer>
 </body>
-
 </html>

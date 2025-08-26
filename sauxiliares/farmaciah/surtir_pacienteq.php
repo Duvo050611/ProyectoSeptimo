@@ -50,12 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente'])) {
 
 
 
-$queryMedicamentos = "SELECT DISTINCT 
-    ea.item_id, 
-    CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
-    FROM existencias_almacenh ea 
-    JOIN item_almacen ia ON ea.item_id = ia.item_id 
-    ORDER BY ia.item_name
+$queryMedicamentos = "
+    SELECT DISTINCT 
+        ea.item_id, 
+        CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
+    FROM existencias_almacenh AS ea
+    INNER JOIN item_almacen AS ia 
+        ON ea.item_id = ia.item_id
+    ORDER BY item_name
 ";
 
 $resultMedicamentos = $conexion->query($queryMedicamentos);
@@ -226,7 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             $queryItemAlmacenn = "
             SELECT 
                 item_name, 
-                item_price 
+                item_price,
+                item_grams
             FROM 
                 item_almacen 
            WHERE item_id = ?";
@@ -273,8 +276,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 exit;
             }
 
-
-
             // *** 6. Insertar en kardex_almacenh ***
             $insert_kardex = "
                INSERT INTO kardex_almacenh (
@@ -292,10 +293,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                 throw new Exception("Error al insertar en kardex_almacenh: " . $stmt_kardex->error);
             }
             $stmt_kardex->close();
-
                 
             // *** 7. Insertar en salidas_almacenh ***
-            
              $salio = "QUIROFANO";
                 
             $queryInsercion = "
@@ -390,7 +389,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
             }*/
 
 
-
             // *** 5. Actualizar existencias en la tabla existencias_almacenh ***
             $updateExistenciasQuery = "UPDATE existencias_almacenh SET existe_qty = ?, existe_fecha = ?, existe_salidas = ? WHERE existe_id = ?";
             $stmtUpdateExistencias = $conexion->prepare($updateExistenciasQuery);
@@ -431,95 +429,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INEO Metepec</title>
+    <link rel="stylesheet" type="text/css" href="css/select2.css">
+    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFMw5uZjQz4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/select2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <a href="../../template/menu_farmaciahosp.php"
-        style='color: white; margin-left: 30px; margin-bottom: 20px; background-color: #d9534f; 
-          border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; display: inline-block;'>
-        Regresar
-    </a>
-    <div class="form-container">
-        <div class="thead" style="background-color: #2b2d7f; margin: 5px auto; padding: 5px; color: white; width: fit-content; text-align: center; border-radius: 5px;">
-            <h1 style="font-size: 26px; margin: 2;">SURTIR PACIENTE</h1>
+<!-- Botón regresar -->
+<a href="../../template/menu_farmaciahosp.php" class="btn-moderno btn-regresar" style="margin:20px;">
+    <i class="fa-solid fa-arrow-left"></i> Regresar
+</a>
+
+<!-- Contenedor principal -->
+<div class="container-moderno">
+    <!-- Header -->
+    <div class="header-principal">
+        <span class="icono-principal"><i class="fa-solid fa-prescription-bottle-medical"></i></span>
+        <h1><i class="fa-solid fa-user-injured"></i> SURTIR PACIENTE</h1>
+    </div>
+
+    <!-- Formulario -->
+    <form action="" method="post" class="contenedor-filtros">
+
+        <!-- Paciente -->
+        <label for="paciente" class="form-label">
+            <i class="fa-solid fa-user"></i> Paciente
+        </label>
+        <select name="paciente" id="paciente" class="form-control">
+            <option value="" disabled selected>Seleccionar Paciente</option>
+            <?= $pacientesOptions ?>
+        </select>
+
+        <!-- Medicamento -->
+        <label for="medicamento" class="form-label">
+            <i class="fa-solid fa-pills"></i> Medicamento
+        </label>
+        <select name="medicamento" id="medicamento" class="form-control" onchange="this.form.submit()">
+            <option value="" disabled selected>Seleccionar Medicamento</option>
+            <?= $medicamentosOptions ?>
+        </select>
+
+        <!-- Lote -->
+        <label for="lote" class="form-label">
+            <i class="fa-solid fa-barcode"></i> Lote
+        </label>
+        <select name="lote" id="lote" class="form-control" onchange="actualizarLote()">
+            <option value="" disabled selected>Lote/Caducidad/Total</option>
+            <?= $lotesOptions ?>
+        </select>
+
+        <!-- Cantidad -->
+        <label for="cantidad" class="form-label">
+            <i class="fa-solid fa-hashtag"></i> Cantidad
+        </label>
+        <input type="number" id="cantidad" name="cantidad" min="1" class="form-control">
+
+        <!-- Existe ID -->
+        <div id="existe_id_display" style="margin-top: 10px; font-weight: bold; color: var(--color-primario);"></div>
+
+        <!-- Botones -->
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+            <button type="submit" name="agregar" value="2" class="btn-moderno btn-especial">
+                <i class="fa-solid fa-plus"></i> Agregar
+            </button>
+            <button type="submit" name="enviar_medicamentos" value="1" class="btn-moderno btn-filtrar">
+                <i class="fa-solid fa-paper-plane"></i> Enviar
+            </button>
         </div>
-        <br><br>
+    </form>
 
-        <form action="" method="post">
+    <hr>
 
+    <!-- Tabla -->
+    <h3 style="text-align:center; color: var(--color-primario);">
+        <i class="fa-solid fa-list"></i> ITEMS A SURTIR
+    </h3>
 
-            <label for="paciente">Paciente</label>
-            <select name="paciente" id="paciente">
-                <option value="" disabled selected>Seleccionar Paciente</option>
-                <?= $pacientesOptions ?>
-            </select>
-
-            <label for="medicamento">Medicamento</label>
-            <select name="medicamento" id="medicamento" onchange="this.form.submit()">
-                <option value="" disabled selected>Seleccionar Medicamento</option>
-                <?= $medicamentosOptions ?>
-            </select>
-
-
-
-            <label for="lote">Lote</label>
-            <select name="lote" id="lote" onchange="actualizarLote()">
-                <option value="" disabled selected>Lote/Caducidad/Total</option>
-                <?= $lotesOptions ?>
-            </select>
-
-            <label for="cantidad">Cantidad</label>
-            <input type="number" id="cantidad" name="cantidad" min="1">
-            <!-- Mostrar el existe_id del lote seleccionado -->
-            <div id="existe_id_display" style="margin-top: 10px; font-weight: bold;"></div>
-
-            <!-- Contenedor de los botones -->
-            <div class="button-container">
-                <button type="submit" name="agregar" value="2">Agregar</button>
-
-                <button type="submit" name="enviar_medicamentos" value="1">Enviar</button>
-            </div>
-
-        </form>
-
-        <hr>
-
-        <style>
-            h3 {
-                text-align: center;
-            }
-        </style>
-
-        <h3>ITEMS A SURTIR</h3>
-
+    <div class="tabla-contenedor">
         <?php
-
-
-
-        // Eliminar el registro si se envió el índice por POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_index'])) {
-            $index = intval($_POST['eliminar_index']); // Asegurar que el índice sea un entero
+            $index = intval($_POST['eliminar_index']);
             if (isset($_SESSION['medicamento_seleccionado'][$index])) {
-                unset($_SESSION['medicamento_seleccionado'][$index]); // Eliminar el registro
-                $_SESSION['medicamento_seleccionado'] = array_values($_SESSION['medicamento_seleccionado']); // Reindexar el array
+                unset($_SESSION['medicamento_seleccionado'][$index]);
+                $_SESSION['medicamento_seleccionado'] = array_values($_SESSION['medicamento_seleccionado']);
             }
         }
 
         if (isset($_SESSION['medicamento_seleccionado']) && is_array($_SESSION['medicamento_seleccionado'])) {
-            echo "<table border='1' cellspacing='5' cellpadding='5' style='font-size: 18px; width: 90%; margin: 0 auto;'>";
-            echo "<tr>
-            <th>Paciente</th>
-            <th>Medicamento</th>
-            <th>Lote</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-          </tr>";
+            echo "<table class='table-moderna'>";
+            echo "<thead><tr>
+                        <th><i class='fa-solid fa-user'></i> Paciente</th>
+                        <th><i class='fa-solid fa-capsules'></i> Medicamento</th>
+                        <th><i class='fa-solid fa-boxes-stacked'></i> Lote</th>
+                        <th><i class='fa-solid fa-hashtag'></i> Cantidad</th>
+                        <th><i class='fa-solid fa-dollar-sign'></i> Precio</th>
+                        <th><i class='fa-solid fa-gears'></i> Acciones</th>
+                      </tr></thead><tbody>";
 
-            // Iterar sobre los medicamentos
-            foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) { // Usar $index para identificar el registro
-                // Verificamos si el elemento actual es un array con las claves esperadas
+            foreach ($_SESSION['medicamento_seleccionado'] as $index => $medicamento) {
                 if (is_array($medicamento) && isset($medicamento['paciente'], $medicamento['medicamento'], $medicamento['lote'], $medicamento['cantidad'])) {
                     echo "<tr>";
                     echo "<td>{$medicamento['paciente']}</td>";
@@ -527,35 +552,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
                     echo "<td>{$medicamento['lote']}</td>";
                     echo "<td>{$medicamento['cantidad']}</td>";
                     echo "<td>{$medicamento['precio']}</td>";
-
-                    // Botón para eliminar este registro (envía el índice $index por POST)
                     echo "<td>
-                    <form action='' method='post' style='display:inline;'>
-                        <input type='hidden' name='eliminar_index' value='$index'>
-                        <button type='submit' style='background-color:red;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:12px;'>Eliminar</button>
-                    </form>
-                  </td>";
-
+                                <form action='' method='post' style='display:inline;'>
+                                    <input type='hidden' name='eliminar_index' value='$index'>
+                                    <button type='submit' class='btn-moderno btn-borrar' style='font-size:12px;padding:6px 12px;'>
+                                        <i class='fa-solid fa-trash'></i> Eliminar
+                                    </button>
+                                </form>
+                              </td>";
                     echo "</tr>";
                 } else {
-                    echo "<tr><td colspan='5'>Datos incompletos para el medicamento.</td></tr>";
+                    echo "<tr><td colspan='6'>Datos incompletos para el medicamento.</td></tr>";
                 }
             }
 
-            echo "</table>";
+            echo "</tbody></table>";
         } else {
-            echo "<p>No hay medicamentos seleccionados.</p>";
+            echo "<div class='mensaje-sin-resultados'>
+                        <i class='fa-solid fa-box-open'></i><br>
+                        No hay medicamentos seleccionados.
+                      </div>";
         }
         ?>
-
-
-
-
-
     </div>
-
+</div>
 </body>
-
 </html>
 
 
@@ -584,77 +605,327 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['enviar_medicamentos'
     }
 </script>
 <style>
-    .form-container {
-        width: 60%;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f4f4f9;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    :root {
+        --color-primario: #2b2d7f;
+        --color-secundario: #1a1c5a;
+        --color-fondo: #f8f9ff;
+        --color-borde: #e8ebff;
+        --sombra: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    label {
+    /* ===== ESTILOS GENERALES ===== */
+    body {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container-moderno {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px auto;
+        max-width: 98%;
+        box-shadow: var(--sombra);
+        border: 2px solid var(--color-borde);
+    }
+
+    /* ===== BOTONES MODERNOS ===== */
+    .btn-moderno {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: var(--sombra);
+    }
+
+    .btn-regresar {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white !important;
+    }
+
+    .btn-filtrar {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white !important;
+    }
+
+    .btn-borrar {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white !important;
+    }
+
+    .btn-especial {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white !important;
+    }
+
+    .btn-moderno:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+
+    /* ===== HEADER SECTION ===== */
+    .header-principal {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+        border-radius: 20px;
+        color: white;
+        box-shadow: var(--sombra);
+        position: relative;
+    }
+
+    .header-principal .icono-principal {
+        font-size: 48px;
+        margin-bottom: 15px;
         display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
     }
 
-    select,
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+    .header-principal h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    button {
+    .btn-ajuste {
+        position: absolute;
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
+    }
+
+    /* ===== FORMULARIO DE FILTROS ===== */
+    .contenedor-filtros {
+        background: white;
+        border: 2px solid var(--color-borde);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        box-shadow: var(--sombra);
+    }
+
+    .form-control {
+        border: 2px solid var(--color-borde);
+        border-radius: 10px;
+        padding: 5px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--color-primario);
+        box-shadow: 0 0 0 3px rgba(43, 45, 127, 0.1);
+        outline: none;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--color-primario);
+        margin-bottom: 8px;
+    }
+
+    /* ===== TABLA MODERNIZADA ===== */
+    /* ===== TABLA MODERNIZADA ===== */
+    .tabla-contenedor {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--sombra);
+        border: 2px solid var(--color-borde);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    /* Ajuste de tabla */
+    .table-moderna {
+        margin: 0;
+        font-size: 12px;
         width: 100%;
-        padding: 10px;
-        background-color: #2b2d7f;
+        table-layout: auto; /* evita que las columnas se expandan de más */
+        border-collapse: collapse;
+    }
+
+    /* Encabezados */
+    .table-moderna thead th {
+        background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
         color: white;
         border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
+        padding: 12px 8px;
+        font-weight: 600;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-size: 11px;
+        white-space: nowrap;
     }
 
+    /* Filas */
+    .table-moderna tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f1f3f4;
+    }
 
-    .button-container {
+    .table-moderna tbody tr:hover {
+        background-color: var(--color-fondo);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Celdas */
+    .table-moderna tbody td {
+        padding: 8px 6px;
+        vertical-align: middle;
+        border: none;
+        text-align: center;
+        font-size: 12px;
+        white-space: normal;
+        word-wrap: break-word;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ===== MENSAJE SIN RESULTADOS ===== */
+    .mensaje-sin-resultados {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--color-primario);
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .mensaje-sin-resultados i {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    /* ===== PAGINACIÓN MODERNA ===== */
+    .contenedor-paginacion {
         display: flex;
-        justify-content: start;
-        gap: 10px;
+        justify-content: center;
+        margin: 20px 0 10px 0;
+        padding-bottom: 0;
     }
 
-    button:hover {
-        background-color: #0a4d44;
-    }
-
-    form {
+    .paginacion-moderna {
         display: flex;
-        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn-paginacion {
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        width: 300px;
-        /* Ancho fijo para que los elementos tengan el mismo tamaño */
-        margin: 0 auto;
+        min-width: 45px;
+        height: 45px;
+        border: 2px solid var(--color-borde);
+        background: white;
+        color: var(--color-primario);
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        padding: 8px 12px;
     }
 
-    /* Estilos para los elementos select e input */
-    select,
-    input {
-        width: 100%;
-        /* Hace que los elementos ocupen todo el ancho del formulario */
-        padding: 5px;
-        font-size: 14px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
+    .btn-paginacion:hover {
+        background: var(--color-primario);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(43, 45, 127, 0.3);
+        text-decoration: none;
     }
 
-    /* Estilos para las etiquetas */
-    label {
-        font-size: 20px;
-        margin-bottom: 5px;
+    .btn-paginacion.active {
+        background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(43, 45, 127, 0.4);
+    }
+
+    /* ===== SELECT2 CUSTOM ===== */
+    .select2-container--default .select2-selection--single {
+        border: 2px solid var(--color-borde) !important;
+        border-radius: 10px !important;
+        height: 48px !important;
+        line-height: 48px !important;
+    }
+
+    .select2-container--default .select2-selection--single:focus {
+        border-color: var(--color-primario) !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        padding-left: 15px !important;
+        padding-top: 8px !important;
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+        .container-moderno {
+            margin: 10px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .header-principal h1 {
+            font-size: 24px;
+        }
+
+        .btn-moderno {
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+        .table-moderna {
+            font-size: 10px;
+        }
+
+        .table-moderna thead th,
+        .table-moderna tbody td {
+            padding: 8px 6px;
+        }
+
+        .btn-ajuste {
+            position: relative;
+            top: auto;
+            right: auto;
+            transform: none;
+            margin-top: 15px;
+        }
+    }
+
+    /* ===== ANIMACIONES ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .container-moderno {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .contenedor-filtros,
+    .tabla-contenedor {
+        animation: fadeInUp 0.6s ease-out 0.1s both;
     }
 </style>
