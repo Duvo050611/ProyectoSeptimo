@@ -140,7 +140,7 @@ $pdf->Line(48, 41, 172, 41);
 $pdf->SetX(170);
 
 $pdf->SetFont('Arial', '', 6);
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $date1=date_create($fecha_actual);
 $pdf->Cell(35, -2, 'FECHA: ' . date_format($date1,"d/m/Y H:i"), 0, 1, 'R');
 

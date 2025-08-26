@@ -118,7 +118,7 @@ $usuario = $_SESSION['login'];
     $cart_uniquid = uniqid();
     $stock = $stock_qty - $qty;
     $usuario1 = $usuario['id_usua'];
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
     
     if (!($stock < 10)) {

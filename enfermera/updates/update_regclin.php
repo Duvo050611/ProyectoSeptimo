@@ -320,7 +320,7 @@ while($row=$resultado->fetch_assoc()){
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $sql2 = "UPDATE enf_reg_clin SET notenferm_mat='$notenferm_mat' WHERE id_clinreg=$id_clinreg";

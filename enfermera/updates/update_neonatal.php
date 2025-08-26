@@ -414,7 +414,7 @@ foreach ($result_med as $row_med){
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE iden_recnac SET fechab='$fechab', horab='$horab', tempb ='$tempb', respb='$respb',sistb='$sistb', diastb='$diastb', caidab ='$caidab', dolorb='$dolorb',sondab='$sondab', edoconb='$edoconb', dietab ='$dietab', glucocab='$glucocab',glucob='$glucob', insulinab='$insulinab', canalizab ='$canalizab', solparenb='$solparenb',solparb='$solparb', ingmedb='$ingmedb', viaoralb ='$viaoralb', otrosb='$otrosb',formb='$formb', ingtotb='$ingtotb', diuresisb ='$diuresisb', evacuab='$evacuab',vomitob='$vomitob', canalb='$canalb', perinsenb ='$perinsenb', egtotb='$egtotb',baltotb='$baltotb', cuideb='$cuideb', noteb ='$noteb', fechasistb='$fechasistb' WHERE id_rec_nac=$id_rec_nac";

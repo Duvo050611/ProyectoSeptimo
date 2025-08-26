@@ -124,7 +124,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -447,7 +447,7 @@ function leerTexto(texton){
         $not_recu =  mysqli_real_escape_string($conexion, (strip_tags($_POST["not_recu"], ENT_QUOTES)));
             
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO recu (id_atencion,id_usua,not_recu,text_fecha) values (' . $id_atencion . ',' . $id_usua .',"' . $not_recu . '","' . $fecha_actual . '") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

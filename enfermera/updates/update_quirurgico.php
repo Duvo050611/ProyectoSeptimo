@@ -325,7 +325,7 @@ while($row=$resultado->fetch_assoc()){
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $sql2 = "UPDATE enf_quirurgico SET not_preop='$not_preop',nom_enf_preop='$nom_enf_preop',not_trans='$not_trans',nom_enf_trans='$nom_enf_trans',not_post='$not_post',nom_enf_post='$nom_enf_post' WHERE id_quir=$id_quir";

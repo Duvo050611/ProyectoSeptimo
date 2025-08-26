@@ -112,7 +112,7 @@ while ($row_reg_usrs = $result_reg_usrs->fetch_assoc()) {
   $user_nombre = $row_reg_usrs['nombre'];
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d-m-Y H:i:s");
 
  explode("-", $fecha_actual);

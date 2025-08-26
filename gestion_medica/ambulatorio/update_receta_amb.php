@@ -403,7 +403,7 @@ while ($row=$result->fetch_assoc()) {
 $px=mysqli_real_escape_string($conexion, (strip_tags($_POST["px"], ENT_QUOTES)));
 $med_rec  = mysqli_real_escape_string($conexion, (strip_tags($_POST["med_rec"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 

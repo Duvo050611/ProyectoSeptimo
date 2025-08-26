@@ -105,7 +105,7 @@ S
             <div class="col-sm-4">
                 <div class="form-group">
                     <?php
-                        date_default_timezone_set('America/Mexico_City');
+                        date_default_timezone_set('America/Guatemala');
                         $fecha_actual = date("d-m-Y H:i:s");
                         ?>
                     <label><strong>FECHA :</strong></label>

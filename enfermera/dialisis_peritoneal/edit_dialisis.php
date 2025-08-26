@@ -150,7 +150,7 @@ $csalida    = mysqli_real_escape_string($conexion, (strip_tags($_POST["csalida"]
 $balparcial    = mysqli_real_escape_string($conexion, (strip_tags($_POST["balparcial"], ENT_QUOTES))); 
 $baltot    = mysqli_real_escape_string($conexion, (strip_tags($_POST["baltot"], ENT_QUOTES)));
 $obs    = mysqli_real_escape_string($conexion, (strip_tags($_POST["obs"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fech = date("Y-m-d");
 
 $balparcial=$csalida-$centrada;

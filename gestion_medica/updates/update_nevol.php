@@ -132,7 +132,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp  WHERE id_atencion=
    ?>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
 <?php 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -590,7 +590,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_nevol SET id_usua='$medico',fecha_nu='$merge',problema='$problema', subjetivo='$subjetivo', objetivo='$objetivo', analisis='$analisis', plan='$plan', px='$px' , guia='$guia', edosalud='$edosalud', diagprob_i='$diagprob_i' WHERE id_ne= $id_ne";

@@ -84,7 +84,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
                            
  <div class="row">
     <div class="col-sm-5">
-       Expediente: <td><strong><?php echo $f1['folio']; ?></strong></td>
+       Expediente: <td><strong><?php echo $f1['Id_exp']; ?></strong></td>
        Paciente:
 <td><strong><?php echo $f1['papell']; ?></strong></td>
 <td><strong><?php echo $f1['sapell']; ?></strong></td>

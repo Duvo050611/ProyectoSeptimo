@@ -5,7 +5,7 @@ $usuario = $_SESSION['login'];
 $id_usua = $usuario['id_usua'];
 $id_atencion = $_SESSION['pac'];
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 
 $hora_mat=$_POST['hora_mat'];
 
@@ -314,7 +314,7 @@ $fechareporte=$_POST['fechareporte'];
 $tiposlabo=$_POST['tiposlabo'];
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 if ($hora_mat == '1' || $hora_mat == '2' || $hora_mat == '3' || $hora_mat == '4' || $hora_mat == '5' || $hora_mat == '6' || $hora_mat == '7') {
@@ -335,7 +335,7 @@ $turno="NOCTURNO";
 
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fe = date("Y-m-d H:i:s");
 
 

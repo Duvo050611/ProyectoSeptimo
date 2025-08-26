@@ -150,7 +150,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -464,7 +464,7 @@ $turno="MATUTINO";
     $turno="NOCTURNO";
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 if ($hora_v == '24' || $hora_v == '1' || $hora_v == '2' || $hora_v == '3' || $hora_v == '4' || $hora_v == '5' || $hora_v == '6' || $hora_v == '7' || $hora_v == '8') {

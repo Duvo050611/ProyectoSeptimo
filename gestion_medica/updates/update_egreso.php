@@ -266,7 +266,7 @@ $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" .
 
         <div class="col-sm-3">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -579,7 +579,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
        
        $merge = $fecha.' '.$hora;
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_egreso SET id_usua='$medico',fech_egreso='$merge',reingreso='$reingreso', cond='$cond', diag_eg='$diag_eg', res_clin='$res_clin', diagfinal='$diagfinal', manejodur='$manejodur', probclip='$probclip' , cuid='$cuid', trat='$trat', exes='$exes' , pcita ='$pcita', hcita ='$hcita' WHERE id_egreso= $id_egreso";

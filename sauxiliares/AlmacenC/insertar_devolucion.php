@@ -5,7 +5,7 @@ include '../../conn_almacen/Connection.php';
 $usuario = $_SESSION['login'];
 $id_usu= $usuario['id_usua'];
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 if (
@@ -35,7 +35,7 @@ if (
     $stock_finalc = 0;
     $salidas_finalc = 0;   
 
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
     $fecha_actual = date("Y-m-d H:i:s");
   
     $sql1 = mysqli_query($conexion_almacen, 'insert into devolucion_almacen 

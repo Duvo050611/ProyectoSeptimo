@@ -85,7 +85,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(50);
 $pdf->Cell(120, 5, utf8_decode('HOJA DE IRRIGACIÓN'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y H:i");
 $pdf->Cell(35, 5, 'FECHA: ' . $fecha_actual, 0, 1, 'R');
 $pdf->Ln(5);

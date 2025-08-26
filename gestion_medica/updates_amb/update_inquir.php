@@ -99,7 +99,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
 <div class="row">
     <div class="col-sm-10">
          <?php
-         date_default_timezone_set('America/Mexico_City');
+         date_default_timezone_set('America/Guatemala');
          $fecha_actual = date("d-m-Y H:i:s");
          ?>
                 
@@ -886,7 +886,7 @@ $id_atencion    = mysqli_real_escape_string($conexion, (strip_tags($_GET["id_ate
         $descripcion_op    = mysqli_real_escape_string($conexion, (strip_tags($_POST["descripcion_op"], ENT_QUOTES)));
         $nombre_med_cir    = mysqli_real_escape_string($conexion, (strip_tags($_POST["nombre_med_cir"], ENT_QUOTES)));
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_not_inquir_amb SET tipo_intervencion='$tipo_intervencion', quirofano='$quirofano', reserva='$reserva', local='$local', regional='$regional', general='$general' , inst_necesario='$inst_necesario', medmat_necesario='$medmat_necesario', inicio='$inicio',termino='$termino', diag_postop='$diag_postop', cir_realizada='$cir_realizada', trans='$trans', posto='$posto', perd_hema='$perd_hema' , accident_incident='$accident_incident', anestesia_admin='$anestesia_admin', anestesia_dur='$anestesia_dur',cirujano='$cirujano', prim_ayudante='$prim_ayudante', seg_ayudante='$seg_ayudante', ter_ayudante='$ter_ayudante', anestesiologo='$anestesiologo', circulante='$circulante' , instrumentista='$instrumentista', quir='$quir', hora_llegada_quir='$hora_llegada_quir',hora_salida_quir='$hora_salida_quir', hora_entrada_recup='$hora_entrada_recup', hora_salida_recup='$hora_salida_recup', nota_preop='$nota_preop', estado_postop='$estado_postop', comentario_final='$comentario_final', plan_ter='$plan_tera'  , descripcion_op='$descripcion_op', nombre_med_cir='$nombre_med_cir' WHERE id_not_inquir_amb= $id_not_inquir_amb";

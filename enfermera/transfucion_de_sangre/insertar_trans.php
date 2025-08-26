@@ -77,7 +77,7 @@ $id_atencion=$_SESSION['pac'];
 	////////////////////////////////////////////////
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $insert=mysqli_query($conexion,'INSERT INTO dat_trans_sangre(id_atencion,id_usua,fecht,numt,cont,hor_in,t,td,tde,a,ad,ade,fc,fcd,fcde,temp_t,temp_td,temp_tde,hor_t,vol,nom,estgen,fecha_act) VALUE('.$id_atencion.','.$id_usua.',"'.$fecht.'","'.$numt.'","'.$cont.'","'.$hor_in.'","'.$t.'","'.$td.'","'.$tde.'","'.$a.'","'.$ad.'","'.$ade.'","'.$fc.'","'.$fcd.'","'.$fcde.'","'.$temp_t.'","'.$temp_td.'","'.$temp_tde.'","'.$hor_t.'","'.$vol.'","'.$nom.'","'.$estgen.'","'.$fecha_actual.'")') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));

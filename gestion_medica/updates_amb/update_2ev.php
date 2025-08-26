@@ -130,7 +130,7 @@ MEDICO TRATANTE : <td><strong><?php echo  $f2['sapell'] . ' ' . $f2['papell'] . 
  <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -721,7 +721,7 @@ $id_atencion    = mysqli_real_escape_string($conexion, (strip_tags($_GET["id_ate
 
         
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_seg_evol_amb SET fecha2='$fecha2', hora2='$hora2', diaproc='$diaproc', sist='$sist', diast='$diast', freccard='$freccard' , frecresp='$frecresp', temp='$temp', spo2='$spo2' , med_pre  ='$med_pre', dosis  ='$dosis', via='$via', fechamedi='$fechamedi', horamedi='$horamedi', efect='$efect', med_pre2='$med_pre2', dosis2='$dosis2' , via2='$via2', fechamedi2='$fechamedi2', horamedi2='$horamedi2' , efect2  ='$efect2', hora_ver  ='$hora_ver', apan='$apan', vent='$vent', fuen='$fuen', ecg='$ecg', circ='$circ', para='$para' , fuent='$fuent', pani='$pani', fugas='$fugas' , flujo  ='$flujo', spo  ='$spo', cal='$cal', vapo='$vapo', co2='$co2', ana='$ana', indice='$indice', bomba='$bomba' , moni='$moni', obser='$obser' WHERE id_seg_evol_amb=$id_seg_evol_amb";

@@ -113,7 +113,7 @@
   $pdf->SetX(50);
   $pdf->Cell(120, 5, utf8_decode('NOTA DE EGRESO'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 6);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 
@@ -367,7 +367,7 @@ if ($cond == "VOLUNTARIA") {
   $pdf->SetX(50);
   $pdf->Cell(120, 5, utf8_decode('HOJA DE EGRESO'), 0, 0, 'C');
   $pdf->SetFont('Arial', '', 6);
-  date_default_timezone_set('America/Mexico_City');
+  date_default_timezone_set('America/Guatemala');
   $fecha_actual = date("d/m/Y");
   $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 
@@ -568,7 +568,7 @@ $pdf->SetX(50);
 $pdf->Cell(120, 6, utf8_decode('RECETA MÉDICA'), 0, 0, 'C');
 
 $pdf->SetFont('Arial', '', 6);
-  date_default_timezone_set('America/Mexico_City');
+  date_default_timezone_set('America/Guatemala');
   $fecha_actual = date("d/m/Y");
   $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 
@@ -717,7 +717,7 @@ $pdf->SetX(45);
 $pdf->SetFont('Arial', 'B', 9);
 $pdf->Cell(125, 6, utf8_decode('ENCUESTA DE SATISFACCIÓN DEL CLIENTE'),0, 0, 'C');
 $pdf->SetFont('Arial', '', 6);
-  date_default_timezone_set('America/Mexico_City');
+  date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
  $pdf->Ln(3);

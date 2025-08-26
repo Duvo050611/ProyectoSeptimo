@@ -113,7 +113,7 @@ if ($usuario['id_rol'] == 7) {
         </div>
       </div>
       <?php
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
       if (isset($_POST['edit'])) {
         $stock_cantidad = mysqli_real_escape_string($conexion, (strip_tags($_POST["qty"], ENT_QUOTES))); //Escanpando caracteres

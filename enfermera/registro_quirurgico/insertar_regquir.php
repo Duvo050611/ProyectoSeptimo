@@ -8,7 +8,7 @@ $id_atencion = $_SESSION['pac'];
 
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha = date("Y-m-d");
 
 $fecha_reporte=$_POST['fecha_reporte'];
@@ -301,7 +301,7 @@ if(isset($_POST['espder'])){$espder=$_POST['espder'];}else{ $espder='';}
 if(isset($_POST['coxis'])){$coxis=$_POST['coxis'];}else{ $coxis='';}
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d-m-Y H:i:s");
 
 if(isset($_POST['p_medico'])){$p_medico=$_POST['p_medico'];}else{ $p_medico='';}

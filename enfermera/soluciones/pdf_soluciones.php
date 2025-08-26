@@ -80,7 +80,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -198,7 +198,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(50);
 $pdf->Cell(120, 5, utf8_decode('SOLUCIONES/AMINAS'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y H:i");
 $pdf->Cell(35, 5, 'Fecha: ' . $fecha_actual, 0, 1, 'R');
 $pdf->Ln(5);

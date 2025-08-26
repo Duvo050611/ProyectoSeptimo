@@ -429,13 +429,13 @@ $pdf->Cell(175, 5.5, utf8_decode($dir), 'B', 'L');
 $pdf->Ln(7.5);
 
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(13, 6, utf8_decode('FECHA:'),0 , 0, 'L');
 $pdf->SetFont('Arial', '', 8);
 $pdf->Cell(30, 5.5, $fecha_actual, 'B', 'C');
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("H:m");
 $pdf->Cell(13, 6, utf8_decode('HORA:'),0 , 0, 'L');
 $pdf->SetFont('Arial', '', 8);
@@ -807,7 +807,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(55);
 $pdf->Cell(110, 5, utf8_decode('REGISTRO CLÍNICO DE ENFERMERÍA DE HOSPITALIZACIÓN'), 0, 0, 'C');
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_quir = date("d/m/Y H:i:s");
 $pdf->SetFont('Arial', '', 7);
 $pdf->Cell(25, 5, utf8_decode('Fecha: '.$fecha_quir), 0, 1, 'L');

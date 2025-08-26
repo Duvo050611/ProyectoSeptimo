@@ -75,7 +75,7 @@ include("../header_medico.php");
 
                     <div class="col-3">
                         <?php
-                        date_default_timezone_set('America/Mexico_City');
+                        date_default_timezone_set('America/Guatemala');
                         $fecha_actual = date("Y-m-d H:i:s");
                         ?>
                         
@@ -523,7 +523,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_not_inter SET id_usua='$medico',fecha_inter='$merge',motinter='$motinter', riefeinter='$riefeinter', revlinter='$revlinter', probinter='$probinter', tratprocinter='$tratprocinter', procinter='$procinter' , criteinter='$criteinter', planinter='$planinter', sugdiaginter='$sugdiaginter' WHERE id_inter= $id_inter";

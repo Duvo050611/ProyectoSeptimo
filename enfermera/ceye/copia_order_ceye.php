@@ -249,7 +249,7 @@ include "../header_ceye.php";
               $stock_id = $row_stock['stock_id'];
               $stock_qty = $row_stock['stock_qty'];
             }
-             date_default_timezone_set('America/Mexico_City');
+             date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
             // echo $stock_qty - $qty;
             if (($stock_qty - $qty) >= 0) {

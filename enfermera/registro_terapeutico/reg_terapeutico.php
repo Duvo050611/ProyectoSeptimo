@@ -3290,7 +3290,7 @@ $fecha_cambio =  mysqli_real_escape_string($conexion, (strip_tags($_POST["fecha_
 $cultivo =  mysqli_real_escape_string($conexion, (strip_tags($_POST["cultivo"], ENT_QUOTES)));
 
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fr = date("Y-m-d H:i");
    $ingresar4 = mysqli_query($conexion, 'INSERT INTO cate_enf_ter (id_atencion,id_usua,dispositivos,tipo,fecha_inst,instalo,dias_inst,fecha_cambio,cultivo,fecha_registro,tip) values ('.$id_atencion.',' . $id_usua . ',"' . $dispositivos .'","' . $tipo . '","'.$fecha_inst.'","'.$instalo.'","'.$dias_inst.'","'.$fecha_cambio.'","'.$cultivo.'","'.$fr.'","Terapia intensiva") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

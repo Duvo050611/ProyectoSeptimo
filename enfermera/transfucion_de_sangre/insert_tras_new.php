@@ -60,7 +60,7 @@ $ev_traspost=$_POST['ev_traspost'];
     //$talla = ($_POST['talla']);
     
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $insert=mysqli_query($conexion,'INSERT INTO dat_trasfucion(id_atencion,id_usua,fec_tras,num_tras,cont_tras,fol_tras,glob_tras,hb_tras,hto_tras,san_tras,sisto_pre,diasto_pre,fc_pre,temp_pre,inicio_tras,med_tras,medi_tras,ev_tras,com_tras,vol_tras,fin_tras,com_traspost,ev_traspost,edo_tras,ob_tras,sisto_tras,diasto_tras,fc_tras,temp_tras,p_sistol,p_diastol,fcard,temper,fecha_act) VALUES ('.$id_atencion.','.$id_usua.',"'.$fec_tras.'","'.$num_tras.'","'.$cont_tras.'","'.$fol_tras.'","'.$glob_tras.'","'.$hb_tras.'","'.$hto_tras.'","'.$san_tras.'","'.$sisto_pre.'","'.$diasto_pre.'","'.$fc_pre.'","'.$temp_pre.'","'.$inicio_tras.'","'.$med_tras.'","'.$medi_tras.'","'.$ev_tras.'","'.$com_tras.'","'.$vol_tras.'","'.$fin_tras.'","'.$com_traspost.'","'.$ev_traspost.'","'.$edo_tras.'","'.$ob_tras.'", " ' . $sisto_tras . '" , "' . $diasto_tras . '" , "' .$fc_tras. '", "' . $temp_tras . ' ", " ' . $p_sistol . '" , "' . $p_diastol . '" , "' .$fcard . '" ,"' . $temper . ' ","' . $fecha_actual . ' ")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));

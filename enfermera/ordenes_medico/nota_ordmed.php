@@ -131,7 +131,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -428,7 +428,7 @@ $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" .
 <?php } ?>
 <hr>
 <!--<?php
-                            //date_default_timezone_set('America/Mexico_City');
+                            //date_default_timezone_set('America/Guatemala');
                             //$fecha_actual2 = date("d-m-Y H:i:s");
                             ?>
 

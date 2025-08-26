@@ -139,7 +139,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp  WHERE id_atencion=
 
 <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
 <?php 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -1184,7 +1184,7 @@ if (isset($_POST['guardar'])) {
        $usuario = $_SESSION['login'];
 $id_usua= $usuario['id_usua'];
 $id_atencion = $_SESSION['hospital'];
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
      //$diag_ingreso= mysqli_real_escape_string($conexion, (strip_tags($_POST["diag_ingreso"], ENT_QUOTES))); 

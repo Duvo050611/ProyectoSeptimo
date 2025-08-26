@@ -73,7 +73,7 @@ if (@$_GET['q'] == 'comf_cart')
     $qty_salida=$cart_qty;
 
     
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
     $sql_insert = "INSERT INTO sales_rojo2(item_id,item_code,generic_name,brand,gram,type,qty,price,date_sold,paciente,id_usua,fecha_solicitud) VALUES('$material_id','$material_codigo','$material_nombre','$material_fabricante','$material_contenido','$material_tipo',$cart_qty,$cart_price,'$fecha_actual',$id_atencion,$id_usua,'$fecha_actual')";

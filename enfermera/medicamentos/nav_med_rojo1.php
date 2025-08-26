@@ -124,7 +124,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -394,7 +394,7 @@ $d="";
         $cart_uniquid = uniqid();
         $qty =  mysqli_real_escape_string($conexion, (strip_tags($_POST["qty"], ENT_QUOTES))); //Escanpando caracteres
             
-        date_default_timezone_set('America/Mexico_City');
+        date_default_timezone_set('America/Guatemala');
         $fecha_actual = date("Y-m-d H:i:s");
         $sql_pac = "SELECT p.Id_exp, di.id_atencion FROM paciente p, dat_ingreso di WHERE p.Id_exp=di.Id_exp and di.id_atencion =$id_atencion";
         $result_pac = $conexion->query($sql_pac);
@@ -471,7 +471,7 @@ $d="";
         }
         if ($existe === "SI") { 
     
-        date_default_timezone_set('America/Mexico_City');
+        date_default_timezone_set('America/Guatemala');
         $fecha_actual = date("Y-m-d H:i:s");
         $ingresar2 = mysqli_query($conexion, 'INSERT INTO medicamentos_rojo1 (cart_id,id_atencion,id_usua,dosis,material_id,mat_nom,via,frecuencia,cantidad,fecha) values ('.$cart_id.',' . $id_atencion . ',' . $id_usua .',"' . $dosis . '",' . $item_id . ',"' . $mat_nom . '","' . $via . '","' . $frec . '",' . $qty .',"'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

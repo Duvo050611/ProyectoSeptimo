@@ -54,7 +54,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->setX(36);
 $pdf->Cell(227, 10, utf8_decode('RELACIÓN DE DIETAS'), 0, 0, 'C');
 $pdf->SetFont('Arial', 'B', 7);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y H:i");
 $pdf->Cell(30, 5, ' FECHA: ' . $fecha_actual, 0, 1, 'R');
 

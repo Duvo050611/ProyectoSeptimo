@@ -162,7 +162,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
             <div class="row">
               <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -328,7 +328,7 @@ while ($row=$result->fetch_assoc()) {
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $sql2 = "UPDATE dat_trans_sangre SET fecht='$fecht', numt='$numt', cont ='$cont', hor_in='$hor_in',t='$t', a='$a', fc ='$fc', temp_t='$temp_t', vol='$vol', nom ='$nom', estgen='$estgen' WHERE id_sangre=$id_sangre";

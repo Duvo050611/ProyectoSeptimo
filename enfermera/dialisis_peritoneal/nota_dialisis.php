@@ -129,7 +129,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -388,7 +388,7 @@ $obs =mysqli_real_escape_string($conexion, (strip_tags($_POST["obs"], ENT_QUOTES
 $balparcial=$csalida-$centrada;
 
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fech = date("Y-m-d");
 
 $ingresar4 = mysqli_query($conexion, 'INSERT INTO dialisis_p (id_atencion,id_usua,fecha_registro,baño,tiposol,hrentrada,hrsalida,centrada,csalida,balparcial,baltot,obs) values ('.$id_atencion.',' . $id_usua . ',"'.$fech.'","' . $baño .'","' . $tiposol . '","'.$hrentrada.'","'.$hrsalida.'","'.$centrada.'","'.$csalida.'","'.$balparcial.'","'.$baltot.'","'.$obs.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));

@@ -140,7 +140,7 @@ $pdf->SetFont('Arial', 'B', 9.5);
 $pdf->SetX(50);
 $pdf->Cell(120, 5, utf8_decode('UNIDAD DE CUIDADOS POST-ANESTÉSICOS (UCPA) - NOTA DE RECUPERACIÓN'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 6);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 

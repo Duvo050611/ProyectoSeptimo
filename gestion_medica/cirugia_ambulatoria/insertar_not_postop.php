@@ -5,7 +5,7 @@ $usuario = $_SESSION['login'];
 $id_usua= $usuario['id_usua'];
 $id_atencion = $_GET['id_atencion'];
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 //$diag_preop=$_POST['diag_preop'];

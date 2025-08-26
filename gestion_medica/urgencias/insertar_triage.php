@@ -247,7 +247,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion=i
    while ($f1 = mysqli_fetch_array($resultado1)) {
     $tipo_sangrey=$f1['tip_san'];
    }
-  //date_default_timezone_set('America/Mexico_City');
+  //date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar6 = mysqli_query($conexion, 'insert into dat_c_urgen (id_atencion,diab_pa,diab_ma,diab_ab,hip_pa,hip_ma,hip_ab,can_pa,can_ma,can_ab,motcon_cu,trau_cu,trans_cu,adic_cu,tab_cu,alco_cu,otro_cu,quir_cu,aler_cu,pad_cu,exp_cu,diag_cu,hc_men,hc_ritmo,gestas_cu,partos_cu,ces_cu,abo_cu,fecha_fur,hc_desc_hom,proc_cu,med_cu,anproc_cu,trat_cu,do_cu,dis_cu,fecha_urgen,id_usua,despatol,diag2,des_diag) values ("'.$id_atencion.'"," ' . $diab_pa . '" ," ' . $diab_ma . '" ," ' . $diab_ab . '" ," ' . $hip_pa . '" ," ' . $hip_ma . '" ," ' . $hip_ab . '" , "' . $can_pa . '" ,"' . $can_ma . '" ,"' . $can_ab . '" ,"' . $edo_clin . '", "' . $trau_cu  . '" , "' . $trans_cu . '" , "' . $adic_cu . ' " ,"' . $tab_cu . ' ","' . $alco_cu . ' ","' . $otro_cu . ' ", "' . $quir_cu . ' " ,"' . $aler_cu . ' ", "' . $pad_cu . ' " , "' . $exp_cu . ' " , "' . $diag_cu . ' ", "' . $hc_men . ' " , "' . $hc_ritmo . ' ","' . $gestas_cu . ' ","' . $partos_cu . ' ","' . $ces_cu . ' ","' . $abo_cu . ' ","' . $fecha_fur . ' ","' . $hc_desc_hom . ' ", "' . $proc_cu . ' ","' . $med_cu . ' " , "' . $anproc_cu . ' " , "' . $trat_cu . ' " , "' . $do_cu . ' " , "' . $dis_cu . ' ","' . $fecha_actual . ' ", ' . $id_usu . ',"' . $despatol . '","' . $diag2 . '", "'.$des_diag.'" ) ')or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -258,7 +258,7 @@ $insertar=mysqli_query($conexion,'INSERT INTO recetaurgen(id_atencion,id_usua,re
   }
 
 // separador
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 

@@ -109,7 +109,7 @@
 
                         while ($f = mysqli_fetch_array($resultado)) {
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_quir = date("d-m-Y H:i a");
 
                             ?>
@@ -191,7 +191,7 @@ $fecha_quir = date("d-m-Y H:i a");
 
                         while ($f = mysqli_fetch_array($resultado)) {
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_quir = date("d-m-Y H:i:s");
 
 $fecha1 = new DateTime($f['fec_egreso']);//fecha inicial

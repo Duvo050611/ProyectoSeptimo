@@ -124,7 +124,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -433,7 +433,7 @@ $d="";
             $fuera =  mysqli_real_escape_string($conexion, (strip_tags($_POST["fuera"], ENT_QUOTES)));
             $total =  mysqli_real_escape_string($conexion, (strip_tags($_POST["total"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO textiles (id_atencion,mat,inicio,dentro,fuera,total,text_fecha,id_usua) values (' . $id_atencion . ',"' . $mat . '","' . $inicio . '","' . $dentro . '","' . $fuera . '","' . $total . '","'.$fecha_actual.'",' . $id_usua .') ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

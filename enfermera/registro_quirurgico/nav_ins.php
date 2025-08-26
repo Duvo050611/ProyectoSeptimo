@@ -353,7 +353,7 @@ include "../../conexionbd.php";
             $id_atencion = $_SESSION['pac'];
             $mg =  mysqli_real_escape_string($conexion, (strip_tags($_POST["mg"], ENT_QUOTES)));
             $hora =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hora"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d-m-Y H:i:s");
             $ingresar2 = mysqli_query($conexion, 'INSERT INTO glic_enf_quir (id_atencion,id_usua,mg,hora,fecha) values (' . $id_atencion . ',' . $id_usua .',"' . $mg . '","' . $hora . '","'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -368,7 +368,7 @@ if(isset($_POST['btnins'])){
             $dosis =  mysqli_real_escape_string($conexion, (strip_tags($_POST["dosis"], ENT_QUOTES)));
             $via =  mysqli_real_escape_string($conexion, (strip_tags($_POST["via"], ENT_QUOTES)));
             $hora =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hora"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
             $ingresar2 = mysqli_query($conexion, 'INSERT INTO ins_enf_quir (id_atencion,id_usua,dosis,via,hora,fecha) values (' . $id_atencion . ',' . $id_usua .',"' . $dosis . '","' . $via . '","' . $hora . '","'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -383,7 +383,7 @@ if(isset($_POST['btncis'])){
             $ing =  mysqli_real_escape_string($conexion, (strip_tags($_POST["ing"], ENT_QUOTES)));
             $eg =  mysqli_real_escape_string($conexion, (strip_tags($_POST["eg"], ENT_QUOTES)));
             $car =  mysqli_real_escape_string($conexion, (strip_tags($_POST["car"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO cis_enf_quir (id_atencion,id_usua,ing,eg,caract,fecha) values (' . $id_atencion . ',' . $id_usua .',"' . $ing . '","' . $eg . '","' . $car . '","'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

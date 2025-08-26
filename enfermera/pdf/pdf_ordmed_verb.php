@@ -79,7 +79,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -202,7 +202,7 @@ $pdf->SetFont('Arial', 'B', 11);
 $pdf->SETX(50);
 $pdf->MultiCell(120, 6, utf8_decode('INDICACIONES MÉDICAS (VERBALES)'), 0, 'C');
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 $pdf->Ln(1);

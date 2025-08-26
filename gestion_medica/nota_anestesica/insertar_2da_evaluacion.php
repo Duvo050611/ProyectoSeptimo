@@ -73,7 +73,7 @@ if(isset($_POST['moni'])){$moni=$_POST['moni'];}else{$moni='NO';}
 $obser=$_POST['obser'];
 $goldman=$_POST['goldman'];
 $asa=$_POST['asa'];
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual=date("Y-m-d H:i:s");
 
 

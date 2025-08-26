@@ -172,7 +172,7 @@ if ($usuario['id_rol'] == 7 || $usuario['id_rol'] == 1 ) {
                     </thead>
                     <tbody>
                     <?php
-                    date_default_timezone_set('America/Mexico_City');
+                    date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
                     // $sql = "SELECT id_usua, curp_u, nombre, papell,sapell,fecha,mat,cedp,cargp,email,u_activo FROM reg_usuarios;";
                     //  $result = $conn->query($sql);

@@ -184,7 +184,7 @@ if(isset($cartm_id)){
                            
  <div class="row">
     <div class="col-sm-5">
-        Expediente: <td><strong><?php echo $f1['folio']; ?></strong></td>
+        Expediente: <td><strong><?php echo $f1['Id_exp']; ?></strong></td>
         Paciente:
         
         <td><strong><?php echo $f1['papell']; ?></strong></td>

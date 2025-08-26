@@ -70,7 +70,7 @@ include("../header_medico.php");
 
                     <div class="col-3">
                         <?php
-                        date_default_timezone_set('America/Mexico_City');
+                        date_default_timezone_set('America/Guatemala');
                         $fecha_actual = date("Y-m-d H:i:s");
                         ?>
                         
@@ -396,7 +396,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_traslado SET id_usua='$medico',horenv='$merge',env='$env', rec='$rec', docenv='$docenv', docrec='$docrec', resumclin='$resumclin', motenv='$motenv' , imdiagn='$imdiagn', ter='$ter' WHERE id_traslado= $id_traslado";

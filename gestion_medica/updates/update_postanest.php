@@ -109,7 +109,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
  <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -306,7 +306,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
         $medico= mysqli_real_escape_string($conexion,(strip_tags($_POST["medico"], ENT_QUOTES)));
 
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_post_anest SET id_usua='$medico',fecha_pos='$fecha',hora_pos='$hora',tecan_pos='$tecan_pos', tiem_pos='$tiem_pos', an_pos='$an_pos', ad_pos='$ad_pos', con_pos='$con_pos', bal_pos='$bal_pos' , sist_pos='$sist_pos', dias_pos='$dias_pos', fc_pos='$fc_pos' , fr_pos='$fr_pos', temp_pos='$temp_pos', pul_pos='$pul_pos', so_pos='$so_pos', ae_pos='$ae_pos', san_pos='$san_pos', ven_pos='$ven_pos', dre_pos='$dre_pos' , tras_pos='$tras_pos', ob_pos='$ob_pos', plan_pos='$plan_pos' WHERE id_post_anest=$id_post_anest";

@@ -6,7 +6,7 @@ $id_usua = $usuario['id_usua'];
 
 //$id_atencion = $_SESSION['pac'];
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $resrep=$_POST['resrep'];

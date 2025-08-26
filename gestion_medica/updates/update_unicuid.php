@@ -108,7 +108,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
  <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -511,7 +511,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_unid_cuid SET id_usua='$medico',fecha_nota='$merge',t_sisto='$t_sisto', t_diasto='$t_diasto', fc_un='$fc_un', fr_un='$fr_un', temp_un='$temp_un', pul_un='$pul_un' , sp_un='$sp_un', est_un='$est_un', con_un='$con_un' , via_un='$via_un', veni_un='$veni_un', son_un='$son_un', man_un='$man_un', trat_un='$trat_un', fun_un='$fun_un', mot_un='$mot_un', tera_un='$tera_un' , fecha_un='$fecha_un', hora_un='$hora_un', rec_un='$rec_un' , esp_un='$esp_un', notevo_un='$notevo_un', 01t='$nt', 02t='$dt', 03t='$tt', 04t='$ct', 05t='$st', 0t='$t', 51t='$nt2', 52t='$dt2', 53t='$tt2', 54t='$ct2', 55t='$st2', 5t='$t2', 101t='$nt3', 102t='$dt3', 103t='$tt3', 104t='$ct3', 105t='$st3', 10t='$t3', 151t='$nt4', 152t='$dt4', 153t='$tt4' , 154t='$ct4', 155t='$st4', 15t='$t4', 201t='$nt5', 202t='$dt5', 203t='$tt5', 204t='$ct5', 205t='$st5', 20t='$t5', 251t='$nt6', 252t='$dt6', 253t='$tt6' , 254t='$ct6', 255t='$st6', 25t='$t6', 301t='$nt7', 302t='$dt7', 303t='$tt7', 304t='$ct7', 305t='$st7', 30t='$t7' WHERE id_unid_cuid=$id_unid_cuid";

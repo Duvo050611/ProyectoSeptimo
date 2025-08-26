@@ -34,7 +34,7 @@ $name = $_FILES['img_inef']['name'];
       if (move_uploaded_file($_FILES['img_inet']['tmp_name'], $carpetatrasera . $nombreFinaltrasera)) {
         if (move_uploaded_file($_FILES['img_inefr']['tmp_name'], $carpetar . $nombreFinalr)) {
           if (move_uploaded_file($_FILES['img_inetr']['tmp_name'], $carpetatraserar . $nombreFinaltraserar)) {
-         date_default_timezone_set('America/Mexico_City');
+         date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
     $ingresar = mysqli_query($conexion,'insert into ine (Id_exp,img_inef,img_inet,img_inefr,img_inetr,fecha) values ('.$id.',"' . $nombreFinal . '","' . $nombreFinaltrasera . '","' . $nombreFinalr . '","' . $nombreFinaltraserar . '","'.$fecha_actual.'")') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

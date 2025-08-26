@@ -109,7 +109,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
  <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -523,7 +523,7 @@ while ($row=$result->fetch_assoc()) {
         $emer    = mysqli_real_escape_string($conexion, (strip_tags($_POST["emer"], ENT_QUOTES)));
         $id_atencion    = mysqli_real_escape_string($conexion, (strip_tags($_GET["id_atencion"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_trans_anest_amb SET anest='$anest', anestreal='$anestreal', poscui='$poscui', ind='$ind' , hora='$hora', agdo='$agdo', tin='$tin' , masc  ='$masc', can  ='$can', otro='$otro', larin='$larin', venti='$venti', cir='$cir', esasme='$esasme', mec='$mec' , modo='$modo', fl='$fl', vcor='$vcor' , fr  ='$fr', rel  ='$rel', peep='$peep', com='$com', mant='$mant', relaj='$relaj', agent='$agent', dosis='$dosis' , ultdosis='$ultdosis', ant='$ant', agdos='$agdos' , monit  ='$monit', comen  ='$comen', bloq='$bloq', agdosi='$agdosi', tec='$tec', cate='$cate', posi='$posi', lat='$lat' , asep='$asep', dif='$dif', aguja='$aguja' , bsim  ='$bsim', bmotor  ='$bmotor', bsen='$bsen', coment='$coment', caso='$caso', emer='$emer'  WHERE id_trans_anest_amb=$id_trans_anest_amb";

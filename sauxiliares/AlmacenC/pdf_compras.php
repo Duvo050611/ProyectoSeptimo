@@ -4,7 +4,7 @@ include '../../conexionbd.php';
 include '../../conn_almacen/Connection.php';
 mysqli_set_charset($conexion_almacen, "utf8");
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 
 class PDF extends FPDF
 {

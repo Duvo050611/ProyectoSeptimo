@@ -125,7 +125,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
             <div class="row">
               <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("Y-m-d H:i:s");
                 ?>
                 
@@ -539,7 +539,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_trasfucion SET id_usua='$medico',fecha_act='$merge',fec_tras='$fec_tras', num_tras='$num_tras', cont_tras ='$cont_tras', fol_tras='$fol_tras', glob_tras='$glob_tras', pla_tras='$pla_tras' , crio_tras='$crio_tras', med_tras='$med_tras', hto_tras='$hto_tras', san_tras='$san_tras', inicio_tras='$inicio_tras', medi_tras='$medi_tras', ev_tras='$ev_tras', com_tras='$com_tras', vol_tras='$vol_tras', fin_tras='$fin_tras', com_traspost='$com_traspost', ev_traspost='$ev_traspost', edo_tras='$edo_tras', ob_tras='$ob_tras', sisto_tras='$sisto_tras', diasto_tras='$diasto_tras', fc_tras='$fc_tras', temp_tras='$temp_tras', p_sistol='$p_sistol', p_diastol='$p_diastol', fcard='$fcard', temper='$temper' WHERE id_tras= $id_tras";

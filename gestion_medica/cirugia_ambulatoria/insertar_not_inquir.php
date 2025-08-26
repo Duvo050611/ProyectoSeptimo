@@ -106,9 +106,9 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion=i
    while ($f1 = mysqli_fetch_array($resultado1)) {
     $tipo_sangre=$f1['tip_san'];
    }
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d ");
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $hora_actual = date("H:i:s");
 
 $result=mysqli_query($conexion,'INSERT INTO dat_not_inquir_amb(id_atencion,id_usua,tipo_intervencion,fecha,hora_solicitud,diag_preop,quirofano,reserva,local,regional,general,tipo_sangre,inst_necesario,medmat_necesario,jefe_cirugia,intervencion_quir,inicio,termino,diag_postop,cir_realizada,trans,posto,perd_hema,accident_incident,anestesia_admin,anestesia_dur,realizada_por,cirujano,prim_ayudante,seg_ayudante,ter_ayudante,anestesiologo,circulante,instrumentista,quir,hora_llegada_quir,hora_salida_quir,hora_entrada_recup,hora_salida_recup,nota_preop,estado_postop,comentario_final,plan_ter,descripcion_op,nombre_med_cir) 

@@ -26,7 +26,7 @@ while($f3 = mysqli_fetch_array($resultado3)){
         $satg =  mysqli_real_escape_string($conexion, (strip_tags($_POST["satg"], ENT_QUOTES)));
         $glic =  mysqli_real_escape_string($conexion, (strip_tags($_POST["glic"], ENT_QUOTES)));
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO dat_quir_grafico (id_atencion,id_usua,hora,sistg,diastg,fcardg,satg,fecha_g,cuenta,fechare,glic) values (' . $id_atencion . ',' . $id_usua .',"'.$horar.'","' . $sistg . '","' . $diastg . '","' . $fcardg . '","' . $satg . '","'.$fecha_actual.'",1,"'.$fechare.'","'.$glic.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -47,7 +47,7 @@ echo mysqli_query($conexion,$ingresar2);
         $cuenta=$f3['cuenta'];
     }
     $cuenta++;
-    //date_default_timezone_set('America/Mexico_City');
+    //date_default_timezone_set('America/Guatemala');
     $fecha_actual = date("Y-m-d H:i:s");
     $ingresar2 = mysqli_query($conexion, 'INSERT INTO dat_quir_grafico (id_atencion,id_usua,hora,sistg,diastg,fcardg,satg,fecha_g,cuenta,fechare,glic) values (' . $id_atencion . ',' . $id_usua .',"'.$horar.'","' . $sistg . '","' . $diastg . '","' . $fcardg . '","' . $satg . '","'.$fecha_actual.'","'.$cuenta.'","'.$fechare.'","'.$glic.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
     echo mysqli_query($conexion,$ingresar2);

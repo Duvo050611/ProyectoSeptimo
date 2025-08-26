@@ -188,7 +188,7 @@ $pdf->Cell(18,3, utf8_decode('Habitación: '),0,'L');
 $pdf->SetFont('Arial', '', 9);
 $pdf->Cell(7,3, utf8_decode($num_cama),'B','L');
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_quir = date("d/m/Y H:i a");
 $pdf->SetFont('Arial', '', 6.5);
 //$pdf->Cell(25, 5, utf8_decode('Fecha de impresión: '.$fecha_quir), 0, 1, 'L');

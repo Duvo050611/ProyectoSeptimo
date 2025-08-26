@@ -4,7 +4,7 @@ if (@$_GET['q'] == 'cargar') {
   $paquete = $_GET['paquete'];
   $paciente = $_GET['paciente'];
   $id_usua = $_GET['id_usua'];
-   date_default_timezone_set('America/Mexico_City');
+   date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
   $sql = "SELECT * FROM paquetes_ceye where nombre = '$paquete'";
 

@@ -117,7 +117,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
             </div>
             <div class="col-sm-3">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -845,7 +845,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
 
         $dest_cu    = mysqli_real_escape_string($conexion, (strip_tags($_POST["dest_cu"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_c_urgen SET diab_pa='$diab_pa', diab_ma='$diab_ma', diab_ab ='$diab_ab', hip_pa='$hip_pa', hip_ma='$hip_ma',hip_ab='$hip_ab', can_pa='$can_pa', can_ma ='$can_ma', can_ab='$can_ab', motcon_cu='$motcon_cu',trau_cu='$trau_cu', trans_cu='$trans_cu', adic_cu ='$adic_cu', tab_cu='$tab_cu', alco_cu='$alco_cu',otro_cu='$otro_cu', quir_cu='$quir_cu', aler_cu ='$aler_cu', pad_cu='$pad_cu', exp_cu='$exp_cu',diag_cu='$diag_cu', hc_men='$hc_men', hc_ritmo ='$hc_ritmo', gestas_cu='$gestas_cu', partos_cu='$partos_cu',ces_cu='$ces_cu', abo_cu='$abo_cu', fecha_fur ='$fecha_fur', hc_desc_hom='$hc_desc_hom', proc_cu='$proc_cu',med_cu='$med_cu', anproc_cu='$anproc_cu', trat_cu ='$trat_cu', do_cu='$do_cu', dis_cu='$dis_cu',dest_cu='$dest_cu' WHERE id_c_urgen= $id_c_urgen";
@@ -865,10 +865,10 @@ while ($row=$result->fetch_assoc()) {
       $sql3 = "UPDATE dat_ingreso SET motivo_atn='$diag_cu' WHERE id_atencion = $id_atencion";
       $result = $conexion->query($sql3);
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
  $fecha_actual = date("Y-m-d");
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
  $hora_actual = date("H:i:s");
 
       if($dest_cu="EGRESO DE URGENCIAS"){

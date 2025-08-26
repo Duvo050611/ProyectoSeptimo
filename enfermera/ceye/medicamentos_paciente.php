@@ -156,7 +156,7 @@ $query = "SELECT * from paciente where Id_exp = $paciente";
 </div>
    <!-- termino de servicios ceye-->         
 <?php
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
           if (isset($_POST['btnagregar'])) {
             include "../../conexionbd.php";
@@ -229,7 +229,7 @@ $sql2 = "INSERT INTO cart_ceye(material_id,cart_qty,cart_stock_id,id_usua,cart_u
          while ($row_pac = $result_pac->fetch_assoc()) {
           $id_atencion = $row_pac['id_atencion'];
             }
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
             $sql_in_serv = "INSERT INTO cart_serv(servicio_id,cart_qty,id_usua,cart_uniqid, paciente,cart_fecha)VALUES($serv_id,$qty_serv,$id_usua,'$cart_uniquid', $paciente1, '$fecha_actual');";
             // echo $sql2;

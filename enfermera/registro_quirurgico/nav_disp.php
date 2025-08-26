@@ -333,7 +333,7 @@ OBSERVACIONES:<br><textarea rows="3" name="observ" class="form-control" style="t
             $nom =  mysqli_real_escape_string($conexion, (strip_tags($_POST["nom"], ENT_QUOTES)));
             $fecha =  mysqli_real_escape_string($conexion, (strip_tags($_POST["fecha"], ENT_QUOTES)));
             $observ =  mysqli_real_escape_string($conexion, (strip_tags($_POST["observ"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d-m-Y H:i:s");
             $ingresar2 = mysqli_query($conexion, 'INSERT INTO disp_enf_quir (id_atencion,id_usua,disp,cal,nom,fecha,observ,fecha_disp) values ('.$id_atencion.',' . $id_usua . ',"' . $disp .'","' . $cal . '","'.$nom.'","' . $fecha .'","' . $observ .'","'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -348,7 +348,7 @@ $fecha_actual = date("d-m-Y H:i:s");
             $hora =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hora"], ENT_QUOTES)));
             $par =  mysqli_real_escape_string($conexion, (strip_tags($_POST["par"], ENT_QUOTES)));
             $hemo =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hemo"], ENT_QUOTES)));
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d-m-Y H:i:s");
    $ingresar2 = mysqli_query($conexion, 'INSERT INTO ing_enf_quir (id_atencion,id_usua,hora,via,hemo,fecha) values ('.$id_atencion.',' . $id_usua . ',"' . $hora .'","' . $par . '","'.$hemo.'","'.$fecha_actual.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

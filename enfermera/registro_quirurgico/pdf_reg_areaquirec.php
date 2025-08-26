@@ -161,7 +161,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(55);
 $pdf->Cell(110, 5, utf8_decode('REGISTRO CLÍNICO DE ENFERMERÍA DEL ÁREA QUIRÚRGICA'), 0, 0, 'C');
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_quir = date("d/m/Y H:i:s");
 $pdf->SetFont('Arial', '', 8);
 $pdf->Cell(25, 5, utf8_decode('Fecha: '.$fecha_quir), 0, 1, 'L');

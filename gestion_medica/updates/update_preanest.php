@@ -111,7 +111,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
  <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -1023,7 +1023,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
         
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_peri_anest SET id_usua='$medico',fecha_nota='$merge',inter='$inter', anest='$anest', inmun='$inmun', tab ='$tab', alc='$alc', trans='$trans', alerg='$alerg', toxi='$toxi', gastro='$gastro', neuro='$neuro', neumo='$neumo', ren='$ren', card='$card', tend='$tend', reu='$reu',neo='$neo', herma='$herma', trau='$trau', psi ='$psi', quir='$quir', aneste='$aneste', gin='$gin', ped='$ped', valant='$valant', cons='$cons', pad_act='$pad_act', med_act='$med_act', ayuno='$ayuno', otro='$otro', esp='$esp',ta_sisto='$ta_sisto', ta_diasto='$ta_diasto', fc='$fc', fr ='$fr', tempe='$tempe', pes='$pes', tall='$tall', imc='$imc', malla='$malla', patil='$patil', bell='$bell', dist='$dist', buco='$buco', obserb='$obserb', fecha='$fecha',hb='$hb', hto='$hto', gb='$gb', gr ='$gr', plaq='$plaq', tp='$tp', tpt='$tpt', inr='$inr', gluc='$gluc', cr='$cr', bun='$bun', urea='$urea', es='$es', otros='$otros', gab='$gab',valcard='$valcard', condfis='$condfis', tipanest='$tipanest', indpre ='$indpre', obs='$obs', nomanest='$nomanest' WHERE id_peranest= $id_peranest";

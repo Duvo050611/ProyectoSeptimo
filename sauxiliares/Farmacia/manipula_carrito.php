@@ -1,6 +1,6 @@
 <?php
 include '../../conexionbd.php';
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 if (@$_GET['q'] == 'del_car') {
@@ -43,7 +43,7 @@ if (@$_GET['q'] == 'comf_cart') {
   $sql2 = "SELECT * FROM cart c, item i, item_type it where c.cart_id = $id_cart and c.item_id = i.item_id and it.item_type_id=i.item_type_id";
   $result = $conexion->query($sql2);
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
   while ($row_stock = $result->fetch_assoc()) {
@@ -71,7 +71,7 @@ $fecha_actual = date("Y-m-d H:i:s");
     $sol = $row_usua['papell'];
 }
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual=date("Y-m-d H:i:s");
 
     $ingresar = mysqli_query($conexion, 'INSERT INTO sales(item_id,item_code,generic_name,brand,gram,type,qty,surtido,price,date_sold,paciente,id_usua,solicita,fecha_solicitud) values (' . $item_id . ',"'.$item_code.'","' . $item_name .'","' . $item_brand . '","' . $item_grams . '","'.$item_type.'",' . $cart_qty . ',' . $surtido . ','.$cart_price.',"'.$fecha_actual.'",'.$paciente.',' . $id_usua . ',"'.$sol.'","'.$cart_fecha.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));

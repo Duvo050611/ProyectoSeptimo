@@ -375,7 +375,7 @@ elemento.select();
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE triage SET p_sistolica='$p_sistolica', p_diastolica='$p_diastolica', f_card ='$f_card', f_resp='$f_resp', temp='$temp',sat_oxigeno='$sat_oxigeno', peso='$peso', talla ='$talla', niv_dolor='$niv_dolor', diab='$diab',h_arterial='$h_arterial', enf_card_pulm='$enf_card_pulm', cancer ='$cancer', emb='$emb', otro='$otro',val_total='$val_total', edo_clin='$edo_clin', imp_diag ='$imp_diag', urgencia='$urgencia', destino='$destino' WHERE id_triage= $id_triage";

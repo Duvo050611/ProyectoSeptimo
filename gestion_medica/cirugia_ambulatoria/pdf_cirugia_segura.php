@@ -166,7 +166,7 @@ $pdf->SETX(80);
 $pdf->Cell(100, 6, utf8_decode('CIRUGÍA SEGURA (LISTADO DE VERIFICACIÓN DE SEGURIDAD QUIRÚRGICA)'), 0, 'C');
 $pdf->SETX(255);
 $pdf->SetFont('Arial', '', 8);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 $pdf->Ln(1);

@@ -145,7 +145,7 @@ if ($usuario['id_rol'] == 10) {
                             while ($row = $result->fetch_assoc()) {
                                
                                 $id_atencion = $row['id_atencion'];
-                                 date_default_timezone_set('America/Mexico_City');
+                                 date_default_timezone_set('America/Guatemala');
                                 
                                 $fecha1 = date_create($row['fecha']); 
                                 $fecha = date_format($fecha1 ,"d/m/Y"); 

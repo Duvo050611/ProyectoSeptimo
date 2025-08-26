@@ -150,7 +150,7 @@ const observacion = document.getElementById('observacion');
             <div class="col-md-2"></div>
         </div>
         <?php
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
         if (isset($_POST['edit'])) {
            // $terminado = mysqli_real_escape_string($conexion, (strip_tags($_POST["realizado"], ENT_QUOTES))); //Escanpando caracteres

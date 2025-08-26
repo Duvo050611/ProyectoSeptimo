@@ -67,7 +67,7 @@ include("../header_medico.php");
 
                     <div class="col-3">
                         <?php
-                        date_default_timezone_set('America/Mexico_City');
+                        date_default_timezone_set('America/Guatemala');
                         $fecha_actual = date("Y-m-d H:i:s");
                         ?>
                         <hr>

@@ -62,7 +62,7 @@ if (@$_GET['q'] == 'comf_cart') {
     $cart_qty = $row_stock['cart_qty'];
     $destino = $row_stock['destino'];
     $almacen = $row_stock['almacen'];
- date_default_timezone_set('America/Mexico_City');
+ date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
     $sql_insert = 'INSERT INTO sales_almacen(item_code,generic_name,brand,gram,type,qty,destino,date_sold,almacen)
     VALUES("'.$item_code.'","'.$item_name.'", "'.$item_brand.'","'.$item_grams.'","'.$item_type.'",'.$cart_qty.',"'.$destino.'", "'.$fecha_actual.'","'.$almacen.'")';

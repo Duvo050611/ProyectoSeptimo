@@ -100,7 +100,7 @@ while ($f2 = mysqli_fetch_array($resultado2)) {
     <div class="row">
         <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -415,7 +415,7 @@ while ($row=$result->fetch_assoc()) {
         $resumen_clin    = mysqli_real_escape_string($conexion, (strip_tags($_POST["resumen_clin"], ENT_QUOTES)));
         $result_lab_gab    = mysqli_real_escape_string($conexion, (strip_tags($_POST["result_lab_gab"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_not_preop_amb SET tipo_cirugia_preop='$tipo_cirugia_preop', observ='$observ', diag_preop='$diag_preop', fecha_cir ='$fecha_cir', hora_cir='$hora_cir', tipo_inter_plan='$tipo_inter_plan', beneficios='$beneficios', riesgos='$riesgos', cuidados='$cuidados', pronostico='$pronostico', anestesia_sug='$anestesia_sug', nom_medi_cir='$nom_medi_cir', tiempo_estimado='$tiempo_estimado', resumen_clin='$resumen_clin', result_lab_gab='$result_lab_gab', fecha_preop='$fecha_actual' WHERE id_not_preop_amb= $id_not_preop_amb";

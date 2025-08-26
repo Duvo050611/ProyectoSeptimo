@@ -261,7 +261,7 @@ $id_usua = $usuario['id_usua'];
             $carsc = @$_GET['carsc'];
             $alma = @$_GET['almc'];
 
-            date_default_timezone_set('America/Mexico_City');
+            date_default_timezone_set('America/Guatemala');
             $fecha_actual = date("Y-m-d H:i:s");
 
             $comprar = mysqli_query($conexion_almacen, 'INSERT INTO compras (item_id,compra_qty,fecha_sol,almacen,id_usua) values ("' . $id_i . '","' . $cant . '","' . $fecha_actual . '","' . $alma . '","' . $id_usua . '")') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion_almacen));
@@ -301,7 +301,7 @@ $id_usua = $usuario['id_usua'];
             $alma = @$_GET['alma'];
 
             $surt =  mysqli_real_escape_string($conexion, (strip_tags($_POST["surt"], ENT_QUOTES)));
-            date_default_timezone_set('America/Mexico_City');
+            date_default_timezone_set('America/Guatemala');
             $fecha_actual = date("Y-m-d H:i:s");
 
             $ingresar2 = mysqli_query($conexion_almacen, 'INSERT INTO car_ped (id_recib,item_id,envio_qty,lote,car_expiry,fecha,almacen) values (' . $cars . ',"' . $iden . '","' . $surt . '","' . $slo . '","' . $expir . '","' . $fecha_actual . '","' . $alma . '")') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion_almacen));
@@ -386,7 +386,7 @@ $id_usua = $usuario['id_usua'];
                 $envio_qty = $row_stock['envio_qty'];
                 $almi = $row_stock['almacen'];
                 $lote = $row_stock['lote'];
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("Y-m-d H:i:s");
 
                 $sql_insert_cuenta = "INSERT INTO cart_recib(item_id,cart_qty,envio_qty,destino,almacen,confirma,enviado,fecha,stock_lote)VALUES('$item_id','$envio_qty','$envio_qty','TOLUCA','$almi','SI','SI','$fecha_actual','$lote')";

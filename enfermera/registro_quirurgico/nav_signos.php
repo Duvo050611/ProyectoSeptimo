@@ -119,7 +119,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -516,7 +516,7 @@ if($id_quir_graff==null){
 
 
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO dat_quir_grafico (id_atencion,id_usua,hora,sistg,diastg,fcardg,satg,fecha_g,cuenta) values (' . $id_atencion . ',' . $id_usua .',1,"' . $sistg . '","' . $diastg . '","' . $fcardg . '","' . $satg . '","'.$fecha_actual.'",1) ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
@@ -537,7 +537,7 @@ $ingresar2 = mysqli_query($conexion, 'INSERT INTO dat_quir_grafico (id_atencion,
 $cuenta=$f3['cuenta'];
                 }
             $cuenta++;
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $ingresar2 = mysqli_query($conexion, 'INSERT INTO dat_quir_grafico (id_atencion,id_usua,hora,sistg,diastg,fcardg,satg,fecha_g,cuenta) values (' . $id_atencion . ',' . $id_usua .',"'.$cuenta.'","' . $sistg . '","' . $diastg . '","' . $fcardg . '","' . $satg . '","'.$fecha_actual.'","'.$cuenta.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

@@ -126,7 +126,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp  WHERE id_atencion=
    ?>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
 <?php 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -526,7 +526,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_not_neona SET id_usua='$medico',fecha_neona='$merge',idrecien_nacido='$idrecien_nacido', pac_neon='$pac_neon', subjetivo_neon='$subjetivo_neon', objetivo_neon='$objetivo_neon', analisis_neon='$analisis_neon', plan_neon='$plan_neon' , px_neon='$px_neon', guia='$guia', edosalud_neon='$edosalud_neon', p_sistol='$p_sistol', p_diastol='$p_diastol', fcard='$fcard', fresp='$fresp', temper='$temper', satoxi='$satoxi', peso='$peso', talla='$talla', apgar='$apgar', silver='$silver', an='$an', fecnacimiento='$fecnacimiento', horanac='$horanac' WHERE id_neona= $id_neona";

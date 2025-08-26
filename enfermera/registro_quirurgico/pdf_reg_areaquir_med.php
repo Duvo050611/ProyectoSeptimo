@@ -108,7 +108,7 @@ $pdf->SetX(55);
 $pdf->Cell(99, 5, utf8_decode('MEDICAMENTOS DE REGISTRO CLÍNICO DE ENFERMERÍA DEL ÁREA QUIRÚRGICA'), 0, 0, 'C');
 $pdf->Ln(4);
 $pdf->SetX(166);
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $date = date("d/m/Y H:i:s");
 $pdf->SetFont('Arial', '', 7);
 $pdf->Cell(39, 5, utf8_decode('FECHA: '.$date), 0, 1, 'L');

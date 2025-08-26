@@ -169,7 +169,7 @@ if($alta_med=='SI' && $alta_adm=='SI' && $activo=='NO' && $valida=='SI'){
     return $bisiesto;
 }
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);

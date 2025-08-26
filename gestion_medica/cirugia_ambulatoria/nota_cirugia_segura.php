@@ -112,7 +112,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
             <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("Y-m-d H:i:s");
                 ?>
                 

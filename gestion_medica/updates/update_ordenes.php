@@ -73,7 +73,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
 
                         <div class="col-sm"> FECHA:
                             <?php
-                            date_default_timezone_set('America/Mexico_City');
+                            date_default_timezone_set('America/Guatemala');
                             $fecha_actual = date("d-m-Y");
                             ?>
                             <strong><?= $fecha_actual ?></strong>
@@ -135,7 +135,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
             </div>
             <div class="col-3">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("Y-m-d H:i:s");
                 ?>
                 
@@ -247,7 +247,7 @@ $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" .
 <?php } ?>
 <hr>
 <!--<?php
-                            //date_default_timezone_set('America/Mexico_City');
+                            //date_default_timezone_set('America/Guatemala');
                             //$fecha_actual2 = date("d-m-Y H:i:s");
                             ?>
 
@@ -1083,7 +1083,7 @@ while ($row=$result->fetch_assoc()) {
         $detalle_lab    = mysqli_real_escape_string($conexion, (strip_tags($_POST["detalle_lab"], ENT_QUOTES)));
         $det_sang    = mysqli_real_escape_string($conexion, (strip_tags($_POST["det_sang"], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_ordenes_med SET  dieta='$dieta',observ_be='$observ_be', cuid_gen='$cuid_gen', signos='$signos', monitoreo='$monitoreo', diuresis='$diuresis', dex='$dex' , semif='$semif', vigilar='$vigilar', oxigeno='$oxigeno', nebulizacion='$nebulizacion', bar='$bar', baño='$baño', foley='$foley', ej='$ej', datsan='$datsan', detsignos='$detsignos', detmonitoreo='$detmonitoreo', detdiuresis='$detdiuresis', detdex='$detdex', detsemif='$detsemif', detvigilar='$detvigilar', detoxigeno='$detoxigeno', detnebu='$detnebu', detbar='$detbar', detbaño='$detbaño', detfoley='$detfoley', detej='$detej', detsan='$detsan', med_med='$med_med', soluciones='$soluciones', detalle_lab='$detalle_lab', det_sang='$det_sang' WHERE id_ord_med= $id_ord";

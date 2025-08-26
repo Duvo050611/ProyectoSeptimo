@@ -149,7 +149,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -361,7 +361,7 @@ $turno="MATUTINO";
     $turno="NOCTURNO";
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 
 if ($hora_med == '24' || $hora_med == '1' || $hora_med == '2' || $hora_med == '3' || $hora_med == '4' || $hora_med == '5' || $hora_med == '6' || $hora_med == '7' || $hora_med == '8') {
@@ -372,7 +372,7 @@ if ($hora_med == '24' || $hora_med == '1' || $hora_med == '2' || $hora_med == '3
 }
 
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fechahora = date("Y-m-d H:i:s");
        $ingresar9 = mysqli_query($conexion, 'INSERT INTO medica_enf (id_atencion,fecha_mat,hora_mat,turno,medicam_mat,dosis_mat,via_mat,id_usua,enf_fecha,tipo,otro) values (' . $id_atencion . ' , "' . $fecha_actual . '","' . $hora_med . '","' . $turno . '","' . $med . '","' . $dosis . '","' . $via . '",' . $id_usua .',"'.$fechahora.'","'.$tipo.'","'.$otro.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

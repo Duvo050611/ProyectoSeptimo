@@ -112,7 +112,7 @@ if (@$_GET['q'] == 'comf_cart') {
 
   $sql2 = "SELECT * FROM cart_enf c, item i, item_type it where c.item_id = i.item_id and it.item_type_id=i.item_type_id and paciente = $paciente and id_usua = $id_usua";
   $result = $conexion->query($sql2);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
   while ($row_stock = $result->fetch_assoc()) {
     $item_id = $row_stock['item_id'];

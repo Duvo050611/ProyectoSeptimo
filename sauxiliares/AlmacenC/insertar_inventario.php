@@ -31,7 +31,7 @@ if (
     $almacen = "FARMACIA";
     
 
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
     $fecha_actual = date("Y-m-d H:i:s");
     
     $sqli = $conexion_almacen->query("SELECT * FROM item_almacen where item_almacen.item_id=$item_id") or die('<p>Error al encontrar catálogo</p><br>' . mysqli_error($conexion));

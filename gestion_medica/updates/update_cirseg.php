@@ -111,7 +111,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
             <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -824,7 +824,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_cir_seg SET id_usua='$medico',fecha='$merge',entrada_pac_confirm='$entrada_pac_confirm', lug_noproc='$lug_noproc', verificado='$verificado',pulsioximetro='$pulsioximetro', ver_inst='$ver_inst', alerg_con='$alerg_con',profilaxis='$profilaxis', dif_via_aerea='$dif_via_aerea', con_hematies='$con_hematies', confirm_presentes='$confirm_presentes', confirm_verb='$confirm_verb', cir_rep='$cir_rep' , anest_resp='$anest_resp', enf_rep='$enf_rep', img_diag='$img_diag',proced='$proced', especialidad='$especialidad', enf_confirm='$enf_confirm', cont_comp_inst='$cont_comp_inst', ident_gest='$ident_gest' , problema='$problema', rev_cir_enf_anest='$rev_cir_enf_anest', prof_trombo ='$prof_trombo ',ident_pac='$ident_pac', fir_cir='$fir_cir', fir_anest='$fir_anest', fir_enf='$fir_enf' WHERE id_cir_seg= $id_cir_seg";

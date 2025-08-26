@@ -26,7 +26,7 @@ if(@$_GET['q']== 'conf'){
   $qty=$_GET['qty'];
   $entradas=$qty;
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $sql1 = "SELECT * FROM cart_recib WHERE id_recib=$id_recib";

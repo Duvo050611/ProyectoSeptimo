@@ -90,7 +90,7 @@ $usuario=$_SESSION['login'];
             <div class="col-sm-4">
                 <div class="form-group">
                     <?php
-                        date_default_timezone_set('America/Mexico_City');
+                        date_default_timezone_set('America/Guatemala');
                         $fecha_actual = date("d-m-Y H:i:s");
                         ?>
                     <label><strong>FECHA :</strong></label>
@@ -532,12 +532,12 @@ function calculaedad($fechanacimiento)
 }
 
         $edad = calculaedad($fecnac_rec);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $insert=mysqli_query($conexion,'INSERT INTO receta_ambulatoria (id_usua,fecha,nombre_rec,papell_rec,sapell_rec,fecnac_rec,edad,sexo_rec,especialidad,detesp,alerg_rec,receta_rec,med_rec,aseguradora,fec_pcita,hor_pcita,subjetivo,objetivo,analisis,plan,px,p_sistolica,p_diastolica,f_card,f_resp,temp,sat_oxigeno,peso,talla,med_cont) VALUES ('.$id_usua.',"'.$fecha_actual.'","'.$nombre_rec.'","'.$papell_rec.'","'.$sapell_rec.'","'.$fecnac_rec.'","'.$edad.'","'.$sexo_rec.'","'.$esp.'","'.$detesp.'","'.$alergia_rec.'","'.$receta_rec.'","'.$med_rec.'","'.$aseg.'","'.$fec_pcita.'","'.$hor_pcita.'","'.$subjetivo.'","'.$objetivo.'","'.$analisis.'","'.$plan.'","'.$px.'", ' . $p_sistolica . ' , ' . $p_diastolica . ' , ' . $f_card . ' , ' . $f_resp . ' , ' . $temp . ' , ' . $sat_oxigeno . ' , ' . $peso . ' , ' . $talla . ',"' . $med_cont . '")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));
 
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
 $fecha= date("Y-m-d H:i:s");
     $select="SELECT * FROM reg_usuarios where id_usua=$id_usua";
     $result=$conexion->query($select);
@@ -630,12 +630,12 @@ function calculaedad($fechanacimiento)
 }
 
         $edad = calculaedad($fecnac_rec);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $insert=mysqli_query($conexion,'INSERT INTO receta_ambulatoria (id_usua,fecha,nombre_rec,papell_rec,sapell_rec,fecnac_rec,edad,sexo_rec,especialidad,detesp,alerg_rec,receta_rec,med_rec,aseguradora,fec_pcita,hor_pcita,subjetivo,objetivo,analisis,plan,px,p_sistolica,p_diastolica,f_card,f_resp,temp,sat_oxigeno,peso,talla,med_cont) VALUES ('.$id_usua.',"'.$fecha_actual.'","'.$nombre_rec.'","'.$papell_rec.'","'.$sapell_rec.'","'.$fecnac_rec.'","'.$edad.'","'.$sexo_rec.'","'.$esp.'","'.$detesp.'","'.$alergia_rec.'","'.$receta_rec.'","'.$med_rec.'","'.$aseg.'","'.$fec_pcita.'","'.$hor_pcita.'","'.$subjetivo.'","'.$objetivo.'","'.$analisis.'","'.$plan.'","'.$px.'", ' . $p_sistolica . ' , ' . $p_diastolica . ' , ' . $f_card . ' , ' . $f_resp . ' , ' . $temp . ' , ' . $sat_oxigeno . ' , ' . $peso . ' , ' . $talla . ',"' . $med_cont . '")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));
 
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
 $fecha= date("Y-m-d H:i:s");
     $select="SELECT * FROM reg_usuarios where id_usua=$id_usua";
     $result=$conexion->query($select);
@@ -729,12 +729,12 @@ function calculaedad($fechanacimiento)
 }
 
         $edad = calculaedad($fecnac_rec);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $insert=mysqli_query($conexion,'INSERT INTO receta_ambulatoria (id_usua,fecha,nombre_rec,papell_rec,sapell_rec,fecnac_rec,edad,sexo_rec,especialidad,detesp,alerg_rec,receta_rec,med_rec,aseguradora,fec_pcita,hor_pcita,subjetivo,objetivo,analisis,plan,px,p_sistolica,p_diastolica,f_card,f_resp,temp,sat_oxigeno,peso,talla,med_cont) VALUES ('.$id_usua.',"'.$fecha_actual.'","'.$nombre_rec.'","'.$papell_rec.'","'.$sapell_rec.'","'.$fecnac_rec.'","'.$edad.'","'.$sexo_rec.'","'.$esp.'","'.$detesp.'","'.$alergia_rec.'","'.$receta_rec.'","'.$med_rec.'","'.$aseg.'","'.$fec_pcita.'","'.$hor_pcita.'","'.$subjetivo.'","'.$objetivo.'","'.$analisis.'","'.$plan.'","'.$px.'", ' . $p_sistolica . ' , ' . $p_diastolica . ' , ' . $f_card . ' , ' . $f_resp . ' , ' . $temp . ' , ' . $sat_oxigeno . ' , ' . $peso . ' , ' . $talla . ',"' . $med_cont . '")') or die ('<p>Error al registrar</p><br>'.mysqli_error($conexion));
 
-    date_default_timezone_set('America/Mexico_City');
+    date_default_timezone_set('America/Guatemala');
 $fecha= date("Y-m-d H:i:s");
     $select="SELECT * FROM reg_usuarios where id_usua=$id_usua";
     $result=$conexion->query($select);

@@ -110,7 +110,7 @@ HABITACIÓN : <td><strong><?php echo $cama; ?></strong></td>
             <div class="row">
             <div class="col-sm-10">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 
@@ -438,7 +438,7 @@ while ($row=$result->fetch_assoc()) {
 
         
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_not_postop SET complic='$complic', in_ac='$in_ac', hallazgos='$hallazgos', estado_post='$estado_post', ten_sist='$ten_sist', ten_diast='$ten_diast', frec='$frec'  , frecresp='$frecresp', tempera='$tempera',tec='$tec', plan_tera='$plan_tera', pron='$pron' WHERE id_not_postp= $id_not_postp";

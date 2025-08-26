@@ -121,7 +121,7 @@ include("../header_medico.php");
    ?>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
 <?php 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -758,7 +758,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
        
        $merge = $fecha.' '.$hora;
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE dat_ob SET id_usua='$medico',fecha_ob='$merge',problemao='$problemao', subjetivob='$subjetivob', objetivob='$objetivob', analisiso='$analisiso', trat_noturgen='$trat_noturgen', plano='$plano' , guia='$guia', pxo='$pxo', dest_cu_ob='$dest_cu_ob' WHERE id_ob= $id_ob";

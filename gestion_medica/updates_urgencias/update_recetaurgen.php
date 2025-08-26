@@ -89,7 +89,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
     
      <div class="col-sm"> FECHA:
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y");
                 ?>
                 <strong><?= $fecha_actual ?></strong>
@@ -120,7 +120,7 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
             </div>
             <div class="col-3">
                 <?php
-                date_default_timezone_set('America/Mexico_City');
+                date_default_timezone_set('America/Guatemala');
                 $fecha_actual = date("d-m-Y H:i:s");
                 ?>
                 <hr>
@@ -289,7 +289,7 @@ while ($row=$resultado->fetch_assoc()) {
 
         
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE recetaurgen SET especialidad='$especialidad', alergias='$alergias', detesp ='$detesp', receta_urgen='$receta_urgen', med='$med',fec_pcita='$fec_pcita', hor_pcita='$hor_pcita' WHERE id_rec_urgen= $id_rec_urgen";

@@ -189,7 +189,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(50);
 $pdf->Cell(120, 5, utf8_decode('DESCRIPCIÓN DE INTERVENCIÓN QUIRÚRGICA'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 6);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 
@@ -521,7 +521,7 @@ $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(50);
 $pdf->Cell(120, 5, utf8_decode('NOTA POSTOPERATORIA'), 0, 0, 'C');
 $pdf->SetFont('Arial', '', 6);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 $pdf->Cell(35, 5, 'Toluca, Mex, ' . $fecha_actual, 0, 1, 'R');
 

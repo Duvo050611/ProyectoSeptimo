@@ -140,7 +140,7 @@ function bisiesto($anio_actual){
     return $bisiesto;
 }
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d");
 $fecha_nac=$pac_fecnac;
 $fecha_de_nacimiento =strval($fecha_nac);
@@ -1018,7 +1018,7 @@ $diagprob_i = mysqli_real_escape_string($conexion, (strip_tags($_POST['diagprob_
 $servi = mysqli_real_escape_string($conexion, (strip_tags($_POST['servi'], ENT_QUOTES)));
 $des_diag = mysqli_real_escape_string($conexion, (strip_tags($_POST['des_diag'], ENT_QUOTES)));
 
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 $id_usua = $usuario['id_usua'];
 $id_atencion = $_SESSION['hospital'];
@@ -1031,7 +1031,7 @@ $resultado=$conexion->query("SELECT * from reg_usuarios WHERE id_usua= $id_usua"
 }
 
 $nombre_medico=$nombre.' '.$papell.' '.$sapell;
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $hora_ord = date("H:i:s");
 
 $sql2 = "UPDATE dat_nevol SET problema='$problema', subjetivo='$subjetivo',objetivo='$objetivo',analisis='$analisis', plan='$plan', px='$px', guia='$guia', edosalud='$edosalud', id_usua='$id_usua', diagprob_i='$diagprob_i', servi='$servi', des_diag='$des_diag' WHERE id_ne= $id_ne";

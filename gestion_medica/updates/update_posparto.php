@@ -513,7 +513,7 @@ while ($row_doc=$resultado->fetch_assoc()) {
 
         $merge = $fecha.' '.$hora;
        
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
         $sql2 = "UPDATE nota_posparto SET id_usua='$medico',fecha_nu='$merge',problema='$problema', subjetivo='$subjetivo', objetivo='$objetivo', analisis='$analisis', plan='$plan', px='$px' , guia='$guia', edosalud='$edosalud' WHERE id_notpos= $id_notpos";

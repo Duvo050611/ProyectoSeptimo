@@ -19,7 +19,7 @@ $son = mysqli_real_escape_string($conexion, (strip_tags($_POST['son'], ENT_QUOTE
 $dieta = mysqli_real_escape_string($conexion, (strip_tags($_POST['dieta'], ENT_QUOTES)));
    
 
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("Y-m-d H:i:s");
 
 $resultado=$conexion->query("SELECT * from reg_usuarios WHERE id_usua= $id_usua") or die($conexion->error);
@@ -30,7 +30,7 @@ $resultado=$conexion->query("SELECT * from reg_usuarios WHERE id_usua= $id_usua"
 }
 
 $nombre_medico=$nombre.' '.$papell.' '.$sapell;
-//date_default_timezone_set('America/Mexico_City');
+//date_default_timezone_set('America/Guatemala');
 $hora_ord = date("H:i:s");
 $insertar = mysqli_query($conexion, 'INSERT INTO dat_ordenes_med(id_atencion,id_usua,fecha_ord,hora_ord,dieta,observ_be,medico,tipo,gca,gcat,son,sont) values (' . $id_atencion . ',' . $id_usua . ',"' . $fecha_actual . '","' . $hora_ord . '","'.$dieta.'","' . $observ_be . '","'.$nombre_medico.'","QUIRURGICO","'.$gca.'","'.$gcat.'","'.$son.'","'.$sont.'")') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 

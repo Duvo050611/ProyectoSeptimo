@@ -87,7 +87,7 @@ $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetTextColor(43, 45, 127);
   $pdf->SetDrawColor(43, 45, 180);
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Guatemala');
 $fecha_actual = date("d/m/Y");
 
 $pdf->SetFont('Arial', 'B', 10);
