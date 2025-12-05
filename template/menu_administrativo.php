@@ -1,22 +1,19 @@
-
 <?php
-include "../conexionbd.php";
+include '../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 session_start();
-//
+
 if (!isset($_SESSION['login'])) {
-  // remove all session variables
-  session_unset();
-  // destroy the session
-  session_destroy();
-  header('Location: ../index.php');
+    session_unset();
+    session_destroy();
+    header('Location: ../index.php');
 }
 $usuario = $_SESSION['login'];
-//$resultado = $conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='" . $usuario . "'") or die($conexion->error);
+
 if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] == 12 || $usuario['id_rol'] == 9)) {
-  session_unset();
-  session_destroy();
-  // echo "<script>window.Location='../index.php';</script>";
-  header('Location: ../index.php');
+    session_unset();
+    session_destroy();
+    header('Location: ../index.php');
 }
 
 ?>
@@ -24,965 +21,1003 @@ if (!($usuario['id_rol'] == 1 || $usuario['id_rol'] == 5 || $usuario['id_rol'] =
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>INEO Metepec</title>
-  <link rel="icon" href="../imagenes/SIF.PNG">
-  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <!-- Font Awesome Icons -->
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-  <!-- Ionicons -->
-  <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-  <!-- Morris chart -->
-  <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-  <!-- jvectormap -->
-  <link href="plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
-  <!-- Daterange picker -->
-  <link href="plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
-  <!-- Theme style -->
-  <link href="dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-           folder instead of downloading all of them to reduce the load. -->
-  <link href="dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <title>INEO Metepec</title>
+    <link rel="icon" href="../imagenes/SIF.PNG">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome Icons -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Morris chart -->
+    <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+    <!-- jvectormap -->
+    <link href="plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- Daterange picker -->
+    <link href="plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <!-- Theme style -->
+    <link href="dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE Skins -->
+    <link href="dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<?php 
-$resultado = $conexion->query("select paciente.*, dat_ingreso.id_atencion, triage.id_triage
-from paciente 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <?php
+    $resultado = $conexion->query("select paciente.*, dat_ingreso.id_atencion, triage.id_triage
+from paciente
 inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp
 inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=id_triage
 ") or die($conexion->error);
 
-$usuario = $_SESSION['login'];
+    $usuario = $_SESSION['login'];
+    ?>
 
-    //$rol=$usuario['id_rol'];
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-?>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+            font-family: 'Roboto', sans-serif !important;
+            min-height: 100vh;
+        }
 
-  <style>
-   .imageni{
-       width:200px;
-   }
-   .laboi{
-       width:200px;
-   }
+        /* Efecto de partículas en el fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.patoi{
-    width:200px;
-}
-  
-    .botonimagen {
-      background-image: url(../imagenes/admision.png);
-      background-repeat: no-repeat;
-      height: 100px;
-      width: 100px;
-      background-position: center;
-    }
+        .wrapper {
+            position: relative;
+            z-index: 1;
+        }
 
-    .dropdwn {
-      float: left;
-      overflow: hidden;
-    }
+        /* Header personalizado */
+        .main-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+            border-bottom: 2px solid #40E0FF !important;
+            box-shadow: 0 4px 20px rgba(64, 224, 255, 0.2);
+        }
 
-    .dropdwn .dropbtn {
-      cursor: pointer;
-      font-size: 16px;
-      border: none;
-      outline: none;
-      color: white;
-      padding: 14px 16px;
-      background-color: inherit;
-      font-family: inherit;
-      margin: 0;
-    }
+        .main-header .logo {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-right: 2px solid #40E0FF !important;
+            color: #40E0FF !important;
+        }
 
-    .navbar a:hover,
-    .dropdwn:hover .dropbtn,
-    .dropbtn:focus {
-      background-color: #367fa9;
-    }
+        .main-header .navbar {
+            background: transparent !important;
+        }
 
-    .dropdwn-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-    }
+        /* Sidebar personalizado */
+        .main-sidebar {
+            background: linear-gradient(180deg, #16213e 0%, #0f3460 100%) !important;
+            border-right: 2px solid #40E0FF !important;
+            box-shadow: 4px 0 20px rgba(64, 224, 255, 0.15);
+        }
 
-    .dropdwn-content a {
-      float: none;
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      text-align: left;
-    }
+        .sidebar-menu > li > a {
+            color: #ffffff !important;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
 
-    .dropdwn-content a:hover {
-      background-color: #ddd;
-    }
+        .sidebar-menu > li > a:hover,
+        .sidebar-menu > li.active > a {
+            background: rgba(64, 224, 255, 0.1) !important;
+            border-left: 3px solid #40E0FF !important;
+            color: #40E0FF !important;
+        }
 
-    .show {
-      display: block;
-    }
+        .treeview-menu > li > a {
+            color: #ffffff !important;
+        }
 
-    * {
-      box-sizing: border-box;
-    }
+        .treeview-menu > li > a:hover {
+            background: rgba(64, 224, 255, 0.1) !important;
+            color: #40E0FF !important;
+        }
 
-    .todo-container {
-      max-width: 15000px;
-      height: auto;
-      display: flex;
-      overflow-y: scroll;
-      column-gap: 0.5em;
-      column-rule: 1px solid white;
-      column-width: 140px;
-      column-count: 7;
-    }
+        .user-panel {
+            border-bottom: 1px solid rgba(64, 224, 255, 0.2);
+        }
 
-    .status {
-      width: 25%;
-      background-color: #ecf0f5;
-      position: relative;
-      padding: 60px 1rem 0.5rem;
-      height: 100%;
+        .user-panel .info {
+            color: #ffffff !important;
+        }
 
-    }
+        /* Content wrapper */
+        .content-wrapper {
+            background: transparent !important;
+            min-height: 100vh;
+        }
 
-    .status h4 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background-color: #0b3e6f;
-      color: white;
-      margin: 0;
-      width: 100%;
+        /* Breadcrumb mejorado */
+        .breadcrumb {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 15px !important;
+            padding: 20px 30px !important;
+            margin-bottom: 40px !important;
+            box-shadow: 0 8px 30px rgba(64, 224, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
 
-      padding: 0.5rem 1rem;
-    }
+        .breadcrumb::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
 
-     @media screen and (max-width: 980px){
-       
-    .ges{
-        width:200px;
-       margin-left:-50px;   
-    }
-    .ge{
-        width:80px;
-        height: auto;
-     
-    }
-     .pac{
-        font-size: 9px;
-       margin-left:-10px;    
-    }
-    /*censo*/
-     .censo{
-        width:200px;
-        margin-top: -85.6px;
-       margin-left:63px;   
-    }
-    .cen{
-        width:70px;
-        height: auto;
-     
-    }
-     .so{
-        font-size: 10px;
-       margin-left:-1px;    
-    }
-/*serv aux*/
-     .serv{
-        width:200px;
-        margin-top: -86px;
-       margin-left:180px;   
-    }
-    .ser{
-        width:70px;
-        height: auto;
-     
-    }
-     .se{
-        font-size: 9px;
-       margin-left:-2px;    
-    }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
 
-/*config*/
-     .conf{
-        width:200px;
-        margin-top: -150px;
-       margin-left:-43px;   
-    }
-    .con{
-        width: 90px;
-        height: 60px;
-     
-    }
-     .co{
-        font-size: 9px;
-       margin-left:-2px;    
-    }
+        .breadcrumb h4 {
+            color: #ffffff !important;
+            margin: 0;
+            font-weight: 600 !important;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.5);
+            position: relative;
+            z-index: 1;
+        }
 
-/*Cuentas*/
-     .cuen{
-        width:200px;
-        margin-top: -91px;
-       margin-left:77px;   
-    }
-    .cue{
-        width: 80px;
-        height: 60px;
-     
-    }
-     .cu{
-        font-size: 9.5px;
-       margin-left:-2px;    
-    }
+        /* Cards principales - Diseño premium */
+        .content.box {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
 
-/*vales*/
-     .vales{
-        width:200px;
-        margin-top: -91px;
-       margin-left:198px;   
-    }
-    .vale{
-        width: 80px;
-        height: 60px;
-     
-    }
-     .val{
-        font-size: 9px;
-       margin-left:-2px;    
-    }
-    
-   .imageni{
-       width:100px;
-   }
-   .laboi{
-       width:100px;
-   }
+        .card {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 20px !important;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+            0 0 30px rgba(64, 224, 255, 0.2) !important;
+            margin-bottom: 30px !important;
+            height: 100%;
+        }
 
-.patoi{
-    width:100px;
-}
+        /* Efecto de brillo en las tarjetas */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                    45deg,
+                    transparent,
+                    rgba(64, 224, 255, 0.1),
+                    transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
 
-h4{
-     font-size: 9px;
-}
+        .card:hover::before {
+            left: 100%;
+        }
 
-.far2{
-    width:100px;
-    height: 100px;
-}
+        .card:hover {
+            transform: translateY(-15px) scale(1.02) !important;
+            border-color: #00D9FF !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
+            0 0 50px rgba(64, 224, 255, 0.5),
+            inset 0 0 20px rgba(64, 224, 255, 0.1) !important;
+        }
 
-.quir2{
-    width:100px;
-      height: 100px;
-}
+        .card a {
+            text-decoration: none !important;
+            display: block;
+        }
 
+        .card-body {
+            padding: 40px 20px !important;
+            position: relative;
+            z-index: 1;
+        }
 
+        /* Círculo de icono mejorado */
+        .icon-circle {
+            background: linear-gradient(135deg, rgba(64, 224, 255, 0.2) 0%, rgba(0, 217, 255, 0.3) 100%) !important;
+            width: 140px !important;
+            height: 140px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto 20px !important;
+            border: 3px solid #40E0FF !important;
+            box-shadow: 0 10px 30px rgba(64, 224, 255, 0.3),
+            inset 0 0 20px rgba(64, 224, 255, 0.1) !important;
+            transition: all 0.4s ease !important;
+            position: relative;
+        }
 
-}
+        .icon-circle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #40E0FF;
+            opacity: 0;
+            animation: ripple 2s ease-out infinite;
+        }
 
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
 
+        .card:hover .icon-circle {
+            transform: scale(1.1) rotate(360deg) !important;
+            box-shadow: 0 15px 40px rgba(64, 224, 255, 0.5),
+            inset 0 0 30px rgba(64, 224, 255, 0.2) !important;
+            background: linear-gradient(135deg, rgba(64, 224, 255, 0.3) 0%, rgba(0, 217, 255, 0.4) 100%) !important;
+        }
 
-  </style>
+        .card .fa {
+            font-size: 56px !important;
+            color: #40E0FF !important;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.8);
+            transition: all 0.4s ease !important;
+        }
 
-  <!-- Estilos modernos para el menú administrativo -->
-  <style>
-    /* Estilos modernos para el menú administrativo */
-    .content {
-      padding: 20px;
-    }
+        .card:hover .fa {
+            transform: scale(1.2) !important;
+            text-shadow: 0 0 30px rgba(64, 224, 255, 1),
+            0 0 40px rgba(64, 224, 255, 0.8);
+        }
 
-    .container {
-      max-width: 1200px;
-    }
+        /* Títulos de las tarjetas */
+        .card h4, .card h5 {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+            font-size: 1.3rem !important;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(64, 224, 255, 0.3);
+            transition: all 0.3s ease;
+        }
 
-    .card {
-      transition: all 0.3s ease !important;
-      border: none !important;
-      overflow: hidden;
-      border-radius: 15px !important;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-      background: white;
-      height: 100%;
-    }
+        .card:hover h4,
+        .card:hover h5 {
+            color: #40E0FF !important;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.8),
+            0 0 30px rgba(64, 224, 255, 0.5);
+        }
 
-    .card:hover {
-      transform: translateY(-10px) !important;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
-    }
+        /* Animaciones de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .card a {
-      text-decoration: none !important;
-    }
+        .card {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
 
-    .card .fa {
-      transition: all 0.3s ease;
-    }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
 
-    .card:hover .fa {
-      transform: scale(1.1);
-    }
+        /* Footer */
+        .main-footer {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-top: 2px solid #40E0FF !important;
+            color: #ffffff !important;
+            box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+        }
 
-    .card:hover div[style*="background"] {
-      transform: scale(1.05);
-    }
+        /* Modal mejorado */
+        .modal-content {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+            0 0 40px rgba(64, 224, 255, 0.4);
+        }
 
-    /* Responsividad mejorada */
-    @media (max-width: 768px) {
-      .col-sm-4 {
-        margin-bottom: 20px;
-      }
-      
-      .card div[style*="background"] {
-        width: 80px !important;
-        height: 80px !important;
-      }
-      
-      .card .fa {
-        font-size: 30px !important;
-      }
-      
-      .card h4, .card h5 {
-        font-size: 16px !important;
-      }
-    }
+        .modal-header {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-bottom: 2px solid #40E0FF !important;
+            border-radius: 20px 20px 0 0 !important;
+        }
 
-    /* Estilos adicionales para modales */
-    .modal-xl {
-      max-width: 1200px;
-    }
+        .modal-title {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow: 0 0 15px rgba(64, 224, 255, 0.5);
+        }
 
-    .modal-content {
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    }
+        .modal-body {
+            background: transparent !important;
+            padding: 30px !important;
+        }
 
-    .modal-header {
-      border: none !important;
-    }
+        .modal-footer {
+            border-top: 2px solid #40E0FF !important;
+            background: rgba(15, 52, 96, 0.5) !important;
+        }
 
-    .modal-footer {
-      border: none !important;
-    }
+        /* Botones */
+        .btn {
+            border-radius: 25px !important;
+            padding: 10px 30px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease !important;
+            border: 2px solid #40E0FF !important;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+        }
 
-    /* Efectos específicos para iconos de servicios auxiliares */
-    .card[style*="linear-gradient"] div[style*="background"] {
-      transition: all 0.3s ease;
-    }
+        .btn:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 25px rgba(64, 224, 255, 0.4) !important;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border-color: #00D9FF !important;
+        }
 
-    .card[style*="linear-gradient"]:hover div[style*="background"] {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.15) !important;
-    }
+        .close {
+            color: #ffffff !important;
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+        }
 
-    /* Animación pulso para iconos */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
+        .close:hover {
+            color: #40E0FF !important;
+        }
 
-    .card:hover .fa {
-      animation: pulse 1s infinite;
-    }
-  </style>
-  </style>
+        /* Iconos en modal más pequeños */
+        .modal-body .icon-circle {
+            width: 100px !important;
+            height: 100px !important;
+        }
+
+        .modal-body .fa {
+            font-size: 40px !important;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .card h4, .card h5 {
+                font-size: 1rem !important;
+            }
+
+            .icon-circle {
+                width: 100px !important;
+                height: 100px !important;
+            }
+
+            .card .fa {
+                font-size: 40px !important;
+            }
+
+            .breadcrumb {
+                padding: 15px 20px !important;
+            }
+
+            .breadcrumb h4 {
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+
+            .modal-body .icon-circle {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            .modal-body .fa {
+                font-size: 32px !important;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .icon-circle {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            .card .fa {
+                font-size: 32px !important;
+            }
+
+            .card h4, .card h5 {
+                font-size: 0.9rem !important;
+            }
+        }
+
+        /* Efectos de luz en hover */
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(64, 224, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(64, 224, 255, 0.6);
+            }
+        }
+
+        .card:hover {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-left: 1px solid #40E0FF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+        }
+
+        /* Estilos para elementos inline */
+        .card div[style*="background"] {
+            transition: all 0.3s ease !important;
+        }
+    </style>
 </head>
 
-<body class=" hold-transition skin-blue sidebar-mini">
-  <div class="wrapper">
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
 
     <header class="main-header">
-      <!-- Logo -->
-      <!-- <img src="dist/img/logo.jpg" alt="logo">-->
+        <?php
+        if ($usuario['id_rol'] == 1) {
+            ?>
+            <a href="menu_administrativo.php" class="logo">
+                <span class="logo-mini"><b>SI</b>MA</span>
+                <?php
+                $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
+                while($f = mysqli_fetch_array($resultado)){
+                    $id_simg=$f['id_simg'];
+                    ?>
+                    <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
+                    <?php
+                }
+                ?>
+            </a>
+            <?php
+        } else if ($usuario['id_rol'] == 5) {
+            ?>
+            <a href="menu_gerencia.php" class="logo">
+                <span class="logo-mini"><b>SI</b>MA</span>
+                <?php
+                $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
+                while($f = mysqli_fetch_array($resultado)){
+                    $id_simg=$f['id_simg'];
+                    ?>
+                    <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
+                    <?php
+                }
+                ?>
+            </a>
+        <?php }elseif($usuario['id_rol'] == 12) { ?>
+            <a href="menu_residente.php" class="logo">
+                <span class="logo-mini"><b>SI</b>MA</span>
+                <?php
+                $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
+                while($f = mysqli_fetch_array($resultado)){
+                    $id_simg=$f['id_simg'];
+                    ?>
+                    <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
+                    <?php
+                }
+                ?>
+            </a>
+        <?php }elseif($usuario['id_rol'] == 9) { ?>
+            <a href="menu_imagenologia.php" class="logo">
+                <span class="logo-mini"><b>SI</b>MA</span>
+                <?php
+                $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
+                while($f = mysqli_fetch_array($resultado)){
+                    $id_simg=$f['id_simg'];
+                    ?>
+                    <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
+                    <?php
+                }
+                ?>
+            </a>
+            <?php
+        } else
+            session_destroy();
+        echo "<script>window.Location='../index.php';</script>";
+        ?>
 
-      <?php
-      if ($usuario['id_rol'] == 1) {
-      ?>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
 
-        <a href="menu_administrativo.php" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
-          <!-- logo for regular state and mobile devices -->
-<?php
-$resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-while($f = mysqli_fetch_array($resultado)){
-       $id_simg=$f['id_simg'];
-?>
-            <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
-          <?php
-}
-?>
-        </a>
-      <?php
-      } else if ($usuario['id_rol'] == 5) {
-
-      ?>
-        <a href="menu_gerencia.php" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
-          <!-- logo for regular state and mobile devices -->
-         <?php
-$resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-while($f = mysqli_fetch_array($resultado)){
-       $id_simg=$f['id_simg'];
-?>
-            <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
-          <?php
-}
-?>
-        </a>
-      <?php }elseif($usuario['id_rol'] == 12) { ?>
-         <a href="menu_residente.php" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
-          <!-- logo for regular state and mobile devices -->
-         <?php
-$resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-while($f = mysqli_fetch_array($resultado)){
-       $id_simg=$f['id_simg'];
-?>
-            <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
-          <?php
-}
-?>
-        </a>
-      <?php }elseif($usuario['id_rol'] == 9) { ?>
-         <a href="menu_imagenologia.php" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>SI</b>MA</span>
-          <!-- logo for regular state and mobile devices -->
-         <?php
-$resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
-while($f = mysqli_fetch_array($resultado)){
-       $id_simg=$f['id_simg'];
-?>
-            <center><span class="fondo"><img src="../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
-          <?php
-}
-?>
-        </a>
-      <?php
-      } else
-        //session_unset();
-        session_destroy();
-      echo "<script>window.Location='../index.php';</script>";
-      ?>
-      <!-- Header Navbar: style can be found in header.less -->
-      <nav class="navbar navbar-static-top" role="navigation">
-        <!-- Sidebar toggle button-->
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-          <span class="sr-only">Toggle navigation</span>
-        </a>
-
-
-        <!-- Navbar Right Menu -->
-        <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav">
-
-            <!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown user user-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-
-                <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="user-image" alt="User Image">
-                <span class="hidden-xs">  <?php echo $usuario['papell']; ?></span>
-              </a>
-              <ul class="dropdown-menu">
-                <!-- User image -->
-                <li class="user-header">
-
-                  <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="img-circle" alt="User Image">
-
-                  <p>
-                   <?php echo $usuario['papell']; ?>
-
-                  </p>
-                </li>
-
-                <!-- Menu Footer-->
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="../gestion_administrativa/editar_perfil/editar_perfil.php?id_usua=<?php echo $usuario['id_usua'];?>" class="btn btn-default btn-flat">MIS DATOS</a>
-                  </div>
-                  <div class="pull-right">
-                    <a href="../cerrar_sesion.php" class="btn btn-default btn-flat">CERRAR SESIÓN</a>
-                  </div>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </nav>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="user-image" alt="User Image">
+                            <span class="hidden-xs">  <?php echo $usuario['papell']; ?></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="img-circle" alt="User Image">
+                                <p>
+                                    <?php echo $usuario['papell']; ?>
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="../gestion_administrativa/editar_perfil/editar_perfil.php?id_usua=<?php echo $usuario['id_usua'];?>" class="btn btn-default btn-flat">MIS DATOS</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="../cerrar_sesion.php" class="btn btn-default btn-flat">CERRAR SESIÓN</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </header>
-    <!-- Left side column. contains the logo and sidebar -->
+
     <aside class="main-sidebar">
-      <!-- sidebar: style can be found in sidebar.less -->
-      <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-          <div class="pull-left image">
-            <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="img-circle" alt="User Image" />
-          </div>
-          <div class="pull-left info">
-            <p> <?php echo $usuario['papell']; ?></p>
+        <section class="sidebar">
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="../imagenes/<?php echo $usuario['img_perfil']; ?>" class="img-circle" alt="User Image" />
+                </div>
+                <div class="pull-left info">
+                    <p> <?php echo $usuario['papell']; ?></p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> ACTIVO</a>
+                </div>
+            </div>
 
-            <a href="#"><i class="fa fa-circle text-success"></i> ACTIVO</a>
-          </div>
-        </div>
+            <ul class="sidebar-menu">
+                <li class="active treeview">
+                    <a href="#">
+                        <i class="fa fa-user-friends"></i> <span>ADMINISTRATIVO</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="../gestion_administrativa/gestion_pacientes/registro_pac.php"><i class="fa fa-user-plus"></i>
+                                GESTIÓN DE PACIENTES</a></li>
+                        <li><a href="../gestion_administrativa/censo/tabla_censo.php"><i class="fa fa-list-alt" aria-hidden="true"></i>
+                                CENSO</a></li>
+                    </ul>
+                </li>
 
-
-        <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
-           
-          <li class="active treeview">
-            <a href="#">
-              <i class="fa fa-user-friends"></i> <span>ADMINISTRATIVO</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="../gestion_administrativa/gestion_pacientes/registro_pac.php"><i class="fa fa-user-plus"></i> 
-              GESTIÓN DE PACIENTES</a></li>
-              <li><a href="../gestion_administrativa/censo/tabla_censo.php"><i class="fa fa-list-alt" aria-hidden="true"></i> 
-              CENSO</a></li>
-             
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-donate"></i> <span>GESTIÓN DE CUENTAS</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="../gestion_administrativa/cuenta_paciente/vista_df.php"><i class="fa fa-donate"></i> CUENTA DE PACIENTES</a></li>
+                        <li><a href="../gestion_administrativa/presupuesto/presupuesto.php"><i class="fa fa-file-invoice-dollar"></i> PRESUPUESTOS</a></li>
+                        <li><a href="../gestion_administrativa/cuenta_paciente/corte_caja.php"><i class="fa fa-file-invoice-dollar"></i> CORTE DE CAJA</a></li>
+                    </ul>
+                </li>
             </ul>
-          </li>
-
-         <!-- <li class="treeview">
-              <li><a href="../gestion_administrativa/cuenta_paciente/vista_df.php"><i class="fa fa-donate"></i> CUENTAS</a></li>
-          </li>-->
-          
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-donate"></i> <span>GESTIÓN DE CUENTAS</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="../gestion_administrativa/cuenta_paciente/vista_df.php"><i class="fa fa-donate"></i> CUENTA DE PACIENTES</a></li>
-            <!--  <li><a href="../gestion_administrativa/pago_servicios/pago_servicios.php"><i class="fa fa-usd" aria-hidden="true"></i> PAGO DE SERVICIOS</a></li>-->
-              <li><a href="../gestion_administrativa/presupuesto/presupuesto.php"><i class="fa fa-file-invoice-dollar"></i> PRESUPUESTOS</a></li>
-              <li><a href="../gestion_administrativa/cuenta_paciente/corte_caja.php"><i class="fa fa-file-invoice-dollar"></i> CORTE DE CAJA</a></li>
-            </ul>
-            
-          </li>
-        </ul>
-
-
-      </section>
-      <!-- /.sidebar -->
+        </section>
     </aside>
 
-    <!-- Right side column. Contains the navbar and content of the page -->
     <div class="content-wrapper">
-      <!-- Content Header (Page header) -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                    <h4><i class="fa fa-briefcase"></i> ADMINISTRATIVO</h4>
+                </li>
+            </ol>
+        </nav>
 
-      <!--AQUI VA QUE PUESTO TIENE-->
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb" style="background: #2b2d7f; border: none; border-radius: 0; padding: 15px 25px; margin-bottom: 30px;">
-          <li class="breadcrumb-item active" aria-current="page"><STRONG>
-              <h4 style="color: white; margin: 0; font-weight: 600;">ADMINISTRATIVO</h4>
-            </STRONG></li>
-        </ol>
-      </nav>
-
-   
+        <section class="content">
             <div class="content box">
-              <!-- CONTENIDO -->
-
-<div class="container">
-  <div class="row">
-    <!-- GESTIÓN DE PACIENTES -->
-    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-      <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F4FD 0%, #E1F5FE 100%); transition: all 0.3s ease;">
-        <div class="card-body d-flex flex-column justify-content-center">
-          <div style="margin-bottom: 20px;">
-            <a href="../gestion_administrativa/gestion_pacientes/registro_pac.php" title="Gestión de Pacientes" style="text-decoration: none;">
-              <div style="background: #B3E5FC; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                <i class="fa fa-users" style="font-size: 48px; color: #0277BD;"></i>
-              </div>
-              <h4 style="color: #0277BD; font-weight: 600; margin: 0;">GESTIÓN DE PACIENTES</h4>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- GESTIÓN DE CUENTAS -->
-    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-      <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 100%); transition: all 0.3s ease;">
-        <div class="card-body d-flex flex-column justify-content-center">
-          <div style="margin-bottom: 20px;">
-            <a href="#" data-toggle="modal" data-target="#exampleModal" title="Cuentas" style="text-decoration: none;">
-              <div style="background: #F8BBD9; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                <i class="fa fa-calculator" style="font-size: 48px; color: #C2185B;"></i>
-              </div>
-              <h4 style="color: #C2185B; font-weight: 600; margin: 0;">GESTIÓN DE CUENTAS</h4>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CENSO -->
-    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-      <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%); transition: all 0.3s ease;">
-        <div class="card-body d-flex flex-column justify-content-center">
-          <div style="margin-bottom: 20px;">
-            <a href="../gestion_administrativa/censo/tabla_censo.php" title="Censo" style="text-decoration: none;">
-              <div style="background: #C8E6C9; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                <i class="fa fa-bed" style="font-size: 48px; color: #388E3C;"></i>
-              </div>
-              <h4 style="color: #388E3C; font-weight: 600; margin: 0;">CENSO</h4>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-
-
-<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content" style="border-radius: 15px; border: none;">
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
-                    <h5 class="modal-title" style="color: white; font-weight: 600;">
-                        <i class="fa fa-hospital-o"></i> Servicios Auxiliares
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="padding: 30px;">
+                <div class="container">
                     <div class="row">
-                        <!-- FARMACIA -->
+                        <!-- GESTIÓN DE PACIENTES -->
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                            <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%); transition: all 0.3s ease;">
+                            <div class="card text-center h-100">
                                 <div class="card-body d-flex flex-column justify-content-center">
-                                    <div style="margin-bottom: 20px;">
-                                        <a href="../template/menu_farmacia.php" title="Farmacia" style="text-decoration: none;">
-                                            <div style="background: #C8E6C9; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                                <i class="fa fa-medkit" style="font-size: 40px; color: #388E3C;"></i>
-                                            </div>
-                                            <h5 style="color: #388E3C; font-weight: 600; margin: 0;">FARMACIA</h5>
-                                        </a>
-                                    </div>
+                                    <a href="../gestion_administrativa/gestion_pacientes/registro_pac.php" title="Gestión de Pacientes">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-users"></i>
+                                        </div>
+                                        <h4>GESTIÓN DE PACIENTES</h4>
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- CEYE -->
+                        <!-- GESTIÓN DE CUENTAS -->
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                            <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F4FD 0%, #E1F5FE 100%); transition: all 0.3s ease;">
+                            <div class="card text-center h-100">
                                 <div class="card-body d-flex flex-column justify-content-center">
-                                    <div style="margin-bottom: 20px;">
-                                        <a href="../template/menu_ceye.php" title="CEYE" style="text-decoration: none;">
-                                            <div style="background: #B3E5FC; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                                <i class="fa fa-shield" style="font-size: 40px; color: #0277BD;"></i>
-                                            </div>
-                                            <h5 style="color: #0277BD; font-weight: 600; margin: 0;">CEYE</h5>
-                                        </a>
-                                    </div>
+                                    <a href="#" data-toggle="modal" data-target="#exampleModal" title="Cuentas">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-calculator"></i>
+                                        </div>
+                                        <h4>GESTIÓN DE CUENTAS</h4>
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ALMACÉN CENTRAL -->
+                        <!-- CENSO -->
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                            <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #FFF3E0 0%, #FFECB3 100%); transition: all 0.3s ease;">
+                            <div class="card text-center h-100">
                                 <div class="card-body d-flex flex-column justify-content-center">
-                                    <div style="margin-bottom: 20px;">
-                                        <a href="../template/menu_almacencentral.php" title="Almacén Central" style="text-decoration: none;">
-                                            <div style="background: #FFE0B2; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                                <i class="fa fa-cubes" style="font-size: 40px; color: #F57C00;"></i>
-                                            </div>
-                                            <h5 style="color: #F57C00; font-weight: 600; margin: 0;">ALMACÉN CENTRAL</h5>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- IMAGENOLOGÍA -->
-                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                            <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 100%); transition: all 0.3s ease;">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <div style="margin-bottom: 20px;">
-                                        <a href="../template/menu_imagenologia.php" title="Imagenología" style="text-decoration: none;">
-                                            <div style="background: #F8BBD9; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                                <i class="fa fa-search" style="font-size: 40px; color: #C2185B;"></i>
-                                            </div>
-                                            <h5 style="color: #C2185B; font-weight: 600; margin: 0;">IMAGENOLOGÍA</h5>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- LABORATORIO -->
-                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                            <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #F3E5F5 0%, #E8EAF6 100%); transition: all 0.3s ease;">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <div style="margin-bottom: 20px;">
-                                        <a href="../template/menu_laboratorio.php" title="Laboratorio" style="text-decoration: none;">
-                                            <div style="background: #D1C4E9; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                                <i class="fa fa-flask" style="font-size: 40px; color: #7B1FA2;"></i>
-                                            </div>
-                                            <h5 style="color: #7B1FA2; font-weight: 600; margin: 0;">LABORATORIO</h5>
-                                        </a>
-                                    </div>
+                                    <a href="../gestion_administrativa/censo/tabla_censo.php" title="Censo">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-bed"></i>
+                                        </div>
+                                        <h4>CENSO</h4>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer" style="border: none; padding: 20px;">
-                    <button type="button" class="btn" data-dismiss="modal" style="background: #6c757d; color: white; border-radius: 25px; padding: 8px 25px;">
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Gestión de Cuentas -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-calculator"></i> GESTIÓN DE CUENTAS
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- CUENTA DE PACIENTES -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../gestion_administrativa/cuenta_paciente/vista_df.php" title="Cuenta del Paciente">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-file-text"></i>
+                                        </div>
+                                        <h5>CUENTA DE PACIENTES</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PRESUPUESTOS -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../gestion_administrativa/presupuesto/presupuesto.php" title="Presupuestos">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-money"></i>
+                                        </div>
+                                        <h5>PRESUPUESTOS</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CORTE DE CAJA -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../gestion_administrativa/cuenta_paciente/corte_caja.php" title="Corte de caja">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-cash-register"></i>
+                                        </div>
+                                        <h5>CORTE DE CAJA</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">
                         <i class="fa fa-times"></i> CERRAR
                     </button>
                 </div>
             </div>
         </div>
     </div>
-          </section><!-- /.content -->
 
+    <!-- Modal Servicios Auxiliares -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-hospital-o"></i> SERVICIOS AUXILIARES
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- FARMACIA -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../template/menu_farmacia.php" title="Farmacia">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-medkit"></i>
+                                        </div>
+                                        <h5>FARMACIA</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
-        </section><!-- /.content -->
-    </div><!-- /.content-wrapper -->
+                        <!-- CEYE -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../template/menu_ceye.php" title="CEYE">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-shield"></i>
+                                        </div>
+                                        <h5>CEYE</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ALMACÉN CENTRAL -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../template/menu_almacencentral.php" title="Almacén Central">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-cubes"></i>
+                                        </div>
+                                        <h5>ALMACÉN CENTRAL</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IMAGENOLOGÍA -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../template/menu_imagenologia.php" title="Imagenología">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-search"></i>
+                                        </div>
+                                        <h5>IMAGENOLOGÍA</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LABORATORIO -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../template/menu_laboratorio.php" title="Laboratorio">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-flask"></i>
+                                        </div>
+                                        <h5>LABORATORIO</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">
+                        <i class="fa fa-times"></i> CERRAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cuentas y Servicios Pagados -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-money"></i> CUENTAS Y SERVICIOS PAGADOS
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- CUENTAS PAGADAS -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../gestion_administrativa/cuenta_paciente/valida_cta.php" title="Cuentas Pagadas">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-check-circle"></i>
+                                        </div>
+                                        <h4>CUENTAS PAGADAS</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SERVICIOS PAGADOS -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../gestion_administrativa/cuenta_paciente/valida_cta_serv.php" title="Servicios Pagados">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-credit-card"></i>
+                                        </div>
+                                        <h4>SERVICIOS PAGADOS</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">
+                        <i class="fa fa-times"></i> CERRAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Servicios de Salida -->
+    <div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-truck"></i> SERVICIOS DE SALIDA
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- FARMACIA -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../sauxiliares/Farmacia/salidas.php" title="Farmacia">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </div>
+                                        <h4>FARMACIA</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QUIRÓFANO -->
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <a href="../sauxiliares/Ceye/salidas.php" title="Quirófano">
+                                        <div class="icon-circle">
+                                            <i class="fa fa-heartbeat"></i>
+                                        </div>
+                                        <h4>QUIRÓFANO</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">
+                        <i class="fa fa-times"></i> CERRAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="main-footer">
-      <?php
-      include("footer.php");
-      ?>
+        <?php
+        include("footer.php");
+        ?>
     </footer>
 
-  </div><!-- ./wrapper -->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content" style="border-radius: 15px; border: none;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #C2185B 0%, #E91E63 100%); border-radius: 15px 15px 0 0;">
-          <h5 class="modal-title" style="color: white; font-weight: 600;">
-            <i class="fa fa-calculator"></i> Gestión de Cuentas
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" style="padding: 30px;">
-          <div class="row">
-            <!-- CUENTA DE PACIENTES -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F4FD 0%, #E1F5FE 100%); transition: all 0.3s ease;">
-                <div class="card-body d-flex flex-column justify-content-center">
-                  <div style="margin-bottom: 20px;">
-                    <a href="../gestion_administrativa/cuenta_paciente/vista_df.php" title="Cuenta del Paciente" style="text-decoration: none;">
-                      <div style="background: #B3E5FC; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                        <i class="fa fa-file-text" style="font-size: 40px; color: #0277BD;"></i>
-                      </div>
-                      <h5 style="color: #0277BD; font-weight: 600; margin: 0;">CUENTA DE PACIENTES</h5>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- PRESUPUESTOS -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #FFF3E0 0%, #FFECB3 100%); transition: all 0.3s ease;">
-                <div class="card-body d-flex flex-column justify-content-center">
-                  <div style="margin-bottom: 20px;">
-                    <a href="../gestion_administrativa/presupuesto/presupuesto.php" title="Presupuestos" style="text-decoration: none;">
-                      <div style="background: #FFE0B2; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                        <i class="fa fa-money" style="font-size: 40px; color: #F57C00;"></i>
-                      </div>
-                      <h5 style="color: #F57C00; font-weight: 600; margin: 0;">PRESUPUESTOS</h5>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- CORTE DE CAJA -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%); transition: all 0.3s ease;">
-                <div class="card-body d-flex flex-column justify-content-center">
-                  <div style="margin-bottom: 20px;">
-                    <a href="../gestion_administrativa/cuenta_paciente/corte_caja.php" title="Corte de caja" style="text-decoration: none;">
-                      <div style="background: #C8E6C9; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                        <i class="fa fa-cash-register" style="font-size: 40px; color: #388E3C;"></i>
-                      </div>
-                      <h5 style="color: #388E3C; font-weight: 600; margin: 0;">CORTE DE CAJA</h5>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer" style="border: none; padding: 20px;">
-          <button type="button" class="btn" data-dismiss="modal" style="background: #6c757d; color: white; border-radius: 25px; padding: 8px 25px;">
-            <i class="fa fa-times"></i> CERRAR
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<!-- ./wrapper2 -->
-
-<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="border-radius: 15px; border: none;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title" style="color: white; font-weight: 600;">
-                    <i class="fa fa-money"></i> Cuentas y Servicios Pagados
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="padding: 30px;">
-                <div class="row">
-                    <!-- CUENTAS PAGADAS -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                        <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%); transition: all 0.3s ease;">
-                            <div class="card-body d-flex flex-column justify-content-center">
-                                <div style="margin-bottom: 20px;">
-                                    <a href="../gestion_administrativa/cuenta_paciente/valida_cta.php" title="Cuentas Pagadas" style="text-decoration: none;">
-                                        <div style="background: #C8E6C9; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                            <i class="fa fa-check-circle" style="font-size: 50px; color: #388E3C;"></i>
-                                        </div>
-                                        <h4 style="color: #388E3C; font-weight: 600; margin: 0;">CUENTAS PAGADAS</h4>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SERVICIOS PAGADOS -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                        <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F4FD 0%, #E1F5FE 100%); transition: all 0.3s ease;">
-                            <div class="card-body d-flex flex-column justify-content-center">
-                                <div style="margin-bottom: 20px;">
-                                    <a href="../gestion_administrativa/cuenta_paciente/valida_cta_serv.php" title="Servicios Pagados" style="text-decoration: none;">
-                                        <div style="background: #B3E5FC; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                            <i class="fa fa-credit-card" style="font-size: 50px; color: #0277BD;"></i>
-                                        </div>
-                                        <h4 style="color: #0277BD; font-weight: 600; margin: 0;">SERVICIOS PAGADOS</h4>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="border: none; padding: 20px;">
-                <button type="button" class="btn" data-dismiss="modal" style="background: #6c757d; color: white; border-radius: 25px; padding: 8px 25px;">
-                    <i class="fa fa-times"></i> CERRAR
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
 
-  <!-- ./wrapper2 -->
-
-<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="border-radius: 15px; border: none;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title" style="color: white; font-weight: 600;">
-                    <i class="fa fa-truck"></i> Servicios de Salida
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="padding: 30px;">
-                <div class="row">
-                    <!-- FARMACIA -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                        <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%); transition: all 0.3s ease;">
-                            <div class="card-body d-flex flex-column justify-content-center">
-                                <div style="margin-bottom: 20px;">
-                                    <a href="../sauxiliares/Farmacia/salidas.php" title="Farmacia" style="text-decoration: none;">
-                                        <div style="background: #C8E6C9; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                            <i class="fa fa-shopping-cart" style="font-size: 50px; color: #388E3C;"></i>
-                                        </div>
-                                        <h4 style="color: #388E3C; font-weight: 600; margin: 0;">FARMACIA</h4>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- QUIRÓFANO -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                        <div class="card text-center h-100 shadow-sm" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #E8F4FD 0%, #E1F5FE 100%); transition: all 0.3s ease;">
-                            <div class="card-body d-flex flex-column justify-content-center">
-                                <div style="margin-bottom: 20px;">
-                                    <a href="../sauxiliares/Ceye/salidas.php" title="Quirófano" style="text-decoration: none;">
-                                        <div style="background: #B3E5FC; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;">
-                                            <i class="fa fa-heartbeat" style="font-size: 50px; color: #0277BD;"></i>
-                                        </div>
-                                        <h4 style="color: #0277BD; font-weight: 600; margin: 0;">QUIRÓFANO</h4>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="border: none; padding: 20px;">
-                <button type="button" class="btn" data-dismiss="modal" style="background: #6c757d; color: white; border-radius: 25px; padding: 8px 25px;">
-                    <i class="fa fa-times"></i> CERRAR
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-  <!-- jQuery 2.1.3 -->
-  <script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
-  <!-- Bootstrap 3.3.2 JS -->
-  <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-  <!-- FastClick -->
-  <script src='plugins/fastclick/fastclick.min.js'></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/app.min.js" type="text/javascript"></script>
-  <!-- Sparkline -->
-  <script src="plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-  <!-- jvectormap -->
-  <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
-  <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-  <!-- daterangepicker -->
-  <script src="plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
-  <!-- datepicker -->
-  <script src="plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-  <!-- iCheck -->
-  <script src="plugins/iCheck/icheck.min.js" type="text/javascript"></script>
-  <!-- SlimScroll 1.3.0 -->
-  <script src="plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-  <!-- ChartJS 1.0.1 -->
-  <script src="plugins/chartjs/Chart.min.js" type="text/javascript"></script>
-
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="dist/js/pages/dashboard2.js" type="text/javascript"></script>
-
-  <!-- AdminLTE for demo purposes -->
-  <script src="dist/js/demo.js" type="text/javascript"></script>
-
+<!-- jQuery 2.1.3 -->
+<script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
+<!-- Bootstrap 3.3.2 JS -->
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<!-- FastClick -->
+<script src='plugins/fastclick/fastclick.min.js'></script>
+<!-- AdminLTE App -->
+<script src="dist/js/app.min.js" type="text/javascript"></script>
+<!-- Sparkline -->
+<script src="plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+<!-- jvectormap -->
+<script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
+<script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
+<!-- daterangepicker -->
+<script src="plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<!-- datepicker -->
+<script src="plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+<!-- iCheck -->
+<script src="plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+<!-- SlimScroll 1.3.0 -->
+<script src="plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<!-- ChartJS 1.0.1 -->
+<script src="plugins/chartjs/Chart.min.js" type="text/javascript"></script>
+<!-- AdminLTE dashboard demo -->
+<script src="dist/js/pages/dashboard2.js" type="text/javascript"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="dist/js/demo.js" type="text/javascript"></script>
 
 </body>
-
 </html>

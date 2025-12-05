@@ -1,10 +1,11 @@
 <?php
 session_start();
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $usuario = $_SESSION['login'];
 
-?>   
+?>
 
 <!DOCTYPE html>
 <html>
@@ -57,9 +58,8 @@ $usuario = $_SESSION['login'];
 
 
 
-     <?php 
+     <?php
 $rol=$usuario['id_rol'];
-include "../../conexionbd.php";
 $id_at=$_SESSION['pac'];
 $resultado1 = $conexion->query("SELECT * FROM dat_ordenes_med  WHERE id_atencion =$id_at and visto='NO' order by id_ord_med desc limit 1" ) or die($conexion->error);
 while ($f1 = mysqli_fetch_array($resultado1)) {
@@ -83,12 +83,12 @@ if(isset($id_ord_med) && $rol != 1){
  <div class="container">
         <div class="row">
             <div class="col">
-                
+
 <h2><strong>PACIENTE </strong></h2>
     <hr>
 <?php
 
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
 
 $bisiesto=false;
 $resultado1 = $conexion->query("SELECT paciente.*, dat_ingreso.especialidad, dat_ingreso.area, dat_ingreso.alergias, dat_ingreso.motivo_atn, dat_ingreso.id_usua as id_med, dat_ingreso.fecha, dat_ingreso.id_atencion
@@ -107,8 +107,8 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
         $id_atn=$f1['id_atencion'];
        ?>
 
-  
-<?php 
+
+<?php
 /*********************** enfermera de hospitalizacion sin confirmar **********************/
 $sql_cart = "SELECT * FROM cart_enf where paciente = $id_atencion ORDER BY paciente";
 $result_cart = $conexion->query($sql_cart);
@@ -125,11 +125,11 @@ if(isset($carth_id)){
   <?php }else{
         $carth_id ='nada';
     } ?>
-<?php 
+<?php
 /*********************** enfermera de quirofano sin confirmar **********************/
 $sql_cart = "SELECT * FROM cart_almacen where paciente = $id_atn ORDER BY paciente";
 $result_cart = $conexion->query($sql_cart);
- 
+
 while ($row_cart = $result_cart->fetch_assoc()) {
   $cartq_id = $row_cart['id'];
 }
@@ -142,8 +142,8 @@ if(isset($cartq_id)){
   <?php }else{
         $cartq_id ='nada';
     } ?>
-  
-<?php 
+
+<?php
 /*********************** enfermera de quirofano sin confirmar **********************/
 $sql_cart = "SELECT * FROM cart_serv where paciente = $id_atn ORDER BY paciente";
 $result_cart = $conexion->query($sql_cart);
@@ -160,8 +160,8 @@ if(isset($carte_id)){
   <?php }else{
         $carte_id ='nada';
     } ?>
- 
-<?php 
+
+<?php
 /*********************** enfermera de quirofano sin confirmar **********************/
 $sql_cart = "SELECT * FROM cart_mat where paciente = $id_atn ORDER BY paciente";
 $result_cart = $conexion->query($sql_cart);
@@ -178,27 +178,27 @@ if(isset($cartm_id)){
   <?php }else{
         $cartm_id ='nada';
     } ?>
-  
 
-<div class="container">      
-                           
+
+<div class="container">
+
  <div class="row">
     <div class="col-sm-5">
         Expediente: <td><strong><?php echo $f1['Id_exp']; ?></strong></td>
         Paciente:
-        
+
         <td><strong><?php echo $f1['papell']; ?></strong></td>
         <td><strong><?php echo $f1['sapell']; ?></strong></td>
         <td><strong><?php echo $f1['nom_pac']; ?></strong></td><br>
         Género: <td><strong><?php echo $sexo; ?></strong></td><br>
-    
-     <?php 
+
+     <?php
     $d="";
     $sql_motd = "SELECT diagprob_i from dat_not_ingreso where id_atencion=$id_atencion ORDER by id_not_ingreso DESC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
     while ($row_motd = $result_motd->fetch_assoc()) {
         $d=$row_motd['diagprob_i'];
-    }     
+    }
     $sql_motd = "SELECT diagprob_i from dat_nevol where id_atencion=$id_atencion ORDER by id_ne DESC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
     while ($row_motd = $result_motd->fetch_assoc()) {
@@ -210,13 +210,13 @@ if(isset($cartm_id)){
     $m=$row_mot['motivo_atn'];
     } ?>
 
-    <?php 
+    <?php
         echo '<td> Diagnóstico: <strong>' . $d .'</strong></td><br>';
         echo '<td> Alergias: <strong><font color=red>' . $alergias.'</font></strong></td>';
  ?>
     </div>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
-<?php 
+<?php
 
 function bisiesto($anio_actual){
     $bisiesto=false;
@@ -249,7 +249,7 @@ if ($dias < 0)
     switch ($array_actual[1]) {
            case 1:     $dias_mes_anterior=31; break;
            case 2:     $dias_mes_anterior=31; break;
-           case 3:      
+           case 3:
                if (bisiesto($array_actual[0]))
                 {
                     $dias_mes_anterior=29; break;
@@ -286,7 +286,7 @@ if ($meses < 0)
     <div class="col">
 <?php $date = date_create($f1['fecha']);
 $date1 = date_create($f1['fecnac']);
-                                    
+
   echo   'Fecha de Ingreso: <td><strong>'.date_format($date, "d/m/Y").'</strong></td> <br>'.
     'Fecha de nacimiento: <td><strong>'.date_format($date1, "d/m/Y").'</strong></td><br>'.
 
@@ -298,16 +298,16 @@ $date1 = date_create($f1['fecnac']);
 }elseif($anos <="0" && $meses<="0" && $dias>"0"){
     echo $dias." Días";
 }
-    
-echo '</strong></td><br>'; 
+
+echo '</strong></td><br>';
                     }
-                     
+
    echo '</div>';
 $resultado2 = $conexion->query("select * from cat_camas WHERE id_atencion=" .$_SESSION['pac']) or die($conexion->error);
 while ($f2 = mysqli_fetch_array($resultado2)) {
 
 echo  '<div class="col">';
-  
+
  if(isset($f2)){
     $cama=$f2['num_cama'].' '.$f2['tipo'];
   }else{
@@ -317,9 +317,9 @@ echo  '<div class="col">';
 echo ' <div class="row">'.
       '<div class="col-sm">'.
       '<label>Área: </label><strong> '.$area. '<p>'.'</strong>';
-echo 'Habitación: <td><strong>'. $cama.'</strong></td>'. 
+echo 'Habitación: <td><strong>'. $cama.'</strong></td>'.
       '</div>'.
-      '</div>'; 
+      '</div>';
 }
 
 echo '</div>'.
@@ -331,23 +331,23 @@ $doctor=$row['papell'];
 }
  echo ' <div class="row">'.
       '<div class="col-sm-5">'.
-      '<label>Médico Tratante: </label><strong> '.$doctor.'</strong>'. 
+      '<label>Médico Tratante: </label><strong> '.$doctor.'</strong>'.
       '</div>'.
       '<div class="col-sm">'.
       '<label>Religión: </label><strong> '.$religion.'</strong>'.
       '</div>'.
        '<div class="col-sm">'.
-      '<label>Tipo de sangre: </label><strong> '.$tip_san.'</strong>'.  
+      '<label>Tipo de sangre: </label><strong> '.$tip_san.'</strong>'.
       '</div>'.
       '</div>';
-      
+
   ?>
   <!-- Main content -->
       <section class="content">
         <!-- CONTENIDOO -->
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
           <!-- Indicators -->
-         
+
 
           <!-- Wrapper for slides -->
           <?php
@@ -358,7 +358,7 @@ while($f = mysqli_fetch_array($resultado)){
           <!-- Wrapper for slides -->
           <div class="carousel-inner">
             <div class="item active">
-            <center><td class="fondo"><img src="../../configuracion/admin/img5/<?php echo $f['img_cuerpo']?>" alt="portada" class="img-fluid" width="600"></td></center> 
+            <center><td class="fondo"><img src="../../configuracion/admin/img5/<?php echo $f['img_cuerpo']?>" alt="portada" class="img-fluid" width="600"></td></center>
             </div>
           </div>
           <?php

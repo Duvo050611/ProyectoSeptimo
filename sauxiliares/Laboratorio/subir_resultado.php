@@ -2,7 +2,8 @@
 // Start session and ensure no output before this
 ob_start();
 session_start();
-include "../../conexionbd.php";
+require_once '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 
 if (!isset($_SESSION['login']) || !in_array($_SESSION['login']['id_rol'], [4, 5, 10])) {
     ob_end_clean();

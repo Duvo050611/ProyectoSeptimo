@@ -47,7 +47,7 @@ $resultado_historico = $conexion->query("
     <script src="../../js/jquery-ui.js"></script>
     <script src="../../js/jquery.magnific-popup.min.js"></script>
     <script src="../../js/aos.js"></script>
-    <script src="../../js/main.js"></script>
+    <script src="../../js/main.js"></script
     <style>
         :root {
             --color-primario: #0c675e;

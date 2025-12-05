@@ -1,5 +1,5 @@
 <?php
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
 
 // Solo modificar parámetros y iniciar sesión si no está activa
 if (session_status() === PHP_SESSION_NONE) {

@@ -1,5 +1,6 @@
 <?php
-include "../conexionbd.php";
+include '../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 session_start();
 //
 if (!isset($_SESSION['login'])) {

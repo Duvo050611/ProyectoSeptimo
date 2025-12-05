@@ -1,11 +1,12 @@
 <?php
 session_start();
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
+$conexion = ConexionBD::getInstancia()->getConexion();
 include ("../header_medico.php");
 
 
 $usuario = $_SESSION['login'];
-?>   
+?>
 <!DOCTYPE html>
 <html>
 
@@ -56,12 +57,12 @@ $usuario = $_SESSION['login'];
  <div class="container">
         <div class="row">
             <div class="col">
-                
+
 <h2><strong>PACIENTE </strong></h2>
     <hr>
 <?php
 
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
 
 $bisiesto=false;
 $resultado1 = $conexion->query("SELECT paciente.*, dat_ingreso.especialidad, dat_ingreso.area, dat_ingreso.alergias, dat_ingreso.motivo_atn, dat_ingreso.id_usua as id_med, dat_ingreso.fecha, dat_ingreso.id_atencion, dat_ingreso.Id_exp
@@ -77,11 +78,11 @@ inner join dat_ingreso on paciente.Id_exp=dat_ingreso.Id_exp WHERE id_atencion="
         $tip_san=$f1['tip_san'];
         $alergias=$f1['alergias'];
         $sexo = $f1['sexo'];
-      
+
 ?>
 
-<div class="container">      
-                           
+<div class="container">
+
  <div class="row">
     <div class="col-sm-5">
        Expediente: <td><strong><?php echo $f1['Id_exp']; ?></strong></td>
@@ -98,7 +99,7 @@ Género : <td><strong><?php echo $sexo; ?></strong></td><br>
     $result_motd = $conexion->query($sql_motd);
     while ($row_motd = $result_motd->fetch_assoc()) {
         $d=$row_motd['diagprob_i'];
-    }     
+    }
     $sql_motd = "SELECT diagprob_i from dat_nevol where id_atencion=$id_atencion ORDER by id_ne DESC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
     while ($row_motd = $result_motd->fetch_assoc()) {
@@ -108,16 +109,16 @@ Género : <td><strong><?php echo $sexo; ?></strong></td><br>
     $result_mot = $conexion->query($sql_mot);
     while ($row_mot = $result_mot->fetch_assoc()) {
     $m=$row_mot['motivo_atn'];
-    } 
+    }
 
-   
+
         echo '<td> Diagnóstico: <strong>' . $d .'</strong></td><br>';
         echo '<td> Alergias: <strong><font color=red>' . $alergias.'</font></strong></td>';
     ?>
-   
+
     </div>
     <!-- INICIO DE FUNCION DE CALCULAR EDAD -->
-<?php 
+<?php
 
 function bisiesto($anio_actual){
     $bisiesto=false;
@@ -150,7 +151,7 @@ if ($dias < 0)
     switch ($array_actual[1]) {
            case 1:     $dias_mes_anterior=31; break;
            case 2:     $dias_mes_anterior=31; break;
-           case 3:      
+           case 3:
                if (bisiesto($array_actual[0]))
                 {
                     $dias_mes_anterior=29; break;
@@ -187,7 +188,7 @@ if ($meses < 0)
     <div class="col">
 <?php $date = date_create($f1['fecha']);
 $date1 = date_create($f1['fecnac']);
-                                    
+
   echo   'Fecha de Ingreso: <td><strong>'.date_format($date, "d/m/Y").'</strong></td> <br>'.
     'Fecha de nacimiento: <td><strong>'.date_format($date1, "d/m/Y").'</strong></td><br>'.
 
@@ -199,16 +200,16 @@ $date1 = date_create($f1['fecnac']);
 }elseif($anos <="0" && $meses<="0" && $dias>"0"){
     echo $dias." Días";
 }
-    
-echo '</strong></td><br>'; 
+
+echo '</strong></td><br>';
                     }
-                     
+
    echo '</div>';
 $resultado2 = $conexion->query("select * from cat_camas WHERE id_atencion=" .$_SESSION['hospital']) or die($conexion->error);
 while ($f2 = mysqli_fetch_array($resultado2)) {
 
 echo  '<div class="col">';
-  
+
  if(isset($f2)){
     $cama=$f2['num_cama'].' '.$f2['tipo'];
   }else{
@@ -220,9 +221,9 @@ echo  '<div class="col">';
 echo ' <div class="row">'.
       '<div class="col-sm">'.
       '<label>Área: </label><strong> '.$area. '<p>'.'</strong>';
-echo 'Habitación: <td><strong>'. $cama.'</strong></td>'. 
+echo 'Habitación: <td><strong>'. $cama.'</strong></td>'.
       '</div>'.
-      '</div>'; 
+      '</div>';
 }
 
 echo '</div>'.
@@ -235,28 +236,28 @@ $doctor=$row['papell'];
 
  echo ' <div class="row">'.
       '<div class="col-sm-5">'.
-      '<label>Médico Tratante: </label><strong> '.$doctor.'</strong>'. 
+      '<label>Médico Tratante: </label><strong> '.$doctor.'</strong>'.
       '</div>'.
       '<div class="col-sm">'.
-      '<label>Religión: </label><strong> '.$religion.'</strong>'. 
+      '<label>Religión: </label><strong> '.$religion.'</strong>'.
       '</div>'.
        '<div class="col-sm">'.
-      '<label>Tipo de sangre: </label><strong> '.$tip_san.'</strong>'. 
+      '<label>Tipo de sangre: </label><strong> '.$tip_san.'</strong>'.
       '</div>'.
-      
+
       '</div>';
- 
-      
+
+
   ?>
   <!-- Main content -->
       <section class="content">
         <!-- CONTENIDOO -->
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
           <!-- Indicators -->
-         
+
 
           <!-- Wrapper for slides -->
-          
+
                    <?php
 $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
 while($f = mysqli_fetch_array($resultado)){
@@ -265,12 +266,12 @@ while($f = mysqli_fetch_array($resultado)){
           <!-- Wrapper for slides -->
           <div class="carousel-inner">
             <div class="item active">
-            <center><td class="fondo"><img src="../../configuracion/admin/img5/<?php echo $f['img_cuerpo']?>" alt="portada" class="img-fluid" width="600"></td></center> 
+            <center><td class="fondo"><img src="../../configuracion/admin/img5/<?php echo $f['img_cuerpo']?>" alt="portada" class="img-fluid" width="600"></td></center>
             </div>
           </div>
           <?php
 }
-?> 
+?>
 
           <!-- Left and right controls -->
           <a class="left carousel-control" href="#myCarousel" data-slide="prev">

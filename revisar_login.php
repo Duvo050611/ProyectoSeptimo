@@ -1,5 +1,6 @@
 <?php
 include 'conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 session_start();
 
 // Verificar que los campos existan

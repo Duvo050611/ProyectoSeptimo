@@ -1,7 +1,5 @@
 <?php
-include "../../conexionbd.php";
-//session_start();
-//
+require_once "../../conexionbd.php";
 
 if (!isset($_SESSION['login'])) {
     // remove all session variables

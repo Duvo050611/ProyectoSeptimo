@@ -2,6 +2,7 @@
 session_start();
 require "../../estados.php";
 include "../../conexionbd.php";
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_administrador.php";
 ?>
 

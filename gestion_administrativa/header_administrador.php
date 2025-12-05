@@ -1,5 +1,6 @@
 <?php
-include "../../conexionbd.php";
+require_once "../../conexionbd.php"; // se carga una sola vez
+$conexion = ConexionBD::getInstancia()->getConexion(); "../../conexionbd.php";
 //session_start();
 //
 

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<?php include "conexionbd.php"; ?>
+<?php include 'conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
