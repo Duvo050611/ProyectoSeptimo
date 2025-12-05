@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../../conexionbd.php";
+$conexion = ConexionBD::getInstancia()->getConexion();
 
 if (!$conexion) {
     die("Error de conexión a la base de datos");

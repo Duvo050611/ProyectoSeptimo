@@ -1,6 +1,6 @@
 <?php
 include "../../conexionbd.php";
-
+$conexion = ConexionBD::getInstancia()->getConexion();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conexion->prepare("INSERT INTO mediciones_cornea (
         id_exp, id_usua, id_atencion,

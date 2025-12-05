@@ -1,6 +1,7 @@
 <?php
 session_start();
-include "../../conexionbd.php";
+require_once "../../conexionbd.php";
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_medico.php";
 
 if (!isset($_SESSION['hospital'])) {
@@ -39,7 +40,6 @@ if ($conexion) {
     }
 
     $stmt->close();
-    $conexion->close();
 } else {
     echo '<p style="color: red;">Error de conexión a la base de datos</p>';
 }
@@ -101,7 +101,6 @@ if ($conexion) {
                         <center>DATOS DEL PACIENTE</center>
                     </strong></div>
                     <?php
-                    include "../../conexionbd.php";
                     if (isset($_SESSION['hospital'])) {
                         $id_atencion = $_SESSION['hospital'];
                         $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.folio, p.tel, p.fecnac, p.tip_san, di.fecha, di.area, di.alta_med, di.activo, p.sexo, di.alergias, p.ocup FROM paciente p, dat_ingreso di WHERE p.Id_exp=di.Id_exp AND di.id_atencion = ?";
