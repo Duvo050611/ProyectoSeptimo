@@ -9,13 +9,16 @@ if (!isset($_SESSION['login'])) {
     //  header('Location: ../index.php');
 }
 $usuario1 = $_SESSION['login'];
-$resultado = $conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='" . $usuario . "'") or die($conexion->error);
 
-if (!($usuario1['id_rol'] == 10 || $usuario1['id_rol'] == 5 || $usuario1['id_rol'] == 12)) {
+if (isset($usuario1['id_usua'])) {
+    $id_usuario = $usuario1['id_usua'];
+    $resultado = $conexion->query("SELECT * FROM reg_usuarios WHERE id_usua='" . $id_usuario . "'") or die($conexion->error);
+} else {
+    // Si no hay id_usua, redirigir o manejar el error
     session_unset();
     session_destroy();
-    // echo "<script>window.Location='../../index.php';</script>";
     header('Location: ../../index.php');
+    exit();
 }
 ?>
 <!DOCTYPE html>
