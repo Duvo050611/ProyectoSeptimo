@@ -39,10 +39,8 @@ if (!in_array($usuario['id_rol'], [3, 5, 12, 1])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="../../template/dist/js/pages/dashboard2.js" type="text/javascript"></script>
     <script src="https://kit.fontawesome.com/e547be4475.js" crossorigin="anonymous"></script>
-
     <!-- AdminLTE for demo purposes -->
     <script src="../../template/dist/js/demo.js" type="text/javascript"></script>
-
     <!-- Font Awesome Icons -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
@@ -58,14 +56,10 @@ if (!in_array($usuario['id_rol'], [3, 5, 12, 1])) {
     <!-- AdminLTE Skins. Choose a skin from the css/skins
            folder instead of downloading all of them to reduce the load. -->
     <link href="../../template/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
-    
     <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-
-
     <!-- FastClick -->
     <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
     <!-- Sparkline -->
@@ -83,93 +77,225 @@ if (!in_array($usuario['id_rol'], [3, 5, 12, 1])) {
     <script src="../../template/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
     <!-- ChartJS 1.0.1 -->
     <script src="../../template/plugins/chartjs/Chart.min.js" type="text/javascript"></script>
-
-
     <style>
-        .dropdwn {
-            float: left;
+        body, .wrapper, .content-wrapper {
+            background: #0a0f1f !important; /* Fondo general */
+            color: #ffe2e2 !important;
+        }
+        /* NAVBAR */
+        .main-header .navbar {
+            background: #0d1b3a !important;
+            border-bottom: 1px solid #1a3d7c;
+        }
+        .navbar .sidebar-toggle {
+            color: #4fc3ff !important;
+        }
+        .navbar a:hover {
+            background: #11265c !important;
+        }
+        /* LOGO - HEADER */
+        .logo {
+            background: #0d1b3a !important;
+            border-bottom: 1px solid #1a3d7c;
+        }
+
+        /* SIDEBAR */
+        .main-sidebar {
+            background: #0c1224 !important;
+            border-right: 1px solid #1a3d7c;
+        }
+
+        .sidebar a {
+            color: #a8c6ff !important;
+        }
+
+        .sidebar-menu > li > a:hover {
+            background: #11265c !important;
+            color: #4fc3ff !important;
+            box-shadow: 0 0 8px #4fc3ff;
+        }
+
+        /* SUBMENÚS — CORRECCIÓN DEL BLANCO */
+        .treeview-menu {
+            background: #0f1a33 !important;
+            border-left: 2px solid #020202;
+        }
+
+        .treeview-menu li a {
+            color: #090909 !important;
+        }
+
+        .treeview-menu li a:hover {
+            background: #12224a !important;
+            color: #4fc3ff !important;
+            box-shadow: inset 0 0 10px #4fc3ff;
+        }
+
+        /* ÍCONOS */
+        .sidebar-menu i {
+            color: #4fc3ff !important;
+        }
+
+        /* USER PANEL */
+        .user-panel {
+            background: #0c1224 !important;
+            border-bottom: 1px solid #1a3d7c;
+        }
+
+        .user-panel p {
+            color: #4fc3ff !important;
+        }
+
+        /* ⭐⭐⭐ PUESTO DEL USUARIO CON NEÓN ⭐⭐⭐ */
+        .user-panel a {
+            color: #00eaff !important;
+            font-weight: bold;
+            text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff, 0 0 20px #00eaff;
+        }
+
+        /* EFECTO GLOW SUAVE */
+        .glow-text {
+            color: #4fc3ff !important;
+            text-shadow:
+                    0 0 6px #4fc3ff,
+                    0 0 10px #4fc3ff,
+                    0 0 15px #4fc3ff;
+        }
+
+        /* ESTILO PARA EL NOMBRE EN EL NAVBAR */
+        .navbar .user-menu .hidden-xs {
+            color: #4fc3ff !important;
+            text-shadow: 0 0 5px #4fc3ff;
+        }
+
+        /* DROPDOWN USER MENU */
+        .dropdown-menu {
+            background: #0f1a33 !important;
+            border: 1px solid #1a3d7c;
+        }
+
+        .user-header {
+            background: #0d1b3a !important;
+            color: #4fc3ff !important;
+        }
+
+        /* BOTONES DEL MENÚ DEL USUARIO */
+        .user-footer .btn {
+            background: #11265c !important;
+            color: white !important;
+            border: 1px solid #4fc3ff;
+        }
+
+        .user-footer .btn:hover {
+            background: #0a1633 !important;
+            box-shadow: 0 0 10px #4fc3ff;
+        }
+
+        /* SCROLLBARS FUTURISTAS */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0f1f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1a3d7c;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4fc3ff;
+        }
+        /* --- NEÓN PARA ENFERMERÍA --- */
+        .sidebar-menu li a span.neon-enfermeria {
+            color: #00eaff !important;
+            text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff, 0 0 18px #00c7ff;
+            font-weight: bold;
+        }
+
+        /* --- Sidebar oscuro al abrir submenús (sin blanco feo) --- */
+        .skin-blue .sidebar-menu > li > .treeview-menu {
+            background: #0c1b2a !important;
+            border-left: 2px solid #00eaff !important;
+        }
+
+        .skin-blue .sidebar-menu .treeview-menu > li > a {
+            color: #0b0a0a !important;
+        }
+
+        .skin-blue .sidebar-menu .treeview-menu > li > a:hover {
+            background-color: #112b40 !important;
+            color: #00eaff !important;
+            text-shadow: 0 0 6px #00eaff;
+        }
+        .neon-enfermeria {
+            color: #8a9fd3 !important;
+            font-weight: 900 !important;
+            text-shadow:
+                    0 0 5px #00eaff,
+                    0 0 10px #00eaff,
+                    0 0 20px #00c7ff,
+                    0 0 30px #00c7ff;
+        }
+
+        /* Evita que Bootstrap le meta color blanco */
+        .breadcrumb-item.active {
+            color: #00eaff !important;
+        }
+        .neon-title {
+            color: #00eaff !important;
+            font-weight: 900 !important;
+            margin: 0;
+            padding: 0;
+            text-shadow:
+                    0 0 5px #00eaff,
+                    0 0 10px #00eaff,
+                    0 0 20px #00c7ff,
+                    0 0 30px #00c7ff,
+                    0 0 40px #00c7ff;
+        }
+
+        /* Que el breadcrumb NO meta fondo blanco */
+        /* Breadcrumb mejorado */
+        .breadcrumb {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 15px !important;
+            padding: 20px 30px !important;
+            margin-bottom: 40px !important;
+            box-shadow: 0 8px 30px rgba(64, 224, 255, 0.3);
+            position: relative;
             overflow: hidden;
         }
 
-        .dropdwn .dropbtn {
-            cursor: pointer;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font-family: inherit;
-            margin: 0;
-        }
-
-        .navbar a:hover,
-        .dropdwn:hover .dropbtn,
-        .dropbtn:focus {
-            background-color: #367fa9;
-        }
-
-        .dropdwn-content {
-            display: none;
+        .breadcrumb::before {
+            content: '';
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .breadcrumb h4 {
+            color: #ffffff !important;
+            margin: 0;
+            font-weight: 600 !important;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.5);
+            position: relative;
             z-index: 1;
         }
 
-        .dropdwn-content a {
-            float: none;
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-
-        .dropdwn-content a:hover {
-            background-color: #ddd;
-        }
-
-        .show {
-            display: block;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .todo-container {
-            max-width: 15000px;
-            height: auto;
-            display: flex;
-            overflow-y: scroll;
-            column-gap: 0.5em;
-            column-rule: 1px solid white;
-            column-width: 140px;
-            column-count: 7;
-        }
-
-        .status {
-            width: 25%;
-            background-color: #ecf0f5;
-            position: relative;
-            padding: 60px 1rem 0.5rem;
-            height: 100%;
-
-        }
-
-        .status h4 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #0b3e6f;
-            color: white;
-            margin: 0;
-            width: 100%;
-
-            padding: 0.5rem 1rem;
-        }
     </style>
 </head>
 
@@ -459,9 +585,9 @@ while($f = mysqli_fetch_array($resultado)){
             <!--AQUI VA QUE PUESTO TIENE-->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page"><STRONG>
-                            <h4>ENFERMERÍA</h4>
-                        </STRONG></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <h4 class="neon-title">ENFERMERÍA</h4>
+                    </li>
                 </ol>
             </nav>
             <script>
