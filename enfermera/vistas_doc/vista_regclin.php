@@ -409,10 +409,10 @@ $m=$row_mot['motivo_atn'];
                         <?php
                         if ($resultado->num_rows > 0) {
                             while($tratamiento = mysqli_fetch_array($resultado)) {
-                                $id = $tratamiento['id'];
+                                //$id = $tratamiento['id'];
                                 echo "<tr>";
                                 echo "<td>
-                                    <a href=\"../pdf/pdf_tratamiento.php?id=" . $id . "&id_exp=" . $id_exp . "&id_atencion=" . $id_atencion . "\" target=\"_blank\">
+                                    <a href=\"../pdf/pdf_tratamiento.php?id=" . "&id_exp=" . $id_exp . "&id_atencion=" . $id_atencion . "\" target=\"_blank\">
                                         <button type=\"button\" class=\"btn btn-danger\">
                                             <i class=\"fa fa-file-pdf-o\" aria-hidden=\"true\"></i>
                                         </button>

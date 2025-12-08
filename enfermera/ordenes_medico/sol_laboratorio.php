@@ -1,6 +1,7 @@
 <?php
 session_start();
-
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 
@@ -92,9 +93,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
   
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 }
@@ -133,11 +131,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                             </thead>
                             <tbody>
                             <?php
-
-                            include "../conexionbd.php";
-
-
-
                            $query = " SELECT * FROM notificaciones_labo n, reg_usuarios u where 
                                 n.realizado = 'NO' and n.id_usua = u.id_usua AND
                                 id_atencion = $id_atencion and activo = 'SI' order by fecha_ord DESC ";

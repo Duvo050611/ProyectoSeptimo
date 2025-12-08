@@ -3,7 +3,7 @@
 use PDF as GlobalPDF;
 
 require '../../fpdf/fpdf.php';
-require '../../conexionbd.php';
+require_once '../../conexionbd.php';
 $conexion = ConexionBD::getInstancia()->getConexion();
 
 $id = @$_GET['id'];
@@ -38,7 +38,7 @@ $id_usua = $row_preop['id_usua'] ?? '';
 
 // Obtener datos del tratamiento genérico
 $sql_tratamiento = "
-    SELECT dt.*, ru.nombre_usuario
+    SELECT dt.*, ru.nombre
     FROM diagnostico_tratamiento dt
     JOIN reg_usuarios ru ON dt.id_usua = ru.id_usua
     WHERE dt.id_exp = '$id_exp'
@@ -101,7 +101,8 @@ class PDF extends FPDF
 {
     function Header()
     {
-        include '../../conexionbd.php';
+        require_once '../../conexionbd.php';
+        $conexion = ConexionBD::getInstancia()->getConexion();
         $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
         while ($f = mysqli_fetch_array($resultado)) {
             $this->Image("../../configuracion/admin/img2/" . $f['img_ipdf'], 7, 11, 40, 25);

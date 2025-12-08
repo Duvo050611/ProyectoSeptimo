@@ -1,6 +1,7 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 
@@ -88,9 +89,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 

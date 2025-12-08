@@ -32,6 +32,8 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
     <script src="../../js/aos.js"></script>
     <script src="../../js/main.js"></script>
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
@@ -50,124 +52,428 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
         });
     </script>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+            font-family: 'Roboto', sans-serif !important;
+            min-height: 100vh;
+        }
+
+        /* Efecto de partículas en el fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container-fluid, .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Card principal */
+        .modern-card {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                        0 0 30px rgba(64, 224, 255, 0.2) !important;
+            padding: 40px 30px !important;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(64, 224, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .modern-title {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 2rem !important;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.5);
+            text-transform: uppercase;
+        }
+
+        .modern-title i {
+            font-size: 2.2rem;
+            color: #40E0FF !important;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 0.8);
+        }
+
+        hr {
+            border-top: 2px solid #40E0FF !important;
+            opacity: 0.5;
+        }
+
+        /* Botones */
+        .modern-btn-primary {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+            border-radius: 25px !important;
+            font-weight: 600 !important;
+            padding: 12px 35px !important;
+            font-size: 1rem !important;
+            box-shadow: 0 8px 25px rgba(64, 224, 255, 0.3) !important;
+            border: 2px solid #40E0FF !important;
+            transition: all 0.3s ease !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modern-btn-primary:hover {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #40E0FF !important;
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 35px rgba(64, 224, 255, 0.5) !important;
+            border-color: #00D9FF !important;
+        }
+
+        .modern-btn-success {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            padding: 8px 20px !important;
+            box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2) !important;
+            border: 2px solid #28a745 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .modern-btn-success:hover {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #28a745 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+            border-color: #20c997 !important;
+        }
+
+        .modern-btn-danger {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            padding: 8px 20px !important;
+            box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2) !important;
+            border: 2px solid #dc3545 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .modern-btn-danger:hover {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #dc3545 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+            border-color: #e74c3c !important;
+        }
+
+        .modern-btn-warning {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            padding: 8px 20px !important;
+            box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2) !important;
+            border: 2px solid #ffc107 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .modern-btn-warning:hover {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #ffc107 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4) !important;
+            border-color: #ff9800 !important;
+        }
+
+        /* Buscador */
+        .modern-search {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 25px !important;
+            padding: 12px 20px !important;
+            font-size: 1rem !important;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 30px auto !important;
+            box-shadow: 0 5px 20px rgba(64, 224, 255, 0.2) !important;
+            transition: all 0.3s ease !important;
+            color: #ffffff !important;
+        }
+
+        .modern-search::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .modern-search:focus {
+            border-color: #00D9FF !important;
+            outline: none !important;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            box-shadow: 0 8px 30px rgba(64, 224, 255, 0.4) !important;
+            color: #ffffff !important;
+        }
+
+        /* Tabla */
+        .table-responsive {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 20px !important;
+            padding: 20px !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                        0 0 30px rgba(64, 224, 255, 0.2) !important;
+            overflow: hidden;
+        }
+
+        .modern-table {
+            margin-bottom: 0 !important;
+            border-collapse: separate !important;
+            border-spacing: 0 8px !important;
+        }
+
+        .modern-table thead {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+            font-size: 1.1rem !important;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .modern-table thead th {
+            border: none !important;
+            padding: 20px 15px !important;
+            font-weight: 700 !important;
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+            background: transparent !important;
+        }
+
+        .modern-table tbody tr {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+        }
+
+        .modern-table tbody tr:hover {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            transform: scale(1.01) !important;
+            box-shadow: 0 5px 20px rgba(64, 224, 255, 0.3) !important;
+            border: 2px solid #40E0FF !important;
+        }
+
+        .modern-table td {
+            vertical-align: middle !important;
+            border: none !important;
+            padding: 15px !important;
+            font-size: 1rem !important;
+            color: #ffffff !important;
+            border-top: 1px solid rgba(64, 224, 255, 0.1) !important;
+        }
+
+        .modern-table th {
+            vertical-align: middle !important;
+            color: #40E0FF !important;
+        }
+
+        /* Modal */
+        .modal-content {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+                        0 0 40px rgba(64, 224, 255, 0.4) !important;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-bottom: 2px solid #40E0FF !important;
+            border-radius: 20px 20px 0 0 !important;
+            color: #ffffff !important;
+        }
+
+        .modal-title {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow: 0 0 15px rgba(64, 224, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .modal-title i {
+            color: #40E0FF !important;
+        }
+
+        .modal-body {
+            background: transparent !important;
+            padding: 30px !important;
+        }
+
+        .modal-body label {
+            color: #40E0FF !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.3);
+        }
+
+        .modal-body .form-control {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+            border: 2px solid #40E0FF !important;
+            border-radius: 15px !important;
+            color: #ffffff !important;
+            padding: 12px 20px !important;
+            box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2) !important;
+        }
+
+        .modal-body .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .modal-body .form-control:focus {
+            border-color: #00D9FF !important;
+            box-shadow: 0 6px 20px rgba(64, 224, 255, 0.4) !important;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #ffffff !important;
+            outline: none !important;
+        }
+
+        .modal-footer {
+            border-top: 2px solid #40E0FF !important;
+            background: rgba(15, 52, 96, 0.5) !important;
+            padding: 20px !important;
+        }
+
+        .close {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.8) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .close:hover {
+            color: #40E0FF !important;
+            text-shadow: 0 0 20px rgba(64, 224, 255, 1) !important;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-top: 2px solid #40E0FF !important;
+            color: #ffffff !important;
+            box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+            margin-top: 50px;
+        }
+
+        /* Content box */
+        .box {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .content {
+            background: transparent !important;
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modern-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .table-responsive {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-left: 1px solid #40E0FF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .modern-title {
+                font-size: 1.5rem !important;
+            }
+
+            .modern-card {
+                padding: 20px 15px !important;
+            }
+
+            .modern-search {
+                max-width: 100%;
+            }
+
+            .table-responsive {
+                padding: 10px !important;
+            }
+
+            .modern-table {
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
-
-
-<style>
-    .modern-card {
-        background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-        border-radius: 18px;
-        box-shadow: 0 8px 25px rgba(43,45,127,0.12);
-        padding: 30px 30px 10px 30px;
-        margin-top: 30px;
-        border: none;
-    }
-    .modern-title {
-        color: #2b2d7f;
-        font-weight: bold;
-        font-size: 2rem;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-    .modern-title i {
-        font-size: 2.2rem;
-        color: #2b2d7f;
-    }
-    .modern-btn-primary {
-        background: linear-gradient(135deg, #2b2d7f 0%, #4e54c8 100%);
-        color: #fff;
-        border-radius: 25px;
-        font-weight: 600;
-        padding: 12px 28px;
-        font-size: 1rem;
-        box-shadow: 0 4px 15px rgba(43,45,127,0.12);
-        border: none;
-        transition: all 0.3s;
-    }
-    .modern-btn-primary:hover {
-        background: linear-gradient(135deg, #23247a 0%, #2b2d7f 100%);
-        color: #fff;
-        transform: translateY(-2px);
-    }
-    .modern-table thead {
-        background: #2b2d7f;
-        color: #fff;
-        font-size: 1.1rem;
-        letter-spacing: 1px;
-    }
-    .modern-table tbody tr {
-        background: #fff;
-        transition: background 0.2s;
-    }
-    .modern-table tbody tr:hover {
-        background: #e9ecef;
-    }
-    .modern-table td, .modern-table th {
-        vertical-align: middle !important;
-        border: 2px solid #e9ecef;
-        font-size: 1rem;
-    }
-    .modern-btn-success, .modern-btn-danger, .modern-btn-warning {
-        border-radius: 18px !important;
-        font-weight: 600;
-        font-size: 0.95rem;
-        padding: 8px 18px;
-        box-shadow: 0 2px 8px rgba(43,45,127,0.08);
-        border: none;
-        transition: all 0.3s;
-    }
-    .modern-btn-success {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: #fff;
-    }
-    .modern-btn-success:hover {
-        background: linear-gradient(135deg, #218838 0%, #1e9f8a 100%);
-        color: #fff;
-        transform: translateY(-2px);
-    }
-    .modern-btn-danger {
-        background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
-        color: #fff;
-    }
-    .modern-btn-danger:hover {
-        background: linear-gradient(135deg, #c82333 0%, #d63384 100%);
-        color: #fff;
-        transform: translateY(-2px);
-    }
-    .modern-btn-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-        color: #fff;
-    }
-    .modern-btn-warning:hover {
-        background: linear-gradient(135deg, #e0a800 0%, #ff9800 100%);
-        color: #fff;
-        transform: translateY(-2px);
-    }
-    .modern-search {
-        border: 4px solid #2b2d7f;
-        border-radius: 12px;
-        padding: 12px;
-        font-size: 1rem;
-        width: 100%;
-        max-width: 350px;
-        margin: 0 auto 20px auto;
-        box-shadow: 0 2px 8px rgba(43,45,127,0.08);
-        transition: border 0.3s;
-    }
-    .modern-search:focus {
-        border-color: #4e54c8;
-        outline: none;
-        background: #f8f9ff;
-    }
-</style>
 
 <div class="container-fluid">
     <div class="modern-card">
@@ -190,23 +496,23 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="insertar_aseg.php" method="POST" enctype="multipart/form-data">
-                <div class="modal-header" style="background: #2b2d7f; color: #fff;">
+                <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i> Nueva aseguradora</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="aseg" style="color: #2b2d7f; font-weight:600;">Aseguradora:</label>
-                        <input type="text" name="aseg" id="aseg" class="form-control modern-search" value="" required placeholder="Nombre de la aseguradora">
+                        <label for="aseg">Aseguradora:</label>
+                        <input type="text" name="aseg" id="aseg" class="form-control" value="" required placeholder="Nombre de la aseguradora">
                     </div>
                     <div class="form-group">
-                        <label for="tip_precio" style="color: #2b2d7f; font-weight:600;">Tipo de precio:</label>
-                        <input type="text" name="tip_precio" id="tip_precio" class="form-control modern-search" value="" required placeholder="Tipo de precio">
+                        <label for="tip_precio">Tipo de precio:</label>
+                        <input type="text" name="tip_precio" id="tip_precio" class="form-control" value="" required placeholder="Tipo de precio">
                     </div>
                 </div>
-                <div class="modal-footer" style="background: #f8f9fa;">
+                <div class="modal-footer">
                     <button type="submit" class="modern-btn-success"><i class="fa fa-save"></i> Guardar</button>
                     <button type="button" class="modern-btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
                 </div>
@@ -246,7 +552,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
                 <table class="table modern-table table-bordered table-striped" id="mytable">
 
-                    <thead class="thead" style="background-color: #2b2d7f;color:white;">
+                    <thead class="thead">
                     <tr>
                         <th>Id</th>
                         <th>Aseguradora</th>
@@ -258,7 +564,7 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
                     </thead>
                     <tbody>
                     <?php
-                   
+
                     $resultado2 = $conexion->query("SELECT * FROM cat_aseg") or die($conexion->error);
 
                     $no = 1;

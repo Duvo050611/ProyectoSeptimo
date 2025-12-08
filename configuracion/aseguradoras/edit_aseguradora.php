@@ -17,6 +17,9 @@ include("../header_configuracion.php");
   <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
   <script src="../../js/jquery-3.3.1.min.js"></script>
   <script src="../../js/jquery-ui.js"></script>
   <script src="../../js/popper.min.js"></script>
@@ -31,6 +34,357 @@ include("../header_configuracion.php");
   <!-- AdminLTE App -->
   <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+      font-family: 'Roboto', sans-serif !important;
+      min-height: 100vh;
+    }
+
+    /* Efecto de partículas en el fondo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container-fluid, .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header de título */
+    .thead {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      color: #ffffff !important;
+      font-size: 20px !important;
+      padding: 20px !important;
+      border-radius: 15px 15px 0 0 !important;
+      border: 2px solid #40E0FF !important;
+      border-bottom: none !important;
+      box-shadow: 0 5px 20px rgba(64, 224, 255, 0.3);
+      text-shadow: 0 0 15px rgba(64, 224, 255, 0.5);
+      letter-spacing: 2px;
+    }
+
+    /* Card principal */
+    .modern-card {
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      border: 2px solid #40E0FF !important;
+      border-top: none !important;
+      border-radius: 0 0 20px 20px !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                  0 0 30px rgba(64, 224, 255, 0.2) !important;
+      padding: 40px 30px !important;
+      margin-top: 0 !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modern-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(64, 224, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    /* Sección del formulario */
+    .form-section {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+      padding: 35px !important;
+      border-radius: 20px !important;
+      margin: 20px 0 !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4),
+                  inset 0 0 20px rgba(64, 224, 255, 0.1) !important;
+      border: 2px solid #40E0FF !important;
+      border-left: 5px solid #40E0FF !important;
+      position: relative;
+    }
+
+    .form-section h5 {
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      margin-bottom: 25px !important;
+      border-bottom: 2px solid #40E0FF !important;
+      padding-bottom: 15px !important;
+      font-size: 1.3rem !important;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(64, 224, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-section h5 i {
+      color: #40E0FF !important;
+      text-shadow: 0 0 20px rgba(64, 224, 255, 0.8);
+    }
+
+    /* Grupos de formulario */
+    .modern-form-group {
+      margin-bottom: 30px !important;
+      position: relative;
+    }
+
+    .modern-form-group label {
+      color: #40E0FF !important;
+      font-weight: 600 !important;
+      margin-bottom: 10px !important;
+      display: block;
+      font-size: 1rem !important;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(64, 224, 255, 0.3);
+    }
+
+    .modern-form-group label i {
+      margin-right: 8px;
+      color: #40E0FF !important;
+    }
+
+    /* Inputs del formulario */
+    .modern-form-control {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      border: 2px solid #40E0FF !important;
+      border-radius: 15px !important;
+      padding: 15px 20px !important;
+      font-size: 1rem !important;
+      transition: all 0.3s ease !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2) !important;
+    }
+
+    .modern-form-control::placeholder {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .modern-form-control:focus {
+      border-color: #00D9FF !important;
+      box-shadow: 0 6px 25px rgba(64, 224, 255, 0.4) !important;
+      outline: none !important;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      color: #ffffff !important;
+      transform: translateY(-2px);
+    }
+
+    .modern-form-control:hover {
+      border-color: #00D9FF !important;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      box-shadow: 0 5px 20px rgba(64, 224, 255, 0.3) !important;
+    }
+
+    /* Contenedor de botones */
+    .button-container {
+      text-align: center !important;
+      margin-top: 35px !important;
+      padding: 25px !important;
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      border-radius: 15px !important;
+      border: 2px solid #40E0FF !important;
+      box-shadow: 0 5px 20px rgba(64, 224, 255, 0.2);
+    }
+
+    /* Botones */
+    .modern-btn {
+      padding: 14px 40px !important;
+      border-radius: 25px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 1.5px !important;
+      transition: all 0.3s ease !important;
+      border: 2px solid !important;
+      margin: 0 10px !important;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3) !important;
+      font-size: 1rem !important;
+    }
+
+    .modern-btn-success {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      color: #ffffff !important;
+      border-color: #28a745 !important;
+    }
+
+    .modern-btn-success:hover {
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      color: #28a745 !important;
+      border-color: #20c997 !important;
+      transform: translateY(-3px) !important;
+      box-shadow: 0 8px 30px rgba(40, 167, 69, 0.5) !important;
+    }
+
+    .modern-btn-danger {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      color: #ffffff !important;
+      border-color: #dc3545 !important;
+      text-decoration: none !important;
+      display: inline-block !important;
+    }
+
+    .modern-btn-danger:hover {
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      color: #dc3545 !important;
+      border-color: #e74c3c !important;
+      transform: translateY(-3px) !important;
+      box-shadow: 0 8px 30px rgba(220, 53, 69, 0.5) !important;
+      text-decoration: none !important;
+    }
+
+    /* Alertas */
+    .alert-success {
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+      border: 2px solid #28a745 !important;
+      color: #ffffff !important;
+      border-radius: 15px !important;
+      padding: 20px !important;
+      box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3) !important;
+      margin: 20px 0 !important;
+    }
+
+    .alert-success i {
+      color: #28a745 !important;
+      margin-right: 10px;
+    }
+
+    /* Footer */
+    .main-footer {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+      border-top: 2px solid #40E0FF !important;
+      color: #ffffff !important;
+      box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+      margin-top: 50px;
+    }
+
+    /* Content box */
+    .box {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modern-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .form-section {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* Efecto de brillo en hover */
+    .form-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(64, 224, 255, 0.05),
+        transparent
+      );
+      transform: rotate(45deg);
+      transition: all 0.6s ease;
+      pointer-events: none;
+    }
+
+    .form-section:hover::before {
+      left: 100%;
+    }
+
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+      border-left: 1px solid #40E0FF;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      .thead {
+        font-size: 16px !important;
+        padding: 15px !important;
+      }
+
+      .modern-card {
+        padding: 20px 15px !important;
+      }
+
+      .form-section {
+        padding: 20px !important;
+      }
+
+      .form-section h5 {
+        font-size: 1.1rem !important;
+      }
+
+      .modern-btn {
+        padding: 12px 25px !important;
+        font-size: 0.9rem !important;
+        margin: 5px !important;
+      }
+
+      .button-container {
+        padding: 15px !important;
+      }
+    }
+
+    @media screen and (max-width: 576px) {
+      .modern-btn {
+        display: block !important;
+        width: 100% !important;
+        margin: 10px 0 !important;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -41,105 +395,9 @@ include("../header_configuracion.php");
         <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8">
-            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
+            <div class="thead">
               <tr><strong><center>EDITAR ASEGURADORA</center></strong>
             </div>
-            <style>
-              .modern-card {
-                background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-                border-radius: 18px;
-                box-shadow: 0 8px 25px rgba(43,45,127,0.12);
-                padding: 30px 30px 10px 30px;
-                margin-top: 30px;
-                border: none;
-              }
-              .form-section {
-                background: white;
-                padding: 30px;
-                border-radius: 15px;
-                margin: 20px 0;
-                box-shadow: 0 4px 15px rgba(43, 45, 127, 0.1);
-                border-left: 5px solid #2b2d7f;
-              }
-              .form-section h5 {
-                color: #2b2d7f;
-                font-weight: bold;
-                margin-bottom: 20px;
-                border-bottom: 2px solid #e9ecef;
-                padding-bottom: 10px;
-              }
-              .modern-form-group {
-                margin-bottom: 25px;
-                position: relative;
-              }
-              .modern-form-group label {
-                color: #2b2d7f;
-                font-weight: 600;
-                margin-bottom: 8px;
-                display: block;
-                font-size: 14px;
-              }
-              .modern-form-control {
-                border: 4px solid #e9ecef;
-                border-radius: 10px;
-                padding: 15px;
-                font-size: 16px;
-                transition: all 0.3s ease;
-                background-color: #ffffff;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-              }
-              .modern-form-control:focus {
-                border-color: #2b2d7f;
-                box-shadow: 0 0 0 0.2rem rgba(43, 45, 127, 0.25);
-                outline: none;
-                background-color: #f8f9ff;
-              }
-              .modern-form-control:hover {
-                border-color: #2b2d7f;
-                background-color: #f8f9ff;
-              }
-              .button-container {
-                text-align: center;
-                margin-top: 30px;
-                padding: 20px;
-                background: #f8f9fa;
-                border-radius: 10px;
-              }
-              .modern-btn {
-                padding: 12px 30px;
-                border-radius: 25px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                transition: all 0.3s ease;
-                border: none;
-                margin: 0 10px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-              }
-              .modern-btn-success {
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-                color: white;
-              }
-              .modern-btn-success:hover {
-                background: linear-gradient(135deg, #218838 0%, #1e9f8a 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-                color: white;
-              }
-              .modern-btn-danger {
-                background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
-                color: white;
-                text-decoration: none;
-                display: inline-block;
-              }
-              .modern-btn-danger:hover {
-                background: linear-gradient(135deg, #c82333 0%, #d63384 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-                color: white;
-                text-decoration: none;
-              }
-            </style>
             <div class="modern-card">
               <?php
               $id = $_GET['id'];
@@ -173,8 +431,8 @@ include("../header_configuracion.php");
 
       if (isset($_POST['edit'])) {
 
-        $aseg    = mysqli_real_escape_string($conexion, (strip_tags($_POST["aseg"], ENT_QUOTES))); //Escanpando caracteres  
-        $tip_precio    = mysqli_real_escape_string($conexion, (strip_tags($_POST["tip_precio"], ENT_QUOTES))); //Escanpando caracteres  
+        $aseg    = mysqli_real_escape_string($conexion, (strip_tags($_POST["aseg"], ENT_QUOTES))); //Escanpando caracteres
+        $tip_precio    = mysqli_real_escape_string($conexion, (strip_tags($_POST["tip_precio"], ENT_QUOTES))); //Escanpando caracteres
 
         $sql2 = "UPDATE cat_aseg SET aseg = '$aseg', tip_precio = $tip_precio  WHERE id_aseg = $id";
         $result = $conexion->query($sql2);
