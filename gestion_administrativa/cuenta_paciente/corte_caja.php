@@ -30,179 +30,552 @@ $resultado=$conexion->query("select * from reg_usuarios") or die($conexion->erro
     <script src="../../js/main.js"></script>
    
     <style>
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+        font-family: 'Roboto', sans-serif !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Efecto de partículas en el fondo */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Wrapper para AdminLTE */
+    .wrapper {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Content wrapper debe crecer para empujar el footer */
+    .content-wrapper {
+        flex: 1;
+        background: transparent !important;
+        min-height: calc(100vh - 100px);
+    }
+
+    .container-fluid {
+        position: relative;
+        z-index: 1;
+        padding-top: 30px;
+        padding-bottom: 50px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* Main Container mejorado */
+    .main-container {
+        background: linear-gradient(135deg, rgba(15, 52, 96, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 15px !important;
+        box-shadow: 0 12px 40px rgba(64, 224, 255, 0.25) !important;
+        margin: 20px auto !important;
+        padding: 0 !important;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        max-width: 1000px !important;
+    }
+
+    .main-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 20%, rgba(64, 224, 255, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Header Section mejorado */
+    .header-section {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border-bottom: 2px solid #40E0FF !important;
+        color: #ffffff !important;
+        padding: 30px 25px !important;
+        text-align: center;
+        margin-bottom: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .header-section h2 {
+        margin: 0;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 20px rgba(64, 224, 255, 0.7) !important;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-section i {
+        font-size: 32px !important;
+        margin-right: 15px !important;
+        color: #40E0FF !important;
+        text-shadow: 0 0 15px rgba(64, 224, 255, 0.9);
+    }
+
+    /* Content Section mejorado */
+    .content-section {
+        padding: 30px !important;
+        background: rgba(10, 10, 10, 0.7) !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Report Card mejorado */
+    .report-card {
+        background: linear-gradient(135deg, rgba(15, 52, 96, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 12px !important;
+        padding: 30px !important;
+        margin-bottom: 25px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 6px 20px rgba(64, 224, 255, 0.15) !important;
+        color: #ffffff !important;
+    }
+
+    .report-card:hover {
+        transform: translateY(-5px) !important;
+        border-color: #00D9FF !important;
+        box-shadow: 0 10px 30px rgba(64, 224, 255, 0.3) !important;
+    }
+
+    .report-card h5 {
+        color: #40E0FF !important;
+        font-weight: 600 !important;
+        margin-bottom: 25px !important;
+        padding-bottom: 15px !important;
+        border-bottom: 2px solid rgba(64, 224, 255, 0.3) !important;
+        font-size: 20px !important;
+        text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+    }
+
+    .report-card h5 i {
+        margin-right: 10px !important;
+        color: #40E0FF !important;
+    }
+
+    /* Botones mejorados */
+    .btn-back {
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 25px !important;
+        padding: 12px 25px !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-back::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(64, 224, 255, 0.1),
+            transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.6s ease;
+    }
+
+    .btn-back:hover::before {
+        left: 100%;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(64, 224, 255, 0.4) !important;
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border-color: #00D9FF !important;
+        color: #40E0FF !important;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 25px !important;
+        padding: 12px 25px !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .btn-primary-custom::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(64, 224, 255, 0.1),
+            transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.6s ease;
+    }
+
+    .btn-primary-custom:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(64, 224, 255, 0.4) !important;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        border-color: #00D9FF !important;
+        color: #40E0FF !important;
+    }
+
+    .btn-excel {
+        background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%) !important;
+        border: 2px solid #66bb6a !important;
+        border-radius: 25px !important;
+        padding: 12px 25px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+        color: #ffffff !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-excel::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(102, 187, 106, 0.1),
+            transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.6s ease;
+    }
+
+    .btn-excel:hover::before {
+        left: 100%;
+    }
+
+    .btn-excel:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(102, 187, 106, 0.4) !important;
+        background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+        border-color: #a5d6a7 !important;
+        color: #ffffff !important;
+        text-decoration: none;
+    }
+
+    /* Form Controls mejorados */
+    .form-control {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 8px !important;
+        padding: 12px 15px !important;
+        color: #ffffff !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(64, 224, 255, 0.1) !important;
+    }
+
+    .form-control:focus {
+        border-color: #00D9FF !important;
+        box-shadow: 0 0 0 0.2rem rgba(64, 224, 255, 0.25) !important;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        color: #ffffff !important;
+        outline: none;
+    }
+
+    .form-label {
+        color: #ffffff !important;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        text-shadow: 0 0 5px rgba(64, 224, 255, 0.5);
+    }
+
+    /* Date Container mejorado */
+    .date-container {
+        background: linear-gradient(135deg, rgba(15, 52, 96, 0.6) 0%, rgba(22, 33, 62, 0.6) 100%) !important;
+        border: 2px solid rgba(64, 224, 255, 0.3) !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 15px rgba(64, 224, 255, 0.1) !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Button Container mejorado */
+    .btn-container {
+        display: flex;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .icon-excel {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+        filter: brightness(0) invert(1);
+    }
+
+    /* Footer corregido y centrado */
+    .main-footer {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border-top: 2px solid #40E0FF !important;
+        color: #ffffff !important;
+        box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+        margin-top: 50px;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 20px;
+        text-align: center;
+        width: 100%;
+        position: relative;
+        left: 0;
+        right: 0;
+    }
+
+    /* Si el footer está dentro de .wrapper de AdminLTE */
+    .wrapper > .main-footer {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Para páginas con sidebar de AdminLTE */
+    @media (min-width: 768px) {
+        .sidebar-mini.sidebar-collapse .main-footer {
+            margin-left: 50px !important;
         }
         
-        .main-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            padding: 0;
-            overflow: hidden;
-            max-width: 1000px;
+        .sidebar-mini:not(.sidebar-collapse) .main-footer {
+            margin-left: 230px !important;
         }
-        
+    }
+
+    /* Para páginas sin sidebar (como esta) */
+    body:not(.sidebar-mini) .main-footer {
+        margin-left: 0 !important;
+    }
+
+    .main-footer p,
+    .main-footer a {
+        color: #ffffff !important;
+        margin: 5px 0;
+    }
+
+    .main-footer a:hover {
+        color: #40E0FF !important;
+        text-decoration: none;
+    }
+
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+        border-left: 1px solid #40E0FF;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+    }
+
+    /* Row adjustments */
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .row > [class*='col-'] {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Animaciones de entrada */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .main-container {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
         .header-section {
-            background: linear-gradient(135deg, #2b2d7f 0%, #3949ab 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 0;
+            padding: 20px 15px !important;
         }
-        
+
         .header-section h2 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 22px !important;
         }
-        
-        .header-section i {
-            font-size: 32px;
-            margin-right: 15px;
-            opacity: 0.9;
-        }
-        
+
         .content-section {
-            padding: 40px;
+            padding: 20px !important;
         }
-        
+
         .report-card {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 25px;
-            transition: all 0.3s ease;
+            padding: 20px !important;
         }
-        
-        .report-card:hover {
-            border-color: #2b2d7f;
-            box-shadow: 0 8px 25px rgba(43, 45, 127, 0.1);
+
+        .btn-back, .btn-primary-custom, .btn-excel {
+            padding: 10px 20px !important;
+            font-size: 14px !important;
         }
-        
-        .report-card h5 {
-            color: #2b2d7f;
-            font-weight: 600;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #2b2d7f;
-            font-size: 20px;
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
         }
-        
-        .btn-primary-custom {
-            background: linear-gradient(135deg, #2b2d7f 0%, #3949ab 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3);
-            color: white;
+
+        .main-footer {
+            padding: 15px;
         }
-        
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(43, 45, 127, 0.4);
-            color: white;
-        }
-        
-        .btn-excel {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            color: white;
-        }
-        
-        .btn-excel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-            color: white;
-        }
-        
-        .btn-back {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-        
-        .btn-back:hover {
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
-        }
-        
-        .form-control {
-            border-radius: 8px;
-            border: 2px solid #e9ecef;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        
-        .form-control:focus {
-            border-color: #2b2d7f;
-            box-shadow: 0 0 0 0.2rem rgba(43, 45, 127, 0.25);
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: #2b2d7f;
-            margin-bottom: 8px;
-        }
-        
-        .date-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-        
+
         .btn-container {
-            display: flex;
-            gap: 15px;
-            align-items: end;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch !important;
         }
         
-        .icon-excel {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
+        .btn-container .btn {
+            width: 100%;
+            text-align: center;
         }
-        
-        @media (max-width: 768px) {
-            .content-section {
-                padding: 20px;
-            }
-            .report-card {
-                padding: 20px;
-            }
-            .btn-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .header-section h2 {
-                font-size: 22px;
-            }
+    }
+
+    @media screen and (max-width: 576px) {
+        .header-section h2 {
+            font-size: 18px !important;
         }
-    </style>
+
+        .header-section i {
+            font-size: 24px !important;
+            margin-right: 10px !important;
+        }
+
+        .btn-back, .btn-primary-custom, .btn-excel {
+            font-size: 12px !important;
+            padding: 8px 15px !important;
+        }
+
+        .date-container {
+            padding: 15px !important;
+        }
+    }
+
+    /* Asegurar que no haya overflow horizontal */
+    .content-wrapper,
+    .container-fluid,
+    .container {
+        overflow-x: hidden;
+    }
+
+    /* Centrado adicional para el footer */
+    footer.main-footer {
+        clear: both;
+        display: block;
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    /* Estilos para inputs date */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1) brightness(2);
+        cursor: pointer;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        opacity: 0.8;
+    }
+</style>
 
     <script>
         // Write on keyup event of keyword input element

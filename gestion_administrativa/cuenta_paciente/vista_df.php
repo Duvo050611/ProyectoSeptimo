@@ -52,211 +52,522 @@ $rol = $usuario['id_rol'];
     
     <!-- Estilos modernos para vista_df.php -->
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+        font-family: 'Roboto', sans-serif !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Efecto de partículas en el fondo */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Wrapper para AdminLTE */
+    .wrapper {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Content wrapper debe crecer para empujar el footer */
+    .content-wrapper {
+        flex: 1;
+        background: transparent !important;
+        min-height: calc(100vh - 100px);
+    }
+
+    .container-fluid {
+        position: relative;
+        z-index: 1;
+        padding-top: 30px;
+        padding-bottom: 50px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* Page Header mejorado */
+    .page-header {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 15px !important;
+        padding: 25px 30px !important;
+        margin-bottom: 30px !important;
+        box-shadow: 0 8px 30px rgba(64, 224, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+        color: #ffffff !important;
+        text-align: center;
+        text-shadow: 0 0 20px rgba(64, 224, 255, 0.5);
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .page-header h1 {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        font-weight: 700;
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    /* Content Card mejorado */
+    .content-card {
+        background: linear-gradient(135deg, rgba(15, 52, 96, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 15px !important;
+        padding: 25px !important;
+        margin: 20px 0 !important;
+        box-shadow: 0 8px 30px rgba(64, 224, 255, 0.2);
+        color: #ffffff !important;
+    }
+
+    /* Botones de acción mejorados */
+    .btn {
+        border-radius: 25px !important;
+        padding: 12px 25px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease !important;
+        border: 2px solid #40E0FF !important;
+        box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(64, 224, 255, 0.1),
+            transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.6s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #c2185b 0%, #e91e63 100%) !important;
+        color: #ffffff !important;
+        border-color: #f48fb1 !important;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(244, 143, 177, 0.4) !important;
+        background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%) !important;
+        border-color: #f8bbd0 !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        color: #ffffff !important;
+        border-color: #40E0FF !important;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(64, 224, 255, 0.4) !important;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        border-color: #00D9FF !important;
+        color: #40E0FF !important;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%) !important;
+        color: #ffffff !important;
+        border-color: #66bb6a !important;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(102, 187, 106, 0.4) !important;
+        background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+        border-color: #a5d6a7 !important;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%) !important;
+        color: #ffffff !important;
+        border-color: #ffa726 !important;
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(255, 167, 38, 0.4) !important;
+        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+        border-color: #ffcc80 !important;
+    }
+
+    /* Barra de búsqueda mejorada */
+    .form-control {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 25px !important;
+        padding: 15px 25px !important;
+        color: #ffffff !important;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-control:focus {
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        border-color: #00D9FF !important;
+        box-shadow: 0 8px 25px rgba(64, 224, 255, 0.4) !important;
+        color: #ffffff !important;
+        outline: none;
+    }
+
+    /* Tablas mejoradas */
+    .table-responsive {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border: 2px solid #40E0FF !important;
+        border-radius: 15px !important;
+        padding: 20px;
+        box-shadow: 0 8px 30px rgba(64, 224, 255, 0.3);
+        margin-bottom: 30px;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+
+    .table {
+        color: #ffffff !important;
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+        color: #40E0FF !important;
+        border: 2px solid #40E0FF !important;
+        padding: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table tbody tr {
+        background: rgba(15, 52, 96, 0.5) !important;
+        border-bottom: 1px solid rgba(64, 224, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(64, 224, 255, 0.1) !important;
+        transform: translateX(5px);
+    }
+
+    .table tbody td {
+        border: 1px solid rgba(64, 224, 255, 0.2) !important;
+        padding: 12px 15px;
+        color: #ffffff !important;
+        vertical-align: middle;
+    }
+
+    .table tbody td strong {
+        color: #ffffff !important;
+    }
+
+    /* Celdas con color especial */
+    .table td[style*="background: linear-gradient(135deg, #27ae60, #2ecc71)"] {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        border-radius: 6px;
+    }
+
+    .table td[style*="background: linear-gradient(135deg, #6c757d, #95a5a6)"] {
+        background: linear-gradient(135deg, #6c757d 0%, #95a5a6 100%) !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        border-radius: 6px;
+    }
+
+    .table td[style*="background: linear-gradient(135deg, #e8f5e8, #f1f8e9)"] {
+        background: linear-gradient(135deg, rgba(15, 52, 96, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%) !important;
+        border: 1px solid rgba(64, 224, 255, 0.3) !important;
+        border-radius: 6px;
+    }
+
+    /* Colores para números */
+    .table td span[style*="color: #e74c3c"] {
+        color: #40E0FF !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+    }
+
+    /* Botones dentro de la tabla */
+    .table .btn-sm {
+        padding: 8px 15px !important;
+        font-size: 14px;
+        min-height: auto;
+        margin: 2px;
+    }
+
+    .table .btn-warning.btn-sm {
+        background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%) !important;
+    }
+
+    .table .btn-danger.btn-sm {
+        background: linear-gradient(135deg, #c2185b 0%, #e91e63 100%) !important;
+    }
+
+    /* Grupo de botones */
+    .btn-group {
+        display: flex;
+        gap: 5px;
+    }
+
+    /* Iconos */
+    .btn i, .btn span {
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover i, .btn:hover span {
+        transform: scale(1.2);
+    }
+
+    /* Footer corregido y centrado */
+    .main-footer {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+        border-top: 2px solid #40E0FF !important;
+        color: #ffffff !important;
+        box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+        margin-top: 50px;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 20px;
+        text-align: center;
+        width: 100%;
+        position: relative;
+        left: 0;
+        right: 0;
+    }
+
+    /* Si el footer está dentro de .wrapper de AdminLTE */
+    .wrapper > .main-footer {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Para páginas con sidebar de AdminLTE */
+    @media (min-width: 768px) {
+        .sidebar-mini.sidebar-collapse .main-footer {
+            margin-left: 50px !important;
         }
         
-        .container-fluid {
-            padding: 20px;
+        .sidebar-mini:not(.sidebar-collapse) .main-footer {
+            margin-left: 230px !important;
         }
-        
-        /* Botones modernos */
-        .btn {
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Para páginas sin sidebar (como esta) */
+    body:not(.sidebar-mini) .main-footer {
+        margin-left: 0 !important;
+    }
+
+    .main-footer p,
+    .main-footer a {
+        color: #ffffff !important;
+        margin: 5px 0;
+    }
+
+    .main-footer a:hover {
+        color: #40E0FF !important;
+        text-decoration: none;
+    }
+
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+        border-left: 1px solid #40E0FF;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+    }
+
+    /* Row adjustments */
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .row > [class*='col-'] {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Animaciones de entrada */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-        
-        /* Header mejorado */
-        .thead {
-            background: linear-gradient(135deg, #2b2d7f 0%, #3c3f8f 100%) !important;
-            color: white !important;
-            font-size: 18px !important;
-            padding: 20px !important;
-            border-radius: 10px !important;
-            margin-bottom: 20px !important;
-            box-shadow: 0 4px 15px rgba(43, 45, 127, 0.3) !important;
-            text-align: center !important;
-        }
-        
-        /* Buscador mejorado */
-        .form-group {
-            margin: 20px 0;
-        }
-        
-        #search {
-            border-radius: 25px !important;
-            border: 2px solid #e9ecef !important;
-            padding: 12px 20px !important;
-            font-size: 16px !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
-        }
-        
-        #search:focus {
-            border-color: #2b2d7f !important;
-            box-shadow: 0 0 0 0.2rem rgba(43, 45, 127, 0.25) !important;
-            outline: none !important;
-        }
-        
-        /* Tabla mejorada */
-        .table-responsive {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            background: white;
-            margin: 20px 0;
-        }
-        
-        .table {
-            margin-bottom: 0;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        
-        .table thead th {
-            background: linear-gradient(135deg, #2b2d7f 0%, #3c3f8f 100%);
-            color: white;
-            border: none;
-            padding: 15px 12px;
-            font-weight: 600;
-            font-size: 14px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        
-        .table tbody tr {
-            transition: all 0.3s ease;
-        }
-        
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-            transform: scale(1.01);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .table tbody td {
-            padding: 12px;
-            vertical-align: middle;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 13px;
-        }
-        
-        /* Botones de acción mejorados */
-        .table .btn-sm {
-            padding: 8px 12px;
-            margin: 2px;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        
-        /* Colores especiales para celdas */
-        .table td[bgcolor="green"] {
-            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
-            color: white !important;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-        
-        .table td[style*="background:grey"] {
-            background: linear-gradient(135deg, #7f8c8d, #95a5a6) !important;
-            color: white !important;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-        
-        /* Números y totales */
-        .table td font[color="red"] {
-            color: #e74c3c !important;
-            font-weight: 700 !important;
-            font-size: 16px !important;
-        }
-        
-        /* Animaciones suaves */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .table-responsive {
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        /* Responsividad mejorada */
-        @media (max-width: 768px) {
-            .container-fluid {
-                padding: 10px;
-            }
-            
-            .table {
-                font-size: 11px;
-            }
-            
-            .btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            
-            .thead {
-                font-size: 16px !important;
-                padding: 15px !important;
-            }
-        }
-        
-        /* Card wrapper para mejor presentación */
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        
-        /* Header de página mejorado */
+    }
+
+    .container-fluid > * {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
         .page-header {
-            background: linear-gradient(135deg, #2b2d7f 0%, #667eea 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(43, 45, 127, 0.3);
+            padding: 15px 20px !important;
+            font-size: 18px !important;
+        }
+
+        .page-header h1 {
+            font-size: 22px !important;
+        }
+
+        .content-card {
+            padding: 15px !important;
+        }
+
+        .btn {
+            font-size: 0.85rem !important;
+            padding: 10px 20px !important;
+        }
+
+        .table-responsive {
+            padding: 10px;
+        }
+
+        .table thead th,
+        .table tbody td {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .main-footer {
+            margin-left: 0 !important;
+            padding: 15px;
+        }
+    }
+
+    @media screen and (max-width: 576px) {
+        .page-header h1 {
+            font-size: 18px !important;
+        }
+
+        .btn {
+            font-size: 0.75rem !important;
+            padding: 8px 15px !important;
+            min-height: 40px;
+        }
+
+        .table {
+            font-size: 12px;
         }
         
-        .page-header h1 {
-            margin: 0;
-            font-weight: 700;
-            font-size: 24px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        .btn-group {
+            flex-direction: column;
         }
-    </style>
+    }
+
+    /* Asegurar que no haya overflow horizontal */
+    .content-wrapper,
+    .container-fluid,
+    .container {
+        overflow-x: hidden;
+    }
+
+    /* Centrado adicional para el footer */
+    footer.main-footer {
+        clear: both;
+        display: block;
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    /* Mejoras para encabezados de tabla */
+    .table thead th i {
+        margin-right: 5px;
+        font-size: 16px;
+    }
+</style>
 </head>
 
 <div class="container-fluid">

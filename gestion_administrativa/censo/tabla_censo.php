@@ -28,113 +28,690 @@ include("../header_administrador.php");
     <script src="../../js/aos.js"></script>
     <script src="../../js/main.js"></script>
 
-    <style>
-        .fondo {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
+<style> 
 
-        .fondo:hover {
-            background: linear-gradient(135deg, #c0392b, #a93226);
-            transform: translateY(-1px);
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .fondo2 {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
 
-        .fondo2:hover {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            transform: translateY(-1px);
-        }
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+    font-family: 'Roboto', sans-serif !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        .fondo3 {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
+/* Efecto de partículas en el fondo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(64, 224, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(64, 224, 255, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
 
-        .fondo3:hover {
-            background: linear-gradient(135deg, #2980b9, #21618c);
-            transform: translateY(-1px);
-        }
+/* Wrapper para AdminLTE */
+.wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        .cuenta {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
+/* Content wrapper debe crecer para empujar el footer */
+.content-wrapper {
+    flex: 1;
+    background: transparent !important;
+    min-height: calc(100vh - 100px);
+}
 
-        .cuenta:hover {
-            background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
-            transform: translateY(-1px);
-        }
+.container-fluid {
+    position: relative;
+    z-index: 1;
+    padding: 30px;
+    max-width: 100%;
+}
 
-        /* Botones de Acción */
-        .action-btn {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-        }
+/* Botón Regresar Mejorado */
+.btn-back {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+    border: 2px solid #40E0FF !important;
+    border-radius: 25px !important;
+    padding: 12px 25px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-        }
+.btn-back:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 25px rgba(64, 224, 255, 0.4) !important;
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+    border-color: #00D9FF !important;
+    color: #40E0FF !important;
+    text-decoration: none;
+}
 
-        .btn-warning.action-btn {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            border: none;
-        }
+/* Contenedor Principal Mejorado */
+.main-container {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+    border: 2px solid #40E0FF !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 30px rgba(64, 224, 255, 0.3);
+    overflow: hidden;
+    margin-bottom: 30px;
+}
 
-        .btn-success.action-btn {
-            background: linear-gradient(135deg, #27ae60, #229954);
-            border: none;
-        }
+/* Header Section Mejorado */
+.header-section {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+    color: #ffffff !important;
+    padding: 25px;
+    text-align: center;
+    border-bottom: 2px solid #40E0FF !important;
+    position: relative;
+    overflow: hidden;
+}
 
-        .btn-danger.action-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border: none;
-        }
+.header-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 10px;
-            }
-            
-            .table-responsive {
-                font-size: 12px;
-            }
-            
-            .action-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 12px;
-            }
-        }
-    </style>
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.header-section h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(64, 224, 255, 0.5);
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+.header-section i {
+    font-size: 32px;
+    margin-right: 15px;
+    opacity: 0.9;
+    text-shadow: 0 0 15px rgba(64, 224, 255, 0.8);
+}
+
+/* Leyenda de Estados Mejorada */
+.legend-container {
+    background: rgba(15, 52, 96, 0.5) !important;
+    border: 2px solid rgba(64, 224, 255, 0.3) !important;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    color: #ffffff;
+}
+
+.legend-container strong {
+    color: #40E0FF;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    margin: 5px 15px 5px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.status-occupied { 
+    background: #40E0FF;
+    box-shadow: 0 0 15px #40E0FF;
+}
+
+.status-discharged { 
+    background: #4caf50;
+    box-shadow: 0 0 15px #4caf50;
+}
+
+.status-maintenance { 
+    background: #e91e63;
+    box-shadow: 0 0 15px #e91e63;
+}
+
+.status-releasing { 
+    background: #ff9800;
+    box-shadow: 0 0 15px #ff9800;
+}
+
+.status-available { 
+    background: #9e9e9e;
+    box-shadow: 0 0 15px #9e9e9e;
+}
+
+/* Botón Imprimir Mejorado */
+.btn-print {
+    background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%) !important;
+    border: 2px solid #66bb6a !important;
+    border-radius: 25px !important;
+    padding: 12px 25px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.btn-print:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 25px rgba(102, 187, 106, 0.4) !important;
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+    border-color: #a5d6a7 !important;
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+/* Section Header Mejorado */
+.census-section {
+    background: transparent;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.section-header {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+    color: #40E0FF !important;
+    padding: 15px 20px;
+    margin: 0;
+    border: 2px solid #40E0FF !important;
+    border-radius: 10px 10px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+/* Search Container Mejorado */
+.search-container {
+    padding: 20px;
+    background: rgba(15, 52, 96, 0.3);
+    border: 2px solid rgba(64, 224, 255, 0.2);
+    border-top: none;
+}
+
+.form-control {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+    border: 2px solid #40E0FF !important;
+    border-radius: 25px !important;
+    padding: 12px 20px !important;
+    color: #ffffff !important;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(64, 224, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-control:focus {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+    border-color: #00D9FF !important;
+    box-shadow: 0 8px 25px rgba(64, 224, 255, 0.4) !important;
+    color: #ffffff !important;
+    outline: none;
+}
+
+/* Table Container Mejorado */
+.table-container {
+    background: rgba(15, 52, 96, 0.3);
+    border: 2px solid rgba(64, 224, 255, 0.2);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+/* Tabla Mejorada */
+.table {
+    color: #ffffff !important;
+    margin: 0;
+    width: 100%;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+    color: #40E0FF !important;
+    border: 2px solid #40E0FF !important;
+    padding: 15px 8px;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    transform: translateX(5px);
+}
+
+.table tbody td {
+    border: 1px solid rgba(64, 224, 255, 0.2) !important;
+    padding: 10px 6px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background: rgba(15, 52, 96, 0.5) !important;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background: rgba(22, 33, 62, 0.5) !important;
+}
+
+/* Estados de Celdas Mejorados */
+td.fondo,
+.table tbody td.fondo {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+    color: #40E0FF !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(64, 224, 255, 0.5);
+    border: 1px solid #40E0FF !important;
+}
+
+td.fondo2,
+.table tbody td.fondo2 {
+    background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    border: 1px solid #66bb6a !important;
+}
+
+td.fondo3,
+.table tbody td.fondo3 {
+    background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+    border: 1px solid #ffa726 !important;
+}
+
+td.cuenta,
+.table tbody td.cuenta {
+    background: linear-gradient(135deg, #c2185b 0%, #e91e63 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(233, 30, 99, 0.5);
+    border: 1px solid #f48fb1 !important;
+}
+
+/* Botones de Acción Mejorados */
+.action-btn {
+    border-radius: 20px !important;
+    padding: 8px 12px !important;
+    margin: 2px !important;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 35px;
+    min-height: 35px;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.btn-warning.action-btn {
+    background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%) !important;
+    border-color: #ffa726 !important;
+    color: #ffffff !important;
+}
+
+.btn-warning.action-btn:hover {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+    border-color: #ffcc80 !important;
+}
+
+.btn-success.action-btn {
+    background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%) !important;
+    border-color: #66bb6a !important;
+    color: #ffffff !important;
+}
+
+.btn-success.action-btn:hover {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+    border-color: #a5d6a7 !important;
+}
+
+.btn-danger.action-btn {
+    background: linear-gradient(135deg, #c2185b 0%, #e91e63 100%) !important;
+    border-color: #f48fb1 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger.action-btn:hover {
+    background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%) !important;
+    border-color: #f8bbd0 !important;
+}
+
+/* Footer Mejorado y Centrado */
+.main-footer {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+    border-top: 2px solid #40E0FF !important;
+    color: #ffffff !important;
+    box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+    margin-top: 50px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 25px 20px !important;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 80px;
+}
+
+.wrapper > .main-footer {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .sidebar-mini.sidebar-collapse .main-footer {
+        margin-left: 50px !important;
+    }
+    
+    .sidebar-mini:not(.sidebar-collapse) .main-footer {
+        margin-left: 230px !important;
+    }
+}
+
+body:not(.sidebar-mini) .main-footer {
+    margin-left: 0 !important;
+}
+
+.main-footer p,
+.main-footer strong {
+    color: #ffffff !important;
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.main-footer a {
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.main-footer a:hover {
+    color: #40E0FF !important;
+    text-decoration: none;
+}
+
+footer.main-footer {
+    clear: both;
+    display: flex;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+.main-footer br {
+    line-height: 1.4;
+}
+
+.main-footer > * {
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* Scrollbar Personalizado */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    border-left: 1px solid #40E0FF;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+}
+
+/* Animaciones de Entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.main-container,
+.legend-container,
+.census-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .container-fluid {
+        padding: 15px;
+    }
+
+    .main-container {
+        margin: 10px 0;
+        border-radius: 10px;
+    }
+
+    .census-section {
+        margin: 10px;
+    }
+
+    .header-section {
+        padding: 20px 15px;
+    }
+
+    .header-section h2 {
+        font-size: 22px;
+    }
+
+    .legend-container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .legend-item {
+        font-size: 11px;
+        margin: 5px 10px 5px 0;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+
+    .action-btn {
+        padding: 6px 8px !important;
+        margin: 1px !important;
+        font-size: 12px;
+        min-width: 30px;
+        min-height: 30px;
+    }
+
+    .btn-back,
+    .btn-print {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+    }
+
+    .main-footer {
+        margin-left: 0 !important;
+        padding: 20px 15px !important;
+        font-size: 13px;
+    }
+
+    .main-footer p,
+    .main-footer strong {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .header-section h2 {
+        font-size: 18px;
+    }
+
+    .header-section i {
+        font-size: 24px;
+        margin-right: 10px;
+    }
+
+    .section-header {
+        font-size: 16px;
+        padding: 12px 15px;
+    }
+
+    .table {
+        font-size: 10px;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 6px 3px;
+        font-size: 10px;
+    }
+
+    .action-btn {
+        padding: 5px 6px !important;
+        font-size: 11px;
+        min-width: 28px;
+        min-height: 28px;
+    }
+
+    .legend-container {
+        padding: 10px;
+    }
+
+    .legend-item {
+        font-size: 10px;
+        margin: 3px 8px 3px 0;
+    }
+
+    .status-indicator {
+        width: 10px;
+        height: 10px;
+    }
+
+    .main-footer {
+        padding: 15px 10px !important;
+        font-size: 12px;
+    }
+
+    .main-footer p,
+    .main-footer strong {
+        font-size: 11px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .main-footer {
+        padding: 12px 8px !important;
+        font-size: 11px;
+    }
+
+    .main-footer p,
+    .main-footer strong {
+        font-size: 10px;
+        line-height: 1.3;
+    }
+}
+</style>
 
   <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
   <!-- FastClick -->
