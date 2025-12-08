@@ -72,8 +72,6 @@ if ($usuario['id_rol'] == 10) {
         });
     </script>
 
-
-</head>
 <style>
     :root {
         --primary-blue: #2563eb;
@@ -85,13 +83,85 @@ if ($usuario['id_rol'] == 10) {
         --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
         --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
         --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+        --azul-oscuro: #0f172a;
+        --azul-medio: #1e293b;
+        --azul-claro: #334155;
+        --azul-neon: #06b6d4;
+        --azul-cian: #22d3ee;
+        --gris-oscuro: #1e1e2e;
+        --gris-medio: #2d2d44;
+        --blanco: #f1f5f9;
+        --verde: #10b981;
+        --rojo: #ef4444;
     }
 
     body {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
         min-height: 100vh;
         padding: 20px;
+        color: var(--blanco) !important;
+    }
+
+    /* ESTILOS PARA EL BREADCRUMB Y NAVEGACIÓN QUE ESTÁN BLANCOS */
+    .breadcrumb {
+        background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+        border: 2px solid var(--azul-neon) !important;
+        border-radius: 15px !important;
+        padding: 15px 25px !important;
+        margin: 10px 0 30px 0 !important;
+        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .breadcrumb::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .breadcrumb .breadcrumb-item {
+        color: var(--blanco) !important;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+    
+    .breadcrumb .breadcrumb-item.active {
+        color: var(--azul-neon) !important;
+        font-weight: 700;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: var(--azul-cian) !important;
+        content: ">";
+    }
+    
+    /* Asegurar que el contenedor del título esté correcto */
+    nav[aria-label="breadcrumb"] {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 0 20px 0 !important;
+    }
+    
+    .breadcrumb h4 {
+        color: var(--blanco) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px;
     }
 
     /* Efecto de partículas en el fondo */
@@ -119,25 +189,25 @@ if ($usuario['id_rol'] == 10) {
 
     /* Botón de regreso mejorado */
     .btn-danger {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-        border: 2px solid #ef4444 !important;
+        background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+        border: 2px solid var(--rojo) !important;
         border-radius: 25px !important;
         padding: 10px 25px !important;
         font-weight: 600 !important;
-        color: #ffffff !important;
+        color: var(--blanco) !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         position: relative;
         overflow: hidden;
     }
 
     .btn-danger:hover {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%) !important;
         transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-        border-color: #dc2626 !important;
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+        border-color: var(--rojo) !important;
     }
 
     .btn-danger::before {
@@ -147,7 +217,7 @@ if ($usuario['id_rol'] == 10) {
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(45deg, transparent, rgba(239, 68, 68, 0.2), transparent);
         transform: rotate(45deg) translateX(-100%);
         transition: transform 0.6s ease;
     }
@@ -158,16 +228,16 @@ if ($usuario['id_rol'] == 10) {
 
     /* Encabezado principal */
     .thead {
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
-        border: 2px solid #40E0FF !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+        border: 2px solid var(--azul-neon) !important;
         border-radius: 20px !important;
         padding: 30px 40px !important;
-        color: #ffffff !important;
+        color: var(--blanco) !important;
         font-size: 1.8rem !important;
         font-weight: 700 !important;
         text-align: center !important;
         margin: 20px 0 40px 0 !important;
-        box-shadow: 0 15px 40px rgba(64, 224, 255, 0.2);
+        box-shadow: 0 15px 40px rgba(6, 182, 212, 0.4);
         position: relative;
         overflow: hidden;
         letter-spacing: 1px;
@@ -180,7 +250,7 @@ if ($usuario['id_rol'] == 10) {
         right: -50%;
         width: 200%;
         height: 200%;
-        background: radial-gradient(circle, rgba(64, 224, 255, 0.1) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
         animation: pulse 4s ease-in-out infinite;
     }
 
@@ -196,7 +266,7 @@ if ($usuario['id_rol'] == 10) {
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #40E0FF, #00D9FF, #40E0FF);
+        background: linear-gradient(90deg, transparent, var(--azul-neon), transparent);
         animation: gradient-flow 3s ease infinite;
         background-size: 200% 100%;
     }
@@ -214,28 +284,28 @@ if ($usuario['id_rol'] == 10) {
     }
 
     .form-control {
-        background: linear-gradient(135deg, rgba(22, 33, 62, 0.95) 0%, rgba(15, 52, 96, 0.95) 100%) !important;
-        border: 2px solid #40E0FF !important;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%) !important;
+        border: 2px solid var(--azul-claro) !important;
         border-radius: 25px !important;
-        color: #ffffff !important;
+        color: var(--blanco) !important;
         padding: 15px 50px 15px 25px !important;
         font-size: 16px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 8px 25px rgba(64, 224, 255, 0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         height: 60px !important;
     }
 
     .form-control:focus {
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
-        border-color: #00D9FF !important;
-        box-shadow: 0 0 0 0.3rem rgba(64, 224, 255, 0.3), 
-                    0 12px 35px rgba(64, 224, 255, 0.25) !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%) !important;
+        border-color: var(--azul-neon) !important;
+        box-shadow: 0 0 0 0.3rem rgba(6, 182, 212, 0.3), 
+                    0 12px 35px rgba(6, 182, 212, 0.3) !important;
         transform: translateY(-3px);
         outline: none !important;
     }
 
     .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.6) !important;
+        color: rgba(241, 245, 249, 0.5) !important;
         font-style: italic;
     }
 
@@ -247,24 +317,24 @@ if ($usuario['id_rol'] == 10) {
         right: 25px;
         top: 50%;
         transform: translateY(-50%);
-        color: #40E0FF;
+        color: var(--azul-neon);
         font-size: 18px;
         pointer-events: none;
         transition: all 0.3s ease;
     }
 
     .form-control:focus + .form-group::after {
-        color: #00D9FF;
+        color: var(--azul-cian);
         transform: translateY(-50%) scale(1.2);
     }
 
     /* Contenedor de tabla premium */
     .table-responsive {
-        background: linear-gradient(135deg, rgba(22, 33, 62, 0.95) 0%, rgba(15, 52, 96, 0.95) 100%) !important;
-        border: 2px solid #40E0FF !important;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%) !important;
+        border: 2px solid var(--azul-neon) !important;
         border-radius: 20px !important;
         padding: 25px !important;
-        box-shadow: 0 20px 50px rgba(64, 224, 255, 0.15);
+        box-shadow: 0 20px 50px rgba(6, 182, 212, 0.3);
         overflow: hidden;
         position: relative;
         backdrop-filter: blur(10px);
@@ -277,7 +347,7 @@ if ($usuario['id_rol'] == 10) {
         left: 0;
         right: 0;
         height: 5px;
-        background: linear-gradient(90deg, #40E0FF, #00D9FF, #40E0FF);
+        background: linear-gradient(90deg, transparent, var(--azul-neon), transparent);
         animation: shimmer 2s ease infinite;
     }
 
@@ -295,13 +365,13 @@ if ($usuario['id_rol'] == 10) {
     }
 
     #mytable thead {
-        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%) !important;
-        border-bottom: 3px solid #40E0FF !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+        border-bottom: 3px solid var(--azul-neon) !important;
         border-radius: 15px 15px 0 0 !important;
     }
 
     #mytable thead th {
-        color: #ffffff !important;
+        color: var(--blanco) !important;
         font-weight: 700 !important;
         border: none !important;
         padding: 20px 15px !important;
@@ -321,7 +391,7 @@ if ($usuario['id_rol'] == 10) {
         transform: translateX(-50%);
         width: 0;
         height: 3px;
-        background: #40E0FF;
+        background: var(--azul-neon);
         transition: width 0.4s ease;
     }
 
@@ -334,17 +404,17 @@ if ($usuario['id_rol'] == 10) {
         border-radius: 15px !important;
         overflow: hidden;
         margin-bottom: 10px !important;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(64, 224, 255, 0.1);
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(6, 182, 212, 0.2);
         position: relative;
     }
 
     #mytable tbody tr:hover {
-        background: rgba(64, 224, 255, 0.08) !important;
+        background: rgba(30, 58, 138, 0.8) !important;
         transform: translateY(-5px) scale(1.005);
-        box-shadow: 0 10px 30px rgba(64, 224, 255, 0.15),
-                    inset 0 0 20px rgba(64, 224, 255, 0.05);
-        border-color: rgba(64, 224, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                    inset 0 0 20px rgba(6, 182, 212, 0.2);
+        border-color: rgba(6, 182, 212, 0.4);
     }
 
     #mytable tbody tr::after {
@@ -354,7 +424,7 @@ if ($usuario['id_rol'] == 10) {
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(64, 224, 255, 0.08), transparent);
+        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
         transition: left 0.6s ease;
     }
 
@@ -363,22 +433,25 @@ if ($usuario['id_rol'] == 10) {
     }
 
     #mytable tbody td {
-        color: #e2e8f0 !important;
+        color: var(--blanco) !important;
         padding: 18px 15px !important;
         vertical-align: middle !important;
         border: none !important;
-        border-bottom: 1px solid rgba(64, 224, 255, 0.1) !important;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.2) !important;
         font-size: 14px !important;
         text-align: center !important;
     }
 
     /* Celdas con estado pendiente */
     .fondosan {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%) !important;
-        color: #ffffff !important;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%) !important;
+        color: var(--blanco) !important;
         position: relative;
-        border-left: 4px solid #f59e0b !important;
+        border-left: 4px solid var(--azul-neon) !important;
         border-right: 4px solid transparent !important;
+        border: 1px solid rgba(6, 182, 212, 0.3) !important;
+        border-radius: 8px !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .fondosan ul {
@@ -391,15 +464,18 @@ if ($usuario['id_rol'] == 10) {
     .fondosan ul li {
         position: relative;
         padding: 3px 0;
-        color: #ffffff !important;
+        color: var(--blanco) !important;
     }
 
     .fondosan ul li::before {
         content: '•';
-        color: #f59e0b;
+        color: var(--azul-neon);
         font-weight: bold;
+        font-size: 18px;
         position: absolute;
         left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .fondosan::before {
@@ -407,37 +483,45 @@ if ($usuario['id_rol'] == 10) {
         position: absolute;
         top: -10px;
         right: -10px;
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-neon) 100%);
         color: white;
         font-size: 10px;
         font-weight: 700;
         padding: 3px 8px;
         border-radius: 10px;
         transform: rotate(15deg);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
         z-index: 2;
+    }
+
+    /* Efecto hover para celdas fondosan */
+    #mytable tbody tr:hover .fondosan {
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(6, 182, 212, 0.3) 100%) !important;
+        color: var(--blanco) !important;
+        border-color: rgba(6, 182, 212, 0.6) !important;
+        box-shadow: inset 0 2px 8px rgba(6, 182, 212, 0.2);
     }
 
     /* Botones de acción */
     .btn-success {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        border: 2px solid #10b981 !important;
+        background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+        border: 2px solid var(--verde) !important;
         border-radius: 20px !important;
         padding: 10px 20px !important;
-        color: #ffffff !important;
+        color: var(--blanco) !important;
         font-weight: 600 !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
         position: relative;
         overflow: hidden;
         min-width: 120px;
     }
 
     .btn-success:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%) !important;
         transform: translateY(-3px) scale(1.08);
-        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-        border-color: #10b981 !important;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+        border-color: var(--verde) !important;
     }
 
     .btn-success:active {
@@ -448,18 +532,20 @@ if ($usuario['id_rol'] == 10) {
         margin-right: 8px;
         font-size: 16px;
         transition: transform 0.3s ease;
+        color: var(--verde);
     }
 
     .btn-success:hover i {
         transform: scale(1.3) rotate(5deg);
+        color: var(--blanco);
     }
 
     /* Footer */
     .main-footer {
-        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
-        border-top: 2px solid #40E0FF !important;
-        color: #ffffff !important;
-        box-shadow: 0 -4px 20px rgba(64, 224, 255, 0.2);
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+        border-top: 2px solid var(--azul-neon) !important;
+        color: var(--blanco) !important;
+        box-shadow: 0 -4px 20px rgba(6, 182, 212, 0.3);
         margin-top: 50px !important;
         padding: 30px 0 !important;
         border-radius: 20px 20px 0 0 !important;
@@ -471,18 +557,19 @@ if ($usuario['id_rol'] == 10) {
     }
 
     ::-webkit-scrollbar-track {
-        background: #0a0a0a;
+        background: var(--azul-oscuro);
         border-radius: 10px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
     }
 
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #40E0FF 0%, #0f3460 100%);
+        background: linear-gradient(180deg, var(--azul-claro) 0%, var(--azul-medio) 100%);
         border-radius: 10px;
-        border: 2px solid #0a0a0a;
+        border: 2px solid var(--azul-oscuro);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #00D9FF 0%, #40E0FF 100%);
+        background: linear-gradient(180deg, var(--azul-neon) 0%, var(--azul-cian) 100%);
     }
 
     /* Animaciones de entrada */
@@ -558,6 +645,19 @@ if ($usuario['id_rol'] == 10) {
             padding: 10px;
         }
         
+        .breadcrumb {
+            padding: 12px 15px !important;
+            margin: 5px 0 20px 0 !important;
+        }
+        
+        .breadcrumb .breadcrumb-item {
+            font-size: 1rem !important;
+        }
+        
+        .breadcrumb h4 {
+            font-size: 1.1rem !important;
+        }
+        
         .thead {
             padding: 20px 15px !important;
             font-size: 1.3rem !important;
@@ -582,6 +682,19 @@ if ($usuario['id_rol'] == 10) {
     }
 
     @media screen and (max-width: 576px) {
+        .breadcrumb {
+            padding: 10px 12px !important;
+            border-radius: 12px !important;
+        }
+        
+        .breadcrumb .breadcrumb-item {
+            font-size: 0.9rem !important;
+        }
+        
+        .breadcrumb h4 {
+            font-size: 0.95rem !important;
+        }
+        
         .thead {
             font-size: 1.1rem !important;
             padding: 15px 10px !important;
@@ -632,7 +745,7 @@ if ($usuario['id_rol'] == 10) {
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(45deg, transparent, rgba(6, 182, 212, 0.1), transparent);
         transform: rotate(45deg);
         transition: all 0.6s ease;
     }
@@ -648,23 +761,25 @@ if ($usuario['id_rol'] == 10) {
     }
 
     .estudio-item {
-        background: rgba(64, 224, 255, 0.1);
+        background: rgba(30, 41, 59, 0.7);
         border-radius: 10px;
         padding: 5px 10px;
         margin: 3px 0;
-        border-left: 3px solid #40E0FF;
+        border-left: 3px solid var(--azul-neon);
         transition: all 0.3s ease;
+        color: var(--blanco);
     }
 
     .estudio-item:hover {
-        background: rgba(64, 224, 255, 0.2);
+        background: rgba(30, 58, 138, 0.9);
         transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     /* Separador visual */
     .content-separator {
         height: 1px;
-        background: linear-gradient(90deg, transparent, #40E0FF, transparent);
+        background: linear-gradient(90deg, transparent, var(--azul-neon), transparent);
         margin: 30px 0;
         opacity: 0.5;
     }
@@ -675,43 +790,78 @@ if ($usuario['id_rol'] == 10) {
         padding: 40px;
         color: #94a3b8;
         font-size: 1.2rem;
-        background: rgba(22, 33, 62, 0.5);
+        background: rgba(15, 23, 42, 0.7);
         border-radius: 15px;
-        border: 2px dashed #40E0FF;
+        border: 2px dashed var(--azul-neon);
     }
 
     .no-data i {
         font-size: 48px;
-        color: #40E0FF;
+        color: var(--azul-neon);
         margin-bottom: 20px;
         display: block;
     }
+
+    /* Estilo para los iconos dentro de las celdas */
+    .fa {
+        transition: all 0.3s ease;
+    }
+
+    /* Mejor contraste para textos */
+    h4, strong, th, td {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Gradiente de fondo adicional para mayor profundidad */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 50% 0%, rgba(30, 58, 138, 0.05) 0%, transparent 50%),
+                   radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    /* Asegurar que todos los textos sean visibles */
+    .container-fluid, .content-wrapper, .content {
+        color: var(--blanco) !important;
+    }
+    
+    /* Override de estilos blancos de Bootstrap */
+    .bg-white {
+        background-color: var(--azul-oscuro) !important;
+        color: var(--blanco) !important;
+    }
+    
+    .text-dark {
+        color: var(--blanco) !important;
+    }
 </style>
+
+</head>
 
 <body>
 
 <div class="container-fluid">
 
     <?php
-    // CORRECCIÓN: Cambiar $usuario1 por $usuario
     if ($usuario['id_rol'] == 10) {
-
         ?>
         <a type="submit" class="btn btn-danger" href="../../template/menu_laboratorio.php">Regresar</a>
-
         <?php
     } else if ($usuario['id_rol'] == 5) {
-
         ?>
         <a type="submit" class="btn btn-danger" href="../../template/menu_gerencia.php">Regresar</a>
-
         <?php
-    }else
-
+    }
     ?>
     <br>
     <br>
-    <div class="thead" style="background-color: #2b2d7f ; color: white; font-size: 25px;">
+    <div class="thead">
         <tr><strong>
                 <center>ESTUDIOS DE LABORATORIO PENDIENTES</center>
             </strong>
@@ -724,8 +874,6 @@ if ($usuario['id_rol'] == 10) {
         <div class="content box">
             <!-- CONTENIDOO -->
 
-
-
             <div class="form-group">
                 <input type="text" class="form-control pull-right" style="width:25%" id="search"
                        placeholder="Buscar...">
@@ -733,13 +881,10 @@ if ($usuario['id_rol'] == 10) {
             <br>
 
             <div class="table-responsive">
-                <!--<table id="myTable" class="table table-striped table-hover">-->
-
                 <table class="table table-bordered table-striped" id="mytable">
 
-                    <thead class="thead" style="background-color: #2b2d7f; color:white;">
+                    <thead class="thead">
                     <tr>
-
                         <th>Habitación</th>
                         <th>Paciente</th>
                         <th>Médico tratante</th>
@@ -808,17 +953,17 @@ if ($usuario['id_rol'] == 10) {
                             }
 
                             echo '<tr>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($row['habitacion']) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($pac) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($prefijo . '. ' . $nom_tratante) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . date_format(date_create($row['fecha_ord']), 'd/m/Y H:i a') . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($row['solicitante_papell'] . ' ' . $row['solicitante_sapell']) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">';
+                                    . '<td class="fondosan">' . htmlspecialchars($row['habitacion']) . '</td>'
+                                    . '<td class="fondosan">' . htmlspecialchars($pac) . '</td>'
+                                    . '<td class="fondosan">' . htmlspecialchars($prefijo . '. ' . $nom_tratante) . '</td>'
+                                    . '<td class="fondosan">' . date_format(date_create($row['fecha_ord']), 'd/m/Y H:i a') . '</td>'
+                                    . '<td class="fondosan">' . htmlspecialchars($row['solicitante_papell'] . ' ' . $row['solicitante_sapell']) . '</td>'
+                                    . '<td class="fondosan">';
 
                             // Display sol_estudios as a plain bulleted list
                             $estudios = preg_split('/[,;]/', $row['sol_estudios'], -1, PREG_SPLIT_NO_EMPTY);
                             if (!empty($estudios)) {
-                                echo '<ul style="margin: 0; padding-left: 10px; color: white;">';
+                                echo '<ul>';
                                 foreach ($estudios as $estudio) {
                                     $estudio = trim($estudio);
                                     if ($estudio) {
@@ -831,11 +976,11 @@ if ($usuario['id_rol'] == 10) {
                             }
 
                             echo '</td>'
-                                    . '<td class="fondosan" style="color:white;"><center>'
+                                    . '<td class="fondosan"><center>'
                                     . '<a href="pdf_solicitud_estu.php?not_id=' . (int)$not_id . '&id_atencion=' . (int)$id_atencion . '" target="_blank">'
                                     . '<button type="button" class="btn btn-success"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>'
                                     . '</a></center></td>'
-                                    . '<td class="fondosan" style="color:white;"><center>'
+                                    . '<td class="fondosan"><center>'
                                     . '<a href="subir_resultado.php?not_id=' . (int)$not_id . '" title="Subir resultado" class="btn btn-success"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>'
                                     . '</center></td>'
                                     . '</tr>';
@@ -856,17 +1001,17 @@ if ($usuario['id_rol'] == 10) {
                             $stmt_rec->close();
 
                             echo '<tr>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($habitacion) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($pac) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">N/A</td>'
-                                    . '<td class="fondosan" style="color:white;">' . date_format(date_create($row['fecha_ord']), 'd/m/Y H:i a') . '</td>'
-                                    . '<td class="fondosan" style="color:white;">' . htmlspecialchars($row['solicitante_papell'] . ' ' . $row['solicitante_sapell']) . '</td>'
-                                    . '<td class="fondosan" style="color:white;">';
+                                    . '<td class="fondosan">' . htmlspecialchars($habitacion) . '</td>'
+                                    . '<td class="fondosan">' . htmlspecialchars($pac) . '</td>'
+                                    . '<td class="fondosan">N/A</td>'
+                                    . '<td class="fondosan">' . date_format(date_create($row['fecha_ord']), 'd/m/Y H:i a') . '</td>'
+                                    . '<td class="fondosan">' . htmlspecialchars($row['solicitante_papell'] . ' ' . $row['solicitante_sapell']) . '</td>'
+                                    . '<td class="fondosan">';
 
                             // Display sol_estudios as a plain bulleted list
                             $estudios = preg_split('/[,;]/', $row['sol_estudios'], -1, PREG_SPLIT_NO_EMPTY);
                             if (!empty($estudios)) {
-                                echo '<ul style="margin: 0; padding-left: 10px; color: white;">';
+                                echo '<ul>';
                                 foreach ($estudios as $estudio) {
                                     $estudio = trim($estudio);
                                     if ($estudio) {
@@ -878,13 +1023,12 @@ if ($usuario['id_rol'] == 10) {
                                 echo htmlspecialchars($row['sol_estudios']);
                             }
 
-                            // CORRECCIÓN: Eliminar los tags PHP dentro del string HTML
                             echo '</td>'
-                                    . '<td class="fondosan" style="color:white;"><center>'
+                                    . '<td class="fondosan"><center>'
                                     . '<a href="pdf_solicitud_estu.php?not_id=' . (int)$not_id . '&id_atencion=' . (int)$id_atencion . '" target="_blank">'
                                     . '<button type="button" class="btn btn-success"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>'
                                     . '</a></center></td>'
-                                    . '<td class="fondosan" style="color:white;"><center>'
+                                    . '<td class="fondosan"><center>'
                                     . '<a href="subir_resultado.php?not_id=' . (int)$not_id . '" title="Subir resultado" class="btn btn-success"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>'
                                     . '</center></td>'
                                     . '</tr>';
@@ -897,7 +1041,6 @@ if ($usuario['id_rol'] == 10) {
                 </table>
             </div>
 
-
         </div>
     </section><!-- /.content -->
 </section>
@@ -908,7 +1051,6 @@ if ($usuario['id_rol'] == 10) {
     include("../../template/footer.php");
     ?>
 </footer>
-
 
 <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
 <!-- FastClick -->

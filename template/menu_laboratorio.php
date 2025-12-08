@@ -348,16 +348,16 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
 
     /* Sección de alertas y encabezado */
     .thead {
-        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
-        border: 2px solid #40E0FF !important;
+        background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%) !important;
+        border: 2px solid #1e3a8a !important;
         border-radius: 20px !important;
         padding: 25px 30px !important;
-        color: #ffffff !important;
+        color: #e2e8f0 !important;
         font-size: 1.4rem !important;
         font-weight: 600 !important;
         text-align: center !important;
         margin-bottom: 30px !important;
-        box-shadow: 0 10px 30px rgba(64, 224, 255, 0.2);
+        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3);
         position: relative;
         overflow: hidden;
     }
@@ -435,12 +435,12 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
     }
 
     #mytable thead {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
-        border-bottom: 2px solid #40E0FF !important;
+        background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%) !important;
+        border-bottom: 2px solid #1e3a8a !important;
     }
 
     #mytable thead th {
-        color: #ffffff !important;
+        color: #e2e8f0 !important;
         font-weight: 600 !important;
         border: none !important;
         padding: 15px 12px !important;
@@ -459,7 +459,7 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
         transform: translateX(-50%);
         width: 0;
         height: 2px;
-        background: #40E0FF;
+        background: #3b82f6;
         transition: width 0.3s ease;
     }
 
@@ -486,11 +486,13 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
 
     /* Celdas especiales */
     .fondosan {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%) !important;
-        color: #ffffff !important;
-        border-left: 3px solid #f59e0b !important;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%) !important;
+        color: #e2e8f0 !important;
+        border-left: 3px solid #3b82f6 !important;
         position: relative;
         overflow: hidden;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border-radius: 8px !important;
     }
 
     .fondosan::before {
@@ -500,7 +502,7 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
         animation: warning-shimmer 2s infinite;
     }
 
@@ -773,6 +775,12 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
     .sidebar-toggle:hover {
         background: rgba(64, 224, 255, 0.1) !important;
     }
+    
+    /* Color adicional para hover en filas */
+    #mytable tbody tr:hover .fondosan {
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(59, 130, 246, 0.8) 100%) !important;
+        color: #ffffff !important;
+    }
 </style>
 </head>
 
@@ -971,7 +979,7 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
                 <div class="content box">
                     <!-- CONTENIDOO -->
 
-                    <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 25px;">
+                    <div class="thead" style="background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%); border: 2px solid #1e3a8a; color: #e2e8f0; font-size: 25px; box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3);">
                         <tr><strong>
                                 <center>ESTUDIOS DE LABORATORIO PENDIENTES </center>
                             </strong>
@@ -988,7 +996,7 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
 
                         <table class="table table-bordered table-striped" id="mytable">
 
-                            <thead class="thead" style="background-color: #2b2d7f; color:white;">
+                            <thead class="thead" style="background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%); border: 2px solid #1e3a8a; color: #e2e8f0; box-shadow: 0 5px 15px rgba(30, 58, 138, 0.2);">
                             <tr>
                                 <th>Habitación</th>
                                 <th>Paciente</th>
@@ -1030,19 +1038,19 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
                                         $cedula = $row_reg_usrt['cedp'];
                                     }
                                     echo '<tr>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $row['habitacion'] . '</td>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $pac . '</td>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $prefijo . '. ' . $nom_tratante . '   </td>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $row['fecha_ord'] . '</td>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $row['papell'] . ' ' . $row['sapell'] . ' ' . $row['nombre'] . '</td>'
-                                            . '<td class="fondosan" style="background-color: #FF0000; color: white;">' . $row['sol_estudios'].'/ '. $row['det_labo'] . '</td>';
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $row['habitacion'] . '</td>'
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $pac . '</td>'
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $prefijo . '. ' . $nom_tratante . '   </td>'
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $row['fecha_ord'] . '</td>'
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $row['papell'] . ' ' . $row['sapell'] . ' ' . $row['nombre'] . '</td>'
+                                            . '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;">' . $row['sol_estudios'].'/ '. $row['det_labo'] . '</td>';
 
-                                    echo '<td class="fondosan" style="background-color: #FF0000; color: white;"
+                                    echo '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;"
                                 <center><a href="../sauxiliares/Laboratorio/pdf_solicitud_estu.php?id_atencion='.$row['id_atencion'].'&notid='.$row['not_id'].'&medico='.$row['papell'] . ' ' . $row['sapell'] . ' ' . $row['nombre'].'&paciente='.$pac.'&tipo='.$row['sol_estudios'].'" target="_blank" ><button type="button" class="btn btn-success"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button></td></center>'
                                             . '</td>'
                                     ;
 
-                                    echo '<td class="fondosan" style="background-color: #FF0000; color: white;"><center>'
+                                    echo '<td class="fondosan" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%); color: #e2e8f0; border-left: 3px solid #3b82f6 !important;"><center>'
                                             . ' <a href="../sauxiliares/Laboratorio/subir_resultado.php?not_id=' . $row['not_id'] . '" title="Editar datos" class="btn btn-success "><span class="fa fa-cloud-upload" aria-hidden="true"></span></a>';
                                     echo '</center></td></tr>';
                                     $no++;

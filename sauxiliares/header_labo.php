@@ -91,8 +91,201 @@ if (isset($usuario1['id_usua'])) {
     <!-- ChartJS 1.0.1 -->
     <script src="../../template/plugins/chartjs/Chart.min.js" type="text/javascript"></script>
 
-
+    <!-- ESTILOS PARA FONDO OSCURO CON COLORES DE LA IMAGEN -->
     <style>
+        /* === PALETA DE COLORES DE LA IMAGEN === */
+        :root {
+            --azul-oscuro: #0f172a;
+            --azul-medio: #1e293b;
+            --azul-claro: #334155;
+            --azul-neon: #06b6d4;
+            --azul-cian: #22d3ee;
+            --gris-oscuro: #1e1e2e;
+            --gris-medio: #2d2d44;
+            --blanco: #f1f5f9;
+            --verde: #10b981;
+            --rojo: #ef4444;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        /* === OVERRIDE PARA FONDO OSCURO === */
+        body.hold-transition.skin-blue.sidebar-mini,
+        body.hold-transition.skin-blue,
+        .skin-blue .wrapper,
+        .skin-blue .main-header .navbar,
+        .skin-blue .main-header .logo,
+        .skin-blue .main-sidebar,
+        .skin-blue .content-wrapper,
+        .skin-blue .main-footer {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+            color: var(--blanco) !important;
+        }
+        
+        /* Efecto de partículas en el fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(6, 182, 212, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Header principal - COLORES DE LA IMAGEN */
+        .main-header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+            border-bottom: 2px solid var(--azul-neon) !important;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.2);
+        }
+        
+        .main-header .logo {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            border-right: 2px solid var(--azul-neon) !important;
+            color: var(--azul-neon) !important;
+        }
+        
+        .main-header .navbar {
+            background: transparent !important;
+        }
+        
+        /* Sidebar - COLORES DE LA IMAGEN */
+        .main-sidebar {
+            background: linear-gradient(180deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+            border-right: 2px solid var(--azul-neon) !important;
+            box-shadow: 4px 0 20px rgba(6, 182, 212, 0.15);
+        }
+        
+        .sidebar-menu > li > a {
+            color: var(--blanco) !important;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 14px !important;
+            padding: 12px 15px !important;
+        }
+        
+        .sidebar-menu > li > a:hover,
+        .sidebar-menu > li.active > a {
+            background: rgba(6, 182, 212, 0.1) !important;
+            border-left: 3px solid var(--azul-neon) !important;
+            color: var(--azul-neon) !important;
+        }
+        
+        .user-panel {
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        
+        .user-panel .info {
+            color: var(--blanco) !important;
+        }
+        
+        /* Content wrapper */
+        .content-wrapper {
+            background: transparent !important;
+            min-height: 100vh;
+        }
+        
+        /* Breadcrumb - COLORES DE LA IMAGEN */
+        .content-wrapper .breadcrumb {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            border: 2px solid var(--azul-neon) !important;
+            border-radius: 15px !important;
+            padding: 20px 30px !important;
+            margin: 20px 15px 40px 15px !important;
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-wrapper .breadcrumb::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .content-wrapper .breadcrumb .breadcrumb-item,
+        .content-wrapper .breadcrumb .breadcrumb-item.active {
+            color: var(--blanco) !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        
+        .content-wrapper .breadcrumb .breadcrumb-item.active {
+            color: var(--azul-neon) !important;
+        }
+        
+        .content-wrapper .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--azul-cian) !important;
+            content: ">";
+        }
+        
+        .content-wrapper .breadcrumb h4 {
+            color: var(--blanco) !important;
+            margin: 0;
+            padding: 0;
+            font-weight: 700 !important;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navbar dropdown */
+        .dropdown-menu {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
+            border: 2px solid var(--azul-neon) !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+        
+        .dropdown-menu > li > a {
+            color: var(--blanco) !important;
+        }
+        
+        .dropdown-menu > li > a:hover {
+            background: rgba(6, 182, 212, 0.1) !important;
+            color: var(--azul-neon) !important;
+        }
+        
+        /* User panel en navbar */
+        .user-image {
+            border: 2px solid var(--azul-neon) !important;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+        
+        .user-header {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            border-bottom: 2px solid var(--azul-neon) !important;
+        }
+        
+        .user-footer {
+            background: rgba(30, 41, 59, 0.5) !important;
+        }
+        
+        /* === ESTILOS ORIGINALES MODIFICADOS === */
         .dropdwn {
             float: left;
             overflow: hidden;
@@ -103,7 +296,7 @@ if (isset($usuario1['id_usua'])) {
             font-size: 16px;
             border: none;
             outline: none;
-            color: white;
+            color: var(--blanco) !important;
             padding: 14px 16px;
             background-color: inherit;
             font-family: inherit;
@@ -113,21 +306,22 @@ if (isset($usuario1['id_usua'])) {
         .navbar a:hover,
         .dropdwn:hover .dropbtn,
         .dropbtn:focus {
-            background-color: #367fa9;
+            background-color: rgba(6, 182, 212, 0.3) !important;
         }
 
         .dropdwn-content {
             display: none;
             position: absolute;
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--gris-oscuro) 100%) !important;
             min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
             z-index: 1;
+            border: 1px solid var(--azul-neon);
         }
 
         .dropdwn-content a {
             float: none;
-            color: black;
+            color: var(--blanco) !important;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
@@ -135,7 +329,7 @@ if (isset($usuario1['id_usua'])) {
         }
 
         .dropdwn-content a:hover {
-            background-color: #ddd;
+            background-color: rgba(6, 182, 212, 0.2) !important;
         }
 
         .show {
@@ -152,40 +346,225 @@ if (isset($usuario1['id_usua'])) {
             display: flex;
             overflow-y: scroll;
             column-gap: 0.5em;
-            column-rule: 1px solid white;
+            column-rule: 1px solid var(--azul-neon);
             column-width: 140px;
             column-count: 7;
         }
 
         .status {
             width: 25%;
-            background-color: #ecf0f5;
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
             position: relative;
             padding: 60px 1rem 0.5rem;
             height: 100%;
-
+            border: 1px solid var(--azul-neon);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1);
         }
 
         .status h4 {
             position: absolute;
             top: 0;
             left: 0;
-            background-color: #0b3e6f;
-            color: white;
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            color: var(--azul-neon) !important;
             margin: 0;
             width: 100%;
-
             padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--azul-neon);
+            border-radius: 15px 15px 0 0;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
         }
 
         td.fondosan {
-            background-color: red !important;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%) !important;
+            color: var(--blanco) !important;
+            border-left: 3px solid var(--azul-neon) !important;
+            border: 1px solid rgba(6, 182, 212, 0.3) !important;
+            border-radius: 8px !important;
+        }
+        
+        /* Textos en sidebar */
+        .sidebar-menu font {
+            color: var(--blanco) !important;
+        }
+        
+        .sidebar-menu font:hover {
+            color: var(--azul-neon) !important;
+        }
+        
+        /* Online status */
+        .fa-circle.text-success {
+            color: var(--verde) !important;
+        }
+        
+        /* Asegurar que todos los textos sean visibles */
+        .main-header a,
+        .main-header span,
+        .navbar a,
+        .navbar span,
+        .sidebar a,
+        .sidebar span,
+        .breadcrumb a,
+        .breadcrumb span {
+            color: var(--blanco) !important;
+        }
+        
+        .main-header a:hover,
+        .navbar a:hover,
+        .sidebar a:hover {
+            color: var(--azul-neon) !important;
+        }
+        
+        /* Botón cerrar sesión */
+        .btn-default.btn-flat {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            color: var(--blanco) !important;
+            border: 1px solid var(--azul-neon) !important;
+            border-radius: 25px !important;
+            padding: 8px 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+        }
+        
+        .btn-default.btn-flat:hover {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%) !important;
+            border-color: var(--azul-cian) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+        }
+        
+        /* Botones mejorados */
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde) 0%, #059669 100%) !important;
+            color: var(--blanco) !important;
+            border-color: var(--verde) !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            border-radius: 25px !important;
+            padding: 8px 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            border-color: var(--verde) !important;
+        }
+        
+        /* Íconos en botones */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover i {
+            transform: scale(1.2);
+        }
+        
+        /* Estilos para el toggle del sidebar */
+        .sidebar-toggle {
+            color: var(--azul-neon) !important;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(6, 182, 212, 0.1) !important;
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .content-wrapper .breadcrumb {
+                padding: 15px 20px !important;
+                margin: 15px 10px 30px 10px !important;
+            }
+            
+            .content-wrapper .breadcrumb h4 {
+                font-size: 1.1rem !important;
+                letter-spacing: 1px;
+            }
+            
+            .content-wrapper .breadcrumb .breadcrumb-item {
+                font-size: 1rem !important;
+            }
+            
+            .btn-default.btn-flat, .btn-success {
+                padding: 6px 15px !important;
+                font-size: 12px !important;
+            }
+        }
+        
+        @media screen and (max-width: 576px) {
+            .content-wrapper .breadcrumb h4 {
+                font-size: 1rem !important;
+            }
+            
+            .content-wrapper .breadcrumb .breadcrumb-item {
+                font-size: 0.9rem !important;
+            }
+            
+            .btn-default.btn-flat, .btn-success {
+                padding: 6px 12px !important;
+                font-size: 11px !important;
+            }
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--azul-oscuro);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--azul-neon) 0%, var(--azul-medio) 100%);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--azul-cian) 0%, var(--azul-neon) 100%);
+        }
+        
+        /* Estilos específicos para el breadcrumb que venía en blanco */
+        nav[aria-label="breadcrumb"] {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .breadcrumb {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%) !important;
+            border: 2px solid var(--azul-neon) !important;
+            color: var(--blanco) !important;
+        }
+        
+        .breadcrumb-item.active {
+            color: var(--azul-neon) !important;
+        }
+        
+        /* Override de Bootstrap que causa el color blanco */
+        .bg-light {
+            background-color: var(--azul-oscuro) !important;
+        }
+        
+        .bg-white {
+            background-color: var(--azul-oscuro) !important;
+        }
+        
+        .text-dark {
+            color: var(--blanco) !important;
         }
 
+        
     </style>
 </head>
 
-<body class=" hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
     <header class="main-header">
@@ -226,7 +605,7 @@ while($f = mysqli_fetch_array($resultado)){
             <center><span class="fondo"><img src="../../configuracion/admin/img/<?php echo $f['img_base']?>" alt="imgsistema" class="img-fluid" width="112"></span></center>
           <?php
 }
-?>>
+?>
             </a>
             <?php
         } else if ($usuario1['id_rol'] == 12) {
