@@ -1,6 +1,7 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 $usuario = $_SESSION['pac'];
@@ -80,6 +81,9 @@ $idexp = @$_GET['idexp'];
      #contenido4{
         display: none;
     }
+     td{
+         color: white;
+     }
 </style>
   
 </head>
@@ -87,9 +91,6 @@ $idexp = @$_GET['idexp'];
 <body>
  
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
@@ -397,7 +398,6 @@ $d="";
 
                <?php
 
-include "../../conexionbd.php";
 $id_atencion=$_SESSION['pac'];
 $fecha = @$_GET['fecha'];
 
@@ -405,12 +405,6 @@ $resultado = $conexion->query("SELECT * from signos_vitales WHERE id_atencion=$i
 $usuario = $_SESSION['login'];
 
 //$resultadost = $conexion->query("SELECT * from dat_hclinica WHERE Id_exp=$id_atencion") or die($conexion->error);
-
-        
-      
-
-
-
 ?>
             <div class="container">
             <div class="table-responsive">

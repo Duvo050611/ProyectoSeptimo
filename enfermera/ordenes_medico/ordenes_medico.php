@@ -1,6 +1,7 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 $usuario = $_SESSION['login'];
@@ -83,9 +84,6 @@ $usuario = $_SESSION['login'];
 
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
@@ -343,8 +341,6 @@ $d="";
         ?>
       
       <?php
-
-include "../../conexionbd.php";
 $id_ord=$_GET['id_ord'];
 $resultado1 = $conexion->query("SELECT * from dat_ordenes_med  WHERE id_ord_med=$id_ord ") or die($conexion->error);
 

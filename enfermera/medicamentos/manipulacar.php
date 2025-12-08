@@ -1,6 +1,6 @@
 <?php
 include '../../conexionbd.php';
-
+$conexion = ConexionBD::getInstancia()->getConexion();
 if (@$_GET['q'] == 'del_car') {
   $cart_stock_id = $_GET['cart_stock_id'];
   $cart_qty = $_GET['cart_qty'];

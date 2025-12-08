@@ -2,7 +2,8 @@
 $lifetime = 86400;
 session_set_cookie_params($lifetime);
 session_start();
-include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../../conn_almacen/Connection.php";
 
 include "../header_enfermera.php";
@@ -2785,10 +2786,7 @@ $usuario = $_SESSION['login'];
   <section class="content container-fluid">
 
     <?php
-
-    include "../../conexionbd.php";
-
-    if (isset($_SESSION['pac'])) {
+     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
       $sql_pac = "SELECT p.sapell, p.papell, p.nom_pac, p.dir, p.id_edo, p.id_mun, p.Id_exp, p.tel, p.fecnac,p.tip_san, di.fecha, di.area, di.alta_med, p.sexo, di.alergias, p.folio FROM paciente p, dat_ingreso di WHERE p.Id_exp=di.Id_exp and di.id_atencion =$id_atencion";
@@ -11472,7 +11470,6 @@ function leerTexto(txtdtbds){
           <tbody>
 
             <?php
-            include "../../conexionbd.php";
             $id_atencion = $_SESSION['pac'];
             $resultado = $conexion->query("SELECT * from sol_enf m , reg_usuarios r WHERE m.id_atencion=$id_atencion and m.id_usua=r.id_usua and tipo='QUIROFANO' ORDER BY id_sol_enf DESC") or die($conexion->error);
             $usuario = $_SESSION['login'];

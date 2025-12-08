@@ -1,6 +1,7 @@
     <?php
     session_start();
     include "../../conexionbd.php";
+    $conexion = ConexionBD::getInstancia()->getConexion();
     include "../header_enfermera.php";
    
     ?>

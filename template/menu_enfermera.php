@@ -658,15 +658,15 @@ inner join triage on dat_ingreso.id_atencion=triage.id_atencion where id_triage=
                             <i class="fa fa-stethoscope"></i> <span>INDICACIONES DEL MÉDICO</span>
                         </a>
                     </li>
-                    <li class=" treeview">
-                        <a href="#">
-                            <i class="fa fa-folder"></i> <span>REGISTRO CLÍNICO</span><i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="../enfermera/registro_procedimientos/reg_pro.php"><i class="fa-solid fa-file-medical"></i> <span>REGISTRO DE <br>PROCEDIMIENTOS</span></a></li>
-                            <li><a href="../enfermera/registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>
-                        </ul>
-                    </li>
+<!--                    <li class=" treeview">-->
+<!--                        <a href="#">-->
+<!--                            <i class="fa fa-folder"></i> <span>REGISTRO CLÍNICO</span><i class="fa fa-angle-left pull-right"></i>-->
+<!--                        </a>-->
+<!--                        <ul class="treeview-menu">-->
+<!--                            <li><a href="../enfermera/registro_procedimientos/reg_pro.php"><i class="fa-solid fa-file-medical"></i> <span>REGISTRO DE <br>PROCEDIMIENTOS</span></a></li>-->
+<!--                            <li><a href="../enfermera/registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
 
                     <li class="treeview">
                         <a href="select_pac_enf.php">

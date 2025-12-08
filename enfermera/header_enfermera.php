@@ -475,22 +475,22 @@ while($f = mysqli_fetch_array($resultado)){
                             <i class="fa fa-stethoscope"></i> <span><font size ="2"> INDICACIONES DEL MÉDICO </font></span>
 
                         </a>
-
-                    </li>
-                    <li class=" treeview">
-            <a href="#">
-              <i class="fa fa-folder"></i><font size ="2"><span>REGISTRO CLÍNICO</span></font><i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-                            <li><a href="../registro_procedimientos/reg_pro.php"><i class="fa-solid fa-notes-medical"></i> <span>REGISTRO DE  <br>PROCEDIMIENTOS</span></a></li>
-              <!-- <li><a href="../registro_quirurgico/enf_cirugia_segura.php"><i class="fa-solid fa-file-waveform"></i> <span>HOJA PROGRAMACIÓN<br> QUIRÚRGICA</span></a></li> -->
-              <li><a href="../registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>
-              
-              <li><a href="../registro_clinico_neonatal/nota_bebes.php"><i class="fa fa-folder"></i> <span>PEDIÁTRICO/NEONATAL </span></a></li>
-              <li><a href="../transfucion_de_sangre/nota_trasfusion_new.php"><i class="fa fa-folder"></i> <span>TRANSFUSIONES<br>SANGUÍNEAS</span></a></li>
-              
-            </ul>
-        </li>                         
+<!---->
+<!--                    </li>-->
+<!--                    <li class=" treeview">-->
+<!--            <a href="#">-->
+<!--              <i class="fa fa-folder"></i><font size ="2"><span>REGISTRO CLÍNICO</span></font><i class="fa fa-angle-left pull-right"></i>-->
+<!--            </a>-->
+<!--            <ul class="treeview-menu">-->
+<!--                            <li><a href="../registro_procedimientos/reg_pro.php"><i class="fa-solid fa-notes-medical"></i> <span>REGISTRO DE  <br>PROCEDIMIENTOS</span></a></li>-->
+<!--               <li><a href="../registro_quirurgico/enf_cirugia_segura.php"><i class="fa-solid fa-file-waveform"></i> <span>HOJA PROGRAMACIÓN<br> QUIRÚRGICA</span></a></li> -->
+<!--              <li><a href="../registro_quirurgico/vista_enf_quirurgico.php"><i class="fa fa-folder"></i> <span>QUIRÓFANO</span></a></li>-->
+<!--              -->
+<!--              <li><a href="../registro_clinico_neonatal/nota_bebes.php"><i class="fa fa-folder"></i> <span>PEDIÁTRICO/NEONATAL </span></a></li>-->
+<!--              <li><a href="../transfucion_de_sangre/nota_trasfusion_new.php"><i class="fa fa-folder"></i> <span>TRANSFUSIONES<br>SANGUÍNEAS</span></a></li>-->
+<!--              -->
+<!--            </ul>-->
+<!--        </li>                         -->
                    <li class="treeview">
                 <a href="../signos_vitales/signos.php">
                   <i class="fa fa-heartbeat" aria-hidden="true"></i> <span><font size ="2">SIGNOS VITALES</font></span>

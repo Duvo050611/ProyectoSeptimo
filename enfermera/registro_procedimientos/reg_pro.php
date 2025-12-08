@@ -2,6 +2,7 @@
 ob_start(); // Start output buffering
 session_start();
 require_once '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include '../header_enfermera.php';
 
 $usuario = $_SESSION['login'];
@@ -322,24 +323,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paciente']) && !isset
     $_SESSION['paciente_seleccionado'] = $_POST['paciente'];
 }
 
-// Obtener los insumos
-$queryInsumos = "
-    SELECT DISTINCT
-        ea.item_id,
-        CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
-    FROM existencias_almacenq ea
-    JOIN item_almacen ia ON ea.item_id = ia.item_id
-    ORDER BY ia.item_name
-";
-$resultInsumos = $conexion->query($queryInsumos);
-
-$insumosOptions = '';
-if ($resultInsumos && $resultInsumos->num_rows > 0) {
-    while ($insumo = $resultInsumos->fetch_assoc()) {
-        $selected = (isset($_POST['insumo']) && $_POST['insumo'] == $insumo['item_id']) ? 'selected' : '';
-        $insumosOptions .= "<option value='{$insumo['item_id']}' $selected>{$insumo['item_name']}</option>";
-    }
-}
+//// Obtener los insumos
+//$queryInsumos = "
+//    SELECT DISTINCT
+//        ea.item_id,
+//        CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
+//    FROM existencias_almacenq ea
+//    JOIN item_almacen ia ON ea.item_id = ia.item_id
+//    ORDER BY ia.item_name
+//";
+//$resultInsumos = $conexion->query($queryInsumos);
+//
+//$insumosOptions = '';
+//if ($resultInsumos && $resultInsumos->num_rows > 0) {
+//    while ($insumo = $resultInsumos->fetch_assoc()) {
+//        $selected = (isset($_POST['insumo']) && $_POST['insumo'] == $insumo['item_id']) ? 'selected' : '';
+//        $insumosOptions .= "<option value='{$insumo['item_id']}' $selected>{$insumo['item_name']}</option>";
+//    }
+//}
 
 // Obtener los lotes y la suma total de existencias para el insumo seleccionado
 $lotesOptions = '';
@@ -389,23 +390,23 @@ if (isset($_POST['insumo']) && !isset($_POST['ajax'])) {
     $stmt->close();
 }
 
-// Obtener los medicamentos
-$queryMedicamentos = "
-    SELECT DISTINCT
-        ia.item_id,
-        CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
-    FROM item_almacen ia
-    ORDER BY ia.item_name
-";
-$resultMedicamentos = $conexion->query($queryMedicamentos);
-
-$medicamentosOptions = '';
-if ($resultMedicamentos && $resultMedicamentos->num_rows > 0) {
-    while ($medicamento = $resultMedicamentos->fetch_assoc()) {
-        $selected = (isset($_POST['medicamento']) && $_POST['medicamento'] == $medicamento['item_id']) ? 'selected' : '';
-        $medicamentosOptions .= "<option value='{$medicamento['item_id']}' $selected>{$medicamento['item_name']}</option>";
-    }
-}
+//// Obtener los medicamentos
+//$queryMedicamentos = "
+//    SELECT DISTINCT
+//        ia.item_id,
+//        CONCAT(ia.item_name, ', ', ia.item_grams) AS item_name
+//    FROM item_almacen ia
+//    ORDER BY ia.item_name
+//";
+//$resultMedicamentos = $conexion->query($queryMedicamentos);
+//
+//$medicamentosOptions = '';
+//if ($resultMedicamentos && $resultMedicamentos->num_rows > 0) {
+//    while ($medicamento = $resultMedicamentos->fetch_assoc()) {
+//        $selected = (isset($_POST['medicamento']) && $_POST['medicamento'] == $medicamento['item_id']) ? 'selected' : '';
+//        $medicamentosOptions .= "<option value='{$medicamento['item_id']}' $selected>{$medicamento['item_name']}</option>";
+//    }
+//}
 
 // Fetch items surtidos from dat_ctapac (insumos)
 $itemsSurtidos = '';
@@ -534,30 +535,35 @@ ob_end_flush();
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoja de Programación Quirúrgica</title>
-    <link rel="stylesheet" type="text/css" href="css/select2.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="stylesheet" href="notificaciones-mejoradas.css" />
-    <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" rel="stylesheet"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="js/select2.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldLv/Pr4nhuBviF5jGqQK/5i2Q5iZ64dxBl+zOZ" crossorigin="anonymous">
-    </script>
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
-    </script>
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/e547be4475.js" crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script src="../../js/jquery-3.3.1.min.js"></script>
     <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/jquery.magnific-popup.min.js"></script>
     <script src="../../js/aos.js"></script>
     <script src="../../js/main.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <style>
         .thead {
             background-color: #2b2d7f;
@@ -3293,7 +3299,6 @@ ob_end_flush();
                         <select class="custom-select form-control" id="serviceSelect">
                             <option value="">Seleccione un equipo</option>
                             <?php
-                            include '../../conexionbd.php';
                             $sql = "SELECT id_serv, serv_desc, serv_costo FROM cat_servicios WHERE tip_insumo = 'CEYE' AND serv_activo = 'SI'";
                             $result = $conexion->query($sql);
                             if ($result === false) {
@@ -5890,7 +5895,9 @@ ob_end_flush();
         console.log('   • Botón azul: Detener dictado manualmente');
         console.log('   • Botón verde: Reproducir texto escrito');
     </script>
-
+    <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
+    <script src="../../template/dist/js/app.min.js" type="text/javascript"></script>
 </body>
 
 </html>

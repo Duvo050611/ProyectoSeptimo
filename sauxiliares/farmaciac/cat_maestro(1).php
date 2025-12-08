@@ -25,8 +25,8 @@ $offset = ($current_page - 1) * $items_per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Consulta para obtener el total de registros con filtro de búsqueda (si aplica)
-$total_items_query = "SELECT COUNT(*) as total FROM item_almacen WHERE 
-    item_code LIKE '%$search%' OR 
+$total_items_query = "SELECT COUNT(*) as total FROM item_almacen WHERE
+    item_code LIKE '%$search%' OR
     item_name LIKE '%$search%'";
 $total_items_result = $conexion->query($total_items_query);
 $total_items_row = $total_items_result->fetch_assoc();
@@ -36,7 +36,7 @@ $total_items = $total_items_row['total'];
 $total_pages = ceil($total_items / $items_per_page);
 
 // Consulta para obtener los datos de la página actual con filtro de búsqueda
-$paginated_query = "SELECT i.*, t.item_type_desc FROM item_almacen i 
+$paginated_query = "SELECT i.*, t.item_type_desc FROM item_almacen i
     LEFT JOIN item_type t ON t.item_type_id = i.item_type_id
     WHERE item_code LIKE '%$search%' OR item_name LIKE '%$search%'
     LIMIT $items_per_page OFFSET $offset";
