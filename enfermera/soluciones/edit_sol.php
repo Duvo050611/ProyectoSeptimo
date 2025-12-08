@@ -4,7 +4,8 @@ session_start();
 if (!isset($_SESSION['login'])) {
   header("Location: ../index.php");
 }
-
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 ?>
 
@@ -34,17 +35,17 @@ include "../header_enfermera.php";
 </head>
 
 <body>
-  
+
     <div class="container box">
       <div class="container">
 
         <div class="row">
-         
+
           <div>
-            <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
-                <tr><strong><center>EDITAR SOLUCIONES</center></strong>
-            </div>
-            <br>
+              <div class="thead" style="background-color:#2b2d7f;color:white;font-size:20px;">
+                  <strong><center>EDITAR SOLUCIONES</center></strong>
+              </div>
+              <br>
             <?php
             $id = $_GET['id_sol_enf'];
 
@@ -60,45 +61,45 @@ include "../header_enfermera.php";
      <div class="form-group">
                   <label for="hori">Inicio:</label>
                   <input type="time" class="form-control" value="<?php echo $row_datos['hora_i']?>" id="hori" name="hora_i" required="">
-        
-         
+
+
                 </div>
     </div>
      <div class="col-sm-2">
      <div class="form-group">
                   <label for="pcv">Ml/hrs:</label>
                   <input type="text" class="form-control" value="<?php echo $row_datos['pvc']?>" id="pcv" name="pvc" required="">
-        
-         
+
+
                 </div>
     </div>
     <div class="col-sm-2">
      <div class="form-group">
                   <label for="hort">Termino:</label>
                   <input type="time" class="form-control" value="<?php echo $row_datos['hora_t']?>" id="hort" name="hora_t" required="">
-        
-         
+
+
                 </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
                   <label for="sol">Soluciones:</label>
-                  <input type="text" size="30" name="sol"  id="sol" class="form-control" 
+                  <input type="text" size="30" name="sol"  id="sol" class="form-control"
                   value="<?php echo $row_datos['sol']; ?>" required>
                 </div>
     </div>
      <div class="col-sm-2">
       <div class="form-group">
                   <label for="tcate">Tipo catéter:</label>
-                  <input type="text" size="30" name="tcate"  id="tcate" class="form-control" 
+                  <input type="text" size="30" name="tcate"  id="tcate" class="form-control"
                   value="<?php echo $row_datos['tcate']; ?>" required>
                 </div>
     </div>
-    
+
    <div class="col-sm-2">
       <div class="form-group">
                   <label for="vol">Volume total:</label>
-                  <input type="text" size="30" name="vol"  id="vol" class="form-control" 
+                  <input type="text" size="30" name="vol"  id="vol" class="form-control"
                   value="<?php echo $row_datos['vol']; ?>" required>
                 </div>
     </div>
@@ -111,7 +112,7 @@ include "../header_enfermera.php";
     <div class="col-sm-3">
       <div class="form-group">
                   <label for="fecha">Fecha reporte:</label>
-                  <input type="date" size="30" name="fecha" id="fecha" class="form-control" 
+                  <input type="date" size="30" name="fecha" id="fecha" class="form-control"
                   value="<?php echo $row_datos['sol_fecha']; ?>" required>
       </div>
     </div>
@@ -125,13 +126,13 @@ include "../header_enfermera.php";
                       <option value="QUIROFANO">QUIROFANO</option>
                       <option value="OBSERVACIÓN">OBSERVACIÓN</option>
                   </select>
-                  
+
       </div>
     </div>
   </div>
 </div>
                 <center><input type="submit" name="edit" class="btn btn-success btn-sm" value="Guardar">
-               
+
 
 <button type="button" class="btn btn-danger btn-sm" onclick="history.back()">Regresar...</button>
 
@@ -168,15 +169,10 @@ $fecha_actual = date("Y-m-d H:i");
       }
       ?>
     </div>
-  </section>
-  </div>
   <footer class="main-footer">
     <?php
     include("../../template/footer.php");
     ?>
   </footer>
-
-
 </body>
-
 </html>

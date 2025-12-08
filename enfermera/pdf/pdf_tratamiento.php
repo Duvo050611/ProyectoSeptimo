@@ -3,7 +3,8 @@
 use PDF as GlobalPDF;
 
 require '../../fpdf/fpdf.php';
-include '../../conexionbd.php';
+require_once '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 
 $id = @$_GET['id'];
 $id_exp = @$_GET['id_exp'];
@@ -36,10 +37,14 @@ $fecha_ing = $row_preop['fecha'] ?? '';
 $id_usua = $row_preop['id_usua'] ?? '';
 
 // Obtener datos del tratamiento genérico
-$sql_tratamiento = "SELECT dt.*, ru.nombre, ru.papell as papell_usuario, ru.sapell as sapell_usuario, ru.pre, ru.cedp, ru.cargp, ru.firma
-                    FROM dat_tratamientos_genericos dt 
-                    LEFT JOIN reg_usuarios ru ON dt.id_usua = ru.id_usua 
-                    WHERE dt.id = $id AND dt.id_atencion = $id_atencion LIMIT 1";
+$sql_tratamiento = "
+    SELECT dt.*, ru.nombre
+    FROM diagnostico_tratamiento dt
+    JOIN reg_usuarios ru ON dt.id_usua = ru.id_usua
+    WHERE dt.id_exp = '$id_exp'
+      AND dt.id_atencion = '$id_atencion'
+    LIMIT 1
+";
 $result_tratamiento = $conexion->query($sql_tratamiento);
 $row_tratamiento = $result_tratamiento->fetch_assoc();
 
@@ -96,7 +101,8 @@ class PDF extends FPDF
 {
     function Header()
     {
-        include '../../conexionbd.php';
+        require_once '../../conexionbd.php';
+        $conexion = ConexionBD::getInstancia()->getConexion();
         $resultado = $conexion->query("SELECT * from img_sistema ORDER BY id_simg DESC") or die($conexion->error);
         while ($f = mysqli_fetch_array($resultado)) {
             $this->Image("../../configuracion/admin/img2/" . $f['img_ipdf'], 7, 11, 40, 25);

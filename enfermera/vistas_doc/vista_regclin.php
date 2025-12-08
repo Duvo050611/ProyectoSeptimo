@@ -1,11 +1,16 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
+
+require_once "../../conexionbd.php";   // <- DEBE IR AQUÍ
+$conexion = ConexionBD::getInstancia()->getConexion();
+
 include "../header_enfermera.php";
+
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
-   $usuario = $_SESSION['login'];
-   $idusua=$usuario['id_usua'];
+$usuario = $_SESSION['login'];
+$idusua=$usuario['id_usua'];
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -18,14 +23,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
   <!--  Bootstrap  -->
   <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
-  <!---
-  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.min.css'>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
--->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
   <script>
@@ -77,8 +74,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
   <section class="content container-fluid">
 
     <?php
-
-    include "../../conexionbd.php";
 
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
@@ -414,10 +409,10 @@ $m=$row_mot['motivo_atn'];
                         <?php
                         if ($resultado->num_rows > 0) {
                             while($tratamiento = mysqli_fetch_array($resultado)) {
-                                $id = $tratamiento['id'];
+                                //$id = $tratamiento['id'];
                                 echo "<tr>";
                                 echo "<td>
-                                    <a href=\"../pdf/pdf_tratamiento.php?id=" . $id . "&id_exp=" . $id_exp . "&id_atencion=" . $id_atencion . "\" target=\"_blank\">
+                                    <a href=\"../pdf/pdf_tratamiento.php?id=" . "&id_exp=" . $id_exp . "&id_atencion=" . $id_atencion . "\" target=\"_blank\">
                                         <button type=\"button\" class=\"btn btn-danger\">
                                             <i class=\"fa fa-file-pdf-o\" aria-hidden=\"true\"></i>
                                         </button>
@@ -455,11 +450,6 @@ $m=$row_mot['motivo_atn'];
 </footer>
 </div>
 </div>
-<footer class="main-footer">
-    <?php
-    include("../../template/footer.php");
-    ?>
-</footer>
 
 <script src="../../template/plugins/jQuery/jQuery-2.1.3.min.js"></script>
 <!-- FastClick -->

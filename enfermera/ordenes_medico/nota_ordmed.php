@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include("../header_enfermera.php");
 
 ?>
@@ -50,9 +51,6 @@ include("../header_enfermera.php");
 <section class="content container-fluid">
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
@@ -291,7 +289,7 @@ $result_hab = $conexion->query($sql_hab);                                       
           $result_aseg = $conexion->query($sql_aseg);
                                                                                   
           while ($row_aseg = $result_aseg->fetch_assoc()) {
-            $tr = $row_aseg[tip_precio];
+           // $tr = $row_aseg[tip_precio];
           } ?></strong>
       </div>
     </div>
@@ -347,7 +345,6 @@ if (isset($atencion)) {
                         ?>
 <?php 
 
-include "../../conexionbd.php";
 $resultado5=$conexion->query("select * from signos_vitales WHERE id_atencion=" . $_SESSION ['pac'].".ORDER by id_sig DESC LIMIT 1") or die($conexion->error);
 
      while ($f5 = mysqli_fetch_array($resultado5)) {

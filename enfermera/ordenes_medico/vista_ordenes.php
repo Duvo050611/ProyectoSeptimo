@@ -1,6 +1,7 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
+include '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();
 include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 
@@ -72,6 +73,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 </style>
  <style>
+     td{
+         color: white;
+     }
     td.fondo {
       background-color: red !important;
     }
@@ -80,8 +84,9 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
     td.fondo2 {
       background-color: green !important;
     }
+
   </style>
-  
+
 </head>
 
 <body>
@@ -89,9 +94,6 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
 
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
@@ -132,17 +134,17 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
           }
 
 if($alta_med=='SI' && $alta_adm=='SI' && $activo=='NO' && $valida=='SI'){
-    
+
     $sql_est = "SELECT DATEDIFF('$fegreso', '$fingreso') as estancia FROM dat_ingreso where id_atencion = $id_atencion";
 
       $result_est = $conexion->query($sql_est);
 
       while ($row_est = $result_est->fetch_assoc()) {
           $estancia = $row_est['estancia'];
-       
+
       }
 }else{
-    
+
    $sql_now = "SELECT DATE_ADD(NOW(), INTERVAL 12 HOUR) as dat_now FROM dat_ingreso WHERE id_atencion = $id_atencion";
 
       $result_now = $conexion->query($sql_now);
@@ -157,7 +159,7 @@ if($alta_med=='SI' && $alta_adm=='SI' && $activo=='NO' && $valida=='SI'){
 
       while ($row_est = $result_est->fetch_assoc()) {
         $estancia = $row_est['estancia'];
-      } 
+      }
 }
 
 
@@ -193,14 +195,14 @@ if ($dias < 0)
     switch ($array_actual[1]) {
            case 1:     $dias_mes_anterior=31; break;
            case 2:     $dias_mes_anterior=31; break;
-           case 3:     
+           case 3:
                if (bisiesto($array_actual[0]))
                 {
                     $dias_mes_anterior=29; break;
                 } else {
                     $dias_mes_anterior=28; break;
                 }
-               
+
            case 4:     $dias_mes_anterior=31; break;
            case 5:     $dias_mes_anterior=30; break;
            case 6:     $dias_mes_anterior=31; break;
@@ -227,12 +229,12 @@ if ($meses < 0)
     ?>
 <div class="container ">
         <button type="button" class="btn btn-danger" onclick="history.back()">Regresar...</button>
-        <hr> 
+        <hr>
         <div class="thead" style="background-color: #2b2d7f; color: white; font-size: 20px;">
               <strong><tr><center>CONSULTAR INDICACIONES DEL MÉDICO</center></strong>
         </div>
-           
-         
+
+
  <font size="2">
          <div class="container">
   <div class="row">
@@ -261,7 +263,7 @@ if ($meses < 0)
     <div class="col-sm">
       Tipo de sangre: <strong><?php echo $pac_tip_sang ?></strong>
     </div>
-   
+
       <div class="col-sm">
       Habitación: <strong><?php $sql_hab = "SELECT num_cama from cat_camas where id_atencion =$id_atencion";
 $result_hab = $conexion->query($sql_hab);                                                                                    while ($row_hab = $result_hab->fetch_assoc()) {
@@ -288,29 +290,29 @@ $result_hab = $conexion->query($sql_hab);                                       
   </div>
   <div class="col-sm-3">
       Peso: <strong><?php $sql_vit = "SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
-      
+
       $result_vit = $conexion->query($sql_vit);                                                                                    while ($row_vit = $result_vit->fetch_assoc()) {
       $peso=$row_vit['peso'];
 
       } if (!isset($peso)){
         $peso=0;
-   
-      }   
+
+      }
       echo $peso;?></strong>
   </div>
-  
+
   <div class="col-sm">
       Talla: <strong><?php $sql_vitt =" SELECT * from dat_hclinica where Id_exp=$id_exp ORDER by id_hc DESC LIMIT 1";
-      $result_vitt = $conexion->query($sql_vitt); 
-      while ($row_vitt = $result_vitt->fetch_assoc()) 
+      $result_vitt = $conexion->query($sql_vitt);
+      while ($row_vitt = $result_vitt->fetch_assoc())
       {
         $talla=$row_vitt['talla'];
       }
       if(!isset($talla)){
         $talla=0;
       } echo $talla;?></strong>
- 
-  </div> 
+
+  </div>
   <div class="col-sm">
       Género: <strong><?php echo $pac_sexo ?></strong>
   </div>
@@ -319,11 +321,11 @@ $result_hab = $conexion->query($sql_hab);                                       
 
   <div class="container">
     <div class="row">
-   
+
       <div class="col-sm-3">
           Alergias: <strong><?php echo $alergias ?></strong>
       </div>
-      
+
       <div class="col-sm-6">
         Estado de Salud: <strong><?php $sql_edo = "SELECT edo_salud from dat_ingreso where id_atencion=$id_atencion ORDER by edo_salud ASC LIMIT 1";
         $result_edo = $conexion->query($sql_edo);
@@ -331,12 +333,12 @@ $result_hab = $conexion->query($sql_hab);                                       
           echo $row_edo['edo_salud'];
         } ?></strong>
       </div>
-      
+
       <div class="col-sm">
           Aseguradora: <strong><?php $sql_aseg = "SELECT aseg from dat_financieros where id_atencion =$id_atencion ORDER BY fecha DESC limit 1";
 
           $result_aseg = $conexion->query($sql_aseg);
-                                                                                  
+
           while ($row_aseg = $result_aseg->fetch_assoc()) {
             echo $row_aseg['aseg'];
           } ?></strong>
@@ -346,7 +348,7 @@ $result_hab = $conexion->query($sql_hab);                                       
 
 
      <div class="col-sm-4">
-   <?php 
+   <?php
 $d="";
       $sql_motd = "SELECT diagprob_i from dat_nevol where id_atencion=$id_atencion ORDER by diagprob_i ASC LIMIT 1";
     $result_motd = $conexion->query($sql_motd);
@@ -368,7 +370,7 @@ $d="";
 </font>
 
 <div class="container">
- 
+
 </div>
 
         <?php
@@ -390,27 +392,26 @@ $d="";
         <center><a href="sol_laboratorio.php"><button type="button" class="btn btn-success">
         Editar solicitudes de Laboratorio</button></a></center>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        
+
     </div>
 </div>
-        
+
 <div class="col col-12">
     <div class="form-group">
         <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Buscar...">
     </div>
 <?php
-include "../../conexionbd.php";
 $id_atencion=$_SESSION['pac'];
 $resultado = $conexion->query("SELECT * from dat_ordenes_med WHERE id_atencion=$id_atencion ORDER BY id_ord_med DESC") or die($conexion->error);
 $usuario = $_SESSION['login'];
 $resultado2 = $conexion->query("SELECT * FROM paciente P, dat_ingreso DI WHERE P.Id_exp=DI.Id_exp and DI.id_atencion=$id_atencion") or die($conexion->error);
 
-while ($row = $resultado2->fetch_assoc()) { 
+while ($row = $resultado2->fetch_assoc()) {
 ?>
     <div class="table-responsive">
         <table class="table table-bordered table-striped" id="mytable">
         <thead class="thead bg-navy">
-        
+
             <th scope="col">PDF</th>
             <th scope="col">Ver indicaciones</th>
             <th scope="col">Órden</th>
@@ -425,7 +426,7 @@ while ($row = $resultado2->fetch_assoc()) {
                 while($f = mysqli_fetch_array($resultado)){
                      if($f['visto']== "NO" && $f['tipo']== "MEDICO"){
                     ?>
-                    
+
                     <tr>
                         <td class="fondo"><a href="../../gestion_medica/pdf/pdf_ordenes_medico.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></td>
 
@@ -437,7 +438,7 @@ while ($row = $resultado2->fetch_assoc()) {
                     </tr>
                     <?php
                 }elseif ($f['visto']== "NO" && $f['tipo']== "VERB") {
-                 
+
                 ?>
                 <tr>
                         <td class="fondo"><a href="../../gestion_medica/pdf/pdf_ordmed_verb.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></td>
@@ -449,7 +450,7 @@ while ($row = $resultado2->fetch_assoc()) {
                         <td class="fondo"><strong>Verbales</strong></td>
                     </tr>
                   <?php }elseif ($f['visto']== "NO" && $f['tipo']== "QUIRURGICO") {
-                 
+
                 ?>
                 <tr>
                         <td class="fondo"><a href="../../gestion_medica/pdf/pdf_ordquir.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></a></td>
@@ -464,7 +465,7 @@ while ($row = $resultado2->fetch_assoc()) {
                      ?>
                     <tr>
                         <td><a href="../../gestion_medica/pdf/pdf_ordenes_medico.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></a></td>
-                        
+
                         <td ><a href="ordenes_medico.php?id_ord=<?php echo $f['id_ord_med'];?>"><button type="button" class="btn btn-danger"> <i class="fa fa-heartbeat" aria-hidden="true"></i> </button></a></td>
                         <td ><strong><?php echo $f['id_atencion'];?></strong></td>
                         <td ><strong><?php $date=date_create($f['fecha_ord']); echo date_format($date,"d/m/Y");?></strong></td>
@@ -474,7 +475,7 @@ while ($row = $resultado2->fetch_assoc()) {
                   <?php }elseif ($f['visto']== "SI" && $f['tipo']== "VERB") {?>
                     <tr>
                         <td><a href="../../gestion_medica/pdf/pdf_ordmed_verb.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></a></td>
-                        
+
                         <td ><a href="ordenes_mverbales.php?id_ord=<?php echo $f['id_ord_med'];?>"><button type="button" class="btn btn-danger"> <i class="fa fa-heartbeat" aria-hidden="true"></i> </button></a></td>
                         <td ><strong><?php echo $f['id_atencion'];?></strong></td>
                         <td ><strong><?php $date=date_create($f['fecha_ord']); echo date_format($date,"d/m/Y");?></strong></td>
@@ -485,7 +486,7 @@ while ($row = $resultado2->fetch_assoc()) {
                   <?php }elseif ($f['visto']== "SI" && $f['tipo']== "QUIRURGICO") {?>
                     <tr>
                         <td><a href="../../gestion_medica/pdf/pdf_ordquir.php?id_ord=<?php echo $f['id_ord_med'];?>&id_atencion=<?php echo $f['id_atencion'];?>&id_usua=<?php echo $usuario['id_usua'] ?>&id_exp=<?php echo $row['Id_exp'];?>" target="_blank"><button type="button" class="btn btn-danger"> <i class="fa fa-file-pdf-o" style="font-size:28px"  aria-hidden="true"></i> </button></a></td>
-                        
+
                         <td ><a href="ordenes_quirv.php?id_ord=<?php echo $f['id_ord_med'];?>"><button type="button" class="btn btn-danger"> <i class="fa fa-heartbeat" aria-hidden="true"></i> </button></a></td>
                         <td ><strong><?php echo $f['id_atencion'];?></strong></td>
                         <td ><strong><?php $date=date_create($f['fecha_ord']); echo date_format($date,"d/m/Y");?></strong></td>
@@ -494,10 +495,10 @@ while ($row = $resultado2->fetch_assoc()) {
                     </tr>
 
                   <?php }
-                  } 
+                  }
                 }?>
                 </tbody>
-              
+
             </table>
             </div>
 

@@ -1,7 +1,7 @@
 <?php
 session_start();
-//include "../../conexionbd.php";
-include "../header_enfermera.php";
+require_once '../../conexionbd.php';
+$conexion = ConexionBD::getInstancia()->getConexion();include "../header_enfermera.php";
 $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->error);
 
 ?>
@@ -80,16 +80,18 @@ $resultado = $conexion->query("select * from reg_usuarios") or die($conexion->er
       background-color: green !important;
     }
   </style>
-  
+    <style>
+        table, table th, table td {
+            color: #ffffff; /* Cambia el color aquí */
+        }
+    </style>
+
 </head>
 
 <body>
   <section class="content container-fluid">
 
     <?php
-
-    include "../../conexionbd.php";
-
     if (isset($_SESSION['pac'])) {
       $id_atencion = $_SESSION['pac'];
 
@@ -442,35 +444,42 @@ $d="";
     </form>
 </div>
 
-<?php
-          if (isset($_POST['btnagregar'])) {
-            include "../../conexionbd.php";
-            $usuario = $_SESSION['login'];
-            $id_usua= $usuario['id_usua'];
-            $id_atencion = $_SESSION['pac'];
+  <?php
+  if (isset($_POST['btnagregar'])) {
+      $usuario = $_SESSION['login'];
+      $id_usua = $usuario['id_usua'];
+      $id_atencion = $_SESSION['pac'];
 
-            $tipo =  mysqli_real_escape_string($conexion, (strip_tags($_POST["tipo"], ENT_QUOTES)));
-            $hora_i =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hora_i"], ENT_QUOTES)));
-            $hora_t =  mysqli_real_escape_string($conexion, (strip_tags($_POST["hora_t"], ENT_QUOTES)));
-            $sol =  mysqli_real_escape_string($conexion, (strip_tags($_POST["sol"], ENT_QUOTES)));
-            $tcate =  mysqli_real_escape_string($conexion, (strip_tags($_POST["tcate"], ENT_QUOTES)));
-            $sol_fecha =  mysqli_real_escape_string($conexion, (strip_tags($_POST["sol_fecha"], ENT_QUOTES)));
-            $vol =  mysqli_real_escape_string($conexion, (strip_tags($_POST["vol"], ENT_QUOTES)));
-            $pvc =  mysqli_real_escape_string($conexion, (strip_tags($_POST["pvc"], ENT_QUOTES)));
-            $fecha_termino =  mysqli_real_escape_string($conexion, (strip_tags($_POST["fecha_termino"], ENT_QUOTES)));  
+      // ELIMINADO: $tipo - ya que no existe en el formulario
+      $hora_i = mysqli_real_escape_string($conexion, (strip_tags($_POST["hora_i"], ENT_QUOTES)));
+      $hora_t = mysqli_real_escape_string($conexion, (strip_tags($_POST["hora_t"], ENT_QUOTES)));
+      $sol = mysqli_real_escape_string($conexion, (strip_tags($_POST["sol"], ENT_QUOTES)));
+      $tcate = mysqli_real_escape_string($conexion, (strip_tags($_POST["tcate"], ENT_QUOTES)));
+      $sol_fecha = mysqli_real_escape_string($conexion, (strip_tags($_POST["sol_fecha"], ENT_QUOTES)));
+      $vol = mysqli_real_escape_string($conexion, (strip_tags($_POST["vol"], ENT_QUOTES)));
+      $pvc = mysqli_real_escape_string($conexion, (strip_tags($_POST["pvc"], ENT_QUOTES)));
+      $fecha_termino = mysqli_real_escape_string($conexion, (strip_tags($_POST["fecha_termino"], ENT_QUOTES)));
 
+      $fecha_actual = date("Y-m-d");
 
-//date_default_timezone_set('America/Guatemala');
-$fecha_actual = date("Y-m-d");
+      // CORREGIDO: Formato de fecha/hora válido para MySQL
+      // Opción 1: Solo 24 horas sin AM/PM
+      $fechahora = date("Y-m-d H:i:s");
 
-//date_default_timezone_set('America/Guatemala');
-$fechahora = date("Y-m-d H:i a");
-       $ingresar9 = mysqli_query($conexion, 'INSERT INTO sol_enf (id_atencion,id_usua,tipo,hora_i,hora_t,sol,tcate,vol,sol_fecha,pvc,fecha_registro,fecha_termino) values (' . $id_atencion . ' ,' . $id_usua .', "' . $area . '","' . $hora_i . '","' . $hora_t . '","' . $sol . '","' . $tcate . '","' . $vol . '","'.$sol_fecha.'","'.$pvc.'","'.$fechahora.'","'.$fecha_termino.'") ') or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
+      // Opción 2: Si quieres 12 horas con AM/PM (pero MySQL no lo acepta directamente)
+      // $fechahora = date("Y-m-d h:i:s A");
 
-           echo '<script type="text/javascript">window.location.href = "soluciones.php";</script>';
-          }
-          ?>
+      // Query corregida - usando $area en lugar de $tipo
+      $ingresar9 = mysqli_query($conexion,
+              'INSERT INTO sol_enf 
+        (id_atencion, id_usua, tipo, hora_i, hora_t, sol, tcate,sitio, vol, sol_fecha, pvc, fecha_registro, fecha_termino) 
+        VALUES 
+        (' . $id_atencion . ', ' . $id_usua . ', "' . $area . '", "' . $hora_i . '", "' . $hora_t . '", "' . $sol . '", "' . $tcate . '", "' . $tcate . '", "' .$vol . '", "' . $sol_fecha . '", "' . $pvc . '", "' . $fechahora . '", "' . $fecha_termino . '")'
+      ) or die('<p>Error al registrar</p><br>' . mysqli_error($conexion));
 
+      echo '<script type="text/javascript">window.location.href = "soluciones.php";</script>';
+  }
+  ?>
 
 <div class="container-fluid">
           <div class="col col-12">
@@ -508,7 +517,6 @@ $fechahora = date("Y-m-d H:i a");
                 <tbody>
 
 <?php
-include "../../conexionbd.php";
 $id_atencion=$_SESSION['pac'];
 $resultado = $conexion->query("SELECT * from sol_enf m , reg_usuarios r WHERE m.id_atencion=$id_atencion and m.id_usua=r.id_usua ORDER BY id_sol_enf DESC") or die($conexion->error);
 $usuario = $_SESSION['login'];
@@ -545,9 +553,6 @@ while($f = mysqli_fetch_array($resultado)){
 <i class="fa fa-power-off" aria-hidden="true" title="Sin acceso"></i>
 </div></td>
 <?php }?>
-
-
-
 <td><a href="el_sol.php?id_sol_enf=<?php echo $f['id_sol_enf'];?>&id_atencion=<?php echo $f['id_atencion'];?>"><button type="button" class="btn btn-danger">X </button></td>
 
                     </tr>
@@ -567,7 +572,6 @@ while($f = mysqli_fetch_array($resultado)){
 </div>
 </div>
 </div>
-
 <!-- FastClick -->
 <script src='../../template/plugins/fastclick/fastclick.min.js'></script>
 <!-- AdminLTE App -->
